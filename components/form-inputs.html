@@ -675,34 +675,62 @@
       padding-top: var(--sds-space-400);
     }
 
-    .demo-form-btn {
-      padding: var(--sds-space-200) var(--sds-space-400);
-      font-family: var(--sds-font-sans);
-      font-size: var(--sds-type-body);
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
       font-weight: var(--sds-weight-medium);
-      border-radius: 6px;
-      cursor: pointer;
       border: none;
-      transition: background-color 0.15s ease;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
     }
 
-    .demo-form-btn--primary {
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-btn--md {
+      font-size: var(--sds-type-body);
+      padding: var(--sds-space-250) var(--sds-space-250);
+      border-radius: 6px;
+      height: 40px;
+    }
+
+    .sds-btn--primary {
       background: var(--sds-interactive-primary);
-      color: var(--sds-color-white);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-interactive-primary);
     }
 
-    .demo-form-btn--primary:hover {
+    .sds-btn--primary:hover {
       background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
     }
 
-    .demo-form-btn--secondary {
+    .sds-btn--primary:active {
+      background: var(--sds-interactive-primary-active);
+      border-color: var(--sds-interactive-primary-active);
+    }
+
+    .sds-btn--secondary {
       background: var(--sds-color-white);
       color: var(--sds-text-primary);
-      border: 1px solid var(--sds-border-default);
+      border: 1.5px solid var(--sds-border-default);
     }
 
-    .demo-form-btn--secondary:hover {
-      background: var(--sds-color-warm-gray-025);
+    .sds-btn--secondary:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-border-strong);
+    }
+
+    .sds-btn--secondary:active {
+      background: var(--sds-color-warm-gray-100);
     }
 
     /* ============================================================
@@ -1430,8 +1458,8 @@
       </div>
 
       <div class="demo-form-actions">
-        <button class="demo-form-btn demo-form-btn--secondary" type="button">Cancel</button>
-        <button class="demo-form-btn demo-form-btn--primary" type="button">Create data source</button>
+        <button class="sds-btn sds-btn--secondary sds-btn--md" type="button">Cancel</button>
+        <button class="sds-btn sds-btn--primary sds-btn--md" type="button">Create data source</button>
       </div>
     </div>
   </div>

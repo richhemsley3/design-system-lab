@@ -213,7 +213,7 @@
     }
     .sds-btn--md {
       font-size: var(--sds-type-body);
-      padding: var(--sds-space-250) var(--sds-space-500);
+      padding: var(--sds-space-250) var(--sds-space-250);
       border-radius: 6px;
       height: 40px;
     }
@@ -251,15 +251,6 @@
     .sds-btn--danger:hover {
       background: var(--sds-color-red-600);
       border-color: var(--sds-color-red-600);
-    }
-    .sds-btn--trigger {
-      background: var(--sds-interactive-primary);
-      color: var(--sds-text-on-primary);
-      padding: var(--sds-space-250) var(--sds-space-500);
-      height: 40px;
-    }
-    .sds-btn--trigger:hover {
-      background: var(--sds-interactive-primary-hover);
     }
 
     /* ---- Form elements inside modals ---- */
@@ -377,19 +368,19 @@
 <div class="demo-block">
   <div class="demo-label">Interactive Demos</div>
   <div class="demo-row">
-    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-info')">
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-info')">
       <span class="material-symbols-outlined" style="font-size: 18px;">info</span>
       Information
     </button>
-    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-confirm')">
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-confirm')">
       <span class="material-symbols-outlined" style="font-size: 18px;">warning</span>
       Confirmation
     </button>
-    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-form')">
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-form')">
       <span class="material-symbols-outlined" style="font-size: 18px;">person_add</span>
       Form Dialog
     </button>
-    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-danger')">
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-danger')">
       <span class="material-symbols-outlined" style="font-size: 18px;">delete_forever</span>
       Danger Action
     </button>
@@ -405,13 +396,13 @@
 <div class="demo-block">
   <div class="demo-label">Size Variants</div>
   <div class="demo-row">
-    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-sm')">
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-sm')">
       Small (400px)
     </button>
-    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-md')">
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-md')">
       Medium (560px)
     </button>
-    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-lg')">
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-lg')">
       Large (720px)
     </button>
   </div>
@@ -425,7 +416,7 @@
 
 <div class="demo-block">
   <div class="demo-label">Destructive Confirmation</div>
-  <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-delete-resource')">
+  <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-delete-resource')">
     <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
     Delete Resource
   </button>
@@ -437,7 +428,7 @@
 
 <div class="demo-block">
   <div class="demo-label">Invite Team Member</div>
-  <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-invite')">
+  <button class="sds-btn sds-btn--primary sds-btn--md" onclick="openModal('modal-invite')">
     <span class="material-symbols-outlined" style="font-size: 18px;">group_add</span>
     Invite Team Member
   </button>

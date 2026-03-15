@@ -65,24 +65,51 @@
     border-radius: 8px;
     padding: var(--sds-space-050);
   }
-  .size-btn {
-    padding: var(--sds-space-100) var(--sds-space-250);
-    border: none;
-    border-radius: 6px;
-    font-family: var(--sds-font-sans);
-    font-size: var(--sds-type-caption);
+  .sds-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sds-space-200);
+    font-family: inherit;
     font-weight: var(--sds-weight-medium);
-    color: #6B6760;
-    background: transparent;
+    border: none;
     cursor: pointer;
-    transition: all 0.15s;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1;
   }
-  .size-btn.active {
-    background: #FFFFFF;
+  .sds-btn:focus-visible {
+    outline: 2px solid var(--sds-border-focus);
+    outline-offset: 2px;
+  }
+  .sds-btn--sm {
+    font-size: var(--sds-type-label);
+    padding: var(--sds-space-150) var(--sds-space-250);
+    border-radius: 6px;
+    height: 32px;
+  }
+  .sds-btn--secondary {
+    background: var(--sds-color-white);
     color: var(--sds-text-primary);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    border: 1.5px solid var(--sds-border-default);
   }
-  .size-btn:hover:not(.active) { color: var(--sds-text-primary); }
+  .sds-btn--secondary:hover {
+    background: var(--sds-color-warm-gray-050);
+    border-color: var(--sds-border-strong);
+  }
+  .sds-btn--secondary:active {
+    background: var(--sds-color-warm-gray-100);
+  }
+  .sds-btn--primary {
+    background: var(--sds-interactive-primary);
+    color: var(--sds-text-on-primary);
+    border: 1.5px solid var(--sds-interactive-primary);
+  }
+  .sds-btn--primary:hover {
+    background: var(--sds-interactive-primary-hover);
+    border-color: var(--sds-interactive-primary-hover);
+  }
 
   /* Category heading */
   h3 {
@@ -214,9 +241,9 @@
 <div class="icon-toolbar">
   <input type="text" class="icon-search" id="iconSearch" placeholder="Search icons…" autocomplete="off">
   <div class="size-toggle">
-    <button class="size-btn" data-size="sm" onclick="setSize('sm')">S</button>
-    <button class="size-btn active" data-size="md" onclick="setSize('md')">M</button>
-    <button class="size-btn" data-size="lg" onclick="setSize('lg')">L</button>
+    <button class="sds-btn sds-btn--secondary sds-btn--sm" data-size="sm" onclick="setSize('sm')">S</button>
+    <button class="sds-btn sds-btn--primary sds-btn--sm" data-size="md" onclick="setSize('md')">M</button>
+    <button class="sds-btn sds-btn--secondary sds-btn--sm" data-size="lg" onclick="setSize('lg')">L</button>
   </div>
   <span class="icon-count" id="iconCount"></span>
 </div>
@@ -573,8 +600,10 @@ function updateCount(count) {
 
 /* ---- Size toggle ---- */
 function setSize(size) {
-  document.querySelectorAll('.size-btn').forEach(function(btn) {
-    btn.classList.toggle('active', btn.getAttribute('data-size') === size);
+  document.querySelectorAll('.size-toggle .sds-btn').forEach(function(btn) {
+    var isActive = btn.getAttribute('data-size') === size;
+    btn.classList.toggle('sds-btn--primary', isActive);
+    btn.classList.toggle('sds-btn--secondary', !isActive);
   });
   document.querySelectorAll('.icon-grid').forEach(function(grid) {
     grid.classList.remove('size-sm', 'size-md', 'size-lg');

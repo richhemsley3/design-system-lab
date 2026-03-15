@@ -290,24 +290,41 @@
       flex-wrap: wrap;
       gap: var(--sds-space-200);
     }
-    .trigger-btn {
+    .sds-btn {
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: var(--sds-space-200);
-      padding: var(--sds-space-200) var(--sds-space-400);
-      border: 1px solid var(--sds-color-warm-gray-200);
-      border-radius: 6px;
-      background: var(--sds-color-white);
       font-family: inherit;
-      font-size: var(--sds-type-body);
-      font-weight: var(--sds-weight-semibold);
-      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-medium);
+      border: none;
       cursor: pointer;
-      transition: background 0.12s ease, border-color 0.12s ease;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+      line-height: 1;
     }
-    .trigger-btn:hover {
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-btn--sm {
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-150) var(--sds-space-250);
+      border-radius: 6px;
+      height: 32px;
+    }
+    .sds-btn--secondary {
+      background: var(--sds-color-white);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-border-default);
+    }
+    .sds-btn--secondary:hover {
       background: var(--sds-color-warm-gray-050);
-      border-color: var(--sds-color-warm-gray-300);
+      border-color: var(--sds-border-strong);
+    }
+    .sds-btn--secondary:active {
+      background: var(--sds-color-warm-gray-100);
     }
     .trigger-dot {
       width: 8px;
@@ -466,19 +483,19 @@
 <div class="demo-block">
   <div class="demo-label">Click to trigger</div>
   <div class="trigger-row">
-    <button class="trigger-btn" onclick="showToast('success', 'Message Sent', 'Your message has been sent. We\u2019ll get back to you soon.')">
+    <button class="sds-btn sds-btn--secondary sds-btn--sm" onclick="showToast('success', 'Message Sent', 'Your message has been sent. We\u2019ll get back to you soon.')">
       <span class="trigger-dot trigger-dot--success"></span> Success
     </button>
-    <button class="trigger-btn" onclick="showToast('warning', 'Approaching Limit', 'You have used 85% of your storage quota.')">
+    <button class="sds-btn sds-btn--secondary sds-btn--sm" onclick="showToast('warning', 'Approaching Limit', 'You have used 85% of your storage quota.')">
       <span class="trigger-dot trigger-dot--warning"></span> Warning
     </button>
-    <button class="trigger-btn" onclick="showToast('error', 'Error Occurred', 'Sorry, please try again later.')">
+    <button class="sds-btn sds-btn--secondary sds-btn--sm" onclick="showToast('error', 'Error Occurred', 'Sorry, please try again later.')">
       <span class="trigger-dot trigger-dot--error"></span> Error
     </button>
-    <button class="trigger-btn" onclick="showToast('info', 'Attention', 'Scheduled maintenance tonight from 10 PM to 2 AM.')">
+    <button class="sds-btn sds-btn--secondary sds-btn--sm" onclick="showToast('info', 'Attention', 'Scheduled maintenance tonight from 10 PM to 2 AM.')">
       <span class="trigger-dot trigger-dot--info"></span> Info
     </button>
-    <button class="trigger-btn" onclick="showToast('neutral', '', 'No new notifications.')">
+    <button class="sds-btn sds-btn--secondary sds-btn--sm" onclick="showToast('neutral', '', 'No new notifications.')">
       <span class="trigger-dot trigger-dot--neutral"></span> Neutral
     </button>
   </div>
