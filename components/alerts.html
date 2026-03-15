@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Alerts &amp; Banners</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-400);
+    }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ============================================================
+       INLINE ALERTS
+       Full-width banners with tinted background, colored border,
+       rounded icon badge, and optional dismiss.
+       ============================================================ */
+
+    .sds-alert {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .sds-alert.is-dismissing {
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+    }
+
+    /* Icon badge */
+    .sds-alert__icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sds-alert__icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-white);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-alert__content {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-alert__title {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+    .sds-alert__message {
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-label);
+    }
+
+    .sds-alert__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-150);
+      color: var(--sds-text-tertiary);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sds-alert__dismiss .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+    .sds-alert__dismiss:hover {
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-subtle);
+    }
+    .sds-alert__dismiss:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    /* Alert actions */
+    .sds-alert__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      margin-top: var(--sds-space-200);
+    }
+    .sds-alert__action {
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+      border-radius: 4px;
+      transition: opacity 0.15s ease;
+    }
+    .sds-alert__action:hover {
+      opacity: 0.8;
+    }
+    .sds-alert__action:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-alert__action--primary {
+      color: var(--sds-text-primary);
+    }
+    .sds-alert__action--secondary {
+      color: var(--sds-text-tertiary);
+    }
+
+    /* ---- Semantic variants ---- */
+    .sds-alert--success {
+      background: var(--sds-status-success-bg);
+      border-color: var(--sds-color-green-100);
+    }
+    .sds-alert--success .sds-alert__icon {
+      background: var(--sds-status-success-strong);
+    }
+
+    .sds-alert--warning {
+      background: var(--sds-status-warning-bg);
+      border-color: var(--sds-color-yellow-100);
+    }
+    .sds-alert--warning .sds-alert__icon {
+      background: var(--sds-status-warning-strong);
+    }
+
+    .sds-alert--error {
+      background: var(--sds-status-error-bg);
+      border-color: var(--sds-color-red-100);
+    }
+    .sds-alert--error .sds-alert__icon {
+      background: var(--sds-status-error-strong);
+    }
+
+    .sds-alert--info {
+      background: var(--sds-status-info-bg);
+      border-color: var(--sds-color-blue-100);
+    }
+    .sds-alert--info .sds-alert__icon {
+      background: var(--sds-status-info-text);
+    }
+
+    /* ============================================================
+       PAGE BANNERS
+       Full-width persistent banners for system-level messages.
+       No border-radius, edge-to-edge.
+       ============================================================ */
+
+    .sds-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-300) var(--sds-space-600);
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      border-bottom: 1px solid transparent;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+    .sds-banner.is-dismissing {
+      opacity: 0;
+      transform: translateY(-100%);
+      pointer-events: none;
+    }
+
+    .sds-banner__icon .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-banner__content {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-banner__content strong {
+      font-weight: var(--sds-weight-semibold);
+    }
+
+    .sds-banner__action {
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      text-decoration: underline;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
+    }
+    .sds-banner__action:hover {
+      opacity: 0.8;
+    }
+    .sds-banner__action:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-banner__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-100);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sds-banner__dismiss .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+    .sds-banner__dismiss:hover {
+      background: rgba(0,0,0,0.06);
+    }
+    .sds-banner__dismiss:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    /* Banner variants */
+    .sds-banner--info {
+      background: var(--sds-status-info-bg);
+      border-bottom-color: var(--sds-color-blue-100);
+      color: var(--sds-status-info-text);
+    }
+    .sds-banner--info .sds-banner__action { color: var(--sds-status-info-text); }
+    .sds-banner--info .sds-banner__dismiss { color: var(--sds-status-info-text); }
+
+    .sds-banner--warning {
+      background: var(--sds-status-warning-bg);
+      border-bottom-color: var(--sds-color-yellow-100);
+      color: var(--sds-status-warning-text);
+    }
+    .sds-banner--warning .sds-banner__action { color: var(--sds-status-warning-text); }
+    .sds-banner--warning .sds-banner__dismiss { color: var(--sds-status-warning-text); }
+
+    .sds-banner--error {
+      background: var(--sds-status-error-bg);
+      border-bottom-color: var(--sds-color-red-100);
+      color: var(--sds-status-error-text);
+    }
+    .sds-banner--error .sds-banner__action { color: var(--sds-status-error-text); }
+    .sds-banner--error .sds-banner__dismiss { color: var(--sds-status-error-text); }
+
+    .sds-banner--success {
+      background: var(--sds-status-success-bg);
+      border-bottom-color: var(--sds-color-green-100);
+      color: var(--sds-status-success-text);
+    }
+    .sds-banner--success .sds-banner__action { color: var(--sds-status-success-text); }
+    .sds-banner--success .sds-banner__dismiss { color: var(--sds-status-success-text); }
+
+    /* ============================================================
+       COMPACT ALERTS
+       Smaller inline alerts for form-level or section-level
+       feedback. Reduced padding, no shadow.
+       ============================================================ */
+
+    .sds-alert--compact {
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border-radius: 8px;
+      box-shadow: none;
+      font-size: var(--sds-type-label);
+    }
+    .sds-alert--compact .sds-alert__icon {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border-radius: 4px;
+    }
+    .sds-alert--compact .sds-alert__icon .material-symbols-outlined {
+      font-size: 12px;
+    }
+    .sds-alert--compact .sds-alert__title {
+      font-size: var(--sds-type-label);
+    }
+    .sds-alert--compact .sds-alert__message {
+      font-size: var(--sds-type-caption);
+    }
+    .sds-alert--compact .sds-alert__dismiss {
+      padding: var(--sds-space-100);
+    }
+    .sds-alert--compact .sds-alert__dismiss .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* ---- Banner demo wrapper ---- */
+    .banner-demo-wrapper {
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .banner-demo-body {
+      padding: var(--sds-space-600);
+      background: var(--sds-color-warm-gray-025);
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-label);
+    }
+
+    /* ---- Spec tables ---- */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* ===== BUTTON BASE (from buttons.html) ===== */
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    /* ---- Small size ---- */
+    .sds-btn--sm {
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border-radius: 6px;
+      height: 32px;
+    }
+
+    /* ---- Secondary (outlined) ---- */
+    .sds-btn--secondary {
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-interactive-secondary-border);
+    }
+    .sds-btn--secondary:hover {
+      background: var(--sds-bg-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--secondary:active {
+      background: var(--sds-border-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--secondary:disabled,
+    .sds-btn--secondary.is-disabled {
+      background: var(--sds-bg-page);
+      border-color: var(--sds-color-warm-gray-200);
+      color: var(--sds-text-disabled);
+      cursor: not-allowed;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Alerts &amp; Banners</h1>
+<p class="page-subtitle">Inline alerts, page banners, and compact feedback messages for communicating status, warnings, errors, and informational notices across the data security platform.</p>
+
+<!-- ============ INLINE ALERTS ============ -->
+<h2>Inline Alerts</h2>
+<p>Full-width alerts that appear within the page flow. Each variant uses a tinted background, colored border, and icon badge to communicate severity. Use for persistent messages that require user attention.</p>
+
+<div class="demo-block">
+  <div class="demo-label">All Variants</div>
+  <div class="demo-stack">
+    <div class="sds-alert sds-alert--info" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">System update available</div>
+        <div class="sds-alert__message">A new version of the data classification engine is available. Review the changelog before upgrading.</div>
+      </div>
+    </div>
+    <div class="sds-alert sds-alert--success" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">check_circle</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Policy published</div>
+        <div class="sds-alert__message">The data access policy has been published and is now active across all environments.</div>
+      </div>
+    </div>
+    <div class="sds-alert sds-alert--warning" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Approaching storage limit</div>
+        <div class="sds-alert__message">You have used 85% of your audit log storage quota. Consider archiving older records to avoid disruption.</div>
+      </div>
+    </div>
+    <div class="sds-alert sds-alert--error" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Connection failed</div>
+        <div class="sds-alert__message">Unable to reach the database server. Check your network settings and try again.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ ALERTS WITH ACTIONS ============ -->
+<h2>Alerts with Actions</h2>
+<p>Alerts can include action links or buttons to let users respond directly from the notification. Use a primary action for the recommended path and an optional secondary action for alternatives.</p>
+
+<div class="demo-block">
+  <div class="demo-label">With Action Links</div>
+  <div class="demo-stack">
+    <div class="sds-alert sds-alert--warning" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Compliance deadline approaching</div>
+        <div class="sds-alert__message">Your GDPR data retention review is due in 7 days. Complete the assessment to remain compliant.</div>
+        <div class="sds-alert__actions">
+          <button class="sds-alert__action sds-alert__action--primary">Start review</button>
+          <button class="sds-alert__action sds-alert__action--secondary">Remind me later</button>
+        </div>
+      </div>
+    </div>
+    <div class="sds-alert sds-alert--error" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">3 vulnerabilities detected</div>
+        <div class="sds-alert__message">Critical security vulnerabilities were found during the latest scan of your data warehouse connections.</div>
+        <div class="sds-alert__actions">
+          <button class="sds-alert__action sds-alert__action--primary">View details</button>
+          <button class="sds-alert__action sds-alert__action--secondary">Dismiss</button>
+        </div>
+      </div>
+    </div>
+    <div class="sds-alert sds-alert--info" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">New integration available</div>
+        <div class="sds-alert__message">Connect your Snowflake instance to enable automated data classification and policy enforcement.</div>
+        <div class="sds-alert__actions">
+          <button class="sds-alert__action sds-alert__action--primary">Connect now</button>
+          <button class="sds-alert__action sds-alert__action--secondary">Learn more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ DISMISSIBLE ALERTS ============ -->
+<h2>Dismissible Alerts</h2>
+<p>Interactive close button that removes the alert with a smooth fade-out animation. Use for messages that can be acknowledged and cleared by the user.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Click the close icon to dismiss</div>
+  <div class="demo-stack" id="dismissible-demos">
+    <div class="sds-alert sds-alert--info" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
+      <span class="sds-alert__content">Tip: You can drag columns to reorder the table layout in the data catalog.</span>
+      <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--success" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">check_circle</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Import complete</div>
+        <div class="sds-alert__message">2,450 records imported successfully with no errors.</div>
+      </div>
+      <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--warning" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Token expiring soon</div>
+        <div class="sds-alert__message">Your API access token expires in 48 hours. Regenerate it to maintain uninterrupted service.</div>
+      </div>
+      <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--error" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Sync failed</div>
+        <div class="sds-alert__message">The scheduled metadata sync could not complete. 12 tables were skipped due to permission errors.</div>
+      </div>
+      <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+  </div>
+  <button class="sds-btn sds-btn--secondary sds-btn--sm" style="margin-top: var(--sds-space-400);" onclick="resetDismissibleDemos()">Reset alerts</button>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ PAGE BANNERS ============ -->
+<h2>Page Banners</h2>
+<p>Full-width persistent banners that sit at the top of the page for system-level messages such as scheduled maintenance, trial expiry notices, or compliance deadlines. They span edge to edge with no border-radius.</p>
+
+<div class="demo-block" style="padding:0; overflow:hidden; border-radius:12px;">
+  <div class="demo-label" style="padding:var(--sds-space-400) var(--sds-space-600) 0;">System-level Banners</div>
+  <div style="margin-top:var(--sds-space-400);">
+    <div class="sds-banner sds-banner--info" role="alert">
+      <span class="sds-banner__icon"><span class="material-symbols-outlined">info</span></span>
+      <div class="sds-banner__content"><strong>Scheduled maintenance:</strong> The platform will be unavailable on March 20 from 2:00 AM to 4:00 AM UTC.</div>
+      <button class="sds-banner__action">View details</button>
+      <button class="sds-banner__dismiss" aria-label="Dismiss banner" onclick="dismissBanner(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-banner sds-banner--warning" role="alert">
+      <span class="sds-banner__icon"><span class="material-symbols-outlined">warning</span></span>
+      <div class="sds-banner__content"><strong>Trial expiring:</strong> Your enterprise trial ends in 5 days. Upgrade now to retain all data and configurations.</div>
+      <button class="sds-banner__action">Upgrade plan</button>
+      <button class="sds-banner__dismiss" aria-label="Dismiss banner" onclick="dismissBanner(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-banner sds-banner--error" role="alert">
+      <span class="sds-banner__icon"><span class="material-symbols-outlined">error</span></span>
+      <div class="sds-banner__content"><strong>Compliance overdue:</strong> Your SOC 2 audit evidence collection is past the deadline. Immediate action required.</div>
+      <button class="sds-banner__action">Take action</button>
+      <button class="sds-banner__dismiss" aria-label="Dismiss banner" onclick="dismissBanner(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-banner sds-banner--success" role="alert">
+      <span class="sds-banner__icon"><span class="material-symbols-outlined">check_circle</span></span>
+      <div class="sds-banner__content"><strong>Migration complete:</strong> All datasets have been successfully migrated to the new data center region.</div>
+      <button class="sds-banner__dismiss" aria-label="Dismiss banner" onclick="dismissBanner(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+  </div>
+  <div class="banner-demo-body">Page content below banners</div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ COMPACT ALERTS ============ -->
+<h2>Compact Alerts</h2>
+<p>Smaller inline alerts for form-level or section-level feedback. Reduced padding and icon size for tighter layouts, such as validation messages inside forms or contextual hints within settings panels.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Form-level Feedback</div>
+  <div class="demo-stack">
+    <div class="sds-alert sds-alert--error sds-alert--compact" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
+      <span class="sds-alert__content">Connection string is invalid. Check the host and port values.</span>
+    </div>
+    <div class="sds-alert sds-alert--success sds-alert--compact" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">check_circle</span></span>
+      <span class="sds-alert__content">Connection test passed. Database is reachable.</span>
+    </div>
+    <div class="sds-alert sds-alert--warning sds-alert--compact" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
+      <span class="sds-alert__content">This policy name already exists. Saving will overwrite the existing version.</span>
+    </div>
+    <div class="sds-alert sds-alert--info sds-alert--compact" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
+      <span class="sds-alert__content">Classification rules are evaluated top-to-bottom. Drag to reorder priority.</span>
+    </div>
+  </div>
+</div>
+
+<div class="demo-block">
+  <div class="demo-label">Compact with Title &amp; Dismiss</div>
+  <div class="demo-stack">
+    <div class="sds-alert sds-alert--warning sds-alert--compact" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Sensitive columns detected</div>
+        <div class="sds-alert__message">3 columns in this table contain PII data. Apply masking rules before sharing.</div>
+      </div>
+      <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--error sds-alert--compact" role="alert">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Validation failed</div>
+        <div class="sds-alert__message">2 required fields are missing. Complete all fields before submitting.</div>
+      </div>
+      <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ SPECIFICATION ============ -->
+<h2>Specifications</h2>
+
+<h3>Inline Alert — Layout &amp; Spacing</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td><code>--sds-space-400</code> (16px)</td></tr>
+    <tr><td>Gap</td><td><code>--sds-space-300</code> (12px)</td></tr>
+    <tr><td>Border radius</td><td>12px</td></tr>
+    <tr><td>Border</td><td>1px solid (variant color)</td></tr>
+    <tr><td>Icon badge</td><td>24 &times; 24px, border-radius 6px</td></tr>
+    <tr><td>Icon symbol</td><td>16px, white on colored badge</td></tr>
+    <tr><td>Box shadow</td><td>0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)</td></tr>
+    <tr><td>Title</td><td><code>--sds-type-body</code>, <code>--sds-weight-semibold</code></td></tr>
+    <tr><td>Message</td><td><code>--sds-type-label</code>, <code>--sds-text-tertiary</code></td></tr>
+    <tr><td>Dismiss animation</td><td>0.25s ease (opacity + translateY)</td></tr>
+  </tbody>
+</table>
+
+<h3>Compact Alert</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td><code>--sds-space-200</code> <code>--sds-space-300</code></td></tr>
+    <tr><td>Border radius</td><td>8px</td></tr>
+    <tr><td>Box shadow</td><td>none</td></tr>
+    <tr><td>Icon badge</td><td>18 &times; 18px, border-radius 4px</td></tr>
+    <tr><td>Icon symbol</td><td>12px</td></tr>
+    <tr><td>Font size</td><td><code>--sds-type-label</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Page Banner</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td><code>--sds-space-300</code> <code>--sds-space-600</code></td></tr>
+    <tr><td>Border radius</td><td>0 (full-width)</td></tr>
+    <tr><td>Border</td><td>1px solid bottom (variant color)</td></tr>
+    <tr><td>Font size</td><td><code>--sds-type-label</code></td></tr>
+    <tr><td>Icon</td><td>20px, variant color</td></tr>
+    <tr><td>Dismiss animation</td><td>0.25s ease (opacity + translateY)</td></tr>
+  </tbody>
+</table>
+
+<h3>Color Variants</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Variant</th><th>Background</th><th>Border</th><th>Icon Badge</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Info</td>
+      <td><span class="swatch" style="background:var(--sds-status-info-bg)"></span><code>--sds-status-info-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-blue-100)"></span><code>blue-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-info-text)"></span><code>--sds-status-info-text</code></td>
+    </tr>
+    <tr>
+      <td>Success</td>
+      <td><span class="swatch" style="background:var(--sds-status-success-bg)"></span><code>--sds-status-success-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-green-100)"></span><code>green-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-success-strong)"></span><code>--sds-status-success-strong</code></td>
+    </tr>
+    <tr>
+      <td>Warning</td>
+      <td><span class="swatch" style="background:var(--sds-status-warning-bg)"></span><code>--sds-status-warning-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-yellow-100)"></span><code>yellow-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-warning-strong)"></span><code>--sds-status-warning-strong</code></td>
+    </tr>
+    <tr>
+      <td>Error</td>
+      <td><span class="swatch" style="background:var(--sds-status-error-bg)"></span><code>--sds-status-error-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-red-100)"></span><code>red-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-error-strong)"></span><code>--sds-status-error-strong</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>ARIA &amp; Accessibility</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Element</th><th>Attribute</th><th>Notes</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Alert container</td><td><code>role="alert"</code></td><td>Announces content to screen readers immediately</td></tr>
+    <tr><td>Dynamic alerts</td><td><code>aria-live="polite"</code></td><td>For alerts injected after page load</td></tr>
+    <tr><td>Dismiss button</td><td><code>aria-label="Dismiss alert"</code></td><td>Describes action for screen readers</td></tr>
+    <tr><td>Banner dismiss</td><td><code>aria-label="Dismiss banner"</code></td><td>Describes action for screen readers</td></tr>
+  </tbody>
+</table>
+
+<script>
+  /* ---- Dismiss alert with fade-out animation ---- */
+  function dismissAlert(btn) {
+    var alert = btn.closest('.sds-alert');
+    if (!alert || alert.classList.contains('is-dismissing')) return;
+    alert.classList.add('is-dismissing');
+    alert.addEventListener('transitionend', function () {
+      alert.remove();
+    });
+  }
+
+  /* ---- Dismiss banner with slide-up animation ---- */
+  function dismissBanner(btn) {
+    var banner = btn.closest('.sds-banner');
+    if (!banner || banner.classList.contains('is-dismissing')) return;
+    banner.classList.add('is-dismissing');
+    banner.addEventListener('transitionend', function () {
+      banner.remove();
+    });
+  }
+
+  /* ---- Reset dismissible demos ---- */
+  var dismissibleOriginal = null;
+  (function () {
+    var container = document.getElementById('dismissible-demos');
+    if (container) {
+      dismissibleOriginal = container.innerHTML;
+    }
+  })();
+
+  function resetDismissibleDemos() {
+    var container = document.getElementById('dismissible-demos');
+    if (container && dismissibleOriginal) {
+      container.innerHTML = dismissibleOriginal;
+    }
+  }
+
+  /* ---- Dynamic alert injection (for aria-live demonstration) ---- */
+  function injectAlert(type, title, message, targetId) {
+    var container = document.getElementById(targetId);
+    if (!container) return;
+
+    var icons = {
+      info: 'info',
+      success: 'check_circle',
+      warning: 'warning',
+      error: 'error'
+    };
+
+    var el = document.createElement('div');
+    el.className = 'sds-alert sds-alert--' + type;
+    el.setAttribute('role', 'alert');
+    el.setAttribute('aria-live', 'polite');
+
+    el.innerHTML =
+      '<span class="sds-alert__icon"><span class="material-symbols-outlined">' + icons[type] + '</span></span>' +
+      '<div class="sds-alert__content">' +
+        '<div class="sds-alert__title">' + title + '</div>' +
+        '<div class="sds-alert__message">' + message + '</div>' +
+      '</div>' +
+      '<button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>';
+
+    container.appendChild(el);
+  }
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

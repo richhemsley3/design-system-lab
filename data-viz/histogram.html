@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Histogram</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../shared/chart.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+
+</head>
+<body>
+
+  <h1>Histogram</h1>
+  <p class="page-subtitle">Frequency distribution of continuous data across binned intervals. Supports standard, curve overlay, and grouped variants.</p>
+
+  <!-- ============================================================
+       CHART COLOR PALETTE
+       ============================================================ -->
+  <h2>Chart Color Palette</h2>
+  <p>Eight sequential colors used across all data visualization charts. Each color maintains a minimum 3:1 contrast ratio against white backgrounds.</p>
+
+  <div class="color-strip">
+    <div class="color-strip-item" style="background: var(--sds-chart-1);"><span class="color-strip-label">1</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-2);"><span class="color-strip-label">2</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-3);"><span class="color-strip-label">3</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-4);"><span class="color-strip-label">4</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-5);"><span class="color-strip-label">5</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-6);"><span class="color-strip-label">6</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-7);"><span class="color-strip-label">7</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-8);"><span class="color-strip-label">8</span></div>
+  </div>
+
+  <!-- ============================================================
+       STANDARD HISTOGRAM
+       ============================================================ -->
+  <h2>Standard Histogram</h2>
+  <p>Frequency distribution chart where bars represent continuous data bins with no gaps between them. Unlike bar charts, histogram bars touch to indicate continuous ranges.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Frequency distribution</div>
+    <div class="sds-chart" style="position:relative;">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Response Time Distribution</span>
+        <span class="sds-chart-subtitle">Milliseconds (n = 1,000 requests)</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Histogram showing response time distribution across 10 bins with bell curve shape">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="50" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="50" y1="56" x2="540" y2="56"/>
+        <line class="chart-grid-line" x1="50" y1="92" x2="540" y2="92"/>
+        <line class="chart-grid-line" x1="50" y1="128" x2="540" y2="128"/>
+        <line class="chart-grid-line" x1="50" y1="164" x2="540" y2="164"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="50" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="42" y="24" text-anchor="end">250</text>
+        <text class="chart-axis-label" x="42" y="60" text-anchor="end">200</text>
+        <text class="chart-axis-label" x="42" y="96" text-anchor="end">150</text>
+        <text class="chart-axis-label" x="42" y="132" text-anchor="end">100</text>
+        <text class="chart-axis-label" x="42" y="168" text-anchor="end">50</text>
+        <text class="chart-axis-label" x="42" y="204" text-anchor="end">0</text>
+        <!-- Histogram bins — NO gaps, NO border-radius (rx=0) -->
+        <!-- Bell curve distribution: 15, 35, 80, 150, 230, 210, 140, 70, 45, 25 -->
+        <!-- Chart area: x 50–540 = 490px wide, 10 bins = 49px each -->
+        <!-- Y scale: 0–250, chart height 180px (y 20–200) -->
+        <!-- y = 200 - (value/250)*180 -->
+        <rect class="chart-bar" x="50"  y="189.2" width="49" height="10.8" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="99"  y="174.8" width="49" height="25.2" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="148" y="142.4" width="49" height="57.6" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="197" y="92"    width="49" height="108"  rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="246" y="34.4"  width="49" height="165.6" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="295" y="48.8"  width="49" height="151.2" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="344" y="99.2"  width="49" height="100.8" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="393" y="149.6" width="49" height="50.4" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="442" y="167.6" width="49" height="32.4" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="491" y="182"   width="49" height="18"   rx="0" fill="var(--sds-chart-1)"/>
+        <!-- Value labels -->
+        <text class="chart-value-label" x="74.5"  y="184" text-anchor="middle">15</text>
+        <text class="chart-value-label" x="123.5" y="170" text-anchor="middle">35</text>
+        <text class="chart-value-label" x="172.5" y="137" text-anchor="middle">80</text>
+        <text class="chart-value-label" x="221.5" y="86"  text-anchor="middle">150</text>
+        <text class="chart-value-label" x="270.5" y="28"  text-anchor="middle">230</text>
+        <text class="chart-value-label" x="319.5" y="43"  text-anchor="middle">210</text>
+        <text class="chart-value-label" x="368.5" y="93"  text-anchor="middle">140</text>
+        <text class="chart-value-label" x="417.5" y="144" text-anchor="middle">70</text>
+        <text class="chart-value-label" x="466.5" y="162" text-anchor="middle">45</text>
+        <text class="chart-value-label" x="515.5" y="177" text-anchor="middle">25</text>
+        <!-- X axis labels (bin ranges) -->
+        <text class="chart-axis-label" x="74.5"  y="218" text-anchor="middle">0–10</text>
+        <text class="chart-axis-label" x="123.5" y="218" text-anchor="middle">10–20</text>
+        <text class="chart-axis-label" x="172.5" y="218" text-anchor="middle">20–30</text>
+        <text class="chart-axis-label" x="221.5" y="218" text-anchor="middle">30–40</text>
+        <text class="chart-axis-label" x="270.5" y="218" text-anchor="middle">40–50</text>
+        <text class="chart-axis-label" x="319.5" y="218" text-anchor="middle">50–60</text>
+        <text class="chart-axis-label" x="368.5" y="218" text-anchor="middle">60–70</text>
+        <text class="chart-axis-label" x="417.5" y="218" text-anchor="middle">70–80</text>
+        <text class="chart-axis-label" x="466.5" y="218" text-anchor="middle">80–90</text>
+        <text class="chart-axis-label" x="515.5" y="218" text-anchor="middle">90–100</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HISTOGRAM WITH DISTRIBUTION CURVE
+       ============================================================ -->
+  <h3>Histogram with Distribution Curve</h3>
+  <p>Overlays a smooth distribution curve on top of histogram bars to highlight the shape of the data distribution.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Distribution curve overlay</div>
+    <div class="sds-chart" style="position:relative;">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Response Time Distribution</span>
+        <span class="sds-chart-subtitle">With distribution curve</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Frequency</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-4); border-radius: 50%;"></span> Distribution curve</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Histogram with distribution curve overlay showing response time frequency">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="50" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="50" y1="56" x2="540" y2="56"/>
+        <line class="chart-grid-line" x1="50" y1="92" x2="540" y2="92"/>
+        <line class="chart-grid-line" x1="50" y1="128" x2="540" y2="128"/>
+        <line class="chart-grid-line" x1="50" y1="164" x2="540" y2="164"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="50" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="42" y="24" text-anchor="end">250</text>
+        <text class="chart-axis-label" x="42" y="60" text-anchor="end">200</text>
+        <text class="chart-axis-label" x="42" y="96" text-anchor="end">150</text>
+        <text class="chart-axis-label" x="42" y="132" text-anchor="end">100</text>
+        <text class="chart-axis-label" x="42" y="168" text-anchor="end">50</text>
+        <text class="chart-axis-label" x="42" y="204" text-anchor="end">0</text>
+        <!-- Histogram bins — same data as standard histogram -->
+        <rect class="chart-bar" x="50"  y="189.2" width="49" height="10.8" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="99"  y="174.8" width="49" height="25.2" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="148" y="142.4" width="49" height="57.6" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="197" y="92"    width="49" height="108"  rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="246" y="34.4"  width="49" height="165.6" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="295" y="48.8"  width="49" height="151.2" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="344" y="99.2"  width="49" height="100.8" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="393" y="149.6" width="49" height="50.4" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="442" y="167.6" width="49" height="32.4" rx="0" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="491" y="182"   width="49" height="18"   rx="0" fill="var(--sds-chart-1)"/>
+        <!-- Distribution curve — smooth path through bin midpoints -->
+        <!-- Points: (74.5,189.2) (123.5,174.8) (172.5,142.4) (221.5,92) (270.5,34.4) (319.5,48.8) (368.5,99.2) (417.5,149.6) (466.5,167.6) (515.5,182) -->
+        <path class="chart-curve"
+              d="M 74.5,189.2 C 91,184 107,178 123.5,174.8 C 140,171 156,157 172.5,142.4 C 189,128 205,108 221.5,92 C 238,76 254,42 270.5,34.4 C 287,27 303,38 319.5,48.8 C 336,60 352,82 368.5,99.2 C 385,116 401,138 417.5,149.6 C 434,161 450,164 466.5,167.6 C 483,171 499,177 515.5,182"
+              stroke="var(--sds-chart-4)"
+              stroke-width="2"
+              fill="none"/>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="74.5"  y="218" text-anchor="middle">0–10</text>
+        <text class="chart-axis-label" x="123.5" y="218" text-anchor="middle">10–20</text>
+        <text class="chart-axis-label" x="172.5" y="218" text-anchor="middle">20–30</text>
+        <text class="chart-axis-label" x="221.5" y="218" text-anchor="middle">30–40</text>
+        <text class="chart-axis-label" x="270.5" y="218" text-anchor="middle">40–50</text>
+        <text class="chart-axis-label" x="319.5" y="218" text-anchor="middle">50–60</text>
+        <text class="chart-axis-label" x="368.5" y="218" text-anchor="middle">60–70</text>
+        <text class="chart-axis-label" x="417.5" y="218" text-anchor="middle">70–80</text>
+        <text class="chart-axis-label" x="466.5" y="218" text-anchor="middle">80–90</text>
+        <text class="chart-axis-label" x="515.5" y="218" text-anchor="middle">90–100</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       GROUPED HISTOGRAM
+       ============================================================ -->
+  <h3>Grouped Histogram</h3>
+  <p>Two overlapping distributions compared side by side. Series use reduced opacity (70%) so overlapping regions remain visible.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Overlapping distributions</div>
+    <div class="sds-chart" style="position:relative;">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Score Distribution by Group</span>
+        <span class="sds-chart-subtitle">Test results comparison</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Group A</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-2)"></span> Group B</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Grouped histogram comparing score distributions between Group A and Group B">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="50" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="50" y1="56" x2="540" y2="56"/>
+        <line class="chart-grid-line" x1="50" y1="92" x2="540" y2="92"/>
+        <line class="chart-grid-line" x1="50" y1="128" x2="540" y2="128"/>
+        <line class="chart-grid-line" x1="50" y1="164" x2="540" y2="164"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="50" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="42" y="24" text-anchor="end">200</text>
+        <text class="chart-axis-label" x="42" y="60" text-anchor="end">160</text>
+        <text class="chart-axis-label" x="42" y="96" text-anchor="end">120</text>
+        <text class="chart-axis-label" x="42" y="132" text-anchor="end">80</text>
+        <text class="chart-axis-label" x="42" y="168" text-anchor="end">40</text>
+        <text class="chart-axis-label" x="42" y="204" text-anchor="end">0</text>
+        <!-- Group A bins (peaks around 40-50, shifted left) -->
+        <!-- Values: 10, 25, 70, 130, 180, 150, 90, 50, 20, 10 -->
+        <!-- Y scale: 0–200, chart height 180px (y 20–200) -->
+        <!-- y = 200 - (value/200)*180 -->
+        <rect class="chart-bar" x="50"  y="191"   width="49" height="9"    rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="99"  y="177.5" width="49" height="22.5" rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="148" y="137"   width="49" height="63"   rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="197" y="83"    width="49" height="117"  rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="246" y="38"    width="49" height="162"  rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="295" y="65"    width="49" height="135"  rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="344" y="119"   width="49" height="81"   rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="393" y="155"   width="49" height="45"   rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="442" y="182"   width="49" height="18"   rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <rect class="chart-bar" x="491" y="191"   width="49" height="9"    rx="0" fill="var(--sds-chart-1)" opacity="0.7"/>
+        <!-- Group B bins (peaks around 60-70, shifted right) -->
+        <!-- Values: 5, 15, 30, 60, 100, 170, 190, 120, 55, 20 -->
+        <rect class="chart-bar" x="50"  y="195.5" width="49" height="4.5"  rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="99"  y="186.5" width="49" height="13.5" rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="148" y="173"   width="49" height="27"   rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="197" y="146"   width="49" height="54"   rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="246" y="110"   width="49" height="90"   rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="295" y="47"    width="49" height="153"  rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="344" y="29"    width="49" height="171"  rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="393" y="92"    width="49" height="108"  rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="442" y="150.5" width="49" height="49.5" rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <rect class="chart-bar" x="491" y="182"   width="49" height="18"   rx="0" fill="var(--sds-chart-2)" opacity="0.7"/>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="74.5"  y="218" text-anchor="middle">0–10</text>
+        <text class="chart-axis-label" x="123.5" y="218" text-anchor="middle">10–20</text>
+        <text class="chart-axis-label" x="172.5" y="218" text-anchor="middle">20–30</text>
+        <text class="chart-axis-label" x="221.5" y="218" text-anchor="middle">30–40</text>
+        <text class="chart-axis-label" x="270.5" y="218" text-anchor="middle">40–50</text>
+        <text class="chart-axis-label" x="319.5" y="218" text-anchor="middle">50–60</text>
+        <text class="chart-axis-label" x="368.5" y="218" text-anchor="middle">60–70</text>
+        <text class="chart-axis-label" x="417.5" y="218" text-anchor="middle">70–80</text>
+        <text class="chart-axis-label" x="466.5" y="218" text-anchor="middle">80–90</text>
+        <text class="chart-axis-label" x="515.5" y="218" text-anchor="middle">90–100</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CHART ANATOMY
+       ============================================================ -->
+  <h2>Chart Anatomy</h2>
+  <p>Structural elements for histograms. Histograms share the standard chart anatomy but differ from bar charts in bar spacing and corner radius.</p>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Token</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>--sds-chart-bg</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White</td>
+      </tr>
+      <tr>
+        <td>Grid lines</td>
+        <td><code>--sds-chart-grid</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span> warm-gray-100</td>
+      </tr>
+      <tr>
+        <td>Axis line</td>
+        <td><code>--sds-chart-axis</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-300)"></span> warm-gray-300</td>
+      </tr>
+      <tr>
+        <td>Axis labels</td>
+        <td><code>--sds-chart-axis-label</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-550)"></span> warm-gray-550 · 12px</td>
+      </tr>
+      <tr>
+        <td>Tooltip background</td>
+        <td><code>--sds-chart-tooltip-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-900)"></span> warm-gray-900</td>
+      </tr>
+      <tr>
+        <td>Tooltip text</td>
+        <td><code>--sds-chart-tooltip-text</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White · 12px</td>
+      </tr>
+      <tr>
+        <td>Hover overlay</td>
+        <td><code>--sds-chart-hover</code></td>
+        <td>rgba(0,0,0,0.06)</td>
+      </tr>
+      <tr>
+        <td>Bar corner radius</td>
+        <td>—</td>
+        <td>0px — bars have no border-radius (continuous bins)</td>
+      </tr>
+      <tr>
+        <td>Bar gap</td>
+        <td>—</td>
+        <td>0px — bars touch with no gap (continuous data)</td>
+      </tr>
+      <tr>
+        <td>Grouped opacity</td>
+        <td>—</td>
+        <td>70% — overlapping series use reduced opacity</td>
+      </tr>
+      <tr>
+        <td>Distribution curve</td>
+        <td><code>--sds-chart-4</code></td>
+        <td>stroke-width: 2, fill: none</td>
+      </tr>
+      <tr>
+        <td>Container radius</td>
+        <td>—</td>
+        <td>12px</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td>—</td>
+        <td>24px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       SERIES COLORS
+       ============================================================ -->
+  <h3>Series Color Tokens</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Token</th><th>Color</th><th>Hex</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--sds-chart-1</code></td><td><span class="swatch" style="background:var(--sds-chart-1)"></span></td><td>#013D5B</td><td>Primary series / single color charts</td></tr>
+      <tr><td><code>--sds-chart-2</code></td><td><span class="swatch" style="background:var(--sds-chart-2)"></span></td><td>#4F8AA0</td><td>Second series</td></tr>
+      <tr><td><code>--sds-chart-3</code></td><td><span class="swatch" style="background:var(--sds-chart-3)"></span></td><td>#A6CBD6</td><td>Third series</td></tr>
+      <tr><td><code>--sds-chart-4</code></td><td><span class="swatch" style="background:var(--sds-chart-4)"></span></td><td>#BF5547</td><td>Fourth series / accent / distribution curve</td></tr>
+      <tr><td><code>--sds-chart-5</code></td><td><span class="swatch" style="background:var(--sds-chart-5)"></span></td><td>#7A9A01</td><td>Fifth series</td></tr>
+      <tr><td><code>--sds-chart-6</code></td><td><span class="swatch" style="background:var(--sds-chart-6)"></span></td><td>#805AA1</td><td>Sixth series</td></tr>
+      <tr><td><code>--sds-chart-7</code></td><td><span class="swatch" style="background:var(--sds-chart-7)"></span></td><td>#B29B24</td><td>Seventh series</td></tr>
+      <tr><td><code>--sds-chart-8</code></td><td><span class="swatch" style="background:var(--sds-chart-8)"></span></td><td>#E57D6E</td><td>Eighth series</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       CSS CLASSES
+       ============================================================ -->
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-chart</code></td><td>Container — white bg, border, 12px radius, 24px padding</td></tr>
+      <tr><td><code>.sds-chart-header</code></td><td>Flex row with title and subtitle</td></tr>
+      <tr><td><code>.sds-chart-title</code></td><td>Chart heading — 16px/600</td></tr>
+      <tr><td><code>.sds-chart-subtitle</code></td><td>Secondary text — 13px</td></tr>
+      <tr><td><code>.sds-legend</code></td><td>Horizontal legend container</td></tr>
+      <tr><td><code>.sds-legend-item</code></td><td>Legend entry — swatch + label</td></tr>
+      <tr><td><code>.sds-legend-swatch</code></td><td>10x10px color indicator</td></tr>
+      <tr><td><code>.chart-bar</code></td><td>SVG bar with hover opacity transition (rx=0 for histograms)</td></tr>
+      <tr><td><code>.chart-curve</code></td><td>SVG path for distribution curve overlay</td></tr>
+      <tr><td><code>.chart-grid-line</code></td><td>Horizontal/vertical grid line</td></tr>
+      <tr><td><code>.chart-axis-line</code></td><td>Primary axis line</td></tr>
+      <tr><td><code>.chart-axis-label</code></td><td>Axis tick label — 12px</td></tr>
+      <tr><td><code>.chart-value-label</code></td><td>Value displayed above bars — 11px/500</td></tr>
+    </tbody>
+  </table>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

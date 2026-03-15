@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Avatars</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* Demo row */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* ============================================================
+       AVATAR — BASE
+       Circle with centered initials, icon, or image used to
+       represent users throughout the application.
+       ============================================================ */
+
+    .sds-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      flex-shrink: 0;
+      position: relative;
+      user-select: none;
+    }
+
+    .sds-avatar .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* ---- Sizes ---- */
+
+    .sds-avatar--xs {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
+    }
+    .sds-avatar--xs .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    .sds-avatar--sm {
+      width: 32px;
+      height: 32px;
+      font-size: var(--sds-type-caption);
+    }
+    .sds-avatar--sm .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* Default is 40px — no modifier needed */
+
+    .sds-avatar--lg {
+      width: 48px;
+      height: 48px;
+      font-size: var(--sds-type-subheading);
+    }
+    .sds-avatar--lg .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+    .sds-avatar--xl {
+      width: 64px;
+      height: 64px;
+      font-size: var(--sds-type-heading);
+    }
+    .sds-avatar--xl .material-symbols-outlined {
+      font-size: 32px;
+    }
+
+    /* ---- Color variants ---- */
+
+    .sds-avatar--teal {
+      background: var(--sds-color-blue-450);
+    }
+    .sds-avatar--coral {
+      background: var(--sds-color-red-450);
+    }
+    .sds-avatar--green {
+      background: var(--sds-color-green-400);
+    }
+    .sds-avatar--gray {
+      background: var(--sds-color-warm-gray-400);
+    }
+
+    /* ---- Image variant ---- */
+
+    .sds-avatar--image {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* ============================================================
+       STATUS INDICATOR
+       Small dot at bottom-right of the avatar to show
+       online/away/busy/offline state.
+       ============================================================ */
+
+    .sds-avatar-status {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--sds-color-white);
+    }
+
+    .sds-avatar--xs .sds-avatar-status,
+    .sds-avatar--sm .sds-avatar-status {
+      width: 8px;
+      height: 8px;
+    }
+
+    .sds-avatar--lg .sds-avatar-status,
+    .sds-avatar--xl .sds-avatar-status {
+      width: 12px;
+      height: 12px;
+    }
+
+    .sds-avatar-status--online  { background: var(--sds-color-green-400); }
+    .sds-avatar-status--away    { background: var(--sds-color-yellow-350); }
+    .sds-avatar-status--busy    { background: var(--sds-color-red-450); }
+    .sds-avatar-status--offline { background: var(--sds-color-warm-gray-300); }
+
+    /* ============================================================
+       AVATAR GROUP
+       Overlapping row of avatars with optional overflow count.
+       ============================================================ */
+
+    .sds-avatar-group {
+      display: flex;
+      align-items: center;
+    }
+
+    .sds-avatar-group .sds-avatar {
+      border: 2px solid var(--sds-color-white);
+      margin-left: -8px;
+    }
+    .sds-avatar-group .sds-avatar:first-child {
+      margin-left: 0;
+    }
+
+    /* Stack order: first avatar on top */
+    .sds-avatar-group .sds-avatar:nth-child(1) { z-index: 5; }
+    .sds-avatar-group .sds-avatar:nth-child(2) { z-index: 4; }
+    .sds-avatar-group .sds-avatar:nth-child(3) { z-index: 3; }
+    .sds-avatar-group .sds-avatar:nth-child(4) { z-index: 2; }
+    .sds-avatar-group .sds-avatar:nth-child(5) { z-index: 1; }
+
+    .sds-avatar-group__overflow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-600);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      border: 2px solid var(--sds-color-white);
+      margin-left: -8px;
+      z-index: 0;
+    }
+
+    /* ============================================================
+       AVATAR WITH DETAILS
+       Horizontal layout: avatar + name + role/email.
+       ============================================================ */
+
+    .sds-avatar-details {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+    }
+
+    .sds-avatar-details__text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-050);
+    }
+
+    .sds-avatar-details__name {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-tight);
+    }
+
+    .sds-avatar-details__subtitle {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      line-height: var(--sds-leading-tight);
+    }
+
+    /* ============================================================
+       IN-CONTEXT DEMOS
+       ============================================================ */
+
+    .demo-team-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .demo-team-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .demo-team-item:last-child { border-bottom: none; }
+
+    .demo-team-info {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-050);
+      flex: 1;
+    }
+    .demo-team-name {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .demo-team-role {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+    .demo-team-status {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+    }
+    .demo-team-status .sds-dot {
+      width: 6px;
+      height: 6px;
+    }
+    .sds-dot {
+      display: inline-block;
+      border-radius: 50%;
+    }
+    .sds-dot--success { background: var(--sds-color-green-400); }
+    .sds-dot--warning { background: var(--sds-color-yellow-350); }
+    .sds-dot--neutral { background: var(--sds-color-warm-gray-300); }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Avatars</h1>
+  <p class="page-subtitle">Circular indicators that represent users through initials, icons, or images. Used in headers, lists, comments, and team views across the application.</p>
+
+  <!-- ============================================================
+       SIZES
+       ============================================================ -->
+  <h2>Sizes</h2>
+  <p>Five sizes from extra small (24 px) to extra large (64 px). The default size is 40 px, suitable for most list and table contexts.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">All sizes — Initials</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Extra small</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--xs">SC</span>
+        <code>.sds-avatar--xs</code>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Small</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--sm">SC</span>
+        <code>.sds-avatar--sm</code>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Medium</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar">SC</span>
+        <code>default</code>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Large</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--lg">SC</span>
+        <code>.sds-avatar--lg</code>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Extra large</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--xl">SC</span>
+        <code>.sds-avatar--xl</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       VARIANTS
+       ============================================================ -->
+  <h2>Variants</h2>
+  <p>Avatars support initials, a fallback icon, and colored backgrounds for visual distinction in lists and tables.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Initials</div>
+    <div class="demo-row">
+      <span class="demo-row-label">1–2 letters</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar">S</span>
+        <span class="sds-avatar">SC</span>
+        <span class="sds-avatar sds-avatar--teal">MJ</span>
+        <span class="sds-avatar sds-avatar--coral">ER</span>
+        <span class="sds-avatar sds-avatar--green">JW</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-label">Icon fallback</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Person icon</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--sm sds-avatar--gray"><span class="material-symbols-outlined">person</span></span>
+        <span class="sds-avatar sds-avatar--gray"><span class="material-symbols-outlined">person</span></span>
+        <span class="sds-avatar sds-avatar--lg sds-avatar--gray"><span class="material-symbols-outlined">person</span></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-label">Color variants</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Background</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar">SC</span>
+        <span class="sds-avatar sds-avatar--teal">MJ</span>
+        <span class="sds-avatar sds-avatar--coral">ER</span>
+        <span class="sds-avatar sds-avatar--green">JW</span>
+        <span class="sds-avatar sds-avatar--gray">DL</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label"></span>
+      <div class="demo-row-items" style="gap: var(--sds-space-400);">
+        <span style="font-size:var(--sds-type-caption); color:var(--sds-text-tertiary);">Navy</span>
+        <span style="font-size:var(--sds-type-caption); color:var(--sds-text-tertiary);">Teal</span>
+        <span style="font-size:var(--sds-type-caption); color:var(--sds-text-tertiary);">Coral</span>
+        <span style="font-size:var(--sds-type-caption); color:var(--sds-text-tertiary);">Green</span>
+        <span style="font-size:var(--sds-type-caption); color:var(--sds-text-tertiary);">Gray</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STATUS INDICATORS
+       ============================================================ -->
+  <h3>Status Indicators</h3>
+  <p>A small dot positioned at the bottom-right corner indicates user availability. Four states: online, away, busy, and offline.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Status dot variants</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Online</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--sm">SC<span class="sds-avatar-status sds-avatar-status--online"></span></span>
+        <span class="sds-avatar">SC<span class="sds-avatar-status sds-avatar-status--online"></span></span>
+        <span class="sds-avatar sds-avatar--lg">SC<span class="sds-avatar-status sds-avatar-status--online"></span></span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Away</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--teal">MJ<span class="sds-avatar-status sds-avatar-status--away"></span></span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Busy</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--coral">ER<span class="sds-avatar-status sds-avatar-status--busy"></span></span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Offline</span>
+      <div class="demo-row-items">
+        <span class="sds-avatar sds-avatar--gray"><span class="material-symbols-outlined">person</span><span class="sds-avatar-status sds-avatar-status--offline"></span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       AVATAR GROUPS
+       ============================================================ -->
+  <h2>Avatar Groups</h2>
+  <p>Overlapping avatars used to show multiple team members in a compact space. Include a <code>+N</code> overflow indicator when the full list cannot be displayed.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Overlapping group</div>
+    <div class="demo-row">
+      <span class="demo-row-label">3 members</span>
+      <div class="demo-row-items">
+        <div class="sds-avatar-group">
+          <span class="sds-avatar">SC</span>
+          <span class="sds-avatar sds-avatar--teal">MJ</span>
+          <span class="sds-avatar sds-avatar--coral">ER</span>
+        </div>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">With overflow</span>
+      <div class="demo-row-items">
+        <div class="sds-avatar-group">
+          <span class="sds-avatar">SC</span>
+          <span class="sds-avatar sds-avatar--teal">MJ</span>
+          <span class="sds-avatar sds-avatar--coral">ER</span>
+          <span class="sds-avatar sds-avatar--green">JW</span>
+          <span class="sds-avatar-group__overflow">+8</span>
+        </div>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Small group</span>
+      <div class="demo-row-items">
+        <div class="sds-avatar-group">
+          <span class="sds-avatar sds-avatar--sm">SC</span>
+          <span class="sds-avatar sds-avatar--sm sds-avatar--teal">MJ</span>
+          <span class="sds-avatar sds-avatar--sm sds-avatar--coral">ER</span>
+          <span class="sds-avatar-group__overflow" style="width:32px; height:32px; font-size:10px;">+3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       AVATAR WITH DETAILS
+       ============================================================ -->
+  <h3>Avatar with Details</h3>
+  <p>Horizontal layout pairing an avatar with a name and subtitle. Common in user lists, comment threads, and profile headers.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Name + subtitle</div>
+    <div class="demo-row">
+      <div class="demo-row-items" style="flex-direction:column; align-items:flex-start; gap:var(--sds-space-500);">
+        <div class="sds-avatar-details">
+          <span class="sds-avatar">SC</span>
+          <div class="sds-avatar-details__text">
+            <span class="sds-avatar-details__name">Sarah Chen</span>
+            <span class="sds-avatar-details__subtitle">Admin</span>
+          </div>
+        </div>
+        <div class="sds-avatar-details">
+          <span class="sds-avatar sds-avatar--teal">MJ</span>
+          <div class="sds-avatar-details__text">
+            <span class="sds-avatar-details__name">Marcus Johnson</span>
+            <span class="sds-avatar-details__subtitle">marcus.johnson@company.com</span>
+          </div>
+        </div>
+        <div class="sds-avatar-details">
+          <span class="sds-avatar sds-avatar--lg sds-avatar--coral">ER</span>
+          <div class="sds-avatar-details__text">
+            <span class="sds-avatar-details__name">Elena Rodriguez</span>
+            <span class="sds-avatar-details__subtitle">Security Analyst</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT
+       ============================================================ -->
+  <h2>In Context</h2>
+  <p>Avatars as they appear in a team members list, showing a realistic enterprise usage pattern with status indicators and roles.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Team members list</div>
+    <div class="demo-team-list">
+      <div class="demo-team-item">
+        <span class="sds-avatar">SC<span class="sds-avatar-status sds-avatar-status--online"></span></span>
+        <div class="demo-team-info">
+          <span class="demo-team-name">Sarah Chen</span>
+          <span class="demo-team-role">Admin</span>
+        </div>
+        <span class="demo-team-status"><span class="sds-dot sds-dot--success"></span> Online</span>
+      </div>
+      <div class="demo-team-item">
+        <span class="sds-avatar sds-avatar--teal">MJ<span class="sds-avatar-status sds-avatar-status--away"></span></span>
+        <div class="demo-team-info">
+          <span class="demo-team-name">Marcus Johnson</span>
+          <span class="demo-team-role">Data Engineer</span>
+        </div>
+        <span class="demo-team-status"><span class="sds-dot sds-dot--warning"></span> Away</span>
+      </div>
+      <div class="demo-team-item">
+        <span class="sds-avatar sds-avatar--coral">ER<span class="sds-avatar-status sds-avatar-status--busy"></span></span>
+        <div class="demo-team-info">
+          <span class="demo-team-name">Elena Rodriguez</span>
+          <span class="demo-team-role">Security Analyst</span>
+        </div>
+        <span class="demo-team-status"><span class="sds-dot" style="background:var(--sds-color-red-450);"></span> Busy</span>
+      </div>
+      <div class="demo-team-item">
+        <span class="sds-avatar sds-avatar--green">JW<span class="sds-avatar-status sds-avatar-status--online"></span></span>
+        <div class="demo-team-info">
+          <span class="demo-team-name">James Wheeler</span>
+          <span class="demo-team-role">Data Engineer</span>
+        </div>
+        <span class="demo-team-status"><span class="sds-dot sds-dot--success"></span> Online</span>
+      </div>
+      <div class="demo-team-item">
+        <span class="sds-avatar sds-avatar--gray"><span class="material-symbols-outlined">person</span><span class="sds-avatar-status sds-avatar-status--offline"></span></span>
+        <div class="demo-team-info">
+          <span class="demo-team-name">Deactivated User</span>
+          <span class="demo-team-role">Former Contributor</span>
+        </div>
+        <span class="demo-team-status"><span class="sds-dot sds-dot--neutral"></span> Offline</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Avatar Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Size</th><th>Dimensions</th><th>Font Size</th><th>Icon Size</th><th>Status Dot</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Extra small <code>.sds-avatar--xs</code></td>
+        <td><code>24 px</code></td>
+        <td><code>10 px</code></td>
+        <td><code>14 px</code></td>
+        <td><code>8 px</code></td>
+      </tr>
+      <tr>
+        <td>Small <code>.sds-avatar--sm</code></td>
+        <td><code>32 px</code></td>
+        <td><code>12 px</code></td>
+        <td><code>16 px</code></td>
+        <td><code>8 px</code></td>
+      </tr>
+      <tr>
+        <td>Medium (default)</td>
+        <td><code>40 px</code></td>
+        <td><code>14 px</code></td>
+        <td><code>20 px</code></td>
+        <td><code>10 px</code></td>
+      </tr>
+      <tr>
+        <td>Large <code>.sds-avatar--lg</code></td>
+        <td><code>48 px</code></td>
+        <td><code>16 px</code></td>
+        <td><code>24 px</code></td>
+        <td><code>12 px</code></td>
+      </tr>
+      <tr>
+        <td>Extra large <code>.sds-avatar--xl</code></td>
+        <td><code>64 px</code></td>
+        <td><code>22 px</code></td>
+        <td><code>32 px</code></td>
+        <td><code>12 px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Color Variants — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Variant</th><th>Background Token</th><th>Text Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Navy (default)</td>
+        <td><span class="swatch" style="background:var(--sds-interactive-primary)"></span><code>--sds-interactive-primary</code></td>
+        <td><span class="swatch" style="background:var(--sds-text-on-primary)"></span><code>--sds-text-on-primary</code></td>
+      </tr>
+      <tr>
+        <td>Teal <code>.sds-avatar--teal</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-450)"></span><code>--sds-color-blue-450</code></td>
+        <td><span class="swatch" style="background:var(--sds-text-on-primary)"></span><code>--sds-text-on-primary</code></td>
+      </tr>
+      <tr>
+        <td>Coral <code>.sds-avatar--coral</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>--sds-color-red-450</code></td>
+        <td><span class="swatch" style="background:var(--sds-text-on-primary)"></span><code>--sds-text-on-primary</code></td>
+      </tr>
+      <tr>
+        <td>Green <code>.sds-avatar--green</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-green-400)"></span><code>--sds-color-green-400</code></td>
+        <td><span class="swatch" style="background:var(--sds-text-on-primary)"></span><code>--sds-text-on-primary</code></td>
+      </tr>
+      <tr>
+        <td>Gray <code>.sds-avatar--gray</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-400)"></span><code>--sds-color-warm-gray-400</code></td>
+        <td><span class="swatch" style="background:var(--sds-text-on-primary)"></span><code>--sds-text-on-primary</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Status Indicator — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Status</th><th>Color Token</th><th>Border</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Online</td>
+        <td><span class="swatch" style="background:var(--sds-color-green-400)"></span><code>--sds-color-green-400</code></td>
+        <td><code>2 px</code> <code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Away</td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-350)"></span><code>--sds-color-yellow-350</code></td>
+        <td><code>2 px</code> <code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Busy</td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>--sds-color-red-450</code></td>
+        <td><code>2 px</code> <code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Offline</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-300)"></span><code>--sds-color-warm-gray-300</code></td>
+        <td><code>2 px</code> <code>--sds-color-white</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Avatar Group</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Overlap (negative margin)</td>
+        <td><code>-8 px</code></td>
+      </tr>
+      <tr>
+        <td>Border width</td>
+        <td><code>2 px</code> <code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Stack order</td>
+        <td>First avatar on top (descending z-index)</td>
+      </tr>
+      <tr>
+        <td>Overflow indicator background</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>--sds-color-warm-gray-100</code></td>
+      </tr>
+      <tr>
+        <td>Overflow indicator text</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-600)"></span><code>--sds-color-warm-gray-600</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-avatar</code></td><td>Base avatar — 40 px navy circle with white initials</td></tr>
+      <tr><td><code>.sds-avatar--xs</code></td><td>Extra small size (24 px)</td></tr>
+      <tr><td><code>.sds-avatar--sm</code></td><td>Small size (32 px)</td></tr>
+      <tr><td><code>.sds-avatar--lg</code></td><td>Large size (48 px)</td></tr>
+      <tr><td><code>.sds-avatar--xl</code></td><td>Extra large size (64 px)</td></tr>
+      <tr><td><code>.sds-avatar--teal</code></td><td>Teal background variant</td></tr>
+      <tr><td><code>.sds-avatar--coral</code></td><td>Coral background variant</td></tr>
+      <tr><td><code>.sds-avatar--green</code></td><td>Green background variant</td></tr>
+      <tr><td><code>.sds-avatar--gray</code></td><td>Gray background variant (fallback/deactivated)</td></tr>
+      <tr><td><code>.sds-avatar-status</code></td><td>Status dot — requires a state modifier</td></tr>
+      <tr><td><code>.sds-avatar-status--online</code></td><td>Green status dot</td></tr>
+      <tr><td><code>.sds-avatar-status--away</code></td><td>Yellow status dot</td></tr>
+      <tr><td><code>.sds-avatar-status--busy</code></td><td>Red status dot</td></tr>
+      <tr><td><code>.sds-avatar-status--offline</code></td><td>Gray status dot</td></tr>
+      <tr><td><code>.sds-avatar-group</code></td><td>Container for overlapping avatar row</td></tr>
+      <tr><td><code>.sds-avatar-group__overflow</code></td><td>"+N" overflow counter at end of group</td></tr>
+      <tr><td><code>.sds-avatar-details</code></td><td>Horizontal layout: avatar + name + subtitle</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

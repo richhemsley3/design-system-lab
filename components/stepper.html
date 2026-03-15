@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Stepper</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       STEPPER — Horizontal
+       ============================================================ */
+    .sds-stepper {
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+    .sds-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      cursor: default;
+    }
+    .sds-step.is-clickable {
+      cursor: pointer;
+    }
+    .sds-step.is-clickable:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+    /* Step indicator (circle) */
+    .sds-step__indicator {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      position: relative;
+      z-index: 1;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      flex-shrink: 0;
+    }
+    .sds-step__indicator .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* Upcoming (default) */
+    .sds-step--upcoming .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-color-warm-gray-250);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    /* Active */
+    .sds-step--active .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-interactive-primary);
+      color: var(--sds-interactive-primary);
+    }
+
+    /* Completed */
+    .sds-step--completed .sds-step__indicator {
+      background: var(--sds-interactive-primary);
+      border: 2px solid var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+    }
+
+    /* Error */
+    .sds-step--error .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-color-red-500);
+      color: var(--sds-color-red-500);
+    }
+
+    /* Step label */
+    .sds-step__label {
+      margin-top: var(--sds-space-200);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-color-warm-gray-450);
+      text-align: center;
+      line-height: var(--sds-leading-normal);
+      transition: color 0.2s ease, font-weight 0.2s ease;
+    }
+    .sds-step--active .sds-step__label {
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-semibold);
+    }
+    .sds-step--completed .sds-step__label {
+      color: var(--sds-text-secondary);
+      font-weight: var(--sds-weight-medium);
+    }
+    .sds-step--error .sds-step__label {
+      color: var(--sds-color-red-500);
+      font-weight: var(--sds-weight-medium);
+    }
+
+    /* Step description */
+    .sds-step__description {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      text-align: center;
+      margin-top: var(--sds-space-050);
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-step--active .sds-step__description {
+      color: var(--sds-color-warm-gray-550);
+    }
+
+    /* Connector lines */
+    .sds-step__connector {
+      position: absolute;
+      top: 16px;
+      left: calc(50% + 20px);
+      right: calc(-50% + 20px);
+      height: 2px;
+      background: var(--sds-color-warm-gray-200);
+      z-index: 0;
+      transition: background 0.2s ease;
+    }
+    .sds-step--completed .sds-step__connector {
+      background: var(--sds-interactive-primary);
+    }
+
+    /* ============================================================
+       STEPPER — Vertical
+       ============================================================ */
+    .sds-stepper--vertical {
+      flex-direction: column;
+      align-items: stretch;
+    }
+    .sds-stepper--vertical .sds-step {
+      flex-direction: row;
+      align-items: flex-start;
+      flex: none;
+      gap: var(--sds-space-400);
+    }
+    .sds-stepper--vertical .sds-step__label {
+      text-align: left;
+      margin-top: 0;
+      line-height: 32px;
+    }
+    .sds-stepper--vertical .sds-step__description {
+      text-align: left;
+      margin-top: var(--sds-space-050);
+    }
+    .sds-stepper--vertical .sds-step__body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding-bottom: var(--sds-space-600);
+    }
+    .sds-stepper--vertical .sds-step__content {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-500);
+      margin-top: var(--sds-space-300);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-stepper--vertical .sds-step:last-child .sds-step__body {
+      padding-bottom: 0;
+    }
+
+    /* Vertical connector */
+    .sds-stepper--vertical .sds-step__connector {
+      position: absolute;
+      top: 36px;
+      left: 15px;
+      right: auto;
+      width: 2px;
+      height: calc(100% - 36px);
+    }
+
+    /* ============================================================
+       STEPPER — Compact (dots only)
+       ============================================================ */
+    .sds-stepper--compact {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      justify-content: center;
+    }
+    .sds-stepper--compact .sds-step {
+      flex: none;
+    }
+    .sds-stepper--compact .sds-step__indicator {
+      width: 10px;
+      height: 10px;
+      font-size: 0;
+    }
+    .sds-stepper--compact .sds-step--upcoming .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-color-warm-gray-250);
+    }
+    .sds-stepper--compact .sds-step--active .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-interactive-primary);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+    }
+    .sds-stepper--compact .sds-step--completed .sds-step__indicator {
+      background: var(--sds-interactive-primary);
+      border: 2px solid var(--sds-interactive-primary);
+    }
+    .sds-stepper--compact .sds-step__connector {
+      position: static;
+      width: 16px;
+      height: 2px;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       WIZARD — Interactive demo
+       ============================================================ */
+    .wizard-container {
+      background: var(--sds-color-white);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .wizard-header {
+      padding: var(--sds-space-600) var(--sds-space-800) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .wizard-body {
+      padding: var(--sds-space-800);
+      min-height: 200px;
+    }
+    .wizard-body h4 {
+      font-size: var(--sds-type-title);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0 0 var(--sds-space-200);
+    }
+    .wizard-body p {
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+      margin: 0 0 var(--sds-space-500);
+      line-height: var(--sds-leading-normal);
+    }
+    /* Form inputs (canonical — matches form-inputs.html) */
+    .wizard-body .sds-field {
+      margin-bottom: var(--sds-space-400);
+    }
+    .wizard-body .sds-field-label {
+      display: block;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-150);
+    }
+    .wizard-body .sds-input,
+    .wizard-body .sds-select {
+      width: 100%;
+      max-width: 400px;
+      height: 40px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      border: 1.5px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-text-primary);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .wizard-body .sds-input:focus,
+    .wizard-body .sds-select:focus {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    .wizard-footer {
+      padding: var(--sds-space-500) var(--sds-space-800);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .wizard-footer-right {
+      display: flex;
+      gap: var(--sds-space-300);
+    }
+
+    /* Review list for wizard step 4 */
+    .review-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .review-list li {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--sds-space-300) 0;
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-body);
+    }
+    .review-list li:last-child {
+      border-bottom: none;
+    }
+    .review-list .review-key {
+      color: var(--sds-color-warm-gray-500);
+    }
+    .review-list .review-value {
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-medium);
+    }
+
+    /* ============================================================
+       BUTTONS (inline from buttons.html)
+       ============================================================ */
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-btn--md {
+      font-size: var(--sds-type-body);
+      padding: var(--sds-space-250) var(--sds-space-500);
+      border-radius: 6px;
+      height: 40px;
+    }
+    .sds-btn--primary {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-interactive-primary);
+    }
+    .sds-btn--primary:hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+    .sds-btn--primary:active {
+      background: var(--sds-interactive-primary-active);
+      border-color: var(--sds-interactive-primary-active);
+    }
+    .sds-btn--primary:disabled {
+      background: var(--sds-color-warm-gray-200);
+      border-color: var(--sds-color-warm-gray-200);
+      color: var(--sds-text-on-primary);
+      cursor: not-allowed;
+    }
+    .sds-btn--secondary {
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-interactive-secondary-border);
+    }
+    .sds-btn--secondary:hover {
+      background: var(--sds-bg-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--secondary:active {
+      background: var(--sds-border-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--secondary:disabled {
+      background: var(--sds-bg-page);
+      border-color: var(--sds-color-warm-gray-200);
+      color: var(--sds-text-disabled);
+      cursor: not-allowed;
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code {
+      font-size: var(--sds-type-caption);
+    }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Stepper</h1>
+  <p class="page-subtitle">Multi-step progress indicators for wizards and sequential flows. Guides users through complex tasks like policy creation, onboarding, and data source configuration.</p>
+
+  <!-- ============================================================
+       HORIZONTAL STEPPER
+       ============================================================ -->
+  <h2>Horizontal Stepper</h2>
+  <p>Numbered steps connected by lines, showing progress through a linear flow. Steps transition through upcoming, active, completed, and error states.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">All states</div>
+    <nav class="sds-stepper" role="navigation" aria-label="Progress">
+      <div class="sds-step sds-step--completed">
+        <div class="sds-step__indicator">
+          <span class="material-symbols-outlined">check</span>
+        </div>
+        <span class="sds-step__label">Select Source</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--completed">
+        <div class="sds-step__indicator">
+          <span class="material-symbols-outlined">check</span>
+        </div>
+        <span class="sds-step__label">Configure</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--active" aria-current="step">
+        <div class="sds-step__indicator">3</div>
+        <span class="sds-step__label">Set Policy</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--error">
+        <div class="sds-step__indicator">
+          <span class="material-symbols-outlined">priority_high</span>
+        </div>
+        <span class="sds-step__label">Validate</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--upcoming">
+        <div class="sds-step__indicator">5</div>
+        <span class="sds-step__label">Deploy</span>
+      </div>
+    </nav>
+  </div>
+
+  <h3>Completed Flow</h3>
+  <div class="demo-block">
+    <div class="demo-label">All steps completed</div>
+    <nav class="sds-stepper" role="navigation" aria-label="Progress">
+      <div class="sds-step sds-step--completed">
+        <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+        <span class="sds-step__label">Connect</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--completed">
+        <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+        <span class="sds-step__label">Scan</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--completed">
+        <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+        <span class="sds-step__label">Policy</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--completed">
+        <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+        <span class="sds-step__label">Deploy</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ============================================================
+       VERTICAL STEPPER
+       ============================================================ -->
+  <h2>Vertical Stepper</h2>
+  <p>Steps stacked vertically with inline content for each step. Useful for forms where each step has visible content or when vertical space is available.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Vertical with content areas</div>
+    <nav class="sds-stepper sds-stepper--vertical" role="navigation" aria-label="Setup progress">
+      <div class="sds-step sds-step--completed" style="position:relative">
+        <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+        <div class="sds-step__body">
+          <span class="sds-step__label">Create Account</span>
+          <div class="sds-step__content">Account created successfully. Email verification sent to admin@company.com.</div>
+        </div>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--active" style="position:relative" aria-current="step">
+        <div class="sds-step__indicator">2</div>
+        <div class="sds-step__body">
+          <span class="sds-step__label">Connect Data Source</span>
+          <div class="sds-step__content">Select and authenticate your primary data source. Supported: AWS S3, Snowflake, Google BigQuery, Azure Blob Storage.</div>
+        </div>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--upcoming" style="position:relative">
+        <div class="sds-step__indicator">3</div>
+        <div class="sds-step__body">
+          <span class="sds-step__label">Configure Scanning</span>
+          <div class="sds-step__content">Set scan frequency and sensitivity rules for your data assets.</div>
+        </div>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--upcoming" style="position:relative">
+        <div class="sds-step__indicator">4</div>
+        <div class="sds-step__body">
+          <span class="sds-step__label">Invite Team</span>
+          <div class="sds-step__content">Add team members and assign roles.</div>
+        </div>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ============================================================
+       INTERACTIVE WIZARD
+       ============================================================ -->
+  <h2>Interactive Wizard</h2>
+  <p>A full working wizard demonstrating step navigation with form content. Click Next and Back to move through the flow, or click completed steps to jump back.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Interactive demo — Policy creation wizard</div>
+    <div class="wizard-container" id="wizard">
+      <div class="wizard-header">
+        <nav class="sds-stepper" role="navigation" aria-label="Wizard progress" id="wizard-stepper">
+          <div class="sds-step sds-step--active is-clickable" data-step="0" aria-current="step" tabindex="0" role="button">
+            <div class="sds-step__indicator">1</div>
+            <span class="sds-step__label">Connect Data Source</span>
+            <div class="sds-step__connector"></div>
+          </div>
+          <div class="sds-step sds-step--upcoming" data-step="1">
+            <div class="sds-step__indicator">2</div>
+            <span class="sds-step__label">Configure Scan</span>
+            <div class="sds-step__connector"></div>
+          </div>
+          <div class="sds-step sds-step--upcoming" data-step="2">
+            <div class="sds-step__indicator">3</div>
+            <span class="sds-step__label">Set Policy</span>
+            <div class="sds-step__connector"></div>
+          </div>
+          <div class="sds-step sds-step--upcoming" data-step="3">
+            <div class="sds-step__indicator">4</div>
+            <span class="sds-step__label">Review &amp; Deploy</span>
+          </div>
+        </nav>
+      </div>
+
+      <div class="wizard-body" id="wizard-body">
+        <!-- Content injected by JS -->
+      </div>
+
+      <div class="wizard-footer">
+        <div>
+          <button class="sds-btn sds-btn--secondary sds-btn--md" id="wizard-back" style="visibility:hidden">Back</button>
+        </div>
+        <div class="wizard-footer-right">
+          <button class="sds-btn sds-btn--primary sds-btn--md" id="wizard-next">Next</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       COMPACT STEPPER
+       ============================================================ -->
+  <h2>Compact Stepper</h2>
+  <p>Dots-only variant for tight spaces. Filled dots represent completed steps, a ring with a glow indicates the current step, and outlines mark upcoming steps.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Dots — 3 of 6 complete</div>
+    <div style="display:flex; flex-direction:column; gap:var(--sds-space-600); align-items:center;">
+      <nav class="sds-stepper--compact" role="navigation" aria-label="Progress">
+        <div class="sds-step sds-step--completed">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-interactive-primary);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--completed">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-interactive-primary);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--completed">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-color-warm-gray-200);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--active" aria-current="step">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-color-warm-gray-200);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--upcoming">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-color-warm-gray-200);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--upcoming">
+          <div class="sds-step__indicator"></div>
+        </div>
+      </nav>
+
+      <nav class="sds-stepper--compact" role="navigation" aria-label="Progress" style="margin-top:var(--sds-space-200);">
+        <div class="sds-step sds-step--active" aria-current="step">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-color-warm-gray-200);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--upcoming">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-color-warm-gray-200);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--upcoming">
+          <div class="sds-step__indicator"></div>
+        </div>
+        <div class="sds-step__connector" style="width:16px;height:2px;background:var(--sds-color-warm-gray-200);flex-shrink:0;"></div>
+        <div class="sds-step sds-step--upcoming">
+          <div class="sds-step__indicator"></div>
+        </div>
+      </nav>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH DESCRIPTIONS
+       ============================================================ -->
+  <h2>With Descriptions</h2>
+  <p>Each step has both a title and a subtitle providing additional context about what that step involves.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Steps with descriptions</div>
+    <nav class="sds-stepper" role="navigation" aria-label="Progress">
+      <div class="sds-step sds-step--completed">
+        <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+        <span class="sds-step__label">Connect Data Source</span>
+        <span class="sds-step__description">Authenticate and link your cloud storage</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--active" aria-current="step">
+        <div class="sds-step__indicator">2</div>
+        <span class="sds-step__label">Configure Scan</span>
+        <span class="sds-step__description">Set frequency, scope, and sensitivity</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--upcoming">
+        <div class="sds-step__indicator">3</div>
+        <span class="sds-step__label">Set Policy</span>
+        <span class="sds-step__description">Define access rules and compliance checks</span>
+        <div class="sds-step__connector"></div>
+      </div>
+      <div class="sds-step sds-step--upcoming">
+        <div class="sds-step__indicator">4</div>
+        <span class="sds-step__label">Review &amp; Deploy</span>
+        <span class="sds-step__description">Confirm settings and activate protection</span>
+      </div>
+    </nav>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Stepper — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Step indicator (upcoming)</td>
+        <td>border / color</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-250)"></span><code>--sds-color-warm-gray-250</code> &nbsp;2 px border</td>
+      </tr>
+      <tr>
+        <td>Step indicator (active)</td>
+        <td>border / color</td>
+        <td><span class="swatch" style="background:var(--sds-interactive-primary)"></span><code>--sds-interactive-primary</code> &nbsp;2 px border</td>
+      </tr>
+      <tr>
+        <td>Step indicator (completed)</td>
+        <td>background / border</td>
+        <td><span class="swatch" style="background:var(--sds-interactive-primary)"></span><code>--sds-interactive-primary</code> &nbsp;filled</td>
+      </tr>
+      <tr>
+        <td>Step indicator (error)</td>
+        <td>border / color</td>
+        <td><span class="swatch" style="background:var(--sds-color-red-500)"></span><code>--sds-color-red-500</code> &nbsp;2 px border</td>
+      </tr>
+      <tr>
+        <td>Indicator size</td>
+        <td>width / height</td>
+        <td><code>32 px</code> (standard) / <code>10 px</code> (compact)</td>
+      </tr>
+      <tr>
+        <td>Connector line (upcoming)</td>
+        <td>background</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-200)"></span><code>--sds-color-warm-gray-200</code> &nbsp;2 px</td>
+      </tr>
+      <tr>
+        <td>Connector line (completed)</td>
+        <td>background</td>
+        <td><span class="swatch" style="background:var(--sds-interactive-primary)"></span><code>--sds-interactive-primary</code> &nbsp;2 px</td>
+      </tr>
+      <tr>
+        <td>Label (active)</td>
+        <td>color / weight</td>
+        <td><span class="swatch" style="background:var(--sds-text-primary)"></span><code>--sds-text-primary</code> &nbsp;<code>--sds-weight-semibold</code></td>
+      </tr>
+      <tr>
+        <td>Label (upcoming)</td>
+        <td>color / weight</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-450)"></span><code>--sds-color-warm-gray-450</code> &nbsp;<code>--sds-weight-regular</code></td>
+      </tr>
+      <tr>
+        <td>Label (completed)</td>
+        <td>color / weight</td>
+        <td><span class="swatch" style="background:var(--sds-text-secondary)"></span><code>--sds-text-secondary</code> &nbsp;<code>--sds-weight-medium</code></td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td>font-size / color</td>
+        <td><code>--sds-type-caption</code> / <code>--sds-color-warm-gray-400</code></td>
+      </tr>
+      <tr>
+        <td>Compact active glow</td>
+        <td>box-shadow</td>
+        <td><code>0 0 0 3px</code> <span class="swatch" style="background:var(--sds-color-blue-100)"></span><code>--sds-color-blue-100</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Accessibility</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Requirement</th><th>Implementation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Container</td><td><code>role="navigation"</code> with <code>aria-label="Progress"</code></td></tr>
+      <tr><td>Active step</td><td><code>aria-current="step"</code> on the current step</td></tr>
+      <tr><td>Interaction</td><td>Completed steps and the next upcoming step are clickable; future steps are inert</td></tr>
+      <tr><td>Focus</td><td><code>:focus-visible</code> ring using <code>--sds-border-focus</code></td></tr>
+      <tr><td>Keyboard</td><td>Arrow keys navigate clickable steps; Enter activates</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       JAVASCRIPT — Interactive wizard
+       ============================================================ -->
+  <script>
+    (function () {
+      var currentStep = 0;
+      var totalSteps = 4;
+      var stepperEl = document.getElementById('wizard-stepper');
+      var bodyEl = document.getElementById('wizard-body');
+      var backBtn = document.getElementById('wizard-back');
+      var nextBtn = document.getElementById('wizard-next');
+
+      var stepContent = [
+        {
+          title: 'Connect Data Source',
+          description: 'Select and authenticate your primary data source to begin monitoring.',
+          fields: [
+            { label: 'Data source type', type: 'select', options: ['Select a source...', 'AWS S3', 'Snowflake', 'Google BigQuery', 'Azure Blob Storage'] },
+            { label: 'Connection name', type: 'text', placeholder: 'e.g. Production Data Lake' }
+          ]
+        },
+        {
+          title: 'Configure Scan',
+          description: 'Define how frequently your data should be scanned and what sensitivity levels to apply.',
+          fields: [
+            { label: 'Scan frequency', type: 'select', options: ['Select frequency...', 'Every hour', 'Every 6 hours', 'Daily', 'Weekly'] },
+            { label: 'Sensitivity level', type: 'select', options: ['Select level...', 'Low — PII only', 'Medium — PII + financial', 'High — All sensitive data'] }
+          ]
+        },
+        {
+          title: 'Set Policy',
+          description: 'Choose a policy template or create a custom policy for data access and compliance.',
+          fields: [
+            { label: 'Policy template', type: 'select', options: ['Select template...', 'GDPR Compliance', 'HIPAA Compliance', 'SOC 2 Type II', 'Custom Policy'] },
+            { label: 'Policy name', type: 'text', placeholder: 'e.g. Production GDPR Policy' }
+          ]
+        },
+        {
+          title: 'Review & Deploy',
+          description: 'Review your configuration before deploying. You can go back to any step to make changes.',
+          review: [
+            { key: 'Data source', value: 'AWS S3' },
+            { key: 'Connection name', value: 'Production Data Lake' },
+            { key: 'Scan frequency', value: 'Daily' },
+            { key: 'Sensitivity', value: 'High — All sensitive data' },
+            { key: 'Policy template', value: 'GDPR Compliance' },
+            { key: 'Policy name', value: 'Production GDPR Policy' }
+          ]
+        }
+      ];
+
+      function renderStep() {
+        var data = stepContent[currentStep];
+        var html = '<h4>' + data.title + '</h4>';
+        html += '<p>' + data.description + '</p>';
+
+        if (data.fields) {
+          data.fields.forEach(function (f) {
+            html += '<div class="sds-field"><label class="sds-field-label">' + f.label + '</label>';
+            if (f.type === 'select') {
+              html += '<select class="sds-select">';
+              f.options.forEach(function (o, i) {
+                html += '<option' + (i === 0 ? '' : '') + '>' + o + '</option>';
+              });
+              html += '</select>';
+            } else {
+              html += '<input class="sds-input" type="text" placeholder="' + (f.placeholder || '') + '" />';
+            }
+            html += '</div>';
+          });
+        }
+
+        if (data.review) {
+          html += '<ul class="review-list">';
+          data.review.forEach(function (r) {
+            html += '<li><span class="review-key">' + r.key + '</span><span class="review-value">' + r.value + '</span></li>';
+          });
+          html += '</ul>';
+        }
+
+        bodyEl.innerHTML = html;
+      }
+
+      function updateStepper() {
+        var steps = stepperEl.querySelectorAll('.sds-step');
+        steps.forEach(function (step, i) {
+          step.classList.remove('sds-step--completed', 'sds-step--active', 'sds-step--upcoming', 'is-clickable');
+          step.removeAttribute('aria-current');
+          step.removeAttribute('tabindex');
+          step.removeAttribute('role');
+
+          var indicator = step.querySelector('.sds-step__indicator');
+
+          if (i < currentStep) {
+            step.classList.add('sds-step--completed', 'is-clickable');
+            step.setAttribute('tabindex', '0');
+            step.setAttribute('role', 'button');
+            indicator.innerHTML = '<span class="material-symbols-outlined">check</span>';
+          } else if (i === currentStep) {
+            step.classList.add('sds-step--active');
+            step.setAttribute('aria-current', 'step');
+            indicator.textContent = String(i + 1);
+          } else {
+            step.classList.add('sds-step--upcoming');
+            indicator.textContent = String(i + 1);
+          }
+        });
+
+        // Button visibility
+        backBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
+        if (currentStep === totalSteps - 1) {
+          nextBtn.textContent = 'Deploy';
+          nextBtn.classList.remove('sds-btn--primary');
+          nextBtn.classList.add('sds-btn--primary');
+        } else {
+          nextBtn.textContent = 'Next';
+        }
+      }
+
+      // Step click navigation
+      function handleStepActivation(step) {
+        if (!step || !step.classList.contains('is-clickable')) return;
+        var idx = parseInt(step.dataset.step, 10);
+        if (idx < currentStep || idx === currentStep + 1) {
+          currentStep = idx;
+          updateStepper();
+          renderStep();
+        }
+      }
+
+      stepperEl.addEventListener('click', function (e) {
+        handleStepActivation(e.target.closest('.sds-step'));
+      });
+
+      stepperEl.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          var step = e.target.closest('.sds-step');
+          if (step && step.classList.contains('is-clickable')) {
+            e.preventDefault();
+            handleStepActivation(step);
+          }
+        }
+      });
+
+      nextBtn.addEventListener('click', function () {
+        if (currentStep < totalSteps - 1) {
+          currentStep++;
+          updateStepper();
+          renderStep();
+        } else {
+          // Final step — show completion
+          bodyEl.innerHTML = '<div style="text-align:center;padding:var(--sds-space-800) 0;"><span class="material-symbols-outlined" style="font-size:48px;color:var(--sds-color-green-500);margin-bottom:var(--sds-space-300);display:block;">check_circle</span><h4 style="margin-bottom:var(--sds-space-200);">Policy Deployed Successfully</h4><p>Your GDPR Compliance policy is now active and monitoring your Production Data Lake.</p></div>';
+          nextBtn.disabled = true;
+          // Mark all steps completed
+          var steps = stepperEl.querySelectorAll('.sds-step');
+          steps.forEach(function (step) {
+            step.classList.remove('sds-step--active', 'sds-step--upcoming');
+            step.classList.add('sds-step--completed');
+            step.removeAttribute('aria-current');
+            var indicator = step.querySelector('.sds-step__indicator');
+            indicator.innerHTML = '<span class="material-symbols-outlined">check</span>';
+          });
+        }
+      });
+
+      backBtn.addEventListener('click', function () {
+        if (currentStep > 0) {
+          currentStep--;
+          nextBtn.disabled = false;
+          updateStepper();
+          renderStep();
+        }
+      });
+
+      // Initialize
+      updateStepper();
+      renderStep();
+    })();
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

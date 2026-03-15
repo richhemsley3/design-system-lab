@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software DS — Color Palette</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sds-font-sans);
+    background: #FFFFFF;
+    color: #1C1A17;
+    padding: var(--sds-space-1200) var(--sds-space-1000);
+    line-height: var(--sds-leading-normal);
+  }
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin-bottom: var(--sds-space-200); }
+  .subtitle { font-size: var(--sds-type-subheading); color: #6B6760; margin-bottom: var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+  h2 .tag {
+    display: inline-block; font-size: var(--sds-type-overline); font-weight: 500;
+    padding: var(--sds-space-050) var(--sds-space-200); border-radius: 4px; vertical-align: middle; margin-left: var(--sds-space-200);
+  }
+  .tag-dark { background: #2B2E33; color: #E2E4E6; }
+  .tag-light { background: #EBE6DD; color: #54514D; }
+  .desc { font-size: var(--sds-type-body); color: #6B6760; margin-bottom: var(--sds-space-400); }
+
+  .palette-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: var(--sds-space-200);
+    margin-bottom: var(--sds-space-100);
+  }
+  .swatch {
+    border-radius: 8px;
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid #E0DCD3;
+  }
+  .swatch-color {
+    height: 56px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  .swatch-color:hover { transform: scaleY(1.05); transform-origin: top; }
+  .swatch-color .copied {
+    position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+    background: rgba(0,0,0,0.5); color: #fff; font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold);
+    opacity: 0; transition: opacity 0.15s;
+  }
+  .swatch-color .copied.show { opacity: 1; }
+  .swatch-info { padding: var(--sds-space-150) var(--sds-space-200); }
+  .swatch-step { font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold); color: #47443F; }
+  .swatch-hex { font-size: 10px; font-family: var(--sds-font-mono); color: #6B6760; }
+
+  .section-divider { border: none; border-top: 1px solid #E0DCD3; margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+  /* Semantic section */
+  .semantic-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: var(--sds-space-300);
+    margin-bottom: var(--sds-space-600);
+  }
+  .semantic-card {
+    border-radius: 8px; border: 1px solid #E0DCD3; overflow: hidden; background: #fff;
+  }
+  .semantic-color { height: 40px; }
+  .semantic-info { padding: var(--sds-space-200) var(--sds-space-250); }
+  .semantic-name { font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold); color: #47443F; }
+  .semantic-token { font-size: 10px; font-family: var(--sds-font-mono); color: #6B6760; }
+  .semantic-purpose { font-size: 10px; color: #948E85; margin-top: var(--sds-space-050); }
+
+  /* Brand section */
+  .brand-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--sds-space-250);
+  }
+  .brand-card {
+    border-radius: 8px; border: 1px solid #E0DCD3; overflow: hidden; background: #fff;
+  }
+  .brand-color { height: 64px; }
+  .brand-info { padding: var(--sds-space-200) var(--sds-space-250); }
+  .brand-name { font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold); color: #47443F; text-transform: capitalize; }
+  .brand-hex { font-size: 10px; font-family: var(--sds-font-mono); color: #6B6760; }
+
+  /* Usage notes */
+  .usage-note {
+    background: #FFF4D1; border: 1px solid #EBCE2D; border-radius: 8px;
+    padding: var(--sds-space-400) var(--sds-space-500); margin: var(--sds-space-400) 0 var(--sds-space-600); font-size: var(--sds-type-label); color: #47443F;
+  }
+  .usage-note strong { color: #1C1A17; }
+</style>
+</head>
+<body>
+
+<h1>Color Palette</h1>
+<p class="subtitle">Complete token reference for all color scales, semantic mappings, and usage guidelines.</p>
+
+<!-- ============ COOL GRAY ============ -->
+<h2>Cool Gray <span class="tag tag-dark">Dark mode only</span></h2>
+<p class="desc">Neutral cool-toned grays for dark mode backgrounds, surfaces, and text elements.</p>
+<div class="usage-note">
+  <strong>Usage guidance:</strong> Use cool gray tokens in dark mode to create visually consistent and accessible interfaces.
+  Avoid cool gray in light mode — it clashes with warm gray surface colors.
+</div>
+<div class="palette-row" id="cool-gray"></div>
+
+<!-- ============ WARM GRAY ============ -->
+<h2>Warm Gray <span class="tag tag-light">Light mode</span></h2>
+<p class="desc">Warm neutral grays for light mode backgrounds, borders, and text. The primary neutral palette.</p>
+<div class="palette-row" id="warm-gray"></div>
+
+<hr class="section-divider">
+
+<!-- ============ BLUE ============ -->
+<h2>Blue</h2>
+<p class="desc">Primary brand and interactive color. Used for buttons, links, active navigation, and focus states.</p>
+<div class="palette-row" id="blue"></div>
+
+<!-- ============ RED ============ -->
+<h2>Red</h2>
+<p class="desc">Error, risk, and destructive action states. Used for alerts, validation errors, and risk badges.</p>
+<div class="palette-row" id="red"></div>
+
+<!-- ============ GREEN ============ -->
+<h2>Green</h2>
+<p class="desc">Success and positive status. Used for "Great", "Good", approvals, and protection indicators.</p>
+<div class="palette-row" id="green"></div>
+
+<!-- ============ YELLOW ============ -->
+<h2>Yellow</h2>
+<p class="desc">Warning and moderate states. Used for "Fair", "Moderate", caution alerts, and pending items.</p>
+<div class="palette-row" id="yellow"></div>
+
+<!-- ============ PURPLE ============ -->
+<h2>Purple</h2>
+<p class="desc">Accent color for categorization and decorative use.</p>
+<div class="palette-row" id="purple"></div>
+
+<hr class="section-divider">
+
+<!-- ============ SEMANTIC ============ -->
+<h2>Semantic Tokens</h2>
+<p class="desc">Intent-based color mappings for consistent UI semantics across all components.</p>
+
+<h3 style="font-size:14px; font-weight:600; margin:var(--sds-space-600) 0 var(--sds-space-300); color:#47443F;">Backgrounds</h3>
+<div class="semantic-grid" id="sem-bg"></div>
+
+<h3 style="font-size:14px; font-weight:600; margin:var(--sds-space-600) 0 var(--sds-space-300); color:#47443F;">Text</h3>
+<div class="semantic-grid" id="sem-text"></div>
+
+<h3 style="font-size:14px; font-weight:600; margin:var(--sds-space-600) 0 var(--sds-space-300); color:#47443F;">Interactive</h3>
+<div class="semantic-grid" id="sem-interactive"></div>
+
+<h3 style="font-size:14px; font-weight:600; margin:var(--sds-space-600) 0 var(--sds-space-300); color:#47443F;">Status</h3>
+<div class="semantic-grid" id="sem-status"></div>
+
+<hr class="section-divider">
+
+<!-- ============ BRAND ============ -->
+<h2>Brand Colors</h2>
+<p class="desc">Brand identity colors. Primarily for illustration and decorative purposes.</p>
+<div class="brand-grid" id="brand"></div>
+
+<script>
+const palettes = {
+  'cool-gray': [
+    ['025','#F8F8F9'],['050','#F2F3F4'],['100','#E2E4E6'],['150','#DADCDE'],['200','#CACCCF'],
+    ['250','#B8BCC0'],['300','#A8AEB2'],['350','#989FA5'],['400','#8B9298'],['450','#7F858B'],
+    ['500','#6F757B'],['550','#666C72'],['600','#5B6066'],['650','#4F5459'],['700','#40454A'],
+    ['750','#34383D'],['800','#2B2E33'],['850','#1F2326'],['900','#14171A'],['950','#0E1012'],['975','#0A0B0D']
+  ],
+  'warm-gray': [
+    ['025','#FAF8F5'],['050','#F4F1EB'],['100','#EBE6DD'],['150','#E0DCD3'],['200','#D0CBC3'],
+    ['250','#BFBAB2'],['300','#B0ABA2'],['350','#A39E96'],['400','#948E85'],['450','#858079'],
+    ['500','#7A756F'],['550','#6B6760'],['600','#615D55'],['650','#54514D'],['700','#47443F'],
+    ['750','#3B3834'],['800','#302D28'],['850','#26231E'],['900','#1C1A17'],['950','#14110D'],['975','#0F0902']
+  ],
+  'blue': [
+    ['025','#F2F7F7'],['050','#EBF4F5'],['100','#D9EBED'],['150','#C1DDE3'],['200','#A6CBD6'],
+    ['250','#8EC0D1'],['300','#77B2C7'],['350','#6AA5B8'],['400','#5E96AB'],['450','#4F8AA0'],
+    ['500','#427D94'],['550','#306E88'],['600','#216280'],['650','#17597A'],['700','#0C4A69'],
+    ['750','#013D5B'],['800','#05314D'],['850','#032740'],['900','#031E36'],['950','#00132B'],['975','#030515']
+  ],
+  'red': [
+    ['025','#FFF6F5'],['050','#FFEEEB'],['100','#FFE1DB'],['150','#F7CCC6'],['200','#F2BDB6'],
+    ['250','#EEA79E'],['300','#E99185'],['350','#E57D6E'],['400','#DB7060'],['450','#CF6253'],
+    ['500','#BF5547'],['550','#AD4739'],['600','#A33F31'],['650','#8F3629'],['700','#7A2E23'],
+    ['750','#69261C'],['800','#591E15'],['850','#4A130C'],['900','#330903']
+  ],
+  'green': [
+    ['025','#F4FAEB'],['050','#EDF5DF'],['100','#E2EDCC'],['150','#D1E0B1'],['200','#BBCF8A'],
+    ['250','#AAC267'],['300','#98B43B'],['350','#88A61B'],['400','#7A9A01'],['450','#6D8C0F'],
+    ['500','#62800B'],['550','#527315'],['600','#466B11'],['650','#3E5917'],['700','#374A1E'],
+    ['750','#2E3D1C'],['800','#273318'],['850','#1D2613'],['900','#161C0F']
+  ],
+  'yellow': [
+    ['025','#FCF9D9'],['050','#FCF5B1'],['100','#F7EC88'],['150','#F0DE54'],['200','#EBCE2D'],
+    ['250','#D6BB31'],['300','#C4AA25'],['350','#B29B24'],['400','#A48E1F'],['450','#96811A'],
+    ['500','#8A7515'],['550','#7A6710'],['600','#6E5B09'],['650','#615109'],['700','#544608'],
+    ['750','#473B05'],['800','#3B3002'],['850','#2E2601'],['900','#211B00']
+  ],
+  'purple': [
+    ['300','#C39DE3'],['550','#805AA1']
+  ]
+};
+
+function luminance(hex) {
+  const r = parseInt(hex.slice(1,3),16)/255;
+  const g = parseInt(hex.slice(3,5),16)/255;
+  const b = parseInt(hex.slice(5,7),16)/255;
+  return 0.2126*r + 0.7152*g + 0.0722*b;
+}
+
+function copyHex(el, hex) {
+  navigator.clipboard.writeText(hex);
+  const badge = el.querySelector('.copied');
+  badge.classList.add('show');
+  setTimeout(() => badge.classList.remove('show'), 800);
+}
+
+Object.entries(palettes).forEach(([name, steps]) => {
+  const container = document.getElementById(name);
+  steps.forEach(([step, hex]) => {
+    const swatch = document.createElement('div');
+    swatch.className = 'swatch';
+    swatch.innerHTML = `
+      <div class="swatch-color" style="background:${hex}" onclick="copyHex(this,'${hex}')">
+        <div class="copied">Copied!</div>
+      </div>
+      <div class="swatch-info">
+        <div class="swatch-step">${step}</div>
+        <div class="swatch-hex">${hex}</div>
+      </div>`;
+    container.appendChild(swatch);
+  });
+});
+
+// Semantic tokens
+const semanticBg = [
+  ['Page','--sds-bg-page','#FFFFFF','Main page background'],
+  ['Surface','--sds-bg-surface','#FAF8F5','Sidebar, panels'],
+  ['Card','--sds-bg-card','#FFFFFF','Content containers'],
+  ['Subtle','--sds-bg-subtle','#F4F1EB','Table headers, empty states'],
+];
+const semanticText = [
+  ['Primary','--sds-text-primary','#1C1A17','Headings'],
+  ['Secondary','--sds-text-secondary','#54514D','Body copy'],
+  ['Tertiary','--sds-text-tertiary','#6B6760','Captions'],
+  ['Disabled','--sds-text-disabled','#B0ABA2','Disabled'],
+  ['Link','--sds-text-link','#013D5B','Interactive links'],
+  ['On Primary','--sds-text-on-primary','#FFFFFF','Text on blue bg'],
+];
+const semanticInteractive = [
+  ['Primary','--sds-interactive-primary','#013D5B','Buttons, CTAs'],
+  ['Primary Hover','--sds-interactive-primary-hover','#05314D','Hover state'],
+  ['Primary Active','--sds-interactive-primary-active','#032740','Pressed state'],
+  ['Primary Subtle','--sds-interactive-primary-subtle','#D9EBED','Tab badges, highlights'],
+];
+const semanticStatus = [
+  ['Success BG','--sds-status-success-bg','#F4FAEB','Success background'],
+  ['Success Text','--sds-status-success-text','#62800B','Success label'],
+  ['Warning BG','--sds-status-warning-bg','#FCF9D9','Warning background'],
+  ['Warning Text','--sds-status-warning-text','#8A7515','Warning label'],
+  ['Error BG','--sds-status-error-bg','#FFEEEB','Error background'],
+  ['Error Text','--sds-status-error-text','#BF5547','Error label'],
+  ['Info BG','--sds-status-info-bg','#EBF4F5','Info background'],
+  ['Info Text','--sds-status-info-text','#0C4A69','Info label'],
+  ['Neutral BG','--sds-status-neutral-bg','#EBE6DD','Neutral tag bg'],
+  ['Neutral Text','--sds-status-neutral-text','#54514D','Neutral tag text'],
+  ['Purple BG','--sds-status-purple-bg','#F7EEFF','Purple category bg'],
+  ['Purple Text','--sds-status-purple-text','#805AA1','Purple category text'],
+];
+
+function renderSemantic(containerId, items) {
+  const container = document.getElementById(containerId);
+  items.forEach(([label, token, hex, purpose]) => {
+    const card = document.createElement('div');
+    card.className = 'semantic-card';
+    const textColor = luminance(hex) > 0.5 ? '#1C1A17' : '#FFFFFF';
+    const borderStyle = hex === '#FFFFFF' ? 'border-bottom:1px solid #E0DCD3' : '';
+    card.innerHTML = `
+      <div class="semantic-color" style="background:${hex};${borderStyle};display:flex;align-items:center;padding:0 12px;">
+        <span style="font-size:11px;font-weight:600;color:${textColor}">${hex}</span>
+      </div>
+      <div class="semantic-info">
+        <div class="semantic-name">${label}</div>
+        <div class="semantic-token">${token}</div>
+        <div class="semantic-purpose">${purpose}</div>
+      </div>`;
+    container.appendChild(card);
+  });
+}
+
+renderSemantic('sem-bg', semanticBg);
+renderSemantic('sem-text', semanticText);
+renderSemantic('sem-interactive', semanticInteractive);
+renderSemantic('sem-status', semanticStatus);
+
+// Brand colors
+const brandColors = [
+  ['Midnight','#00132B'],['Atlantic','#013D5B'],['Pacific','#A6CBD6'],
+  ['Surf','#D6E8EA'],['Sky','#C0EAF2'],['Heritage Red','#CC2427'],
+  ['Prairie','#ACBAA3'],['Pistachio','#DAE8D8'],['Fern','#7A9A01'],
+  ['Birch','#BF5547'],['Parakeet','#E1E000'],['Lime','#EBE6DD'],['Oat','#F7F3EB']
+];
+
+const brandContainer = document.getElementById('brand');
+brandColors.forEach(([name, hex]) => {
+  const card = document.createElement('div');
+  card.className = 'brand-card';
+  const borderStyle = luminance(hex) > 0.85 ? 'border-bottom:1px solid #E0DCD3' : '';
+  card.innerHTML = `
+    <div class="brand-color" style="background:${hex};${borderStyle}"></div>
+    <div class="brand-info">
+      <div class="brand-name">${name}</div>
+      <div class="brand-hex">${hex}</div>
+    </div>`;
+  brandContainer.appendChild(card);
+});
+</script>
+<script src="/shared/nav.js"></script>
+</body>
+</html>

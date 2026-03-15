@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Tags</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* Demo row */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* ============================================================
+       STATUS TAGS
+       Compact labels used in tables, cards, and lists to
+       communicate state. Matched pixel-for-pixel from the
+       application's status display pattern.
+       ============================================================ */
+
+    .sds-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* ---- Semantic variants ---- */
+
+    /* Error / Critical */
+    .sds-tag--error {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+
+    /* Warning / Pending */
+    .sds-tag--warning {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+
+    /* Success / Complete */
+    .sds-tag--success {
+      background: var(--sds-color-green-025);
+      color: var(--sds-color-green-500);
+    }
+
+    /* Info / In Review */
+    .sds-tag--info {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+
+    /* Neutral / Draft */
+    .sds-tag--neutral {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+
+    /* Purple / Active */
+    .sds-tag--purple {
+      background: #F7EEFF;
+      color: var(--sds-color-purple-550);
+    }
+
+    /* ---- With leading dot indicator ---- */
+    .sds-tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .sds-tag--error .sds-tag-dot   { background: var(--sds-color-red-450); }
+    .sds-tag--warning .sds-tag-dot { background: var(--sds-color-yellow-350); }
+    .sds-tag--success .sds-tag-dot { background: var(--sds-color-green-400); }
+    .sds-tag--info .sds-tag-dot    { background: var(--sds-color-blue-550); }
+    .sds-tag--neutral .sds-tag-dot { background: var(--sds-color-warm-gray-400); }
+    .sds-tag--purple .sds-tag-dot  { background: var(--sds-color-purple-550); }
+
+    /* ---- Outline variant ---- */
+    .sds-tag--outline {
+      background: transparent;
+      border: 1px solid currentColor;
+      padding: var(--sds-space-050) var(--sds-space-200);
+    }
+    .sds-tag--outline.sds-tag--error   { color: var(--sds-color-red-450); }
+    .sds-tag--outline.sds-tag--warning { color: var(--sds-color-yellow-450); }
+    .sds-tag--outline.sds-tag--success { color: var(--sds-color-green-450); }
+    .sds-tag--outline.sds-tag--info    { color: var(--sds-color-blue-600); }
+    .sds-tag--outline.sds-tag--neutral { color: var(--sds-color-warm-gray-450); }
+    .sds-tag--outline.sds-tag--purple  { color: var(--sds-color-purple-550); }
+
+    /* ---- Size: Small ---- */
+    .sds-tag--sm {
+      font-size: 10px;
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 3px;
+    }
+    .sds-tag--sm .sds-tag-dot {
+      width: 5px;
+      height: 5px;
+    }
+
+    /* ---- Size: Large ---- */
+    .sds-tag--lg {
+      font-size: var(--sds-type-caption);
+      padding: var(--sds-space-100) var(--sds-space-250);
+      border-radius: 5px;
+      font-weight: var(--sds-weight-medium);
+    }
+    .sds-tag--lg .sds-tag-dot {
+      width: 7px;
+      height: 7px;
+    }
+
+    /* ============================================================
+       COUNT BADGES
+       Round pill-shaped number indicators used in card headers
+       and tab labels.
+       ============================================================ */
+    .sds-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 var(--sds-space-150);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      border-radius: 10px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .sds-badge--error {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+    .sds-badge--warning {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+    .sds-badge--success {
+      background: var(--sds-color-green-025);
+      color: var(--sds-color-green-500);
+    }
+    .sds-badge--info {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+    .sds-badge--neutral {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+    .sds-badge--purple {
+      background: #F7EEFF;
+      color: var(--sds-color-purple-550);
+    }
+
+    /* ---- Badge sizes ---- */
+    .sds-badge--sm {
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+      padding: 0 var(--sds-space-100);
+      border-radius: 8px;
+    }
+    .sds-badge--lg {
+      min-width: 24px;
+      height: 24px;
+      font-size: var(--sds-type-label);
+      padding: 0 var(--sds-space-200);
+      border-radius: 12px;
+    }
+
+    /* ============================================================
+       INLINE DOT
+       Standalone status dot used in data tables for
+       inline status indicators.
+       ============================================================ */
+    .sds-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+    .sds-dot--error   { background: var(--sds-color-red-450); }
+    .sds-dot--warning { background: var(--sds-color-yellow-300); }
+    .sds-dot--success { background: var(--sds-color-green-400); }
+    .sds-dot--info    { background: var(--sds-color-blue-450); }
+    .sds-dot--neutral { background: var(--sds-color-warm-gray-300); }
+    .sds-dot--purple  { background: var(--sds-color-purple-550); }
+
+    /* Context demo — table row */
+    .demo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      background: var(--sds-color-white);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .demo-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-550);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .demo-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .demo-table tr:last-child td { border-bottom: none; }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Tags</h1>
+  <p class="page-subtitle">Compact labels used in tables, cards, and lists to communicate status. Six semantic variants matched to the application's color system.</p>
+
+  <!-- ============================================================
+       STATUS TAGS — FILLED
+       ============================================================ -->
+  <h2>Status Tags</h2>
+
+  <div class="demo-block">
+    <div class="demo-label">All semantic variants — Filled</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Error</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--error">Critical</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Warning</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--warning">Pending</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Success</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--success">Complete</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Info</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--info">In Review</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Neutral</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--neutral">Draft</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Purple</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--purple">Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH DOT INDICATOR
+       ============================================================ -->
+  <h3>With Dot Indicator</h3>
+  <p>Add a leading dot using <code>&lt;span class="sds-tag-dot"&gt;</code> for extra visual weight. Useful in data tables for inline status indication.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Filled + dot</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Error</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--error"><span class="sds-tag-dot"></span>Critical</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Warning</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--warning"><span class="sds-tag-dot"></span>Pending</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Success</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--success"><span class="sds-tag-dot"></span>Complete</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Info</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--info"><span class="sds-tag-dot"></span>In Review</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Neutral</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--neutral"><span class="sds-tag-dot"></span>Draft</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Purple</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--purple"><span class="sds-tag-dot"></span>Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       OUTLINE VARIANT
+       ============================================================ -->
+  <h3>Outline Variant</h3>
+  <p>Use <code>.sds-tag--outline</code> for a lighter-weight alternative with a colored border and transparent background.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Outline</div>
+    <div style="display:flex; flex-wrap:wrap; gap:var(--sds-space-200);">
+      <span class="sds-tag sds-tag--outline sds-tag--error">Error</span>
+      <span class="sds-tag sds-tag--outline sds-tag--warning">Warning</span>
+      <span class="sds-tag sds-tag--outline sds-tag--success">Success</span>
+      <span class="sds-tag sds-tag--outline sds-tag--info">Info</span>
+      <span class="sds-tag sds-tag--outline sds-tag--neutral">Neutral</span>
+      <span class="sds-tag sds-tag--outline sds-tag--purple">Purple</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SIZES
+       ============================================================ -->
+  <h2>Sizes</h2>
+  <p>Three sizes: small (<code>.sds-tag--sm</code>), default, and large (<code>.sds-tag--lg</code>).</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Size comparison</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Small</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--sm sds-tag--error">Critical</span>
+        <span class="sds-tag sds-tag--sm sds-tag--success"><span class="sds-tag-dot"></span>Complete</span>
+        <span class="sds-tag sds-tag--sm sds-tag--info">In Review</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Default</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--error">Critical</span>
+        <span class="sds-tag sds-tag--success"><span class="sds-tag-dot"></span>Complete</span>
+        <span class="sds-tag sds-tag--info">In Review</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Large</span>
+      <div class="demo-row-items">
+        <span class="sds-tag sds-tag--lg sds-tag--error">Critical</span>
+        <span class="sds-tag sds-tag--lg sds-tag--success"><span class="sds-tag-dot"></span>Complete</span>
+        <span class="sds-tag sds-tag--lg sds-tag--info">In Review</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       COUNT BADGES
+       ============================================================ -->
+  <h2>Count Badges</h2>
+  <p>Round pill-shaped number indicators used in card headers and tab labels. Available in all semantic colors and three sizes.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">All variants</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Semantic</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--error">3</span>
+        <span class="sds-badge sds-badge--warning">7</span>
+        <span class="sds-badge sds-badge--success">12</span>
+        <span class="sds-badge sds-badge--info">2</span>
+        <span class="sds-badge sds-badge--neutral">0</span>
+        <span class="sds-badge sds-badge--purple">5</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Small</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--sm sds-badge--error">3</span>
+        <span class="sds-badge sds-badge--sm sds-badge--info">2</span>
+        <span class="sds-badge sds-badge--sm sds-badge--neutral">0</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Large</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--lg sds-badge--error">3</span>
+        <span class="sds-badge sds-badge--lg sds-badge--info">24</span>
+        <span class="sds-badge sds-badge--lg sds-badge--neutral">99+</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       INLINE DOTS
+       ============================================================ -->
+  <h2>Status Dots</h2>
+  <p>Standalone 8 px dots for inline status indicators. Used in data tables alongside text labels.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">All variants</div>
+    <div style="display:flex; flex-wrap:wrap; gap:var(--sds-space-500); align-items:center;">
+      <span style="display:flex; align-items:center; gap:var(--sds-space-150); font-size:13px; color:var(--sds-color-warm-gray-700);"><span class="sds-dot sds-dot--error"></span> Error</span>
+      <span style="display:flex; align-items:center; gap:var(--sds-space-150); font-size:13px; color:var(--sds-color-warm-gray-700);"><span class="sds-dot sds-dot--warning"></span> Warning</span>
+      <span style="display:flex; align-items:center; gap:var(--sds-space-150); font-size:13px; color:var(--sds-color-warm-gray-700);"><span class="sds-dot sds-dot--success"></span> Success</span>
+      <span style="display:flex; align-items:center; gap:var(--sds-space-150); font-size:13px; color:var(--sds-color-warm-gray-700);"><span class="sds-dot sds-dot--info"></span> Info</span>
+      <span style="display:flex; align-items:center; gap:var(--sds-space-150); font-size:13px; color:var(--sds-color-warm-gray-700);"><span class="sds-dot sds-dot--neutral"></span> Neutral</span>
+      <span style="display:flex; align-items:center; gap:var(--sds-space-150); font-size:13px; color:var(--sds-color-warm-gray-700);"><span class="sds-dot sds-dot--purple"></span> Purple</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IN-CONTEXT DEMO
+       ============================================================ -->
+  <h2>In Context</h2>
+  <p>Tags as they appear in a data table, showing a realistic usage pattern.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Table context</div>
+    <table class="demo-table">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Description</th>
+          <th>Resource</th>
+          <th>Date and time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="sds-tag sds-tag--error">Critical</span></td>
+          <td>New item requires attention</td>
+          <td>Analytics Dashboard</td>
+          <td style="color:var(--sds-color-warm-gray-450);">Feb 4, 8:52 AM</td>
+        </tr>
+        <tr>
+          <td><span class="sds-tag sds-tag--error">Critical</span></td>
+          <td>Configuration update required</td>
+          <td>User Management</td>
+          <td style="color:var(--sds-color-warm-gray-450);">Yesterday 1:15PM</td>
+        </tr>
+        <tr>
+          <td><span class="sds-tag sds-tag--warning">Needs Review</span></td>
+          <td>New resource pending approval</td>
+          <td>Report Builder</td>
+          <td style="color:var(--sds-color-warm-gray-450);">Feb 3, 9:02 AM</td>
+        </tr>
+        <tr>
+          <td><span class="sds-tag sds-tag--warning">Needs Review</span></td>
+          <td>Settings change pending review</td>
+          <td>Data Explorer</td>
+          <td style="color:var(--sds-color-warm-gray-450);">Feb 4, 6:29 PM</td>
+        </tr>
+        <tr>
+          <td><span class="sds-tag sds-tag--purple">Active</span></td>
+          <td>Updates have been applied successfully</td>
+          <td>Team Workspace</td>
+          <td style="color:var(--sds-color-warm-gray-450);">Feb 2, 11:18 AM</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Status Tags — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Variant</th><th>Background</th><th>Text Color</th><th>Dot Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Error</td>
+        <td><span class="swatch" style="background:var(--sds-color-red-050)"></span><code>--sds-status-error-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>red-550</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>red-450</code></td>
+      </tr>
+      <tr>
+        <td>Warning</td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-025)"></span><code>--sds-status-warning-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-550)"></span><code>yellow-550</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-350)"></span><code>yellow-350</code></td>
+      </tr>
+      <tr>
+        <td>Success</td>
+        <td><span class="swatch" style="background:var(--sds-color-green-025)"></span><code>--sds-status-success-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-green-500)"></span><code>green-500</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-green-400)"></span><code>green-400</code></td>
+      </tr>
+      <tr>
+        <td>Info</td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-050)"></span><code>--sds-status-info-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-700)"></span><code>blue-700</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-550)"></span><code>blue-550</code></td>
+      </tr>
+      <tr>
+        <td>Neutral</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>--sds-status-neutral-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-650)"></span><code>warm-gray-650</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-400)"></span><code>warm-gray-400</code></td>
+      </tr>
+      <tr>
+        <td>Purple</td>
+        <td><span class="swatch" style="background:#F7EEFF"></span><code>--sds-status-purple-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-purple-550)"></span><code>purple-550</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-purple-550)"></span><code>purple-550</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Tag Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Size</th><th>Font Size</th><th>Padding</th><th>Radius</th><th>Dot Size</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small <code>.sds-tag--sm</code></td>
+        <td><code>10 px</code></td>
+        <td><code>2 px 6 px</code></td>
+        <td><code>3 px</code></td>
+        <td><code>5 px</code></td>
+      </tr>
+      <tr>
+        <td>Default</td>
+        <td><code>11 px</code></td>
+        <td><code>2 px 8 px</code></td>
+        <td><code>4 px</code></td>
+        <td><code>6 px</code></td>
+      </tr>
+      <tr>
+        <td>Large <code>.sds-tag--lg</code></td>
+        <td><code>12 px</code></td>
+        <td><code>4 px 10 px</code></td>
+        <td><code>5 px</code></td>
+        <td><code>7 px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Badge Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Size</th><th>Font Size</th><th>Min Width</th><th>Height</th><th>Radius</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small <code>.sds-badge--sm</code></td>
+        <td><code>10 px</code></td>
+        <td><code>16 px</code></td>
+        <td><code>16 px</code></td>
+        <td><code>8 px</code></td>
+      </tr>
+      <tr>
+        <td>Default</td>
+        <td><code>12 px</code></td>
+        <td><code>20 px</code></td>
+        <td><code>20 px</code></td>
+        <td><code>10 px</code></td>
+      </tr>
+      <tr>
+        <td>Large <code>.sds-badge--lg</code></td>
+        <td><code>13 px</code></td>
+        <td><code>24 px</code></td>
+        <td><code>24 px</code></td>
+        <td><code>12 px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-tag</code></td><td>Base tag — requires a semantic modifier</td></tr>
+      <tr><td><code>.sds-tag--error</code></td><td>Red status (critical, alerts)</td></tr>
+      <tr><td><code>.sds-tag--warning</code></td><td>Yellow status (pending, warnings)</td></tr>
+      <tr><td><code>.sds-tag--success</code></td><td>Green status (complete, success)</td></tr>
+      <tr><td><code>.sds-tag--info</code></td><td>Blue status (in review, informational)</td></tr>
+      <tr><td><code>.sds-tag--neutral</code></td><td>Gray status (draft, inactive)</td></tr>
+      <tr><td><code>.sds-tag--purple</code></td><td>Purple status (active, applied)</td></tr>
+      <tr><td><code>.sds-tag--outline</code></td><td>Modifier: transparent bg with colored border</td></tr>
+      <tr><td><code>.sds-tag--sm</code></td><td>Modifier: smaller size</td></tr>
+      <tr><td><code>.sds-tag--lg</code></td><td>Modifier: larger size</td></tr>
+      <tr><td><code>.sds-tag-dot</code></td><td>Child element: leading colored dot</td></tr>
+      <tr><td><code>.sds-badge</code></td><td>Base count badge — requires a semantic modifier</td></tr>
+      <tr><td><code>.sds-dot</code></td><td>Standalone 8 px status dot</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

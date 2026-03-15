@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html><head><title>Color Sampler</title>
+<link rel="stylesheet" href="../tokens/typography.css">
+<style>
+body { margin: 20px; font-family: var(--sds-font-sans); background: #FFFFFF; }
+canvas { border: 1px solid #ccc; cursor: crosshair; max-width: 100%; }
+#result { font-size: 24px; padding: 20px; margin: 10px 0; font-family: var(--sds-font-mono); }
+#swatch { display: inline-block; width: 60px; height: 60px; border: 2px solid #333; vertical-align: middle; margin-right: 16px; }
+#samples { margin-top: 20px; }
+.sample { display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; margin: 4px; background: #fff; border-radius: 6px; border: 1px solid #ddd; font-size: var(--sds-type-label); font-family: var(--sds-font-mono); }
+.sample-swatch { width: 32px; height: 32px; border-radius: 4px; border: 1px solid #ccc; }
+input[type="file"] { margin: 10px 0; font-size: var(--sds-type-subheading); }
+</style>
+</head><body>
+<h2>Drop or select a screenshot to sample colors</h2>
+<input type="file" id="fileInput" accept="image/*">
+<div id="result"><span id="swatch"></span> Move cursor over image</div>
+<canvas id="canvas"></canvas>
+<div id="samples"><strong>Sampled:</strong> </div>
+<script>
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const result = document.getElementById('result');
+const swatch = document.getElementById('swatch');
+const samples = document.getElementById('samples');
+document.getElementById('fileInput').addEventListener('change', e => {
+  const img = new Image();
+  img.onload = () => { canvas.width = img.width; canvas.height = img.height; ctx.drawImage(img, 0, 0); };
+  img.src = URL.createObjectURL(e.target.files[0]);
+});
+canvas.addEventListener('mousemove', e => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = Math.floor((e.clientX - rect.left) * scaleX);
+  const y = Math.floor((e.clientY - rect.top) * scaleY);
+  const px = ctx.getImageData(x, y, 1, 1).data;
+  const hex = '#' + [px[0],px[1],px[2]].map(v => v.toString(16).padStart(2,'0')).join('').toUpperCase();
+  swatch.style.background = hex;
+  result.innerHTML = '<span id="swatch" style="display:inline-block;width:60px;height:60px;border:2px solid #333;vertical-align:middle;margin-right:16px;background:'+hex+'"></span> ' + hex + ' rgb('+px[0]+','+px[1]+','+px[2]+')';
+});
+canvas.addEventListener('click', e => {
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width;
+  const scaleY = canvas.height / rect.height;
+  const x = Math.floor((e.clientX - rect.left) * scaleX);
+  const y = Math.floor((e.clientY - rect.top) * scaleY);
+  const px = ctx.getImageData(x, y, 1, 1).data;
+  const hex = '#' + [px[0],px[1],px[2]].map(v => v.toString(16).padStart(2,'0')).join('').toUpperCase();
+  const div = document.createElement('div');
+  div.className = 'sample';
+  div.innerHTML = '<div class="sample-swatch" style="background:'+hex+'"></div>'+hex;
+  samples.appendChild(div);
+});
+</script>
+<script src="/shared/nav.js"></script>
+</body></html>

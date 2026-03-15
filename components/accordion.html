@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Accordion</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       ACCORDION
+       Expandable sections for organizing content into
+       collapsible panels. Used in settings, configuration,
+       and documentation views.
+       ============================================================ */
+
+    .sds-accordion {
+      width: 100%;
+    }
+
+    .sds-accordion-item {
+      background: var(--sds-color-white);
+      border-radius: var(--sds-space-200);
+      margin-bottom: var(--sds-space-200);
+    }
+    .sds-accordion-item:last-child {
+      margin-bottom: 0;
+    }
+
+    .sds-accordion-header {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      text-align: left;
+      gap: var(--sds-space-300);
+      border-radius: var(--sds-space-200);
+      transition: background 0.15s ease;
+    }
+    .sds-accordion-header:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+    .sds-accordion-header:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-accordion-header-text {
+      flex: 1;
+    }
+
+    .sds-accordion-icon {
+      font-size: var(--sds-type-heading);
+      color: var(--sds-color-warm-gray-400);
+      transition: transform 0.25s ease;
+      user-select: none;
+      line-height: 1;
+    }
+    .sds-accordion-item[data-expanded="true"] > .sds-accordion-header .sds-accordion-icon {
+      transform: rotate(180deg);
+    }
+
+    .sds-accordion-leading-icon {
+      font-size: var(--sds-type-subheading);
+      color: var(--sds-color-warm-gray-450);
+      line-height: 1;
+    }
+
+    .sds-accordion-panel {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+    .sds-accordion-item[data-expanded="true"] > .sds-accordion-panel {
+      max-height: 600px;
+    }
+
+    .sds-accordion-panel-inner {
+      padding: 0 var(--sds-space-500) var(--sds-space-500);
+      font-size: var(--sds-type-label);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-secondary);
+    }
+
+    /* ---- Bordered variant ---- */
+    .sds-accordion--bordered .sds-accordion-item {
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 0;
+      margin-bottom: 0;
+    }
+    .sds-accordion--bordered .sds-accordion-item:first-child {
+      border-top-left-radius: var(--sds-space-200);
+      border-top-right-radius: var(--sds-space-200);
+    }
+    .sds-accordion--bordered .sds-accordion-item:last-child {
+      border-bottom-left-radius: var(--sds-space-200);
+      border-bottom-right-radius: var(--sds-space-200);
+    }
+    .sds-accordion--bordered .sds-accordion-item + .sds-accordion-item {
+      border-top: none;
+    }
+    .sds-accordion--bordered .sds-accordion-header {
+      border-radius: 0;
+    }
+    .sds-accordion--bordered .sds-accordion-item:first-child .sds-accordion-header {
+      border-top-left-radius: var(--sds-space-200);
+      border-top-right-radius: var(--sds-space-200);
+    }
+    .sds-accordion--bordered .sds-accordion-item:last-child .sds-accordion-header {
+      border-bottom-left-radius: var(--sds-space-200);
+      border-bottom-right-radius: var(--sds-space-200);
+    }
+
+    /* ---- Nested accordion ---- */
+    .sds-accordion-panel-inner .sds-accordion {
+      margin-top: var(--sds-space-300);
+    }
+    .sds-accordion-panel-inner .sds-accordion .sds-accordion-item {
+      background: var(--sds-color-warm-gray-025);
+    }
+    .sds-accordion-panel-inner .sds-accordion .sds-accordion-header {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      font-size: var(--sds-type-label);
+    }
+    .sds-accordion-panel-inner .sds-accordion .sds-accordion-panel-inner {
+      padding: 0 var(--sds-space-400) var(--sds-space-400);
+      font-size: var(--sds-type-caption);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+  <h1>Accordion</h1>
+  <p class="page-subtitle">Expandable sections for organizing related content into collapsible panels. Used in settings views, policy configurations, and compliance documentation.</p>
+
+  <!-- ============================================================
+       BASIC ACCORDION — EXCLUSIVE MODE
+       ============================================================ -->
+  <h2>Basic Accordion</h2>
+  <p>Only one section can be open at a time. Clicking a header closes any previously open section. Uses <code>data-accordion-exclusive</code> to enforce single-expand behavior.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Exclusive mode — single open</div>
+    <div class="sds-accordion" data-accordion-exclusive>
+      <div class="sds-accordion-item" data-expanded="true">
+        <button class="sds-accordion-header" aria-expanded="true" aria-controls="basic-panel-1" id="basic-header-1">
+          <span class="sds-accordion-header-text">Data Retention Policy</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="basic-panel-1" role="region" aria-labelledby="basic-header-1">
+          <div class="sds-accordion-panel-inner">
+            Define how long sensitive data is retained before automatic deletion. Retention periods can be configured per data classification level, with separate rules for production, staging, and archival environments.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="basic-panel-2" id="basic-header-2">
+          <span class="sds-accordion-header-text">Encryption Settings</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="basic-panel-2" role="region" aria-labelledby="basic-header-2">
+          <div class="sds-accordion-panel-inner">
+            Configure encryption algorithms and key rotation schedules for data at rest and in transit. Supports AES-256, RSA-4096, and ChaCha20-Poly1305 cipher suites with automatic key expiration policies.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="basic-panel-3" id="basic-header-3">
+          <span class="sds-accordion-header-text">Access Control Rules</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="basic-panel-3" role="region" aria-labelledby="basic-header-3">
+          <div class="sds-accordion-panel-inner">
+            Manage role-based access control (RBAC) policies that govern who can view, modify, or delete protected resources. Assign granular permissions at the team, project, or individual level.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="basic-panel-4" id="basic-header-4">
+          <span class="sds-accordion-header-text">Audit Logging</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="basic-panel-4" role="region" aria-labelledby="basic-header-4">
+          <div class="sds-accordion-panel-inner">
+            Track all user actions and system events with tamper-proof audit logs. Logs are immutable once written and can be exported to external SIEM platforms for compliance reporting.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MULTI-EXPAND ACCORDION
+       ============================================================ -->
+  <h2>Multi-expand Accordion</h2>
+  <p>Multiple sections can be open simultaneously. Omit <code>data-accordion-exclusive</code> to allow independent toggling of each section.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Independent expand — multiple open</div>
+    <div class="sds-accordion">
+      <div class="sds-accordion-item" data-expanded="true">
+        <button class="sds-accordion-header" aria-expanded="true" aria-controls="multi-panel-1" id="multi-header-1">
+          <span class="sds-accordion-header-text">Network Security</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="multi-panel-1" role="region" aria-labelledby="multi-header-1">
+          <div class="sds-accordion-panel-inner">
+            Configure firewall rules, IP allowlists, and VPN tunnel settings. Network segmentation policies ensure that sensitive workloads are isolated from general-purpose traffic.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item" data-expanded="true">
+        <button class="sds-accordion-header" aria-expanded="true" aria-controls="multi-panel-2" id="multi-header-2">
+          <span class="sds-accordion-header-text">Identity Providers</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="multi-panel-2" role="region" aria-labelledby="multi-header-2">
+          <div class="sds-accordion-panel-inner">
+            Connect SAML 2.0 and OIDC identity providers for single sign-on. Supports Okta, Azure AD, Google Workspace, and custom IdP configurations with just-in-time user provisioning.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="multi-panel-3" id="multi-header-3">
+          <span class="sds-accordion-header-text">Session Management</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="multi-panel-3" role="region" aria-labelledby="multi-header-3">
+          <div class="sds-accordion-panel-inner">
+            Set session timeout durations, concurrent session limits, and idle lockout policies. Administrators can force-terminate active sessions for specific users or across the entire organization.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       ACCORDION WITH ICONS
+       ============================================================ -->
+  <h2>Accordion with Icons</h2>
+  <p>Section headers include a leading Material Symbol icon for additional visual context. Use <code>.sds-accordion-leading-icon</code> before the header text.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Leading icons</div>
+    <div class="sds-accordion" data-accordion-exclusive>
+      <div class="sds-accordion-item" data-expanded="true">
+        <button class="sds-accordion-header" aria-expanded="true" aria-controls="icon-panel-1" id="icon-header-1">
+          <span class="material-symbols-outlined sds-accordion-leading-icon">shield</span>
+          <span class="sds-accordion-header-text">Threat Detection</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="icon-panel-1" role="region" aria-labelledby="icon-header-1">
+          <div class="sds-accordion-panel-inner">
+            Real-time monitoring of data access patterns to detect anomalous behavior. Machine learning models flag suspicious queries, bulk exports, and privilege escalation attempts.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="icon-panel-2" id="icon-header-2">
+          <span class="material-symbols-outlined sds-accordion-leading-icon">policy</span>
+          <span class="sds-accordion-header-text">Compliance Frameworks</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="icon-panel-2" role="region" aria-labelledby="icon-header-2">
+          <div class="sds-accordion-panel-inner">
+            Map organizational controls to SOC 2, GDPR, HIPAA, and PCI-DSS requirements. Automated evidence collection generates audit-ready reports on demand.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="icon-panel-3" id="icon-header-3">
+          <span class="material-symbols-outlined sds-accordion-leading-icon">fingerprint</span>
+          <span class="sds-accordion-header-text">Data Classification</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="icon-panel-3" role="region" aria-labelledby="icon-header-3">
+          <div class="sds-accordion-panel-inner">
+            Automatically scan and classify sensitive data across all connected sources. Labels include PII, PHI, financial records, and intellectual property with configurable sensitivity tiers.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="icon-panel-4" id="icon-header-4">
+          <span class="material-symbols-outlined sds-accordion-leading-icon">notifications</span>
+          <span class="sds-accordion-header-text">Alert Policies</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="icon-panel-4" role="region" aria-labelledby="icon-header-4">
+          <div class="sds-accordion-panel-inner">
+            Configure notification rules for security events. Route alerts to Slack, PagerDuty, email, or webhooks based on severity level and affected resource type.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       NESTED ACCORDION
+       ============================================================ -->
+  <h2>Nested Accordion</h2>
+  <p>Accordion items can contain child accordions for deep hierarchies. Useful for multi-level settings like region-specific compliance configurations.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Two-level hierarchy</div>
+    <div class="sds-accordion" data-accordion-exclusive>
+      <div class="sds-accordion-item" data-expanded="true">
+        <button class="sds-accordion-header" aria-expanded="true" aria-controls="nested-panel-1" id="nested-header-1">
+          <span class="sds-accordion-header-text">Data Residency Rules</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="nested-panel-1" role="region" aria-labelledby="nested-header-1">
+          <div class="sds-accordion-panel-inner">
+            Configure where data is stored based on geographic and regulatory requirements.
+            <div class="sds-accordion" data-accordion-exclusive>
+              <div class="sds-accordion-item" data-expanded="true">
+                <button class="sds-accordion-header" aria-expanded="true" aria-controls="nested-sub-1" id="nested-sub-header-1">
+                  <span class="sds-accordion-header-text">European Union (GDPR)</span>
+                  <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+                </button>
+                <div class="sds-accordion-panel" id="nested-sub-1" role="region" aria-labelledby="nested-sub-header-1">
+                  <div class="sds-accordion-panel-inner">
+                    All personal data for EU subjects must be stored in Frankfurt or Dublin regions. Cross-border transfers require Standard Contractual Clauses.
+                  </div>
+                </div>
+              </div>
+              <div class="sds-accordion-item">
+                <button class="sds-accordion-header" aria-expanded="false" aria-controls="nested-sub-2" id="nested-sub-header-2">
+                  <span class="sds-accordion-header-text">United States (CCPA)</span>
+                  <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+                </button>
+                <div class="sds-accordion-panel" id="nested-sub-2" role="region" aria-labelledby="nested-sub-header-2">
+                  <div class="sds-accordion-panel-inner">
+                    California consumer data is stored in US-West regions. Opt-out requests must be processed within 15 business days per CCPA regulations.
+                  </div>
+                </div>
+              </div>
+              <div class="sds-accordion-item">
+                <button class="sds-accordion-header" aria-expanded="false" aria-controls="nested-sub-3" id="nested-sub-header-3">
+                  <span class="sds-accordion-header-text">Asia-Pacific (PDPA)</span>
+                  <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+                </button>
+                <div class="sds-accordion-panel" id="nested-sub-3" role="region" aria-labelledby="nested-sub-header-3">
+                  <div class="sds-accordion-panel-inner">
+                    Singapore and Australian data residency requirements mandate local storage with cross-border transfer agreements for inter-regional processing.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="nested-panel-2" id="nested-header-2">
+          <span class="sds-accordion-header-text">Backup and Recovery</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="nested-panel-2" role="region" aria-labelledby="nested-header-2">
+          <div class="sds-accordion-panel-inner">
+            Configure automated backup schedules, retention windows, and disaster recovery failover settings across all connected data sources.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BORDERED VARIANT
+       ============================================================ -->
+  <h2>Bordered Variant</h2>
+  <p>Each item has visible borders and dividers for a more structured appearance. Apply <code>.sds-accordion--bordered</code> to the container.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Bordered with dividers</div>
+    <div class="sds-accordion sds-accordion--bordered" data-accordion-exclusive>
+      <div class="sds-accordion-item" data-expanded="true">
+        <button class="sds-accordion-header" aria-expanded="true" aria-controls="bordered-panel-1" id="bordered-header-1">
+          <span class="sds-accordion-header-text">Password Requirements</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="bordered-panel-1" role="region" aria-labelledby="bordered-header-1">
+          <div class="sds-accordion-panel-inner">
+            Enforce minimum length, complexity rules, and password history depth. Passwords must contain at least 12 characters with uppercase, lowercase, numeric, and special character requirements.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="bordered-panel-2" id="bordered-header-2">
+          <span class="sds-accordion-header-text">Multi-factor Authentication</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="bordered-panel-2" role="region" aria-labelledby="bordered-header-2">
+          <div class="sds-accordion-panel-inner">
+            Require a second factor for all user logins. Supported methods include TOTP authenticator apps, hardware security keys (FIDO2/WebAuthn), and SMS verification codes.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="bordered-panel-3" id="bordered-header-3">
+          <span class="sds-accordion-header-text">API Key Management</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="bordered-panel-3" role="region" aria-labelledby="bordered-header-3">
+          <div class="sds-accordion-panel-inner">
+            Generate, rotate, and revoke API keys for programmatic access. Keys can be scoped to specific endpoints and assigned rate limits per consumer application.
+          </div>
+        </div>
+      </div>
+      <div class="sds-accordion-item">
+        <button class="sds-accordion-header" aria-expanded="false" aria-controls="bordered-panel-4" id="bordered-header-4">
+          <span class="sds-accordion-header-text">IP Allowlisting</span>
+          <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
+        </button>
+        <div class="sds-accordion-panel" id="bordered-panel-4" role="region" aria-labelledby="bordered-header-4">
+          <div class="sds-accordion-panel-inner">
+            Restrict access to known IP addresses or CIDR ranges. Requests from unlisted addresses are blocked and logged for security review.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Accordion — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Item background</td>
+        <td><code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Item border radius</td>
+        <td><code>--sds-space-200</code></td>
+      </tr>
+      <tr>
+        <td>Item spacing</td>
+        <td><code>--sds-space-200</code></td>
+      </tr>
+      <tr>
+        <td>Header padding</td>
+        <td><code>--sds-space-400</code> vertical, <code>--sds-space-500</code> horizontal</td>
+      </tr>
+      <tr>
+        <td>Header font size</td>
+        <td><code>--sds-type-body</code></td>
+      </tr>
+      <tr>
+        <td>Header font weight</td>
+        <td><code>--sds-weight-medium</code></td>
+      </tr>
+      <tr>
+        <td>Header text color</td>
+        <td><code>--sds-text-primary</code></td>
+      </tr>
+      <tr>
+        <td>Header hover bg</td>
+        <td><code>--sds-color-warm-gray-050</code></td>
+      </tr>
+      <tr>
+        <td>Chevron icon size</td>
+        <td><code>--sds-type-heading</code></td>
+      </tr>
+      <tr>
+        <td>Chevron color</td>
+        <td><code>--sds-color-warm-gray-400</code></td>
+      </tr>
+      <tr>
+        <td>Leading icon size</td>
+        <td><code>--sds-type-subheading</code></td>
+      </tr>
+      <tr>
+        <td>Leading icon color</td>
+        <td><code>--sds-color-warm-gray-450</code></td>
+      </tr>
+      <tr>
+        <td>Panel padding</td>
+        <td><code>0</code> top, <code>--sds-space-500</code> horizontal, <code>--sds-space-500</code> bottom</td>
+      </tr>
+      <tr>
+        <td>Panel font size</td>
+        <td><code>--sds-type-label</code></td>
+      </tr>
+      <tr>
+        <td>Panel text color</td>
+        <td><code>--sds-text-secondary</code></td>
+      </tr>
+      <tr>
+        <td>Expand transition</td>
+        <td><code>0.3s ease</code> (max-height)</td>
+      </tr>
+      <tr>
+        <td>Chevron rotation</td>
+        <td><code>0.25s ease</code> (180deg)</td>
+      </tr>
+      <tr>
+        <td>Focus ring</td>
+        <td><code>2px solid --sds-border-focus</code> (outline-offset: 2px)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Bordered Variant</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Border</td>
+        <td><code>1px solid --sds-color-warm-gray-150</code></td>
+      </tr>
+      <tr>
+        <td>Border radius (group)</td>
+        <td><code>--sds-space-200</code> on first/last items</td>
+      </tr>
+      <tr>
+        <td>Item spacing</td>
+        <td><code>0</code> (collapsed, shared borders)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-accordion</code></td><td>Container for accordion items</td></tr>
+      <tr><td><code>.sds-accordion-item</code></td><td>Individual collapsible section</td></tr>
+      <tr><td><code>.sds-accordion-header</code></td><td>Clickable button that toggles the panel</td></tr>
+      <tr><td><code>.sds-accordion-header-text</code></td><td>Text label within the header</td></tr>
+      <tr><td><code>.sds-accordion-icon</code></td><td>Chevron icon that rotates on expand</td></tr>
+      <tr><td><code>.sds-accordion-leading-icon</code></td><td>Optional leading icon before header text</td></tr>
+      <tr><td><code>.sds-accordion-panel</code></td><td>Collapsible content wrapper (handles animation)</td></tr>
+      <tr><td><code>.sds-accordion-panel-inner</code></td><td>Inner content area with padding</td></tr>
+      <tr><td><code>.sds-accordion--bordered</code></td><td>Modifier: adds visible borders between items</td></tr>
+    </tbody>
+  </table>
+
+  <h3>ARIA & Keyboard</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Attribute / Key</th><th>Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>aria-expanded</code></td><td>Set on header button; <code>true</code> when panel is open</td></tr>
+      <tr><td><code>aria-controls</code></td><td>Header references its panel by ID</td></tr>
+      <tr><td><code>role="region"</code></td><td>Panel is a labeled region via <code>aria-labelledby</code></td></tr>
+      <tr><td><code>Enter</code> / <code>Space</code></td><td>Toggle the focused accordion item</td></tr>
+      <tr><td><code>data-accordion-exclusive</code></td><td>Data attribute on container to enforce single-expand mode</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script>
+    /* ============================================================
+       ACCORDION BEHAVIOR
+       ============================================================ */
+    (function () {
+      function toggleItem(item, expand) {
+        const header = item.querySelector(':scope > .sds-accordion-header');
+        if (!header) return;
+        if (expand) {
+          item.setAttribute('data-expanded', 'true');
+          header.setAttribute('aria-expanded', 'true');
+        } else {
+          item.removeAttribute('data-expanded');
+          header.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      function handleToggle(header) {
+        const item = header.closest('.sds-accordion-item');
+        if (!item) return;
+        const accordion = item.closest('.sds-accordion');
+        if (!accordion) return;
+
+        const isExpanded = item.getAttribute('data-expanded') === 'true';
+        const isExclusive = accordion.hasAttribute('data-accordion-exclusive');
+
+        if (isExclusive) {
+          // Close siblings within the SAME accordion level only
+          Array.from(accordion.querySelectorAll(':scope > .sds-accordion-item')).forEach(function (sibling) {
+            if (sibling !== item) {
+              toggleItem(sibling, false);
+            }
+          });
+        }
+
+        toggleItem(item, !isExpanded);
+      }
+
+      document.addEventListener('click', function (e) {
+        var header = e.target.closest('.sds-accordion-header');
+        if (header) {
+          handleToggle(header);
+        }
+      });
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          var header = e.target.closest('.sds-accordion-header');
+          if (header && e.target === header) {
+            e.preventDefault();
+            handleToggle(header);
+          }
+        }
+      });
+    })();
+  </script>
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Notification Center</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sds-space-600);
+      align-items: flex-start;
+    }
+    .demo-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-400);
+    }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ---- Spec tables ---- */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* ============================================================
+       NOTIFICATION CENTER
+       Aggregated notification panel that collects alerts, updates,
+       and action items. Accessed from a bell icon trigger
+       in the application header.
+       ============================================================ */
+
+    /* ---- Trigger button ---- */
+    .sds-notif-trigger {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s ease;
+    }
+    .sds-notif-trigger:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+    .sds-notif-trigger .material-symbols-outlined {
+      font-size: 22px;
+      color: var(--sds-color-warm-gray-600);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+    .sds-notif-trigger__badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      background: var(--sds-color-red-550);
+      color: var(--sds-color-white);
+      font-size: 10px;
+      font-weight: var(--sds-weight-semibold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      font-family: var(--sds-font-sans);
+      line-height: 1;
+    }
+
+    /* ---- Panel container ---- */
+    .sds-notif-center {
+      width: 380px;
+      max-height: 480px;
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      /* TODO: replace with elevation/shadow token when available */
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Panel header ---- */
+    .sds-notif-center__header {
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .sds-notif-center__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .sds-notif-center__mark-read {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-blue-700);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      padding: 0;
+    }
+    .sds-notif-center__mark-read:hover {
+      text-decoration: underline;
+    }
+
+    /* ---- Tabs ---- */
+    .sds-notif-center__tabs {
+      display: flex;
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      padding: 0 var(--sds-space-400);
+      flex-shrink: 0;
+    }
+    .sds-notif-center__tab {
+      padding: var(--sds-space-250) var(--sds-space-300);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-500);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+      transition: color 0.12s ease, border-color 0.12s ease;
+    }
+    .sds-notif-center__tab:hover {
+      color: var(--sds-color-warm-gray-700);
+    }
+    .sds-notif-center__tab--active {
+      color: var(--sds-color-blue-700);
+      border-bottom-color: var(--sds-color-blue-700);
+    }
+
+    /* ---- Scrollable list ---- */
+    .sds-notif-center__list {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* ---- Empty state ---- */
+    .sds-notif-center__empty {
+      padding: var(--sds-space-1200);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-300);
+    }
+    .sds-notif-center__empty .material-symbols-outlined {
+      font-size: 48px;
+      color: var(--sds-color-warm-gray-300);
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 48;
+    }
+    .sds-notif-center__empty-text {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-secondary);
+    }
+    .sds-notif-center__empty-sub {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    /* ---- Notification item ---- */
+    .sds-notif-item {
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-050);
+      display: flex;
+      gap: var(--sds-space-300);
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+    .sds-notif-item:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+    .sds-notif-item:last-child {
+      border-bottom: none;
+    }
+
+    /* Unread state */
+    .sds-notif-item--unread {
+      background: var(--sds-color-blue-025);
+    }
+    .sds-notif-item--unread:hover {
+      background: var(--sds-color-blue-050);
+    }
+
+    /* ---- Icon area ---- */
+    .sds-notif-item__icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+    .sds-notif-item__icon .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    /* Unread dot */
+    .sds-notif-item--unread .sds-notif-item__icon::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sds-color-blue-550);
+    }
+
+    /* Semantic icon colors */
+    .sds-notif-item--error .sds-notif-item__icon {
+      background: var(--sds-color-red-050);
+    }
+    .sds-notif-item--error .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-red-550);
+    }
+
+    .sds-notif-item--warning .sds-notif-item__icon {
+      background: var(--sds-color-yellow-025);
+    }
+    .sds-notif-item--warning .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-yellow-550);
+    }
+
+    .sds-notif-item--success .sds-notif-item__icon {
+      background: var(--sds-color-green-025);
+    }
+    .sds-notif-item--success .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-green-500);
+    }
+
+    .sds-notif-item--info .sds-notif-item__icon {
+      background: var(--sds-color-blue-050);
+    }
+    .sds-notif-item--info .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-blue-700);
+    }
+
+    /* ---- Content area ---- */
+    .sds-notif-item__content {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-notif-item__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-snug);
+    }
+    .sds-notif-item__message {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      margin-top: var(--sds-space-050);
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-notif-item__time {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      margin-top: var(--sds-space-100);
+    }
+
+    /* ---- Action buttons ---- */
+    .sds-notif-item__actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-200);
+    }
+    .sds-notif-item__action {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-blue-700);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 4px;
+      font-family: inherit;
+      transition: background 0.12s ease;
+    }
+    .sds-notif-item__action:hover {
+      background: var(--sds-color-blue-050);
+    }
+    .sds-notif-item__action--dismiss {
+      color: var(--sds-color-warm-gray-500);
+    }
+    .sds-notif-item__action--dismiss:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    /* ---- In-context header simulation ---- */
+    .context-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+      padding: 0 var(--sds-space-500);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px 12px 0 0;
+    }
+    .context-header__logo {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .context-header__logo .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--sds-color-blue-700);
+    }
+    .context-header__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      position: relative;
+    }
+    .context-area {
+      position: relative;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      background: var(--sds-color-warm-gray-025);
+      min-height: 200px;
+    }
+    .context-dropdown {
+      position: absolute;
+      top: 8px;
+      right: var(--sds-space-500);
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Notification Center</h1>
+<p class="page-subtitle">Aggregated notification panel that collects alerts, system events, and action items. Typically accessed from a bell icon in the application header.</p>
+
+<!-- ============ TRIGGER BUTTON ============ -->
+<h2>Trigger Button</h2>
+<p>The bell icon button that opens the notification panel. Shows a badge count when there are unread notifications.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Trigger States</div>
+  <div class="demo-row" style="gap: var(--sds-space-1000); align-items: center;">
+    <div style="text-align: center;">
+      <button class="sds-notif-trigger" aria-label="Notifications">
+        <span class="material-symbols-outlined">notifications</span>
+      </button>
+      <div style="font-size: var(--sds-type-caption); color: var(--sds-color-warm-gray-400); margin-top: var(--sds-space-200);">No notifications</div>
+    </div>
+    <div style="text-align: center;">
+      <button class="sds-notif-trigger" aria-label="3 notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="sds-notif-trigger__badge">3</span>
+      </button>
+      <div style="font-size: var(--sds-type-caption); color: var(--sds-color-warm-gray-400); margin-top: var(--sds-space-200);">Has notifications</div>
+    </div>
+    <div style="text-align: center;">
+      <button class="sds-notif-trigger" aria-label="12+ notifications">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="sds-notif-trigger__badge">12+</span>
+      </button>
+      <div style="font-size: var(--sds-type-caption); color: var(--sds-color-warm-gray-400); margin-top: var(--sds-space-200);">Many notifications</div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ NOTIFICATION PANEL ============ -->
+<h2>Notification Panel</h2>
+<p>The full panel showing a list of notifications with different semantic types: error, warning, success, and info.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Panel with mixed notifications</div>
+  <div class="sds-notif-center" role="region" aria-label="Notifications">
+    <div class="sds-notif-center__header">
+      <span class="sds-notif-center__title">Notifications</span>
+      <button class="sds-notif-center__mark-read" onclick="markAllRead(this)">Mark all read</button>
+    </div>
+    <div class="sds-notif-center__list">
+      <div class="sds-notif-item sds-notif-item--error sds-notif-item--unread">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">error</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Critical: 3 failed tasks require immediate attention</div>
+          <div class="sds-notif-item__time">5 min ago</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--warning sds-notif-item--unread">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Storage usage at 90%</div>
+          <div class="sds-notif-item__message">Consider archiving unused files or upgrading your plan.</div>
+          <div class="sds-notif-item__time">1 hour ago</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--success">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Weekly report generated</div>
+          <div class="sds-notif-item__message">Report is ready to download.</div>
+          <div class="sds-notif-item__time">3 hours ago</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--info">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">info</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">New team member joined</div>
+          <div class="sds-notif-item__message">Alex Rivera has been added to the Design team.</div>
+          <div class="sds-notif-item__time">Yesterday</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--info">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">info</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">System maintenance scheduled</div>
+          <div class="sds-notif-item__message">March 20, 2:00-4:00 AM EST</div>
+          <div class="sds-notif-item__time">2 days ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ WITH TABS ============ -->
+<h2>With Tabs</h2>
+<p>Panel with tab filters for All, Unread, and Critical notifications. Click tabs to filter the visible list.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive tab filtering</div>
+  <div class="sds-notif-center" role="region" aria-label="Notifications" id="tabbed-panel">
+    <div class="sds-notif-center__header">
+      <span class="sds-notif-center__title">Notifications</span>
+      <button class="sds-notif-center__mark-read" onclick="markAllReadTabbed()">Mark all read</button>
+    </div>
+    <div class="sds-notif-center__tabs" role="tablist" aria-label="Notification filters">
+      <button class="sds-notif-center__tab sds-notif-center__tab--active" role="tab" aria-selected="true" data-filter="all" onclick="filterTabs(this, 'all')">All (5)</button>
+      <button class="sds-notif-center__tab" role="tab" aria-selected="false" data-filter="unread" onclick="filterTabs(this, 'unread')">Unread (2)</button>
+      <button class="sds-notif-center__tab" role="tab" aria-selected="false" data-filter="critical" onclick="filterTabs(this, 'critical')">Critical (1)</button>
+    </div>
+    <div class="sds-notif-center__list" id="tabbed-list">
+      <div class="sds-notif-item sds-notif-item--error sds-notif-item--unread" data-type="critical" data-unread="true">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">error</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Critical: 3 failed tasks require immediate attention</div>
+          <div class="sds-notif-item__time">5 min ago</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--warning sds-notif-item--unread" data-type="warning" data-unread="true">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Storage usage at 90%</div>
+          <div class="sds-notif-item__message">Consider archiving unused files or upgrading your plan.</div>
+          <div class="sds-notif-item__time">1 hour ago</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--success" data-type="success" data-unread="false">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Weekly report generated</div>
+          <div class="sds-notif-item__message">Report is ready to download.</div>
+          <div class="sds-notif-item__time">3 hours ago</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--info" data-type="info" data-unread="false">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">info</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">New team member joined</div>
+          <div class="sds-notif-item__message">Alex Rivera has been added to the Design team.</div>
+          <div class="sds-notif-item__time">Yesterday</div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--info" data-type="info" data-unread="false">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">info</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">System maintenance scheduled</div>
+          <div class="sds-notif-item__message">March 20, 2:00-4:00 AM EST</div>
+          <div class="sds-notif-item__time">2 days ago</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ WITH ACTIONS ============ -->
+<h2>With Actions</h2>
+<p>Notifications that include inline action buttons for common operations like viewing details, dismissing, or marking as read.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Action buttons on notifications</div>
+  <div class="sds-notif-center" role="region" aria-label="Notifications" id="actions-panel">
+    <div class="sds-notif-center__header">
+      <span class="sds-notif-center__title">Notifications</span>
+      <button class="sds-notif-center__mark-read" onclick="markAllRead(this)">Mark all read</button>
+    </div>
+    <div class="sds-notif-center__list">
+      <div class="sds-notif-item sds-notif-item--error sds-notif-item--unread">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">error</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Critical: 3 failed tasks require immediate attention</div>
+          <div class="sds-notif-item__time">5 min ago</div>
+          <div class="sds-notif-item__actions">
+            <button class="sds-notif-item__action">View Details</button>
+            <button class="sds-notif-item__action--dismiss sds-notif-item__action" onclick="dismissNotif(this)">Dismiss</button>
+          </div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--warning sds-notif-item--unread">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Storage usage at 90%</div>
+          <div class="sds-notif-item__message">Consider archiving unused files or upgrading your plan.</div>
+          <div class="sds-notif-item__time">1 hour ago</div>
+          <div class="sds-notif-item__actions">
+            <button class="sds-notif-item__action">View Details</button>
+            <button class="sds-notif-item__action" onclick="markOneRead(this)">Mark as Read</button>
+            <button class="sds-notif-item__action--dismiss sds-notif-item__action" onclick="dismissNotif(this)">Dismiss</button>
+          </div>
+        </div>
+      </div>
+      <div class="sds-notif-item sds-notif-item--success">
+        <div class="sds-notif-item__icon">
+          <span class="material-symbols-outlined">check_circle</span>
+        </div>
+        <div class="sds-notif-item__content">
+          <div class="sds-notif-item__title">Weekly report generated</div>
+          <div class="sds-notif-item__message">Report is ready to download.</div>
+          <div class="sds-notif-item__time">3 hours ago</div>
+          <div class="sds-notif-item__actions">
+            <button class="sds-notif-item__action">View Details</button>
+            <button class="sds-notif-item__action--dismiss sds-notif-item__action" onclick="dismissNotif(this)">Dismiss</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ EMPTY STATE ============ -->
+<h2>Empty State</h2>
+<p>Shown when there are no notifications to display. Provides a reassuring message that everything is up to date.</p>
+
+<div class="demo-block">
+  <div class="demo-label">No notifications</div>
+  <div class="sds-notif-center" role="region" aria-label="Notifications">
+    <div class="sds-notif-center__header">
+      <span class="sds-notif-center__title">Notifications</span>
+    </div>
+    <div class="sds-notif-center__list">
+      <div class="sds-notif-center__empty">
+        <span class="material-symbols-outlined">check_circle</span>
+        <div class="sds-notif-center__empty-text">All caught up!</div>
+        <div class="sds-notif-center__empty-sub">No new notifications at this time.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ IN CONTEXT ============ -->
+<h2>In Context</h2>
+<p>The notification center as it appears in the application header. Click the bell icon to toggle the dropdown panel.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Header integration</div>
+  <div class="context-header">
+    <div class="context-header__logo">
+      <span class="material-symbols-outlined">dashboard</span>
+      Workspace
+    </div>
+    <div class="context-header__actions">
+      <button class="sds-notif-trigger" aria-label="3 notifications" onclick="toggleContextPanel()" id="context-trigger">
+        <span class="material-symbols-outlined">notifications</span>
+        <span class="sds-notif-trigger__badge">3</span>
+      </button>
+    </div>
+  </div>
+  <div class="context-area">
+    <div class="context-dropdown" id="context-panel" style="display: none;">
+      <div class="sds-notif-center" role="region" aria-label="Notifications">
+        <div class="sds-notif-center__header">
+          <span class="sds-notif-center__title">Notifications</span>
+          <button class="sds-notif-center__mark-read" onclick="markAllReadContext()">Mark all read</button>
+        </div>
+        <div class="sds-notif-center__list">
+          <div class="sds-notif-item sds-notif-item--error sds-notif-item--unread">
+            <div class="sds-notif-item__icon">
+              <span class="material-symbols-outlined">error</span>
+            </div>
+            <div class="sds-notif-item__content">
+              <div class="sds-notif-item__title">Critical: 3 failed tasks require immediate attention</div>
+              <div class="sds-notif-item__time">5 min ago</div>
+            </div>
+          </div>
+          <div class="sds-notif-item sds-notif-item--warning sds-notif-item--unread">
+            <div class="sds-notif-item__icon">
+              <span class="material-symbols-outlined">warning</span>
+            </div>
+            <div class="sds-notif-item__content">
+              <div class="sds-notif-item__title">Storage usage at 90%</div>
+              <div class="sds-notif-item__message">Consider archiving unused files or upgrading your plan.</div>
+              <div class="sds-notif-item__time">1 hour ago</div>
+            </div>
+          </div>
+          <div class="sds-notif-item sds-notif-item--success">
+            <div class="sds-notif-item__icon">
+              <span class="material-symbols-outlined">check_circle</span>
+            </div>
+            <div class="sds-notif-item__content">
+              <div class="sds-notif-item__title">Weekly report generated</div>
+              <div class="sds-notif-item__message">Report is ready to download.</div>
+              <div class="sds-notif-item__time">3 hours ago</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ SPECIFICATION ============ -->
+<h2>Specification</h2>
+
+<h3>Trigger Button</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Size</td><td>36 &times; 36px, border-radius 50%</td></tr>
+    <tr><td>Background</td><td>transparent; hover <code>--sds-color-warm-gray-050</code></td></tr>
+    <tr><td>Icon</td><td><code>notifications</code>, 22px, <code>--sds-color-warm-gray-600</code></td></tr>
+    <tr><td>Badge min-width</td><td>18px, height 18px, border-radius 9px</td></tr>
+    <tr><td>Badge background</td><td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>--sds-color-red-550</code></td></tr>
+    <tr><td>Badge text</td><td>10px, <code>--sds-weight-semibold</code>, white</td></tr>
+    <tr><td>Badge position</td><td>absolute, top -2px, right -2px</td></tr>
+  </tbody>
+</table>
+
+<h3>Panel Container</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Width</td><td>380px</td></tr>
+    <tr><td>Max height</td><td>480px</td></tr>
+    <tr><td>Background</td><td><code>--sds-color-white</code></td></tr>
+    <tr><td>Border</td><td>1px solid <code>--sds-color-warm-gray-150</code></td></tr>
+    <tr><td>Border radius</td><td>12px</td></tr>
+    <tr><td>Box shadow</td><td>0 8px 24px rgba(0,0,0,0.12)</td></tr>
+    <tr><td>Layout</td><td>flex, column, overflow hidden</td></tr>
+  </tbody>
+</table>
+
+<h3>Panel Header</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td><code>--sds-space-400</code> <code>--sds-space-500</code></td></tr>
+    <tr><td>Border bottom</td><td>1px solid <code>--sds-color-warm-gray-100</code></td></tr>
+    <tr><td>Title</td><td><code>--sds-type-body</code>, <code>--sds-weight-semibold</code></td></tr>
+    <tr><td>Mark all read</td><td><code>--sds-type-caption</code>, <code>--sds-color-blue-700</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Tabs</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Container padding</td><td>0 <code>--sds-space-400</code></td></tr>
+    <tr><td>Tab padding</td><td><code>--sds-space-250</code> <code>--sds-space-300</code></td></tr>
+    <tr><td>Font</td><td><code>--sds-type-caption</code>, <code>--sds-weight-medium</code></td></tr>
+    <tr><td>Default color</td><td><code>--sds-color-warm-gray-500</code></td></tr>
+    <tr><td>Active color</td><td><span class="swatch" style="background:var(--sds-color-blue-700)"></span><code>--sds-color-blue-700</code></td></tr>
+    <tr><td>Active border</td><td>2px solid <code>--sds-color-blue-700</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Notification Item</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td><code>--sds-space-400</code> <code>--sds-space-500</code></td></tr>
+    <tr><td>Gap</td><td><code>--sds-space-300</code></td></tr>
+    <tr><td>Border bottom</td><td>1px solid <code>--sds-color-warm-gray-050</code></td></tr>
+    <tr><td>Hover bg</td><td><code>--sds-color-warm-gray-025</code></td></tr>
+    <tr><td>Unread bg</td><td><span class="swatch" style="background:var(--sds-color-blue-025)"></span><code>--sds-color-blue-025</code>; hover <code>--sds-color-blue-050</code></td></tr>
+    <tr><td>Unread dot</td><td>6px, <code>--sds-color-blue-550</code></td></tr>
+    <tr><td>Icon circle</td><td>32px, border-radius 50%</td></tr>
+    <tr><td>Title</td><td><code>--sds-type-label</code>, <code>--sds-weight-medium</code></td></tr>
+    <tr><td>Message</td><td><code>--sds-type-caption</code>, <code>--sds-text-secondary</code></td></tr>
+    <tr><td>Time</td><td><code>--sds-type-caption</code>, <code>--sds-color-warm-gray-400</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Semantic Icon Colors</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Variant</th><th>Icon Background</th><th>Icon Color</th><th>Material Symbol</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Error</td>
+      <td><span class="swatch" style="background:var(--sds-color-red-050)"></span><code>--sds-color-red-050</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>--sds-color-red-550</code></td>
+      <td><code>error</code></td>
+    </tr>
+    <tr>
+      <td>Warning</td>
+      <td><span class="swatch" style="background:var(--sds-color-yellow-025)"></span><code>--sds-color-yellow-025</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-yellow-550)"></span><code>--sds-color-yellow-550</code></td>
+      <td><code>warning</code></td>
+    </tr>
+    <tr>
+      <td>Success</td>
+      <td><span class="swatch" style="background:var(--sds-color-green-025)"></span><code>--sds-color-green-025</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-green-500)"></span><code>--sds-color-green-500</code></td>
+      <td><code>check_circle</code></td>
+    </tr>
+    <tr>
+      <td>Info</td>
+      <td><span class="swatch" style="background:var(--sds-color-blue-050)"></span><code>--sds-color-blue-050</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-blue-700)"></span><code>--sds-color-blue-700</code></td>
+      <td><code>info</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>CSS Class Reference</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Class</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>.sds-notif-trigger</code></td><td>Bell icon button with optional badge</td></tr>
+    <tr><td><code>.sds-notif-trigger__badge</code></td><td>Red count badge on trigger</td></tr>
+    <tr><td><code>.sds-notif-center</code></td><td>Panel container (dropdown)</td></tr>
+    <tr><td><code>.sds-notif-center__header</code></td><td>Panel header with title and actions</td></tr>
+    <tr><td><code>.sds-notif-center__tabs</code></td><td>Tab bar for filtering</td></tr>
+    <tr><td><code>.sds-notif-center__tab</code></td><td>Individual tab button</td></tr>
+    <tr><td><code>.sds-notif-center__tab--active</code></td><td>Active tab state</td></tr>
+    <tr><td><code>.sds-notif-center__list</code></td><td>Scrollable notification list</td></tr>
+    <tr><td><code>.sds-notif-center__empty</code></td><td>Empty state container</td></tr>
+    <tr><td><code>.sds-notif-item</code></td><td>Individual notification entry</td></tr>
+    <tr><td><code>.sds-notif-item__icon</code></td><td>Colored icon circle</td></tr>
+    <tr><td><code>.sds-notif-item__content</code></td><td>Text content area</td></tr>
+    <tr><td><code>.sds-notif-item__title</code></td><td>Notification title</td></tr>
+    <tr><td><code>.sds-notif-item__message</code></td><td>Notification detail text</td></tr>
+    <tr><td><code>.sds-notif-item__time</code></td><td>Relative timestamp</td></tr>
+    <tr><td><code>.sds-notif-item__actions</code></td><td>Action buttons area</td></tr>
+    <tr><td><code>.sds-notif-item--unread</code></td><td>Unread state (blue bg + dot)</td></tr>
+    <tr><td><code>.sds-notif-item--error</code></td><td>Critical notification</td></tr>
+    <tr><td><code>.sds-notif-item--warning</code></td><td>Warning notification</td></tr>
+    <tr><td><code>.sds-notif-item--success</code></td><td>Success notification</td></tr>
+    <tr><td><code>.sds-notif-item--info</code></td><td>Informational notification</td></tr>
+  </tbody>
+</table>
+
+<script>
+  /* ---- Tab filtering ---- */
+  function filterTabs(tabEl, filter) {
+    var panel = document.getElementById('tabbed-panel');
+    var tabs = panel.querySelectorAll('.sds-notif-center__tab');
+    tabs.forEach(function(t) {
+      t.classList.remove('sds-notif-center__tab--active');
+      t.setAttribute('aria-selected', 'false');
+    });
+    tabEl.classList.add('sds-notif-center__tab--active');
+    tabEl.setAttribute('aria-selected', 'true');
+
+    var items = document.querySelectorAll('#tabbed-list .sds-notif-item');
+    items.forEach(function(item) {
+      if (filter === 'all') {
+        item.style.display = '';
+      } else if (filter === 'unread') {
+        item.style.display = item.dataset.unread === 'true' ? '' : 'none';
+      } else if (filter === 'critical') {
+        item.style.display = item.dataset.type === 'critical' ? '' : 'none';
+      }
+    });
+  }
+
+  /* ---- Mark all read ---- */
+  function markAllRead(btn) {
+    var panel = btn.closest('.sds-notif-center');
+    var items = panel.querySelectorAll('.sds-notif-item--unread');
+    items.forEach(function(item) {
+      item.classList.remove('sds-notif-item--unread');
+      if (item.dataset) item.dataset.unread = 'false';
+    });
+  }
+
+  function markAllReadTabbed() {
+    var panel = document.getElementById('tabbed-panel');
+    var items = panel.querySelectorAll('.sds-notif-item--unread');
+    items.forEach(function(item) {
+      item.classList.remove('sds-notif-item--unread');
+      item.dataset.unread = 'false';
+    });
+    // Update tab counts
+    var tabs = panel.querySelectorAll('.sds-notif-center__tab');
+    tabs[1].textContent = 'Unread (0)';
+  }
+
+  function markAllReadContext() {
+    var panel = document.getElementById('context-panel');
+    var items = panel.querySelectorAll('.sds-notif-item--unread');
+    items.forEach(function(item) {
+      item.classList.remove('sds-notif-item--unread');
+    });
+    // Update badge
+    var badge = document.querySelector('#context-trigger .sds-notif-trigger__badge');
+    if (badge) badge.remove();
+  }
+
+  /* ---- Mark one read ---- */
+  function markOneRead(btn) {
+    var item = btn.closest('.sds-notif-item');
+    item.classList.remove('sds-notif-item--unread');
+    btn.remove();
+  }
+
+  /* ---- Dismiss notification ---- */
+  function dismissNotif(btn) {
+    var item = btn.closest('.sds-notif-item');
+    item.style.transition = 'opacity 0.2s ease, max-height 0.2s ease';
+    item.style.opacity = '0';
+    setTimeout(function() { item.remove(); }, 200);
+  }
+
+  /* ---- Context panel toggle ---- */
+  function toggleContextPanel() {
+    var panel = document.getElementById('context-panel');
+    if (panel.style.display === 'none') {
+      panel.style.display = 'block';
+    } else {
+      panel.style.display = 'none';
+    }
+  }
+
+  /* Close context panel when clicking outside */
+  document.addEventListener('click', function(e) {
+    var panel = document.getElementById('context-panel');
+    var trigger = document.getElementById('context-trigger');
+    if (panel.style.display !== 'none' && !panel.contains(e.target) && !trigger.contains(e.target)) {
+      panel.style.display = 'none';
+    }
+  });
+
+  /* Close context panel on Escape key */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var panel = document.getElementById('context-panel');
+      if (panel.style.display !== 'none') {
+        panel.style.display = 'none';
+        document.getElementById('context-trigger').focus();
+      }
+    }
+  });
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

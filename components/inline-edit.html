@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Inline Edit</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+      padding-top: var(--sds-space-250);
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: var(--sds-space-400);
+    }
+
+    /* Spec table */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+
+    /* ============================================================
+       INLINE EDIT
+       Click-to-edit text fields for modifying values directly
+       in tables, lists, and detail views without opening a modal.
+       ============================================================ */
+
+    .sds-inline-edit {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      position: relative;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+    }
+
+    /* ---- Display (read-only) ---- */
+    .sds-inline-edit__display {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      cursor: pointer;
+      padding: var(--sds-space-100) 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
+      color: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+    .sds-inline-edit__trigger {
+      display: inline-flex;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      color: var(--sds-color-warm-gray-400);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .sds-inline-edit__trigger .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    /* Hover state */
+    .sds-inline-edit--hover .sds-inline-edit__display,
+    .sds-inline-edit__display:hover {
+      border-bottom-color: var(--sds-color-warm-gray-300);
+      border-bottom-style: dashed;
+    }
+    .sds-inline-edit--hover .sds-inline-edit__trigger,
+    .sds-inline-edit__display:hover .sds-inline-edit__trigger {
+      opacity: 1;
+    }
+
+    /* ---- Input (editing) ---- */
+    .sds-inline-edit__input {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-page);
+      border: 1.5px solid var(--sds-color-warm-gray-250);
+      border-radius: 6px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      min-width: 200px;
+    }
+    .sds-inline-edit__input:focus {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1,61,91,0.15);
+    }
+
+    /* ---- Select (dropdown variant) ---- */
+    .sds-inline-edit__select {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-page);
+      border: 1.5px solid var(--sds-color-warm-gray-250);
+      border-radius: 6px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      padding-right: var(--sds-space-800);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6560' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--sds-space-300) center;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .sds-inline-edit__select:focus {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1,61,91,0.15);
+    }
+
+    /* ---- Action buttons ---- */
+    .sds-inline-edit__actions {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+    }
+    .sds-inline-edit__actions button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: opacity 0.15s ease;
+    }
+    .sds-inline-edit__actions button:hover { opacity: 0.85; }
+    .sds-inline-edit__actions button .material-symbols-outlined { font-size: 16px; }
+
+    .sds-inline-edit__confirm {
+      background: var(--sds-color-green-400);
+      color: white;
+    }
+    .sds-inline-edit__cancel {
+      background: var(--sds-color-warm-gray-150);
+      color: var(--sds-color-warm-gray-600);
+    }
+
+    /* ---- Editing state ---- */
+    .sds-inline-edit--editing .sds-inline-edit__display { display: none; }
+    .sds-inline-edit:not(.sds-inline-edit--editing) .sds-inline-edit__input,
+    .sds-inline-edit:not(.sds-inline-edit--editing) .sds-inline-edit__select,
+    .sds-inline-edit:not(.sds-inline-edit--editing) .sds-inline-edit__actions {
+      display: none;
+    }
+
+    /* ---- Error state ---- */
+    .sds-inline-edit--error .sds-inline-edit__input {
+      border-color: var(--sds-color-red-450);
+    }
+    .sds-inline-edit--error .sds-inline-edit__input:focus {
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+    }
+    .sds-inline-edit__error-msg {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-red-550);
+      margin-top: var(--sds-space-100);
+    }
+
+    /* ---- Saving state ---- */
+    .sds-inline-edit--saving .sds-inline-edit__input {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+    .sds-inline-edit--saving .sds-inline-edit__actions button {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .sds-inline-edit__saving-text {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      font-style: italic;
+    }
+
+    /* ---- Size: Small ---- */
+    .sds-inline-edit--sm {
+      font-size: var(--sds-type-caption);
+    }
+    .sds-inline-edit--sm .sds-inline-edit__input {
+      padding: var(--sds-space-100) var(--sds-space-200);
+      min-width: 140px;
+    }
+    .sds-inline-edit--sm .sds-inline-edit__actions button {
+      width: 20px;
+      height: 20px;
+    }
+    .sds-inline-edit--sm .sds-inline-edit__actions button .material-symbols-outlined {
+      font-size: 14px;
+    }
+    .sds-inline-edit--sm .sds-inline-edit__trigger .material-symbols-outlined {
+      font-size: 12px;
+    }
+
+    /* ---- Size: Large ---- */
+    .sds-inline-edit--lg {
+      font-size: var(--sds-type-title);
+    }
+    .sds-inline-edit--lg .sds-inline-edit__input {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      min-width: 320px;
+    }
+    .sds-inline-edit--lg .sds-inline-edit__trigger .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* ============================================================
+       CONTEXT DEMOS
+       ============================================================ */
+
+    /* Mini table for in-context demo */
+    .demo-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-body);
+    }
+    .demo-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-050);
+    }
+    .demo-table td {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      vertical-align: middle;
+    }
+    .demo-table tr:last-child td { border-bottom: none; }
+
+    /* Detail card for in-context demo */
+    .demo-detail-card {
+      background: var(--sds-bg-page);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-600);
+      max-width: 560px;
+    }
+    .demo-detail-card__header {
+      margin-bottom: var(--sds-space-500);
+      padding-bottom: var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .demo-detail-card__row {
+      display: flex;
+      gap: var(--sds-space-400);
+      margin-bottom: var(--sds-space-400);
+    }
+    .demo-detail-card__row:last-child { margin-bottom: 0; }
+    .demo-detail-card__label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 120px;
+      flex-shrink: 0;
+      padding-top: var(--sds-space-100);
+    }
+    .demo-detail-card__value {
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+    }
+
+    /* Tag reuse for table context */
+    .sds-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .sds-tag--success { background: var(--sds-color-green-025); color: var(--sds-color-green-500); }
+    .sds-tag--warning { background: var(--sds-color-yellow-025); color: var(--sds-color-yellow-550); }
+    .sds-tag--error { background: var(--sds-color-red-050); color: var(--sds-color-red-550); }
+  </style>
+</head>
+<body>
+
+  <h1>Inline Edit</h1>
+  <p class="page-subtitle">Click-to-edit text fields for modifying values directly in tables, lists, and detail views without opening a modal. Essential for editing names, labels, descriptions, and settings.</p>
+
+  <!-- ============================================================
+       BASIC INLINE EDIT
+       ============================================================ -->
+  <h2>Basic Inline Edit</h2>
+  <p>Click the text below to enter editing mode. Press <code>Enter</code> or click the confirm button to save. Press <code>Escape</code> or click cancel to revert.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Interactive — click to edit</div>
+    <div class="sds-inline-edit" data-inline-edit>
+      <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+        Q1 Marketing Campaign
+        <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+      </span>
+      <input class="sds-inline-edit__input" type="text" value="Q1 Marketing Campaign" data-input />
+      <span class="sds-inline-edit__actions">
+        <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+        <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+      </span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STATES
+       ============================================================ -->
+  <h2>States</h2>
+  <p>All visual states of the inline edit component, from read-only through to error handling.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Component states</div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Read-only</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit">
+          <span class="sds-inline-edit__display" tabindex="0" role="button">
+            Q1 Marketing Campaign
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Hover</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit sds-inline-edit--hover">
+          <span class="sds-inline-edit__display" tabindex="0" role="button">
+            Q1 Marketing Campaign
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Editing</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit sds-inline-edit--editing">
+          <span class="sds-inline-edit__display" tabindex="0" role="button">
+            Q1 Marketing Campaign
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <input class="sds-inline-edit__input" type="text" value="Q1 Marketing Campaign" />
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Saving</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit sds-inline-edit--editing sds-inline-edit--saving">
+          <span class="sds-inline-edit__display" tabindex="0" role="button">
+            Q1 Marketing Campaign
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <input class="sds-inline-edit__input" type="text" value="Q1 Marketing Campaign" />
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+          <span class="sds-inline-edit__saving-text">Saving…</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Error</span>
+      <div class="demo-row-items">
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div class="sds-inline-edit sds-inline-edit--editing sds-inline-edit--error">
+            <span class="sds-inline-edit__display" tabindex="0" role="button">
+              Q1 Marketing Campaign
+              <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+            </span>
+            <input class="sds-inline-edit__input" type="text" value="" placeholder="Project name required" />
+            <span class="sds-inline-edit__actions">
+              <button class="sds-inline-edit__confirm" title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+              <button class="sds-inline-edit__cancel" title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+            </span>
+          </div>
+          <span class="sds-inline-edit__error-msg">Project name cannot be empty</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SIZES
+       ============================================================ -->
+  <h2>Sizes</h2>
+  <p>Three sizes optimized for different contexts — small for dense table cells, default for standard forms, and large for page titles.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Size variants</div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Small</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit sds-inline-edit--sm" data-inline-edit>
+          <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+            Budget Approval Task
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <input class="sds-inline-edit__input" type="text" value="Budget Approval Task" data-input />
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Default</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit" data-inline-edit>
+          <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+            Weekly Status Report
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <input class="sds-inline-edit__input" type="text" value="Weekly Status Report" data-input />
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Large</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit sds-inline-edit--lg" data-inline-edit>
+          <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+            Annual Planning Document
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <input class="sds-inline-edit__input" type="text" value="Annual Planning Document" data-input />
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT: TABLE CELL
+       ============================================================ -->
+  <h2>In Context: Table Cell</h2>
+  <p>Inline edit used within a data table. The name column is editable — click any task name to modify it.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Table with editable names</div>
+    <table class="demo-table">
+      <thead>
+        <tr>
+          <th style="width:280px;">Task Name</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Assignees</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>
+            <div class="sds-inline-edit sds-inline-edit--sm" data-inline-edit>
+              <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+                Budget Approval Task
+                <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+              </span>
+              <input class="sds-inline-edit__input" type="text" value="Budget Approval Task" data-input />
+              <span class="sds-inline-edit__actions">
+                <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+                <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+              </span>
+            </div>
+          </td>
+          <td>Review</td>
+          <td><span class="sds-tag sds-tag--success">Active</span></td>
+          <td>4</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="sds-inline-edit sds-inline-edit--sm" data-inline-edit>
+              <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+                Vendor Onboarding
+                <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+              </span>
+              <input class="sds-inline-edit__input" type="text" value="Vendor Onboarding" data-input />
+              <span class="sds-inline-edit__actions">
+                <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+                <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+              </span>
+            </div>
+          </td>
+          <td>Process</td>
+          <td><span class="sds-tag sds-tag--warning">Draft</span></td>
+          <td>2</td>
+        </tr>
+        <tr>
+          <td>
+            <div class="sds-inline-edit sds-inline-edit--sm" data-inline-edit>
+              <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+                Legacy Report Migration
+                <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+              </span>
+              <input class="sds-inline-edit__input" type="text" value="Legacy Report Migration" data-input />
+              <span class="sds-inline-edit__actions">
+                <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+                <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+              </span>
+            </div>
+          </td>
+          <td>Migration</td>
+          <td><span class="sds-tag sds-tag--error">On Hold</span></td>
+          <td>6</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT: DETAIL VIEW
+       ============================================================ -->
+  <h2>In Context: Detail View</h2>
+  <p>Inline edit used in a project detail card. The title and description are editable; metadata fields are read-only.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Project detail card</div>
+    <div class="demo-detail-card">
+      <div class="demo-detail-card__header">
+        <div class="sds-inline-edit sds-inline-edit--lg" data-inline-edit>
+          <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+            Website Redesign Project
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <input class="sds-inline-edit__input" type="text" value="Website Redesign Project" data-input />
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+        </div>
+      </div>
+      <div class="demo-detail-card__row">
+        <span class="demo-detail-card__label">Description</span>
+        <div class="sds-inline-edit" data-inline-edit>
+          <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+            Modernize the company website with updated branding and improved user experience
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <input class="sds-inline-edit__input" type="text" value="Modernize the company website with updated branding and improved user experience" data-input style="min-width:380px;" />
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+        </div>
+      </div>
+      <div class="demo-detail-card__row">
+        <span class="demo-detail-card__label">Created by</span>
+        <span class="demo-detail-card__value">Jordan Mitchell</span>
+      </div>
+      <div class="demo-detail-card__row">
+        <span class="demo-detail-card__label">Last modified</span>
+        <span class="demo-detail-card__value">Mar 12, 2026 at 2:47 PM</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SELECT VARIANT
+       ============================================================ -->
+  <h2>Select Variant</h2>
+  <p>An inline edit that opens a dropdown select instead of a text input. Useful for enumerated values like status, priority, and category.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Priority selector — click to change</div>
+
+    <div class="demo-row">
+      <span class="demo-row-label">Priority</span>
+      <div class="demo-row-items">
+        <div class="sds-inline-edit" data-inline-edit-select>
+          <span class="sds-inline-edit__display" data-display tabindex="0" role="button">
+            High
+            <span class="sds-inline-edit__trigger"><span class="material-symbols-outlined">edit</span></span>
+          </span>
+          <select class="sds-inline-edit__select" data-select>
+            <option value="Urgent">Urgent</option>
+            <option value="High" selected>High</option>
+            <option value="Medium">Medium</option>
+            <option value="Low">Low</option>
+          </select>
+          <span class="sds-inline-edit__actions">
+            <button class="sds-inline-edit__confirm" data-confirm title="Confirm" aria-label="Confirm"><span class="material-symbols-outlined">check</span></button>
+            <button class="sds-inline-edit__cancel" data-cancel title="Cancel" aria-label="Cancel"><span class="material-symbols-outlined">close</span></button>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Size</th><th>Font Size</th><th>Input Padding</th><th>Action Button</th><th>Icon Size</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small <code>.sds-inline-edit--sm</code></td>
+        <td><code>--sds-type-caption</code></td>
+        <td><code>space-100 / space-200</code></td>
+        <td><code>20 px</code></td>
+        <td><code>12 px</code></td>
+      </tr>
+      <tr>
+        <td>Default</td>
+        <td><code>--sds-type-body</code></td>
+        <td><code>space-200 / space-300</code></td>
+        <td><code>24 px</code></td>
+        <td><code>14 px</code></td>
+      </tr>
+      <tr>
+        <td>Large <code>.sds-inline-edit--lg</code></td>
+        <td><code>--sds-type-title</code></td>
+        <td><code>space-250 / space-400</code></td>
+        <td><code>24 px</code></td>
+        <td><code>18 px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>State Tokens</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>State</th><th>Border</th><th>Box Shadow</th><th>Additional</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Read-only</td>
+        <td><code>transparent</code></td>
+        <td><code>none</code></td>
+        <td>Pencil icon hidden</td>
+      </tr>
+      <tr>
+        <td>Hover</td>
+        <td><code>1px dashed warm-gray-300</code></td>
+        <td><code>none</code></td>
+        <td>Pencil icon visible</td>
+      </tr>
+      <tr>
+        <td>Editing (focus)</td>
+        <td><code>1.5px solid --sds-border-focus</code></td>
+        <td><code>0 0 0 3px rgba(1,61,91,0.15)</code></td>
+        <td>Input auto-focused</td>
+      </tr>
+      <tr>
+        <td>Saving</td>
+        <td><code>1.5px solid warm-gray-250</code></td>
+        <td><code>none</code></td>
+        <td>Opacity 0.6, pointer-events disabled</td>
+      </tr>
+      <tr>
+        <td>Error</td>
+        <td><code>1.5px solid red-450</code></td>
+        <td><code>0 0 0 3px rgba(220,38,38,0.12)</code></td>
+        <td>Error text in <code>red-550</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-inline-edit</code></td><td>Wrapper container for the inline edit component</td></tr>
+      <tr><td><code>.sds-inline-edit__display</code></td><td>Read-only display text shown when not editing</td></tr>
+      <tr><td><code>.sds-inline-edit__trigger</code></td><td>Hover/click area containing the edit pencil icon</td></tr>
+      <tr><td><code>.sds-inline-edit__input</code></td><td>Text input shown when in editing mode</td></tr>
+      <tr><td><code>.sds-inline-edit__select</code></td><td>Select dropdown shown for enumerated value editing</td></tr>
+      <tr><td><code>.sds-inline-edit__actions</code></td><td>Confirm and cancel button pair</td></tr>
+      <tr><td><code>.sds-inline-edit__confirm</code></td><td>Green circle confirm (check) button</td></tr>
+      <tr><td><code>.sds-inline-edit__cancel</code></td><td>Gray circle cancel (close) button</td></tr>
+      <tr><td><code>.sds-inline-edit--editing</code></td><td>State modifier: component is in edit mode</td></tr>
+      <tr><td><code>.sds-inline-edit--hover</code></td><td>State modifier: forced hover appearance</td></tr>
+      <tr><td><code>.sds-inline-edit--saving</code></td><td>State modifier: value is being saved</td></tr>
+      <tr><td><code>.sds-inline-edit--error</code></td><td>State modifier: input has a validation error</td></tr>
+      <tr><td><code>.sds-inline-edit--sm</code></td><td>Size modifier: small variant for table cells</td></tr>
+      <tr><td><code>.sds-inline-edit--lg</code></td><td>Size modifier: large variant for headings and titles</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script>
+    // ============================================================
+    // INLINE EDIT — Interactive behavior
+    // ============================================================
+
+    function initInlineEdit(el) {
+      const display = el.querySelector('[data-display]');
+      const input = el.querySelector('[data-input]');
+      const confirmBtn = el.querySelector('[data-confirm]');
+      const cancelBtn = el.querySelector('[data-cancel]');
+
+      if (!display || !input || !confirmBtn || !cancelBtn) return;
+
+      let originalValue = input.value;
+
+      function startEditing() {
+        originalValue = input.value;
+        el.classList.add('sds-inline-edit--editing');
+        input.focus();
+        input.select();
+      }
+
+      function confirmEdit() {
+        const newValue = input.value.trim();
+        if (newValue === '') {
+          input.value = originalValue;
+        } else {
+          // Update display text (keep the trigger icon)
+          const trigger = display.querySelector('.sds-inline-edit__trigger');
+          display.textContent = '';
+          display.appendChild(document.createTextNode(newValue + '\n                '));
+          display.appendChild(trigger);
+        }
+        el.classList.remove('sds-inline-edit--editing');
+      }
+
+      function cancelEdit() {
+        input.value = originalValue;
+        el.classList.remove('sds-inline-edit--editing');
+      }
+
+      display.addEventListener('click', startEditing);
+
+      display.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          startEditing();
+        }
+      });
+
+      confirmBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        confirmEdit();
+      });
+
+      cancelBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        cancelEdit();
+      });
+
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          confirmEdit();
+        } else if (e.key === 'Escape') {
+          e.preventDefault();
+          cancelEdit();
+        }
+      });
+    }
+
+    function initInlineEditSelect(el) {
+      const display = el.querySelector('[data-display]');
+      const select = el.querySelector('[data-select]');
+      const confirmBtn = el.querySelector('[data-confirm]');
+      const cancelBtn = el.querySelector('[data-cancel]');
+
+      if (!display || !select || !confirmBtn || !cancelBtn) return;
+
+      let originalValue = select.value;
+
+      function startEditing() {
+        originalValue = select.value;
+        el.classList.add('sds-inline-edit--editing');
+        select.focus();
+      }
+
+      function confirmEdit() {
+        const newValue = select.value;
+        const trigger = display.querySelector('.sds-inline-edit__trigger');
+        display.textContent = '';
+        display.appendChild(document.createTextNode(newValue + '\n                '));
+        display.appendChild(trigger);
+        el.classList.remove('sds-inline-edit--editing');
+      }
+
+      function cancelEdit() {
+        select.value = originalValue;
+        el.classList.remove('sds-inline-edit--editing');
+      }
+
+      display.addEventListener('click', startEditing);
+
+      display.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          startEditing();
+        }
+      });
+
+      confirmBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        confirmEdit();
+      });
+
+      cancelBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        cancelEdit();
+      });
+
+      select.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          cancelEdit();
+        }
+      });
+    }
+
+    // Initialize all inline edit components
+    document.querySelectorAll('[data-inline-edit]').forEach(initInlineEdit);
+    document.querySelectorAll('[data-inline-edit-select]').forEach(initInlineEditSelect);
+  </script>
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

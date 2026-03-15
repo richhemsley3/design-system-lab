@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software DS — Buttons</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    margin: 0;
+    font-family: var(--sds-font-sans);
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+  .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) var(--sds-space-0) var(--sds-space-150); }
+  h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) var(--sds-space-0) var(--sds-space-150); color: var(--sds-text-primary); }
+  p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+  code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+  .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) var(--sds-space-0) var(--sds-space-800); }
+
+  /* ===== DEMO BLOCKS ===== */
+  .demo-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400);
+    text-transform: uppercase;
+    letter-spacing: var(--sds-tracking-wide);
+    margin: var(--sds-space-0) var(--sds-space-0) var(--sds-space-400);
+  }
+  .demo-block {
+    background: var(--sds-color-warm-gray-025);
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 12px;
+    overflow: hidden;
+    padding: var(--sds-space-800);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sds-space-400);
+    align-items: center;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .demo-block--full {
+    background: var(--sds-color-warm-gray-025);
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .below-header {
+    display: flex;
+    flex: 1;
+  }
+
+  /* ===== BUTTON BASE ===== */
+  .sds-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sds-space-200);
+    font-family: inherit;
+    font-weight: var(--sds-weight-medium);
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1;
+  }
+  .sds-btn:focus-visible {
+    outline: 2px solid var(--sds-border-focus);
+    outline-offset: 2px;
+  }
+
+  /* ---- Sizes ---- */
+  .sds-btn--md {
+    font-size: var(--sds-type-body);
+    padding: var(--sds-space-250) var(--sds-space-500);
+    border-radius: 6px;
+    height: 40px;
+  }
+  .sds-btn--sm {
+    font-size: var(--sds-type-label);
+    padding: var(--sds-space-150) var(--sds-space-300);
+    border-radius: 6px;
+    height: 32px;
+  }
+  .sds-btn--lg {
+    font-size: var(--sds-type-title);
+    padding: var(--sds-space-300) var(--sds-space-600);
+    border-radius: 8px;
+    height: 48px;
+  }
+
+  /* ---- Primary (filled) ---- */
+  .sds-btn--primary {
+    background: var(--sds-interactive-primary);
+    color: var(--sds-text-on-primary);
+    border: 1.5px solid var(--sds-interactive-primary);
+  }
+  .sds-btn--primary:hover {
+    background: var(--sds-interactive-primary-hover);
+    border-color: var(--sds-interactive-primary-hover);
+  }
+  .sds-btn--primary:active {
+    background: var(--sds-interactive-primary-active);
+    border-color: var(--sds-interactive-primary-active);
+  }
+  .sds-btn--primary:disabled,
+  .sds-btn--primary.is-disabled {
+    background: var(--sds-color-warm-gray-200);
+    border-color: var(--sds-color-warm-gray-200);
+    color: var(--sds-text-on-primary);
+    cursor: not-allowed;
+  }
+
+  /* ---- Secondary (outlined) ---- */
+  .sds-btn--secondary {
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    border: 1.5px solid var(--sds-interactive-secondary-border);
+  }
+  .sds-btn--secondary:hover {
+    background: var(--sds-bg-subtle);
+    border-color: var(--sds-color-warm-gray-900);
+  }
+  .sds-btn--secondary:active {
+    background: var(--sds-border-subtle);
+    border-color: var(--sds-color-warm-gray-900);
+  }
+  .sds-btn--secondary:disabled,
+  .sds-btn--secondary.is-disabled {
+    background: var(--sds-bg-page);
+    border-color: var(--sds-color-warm-gray-200);
+    color: var(--sds-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* ---- Tertiary (ghost / text) ---- */
+  .sds-btn--tertiary {
+    background: transparent;
+    color: var(--sds-interactive-primary);
+    border: 1.5px solid transparent;
+    padding-left: var(--sds-space-200);
+    padding-right: var(--sds-space-200);
+  }
+  .sds-btn--tertiary:hover {
+    background: var(--sds-bg-subtle);
+    color: var(--sds-interactive-primary-hover);
+  }
+  .sds-btn--tertiary:active {
+    background: var(--sds-border-subtle);
+    color: var(--sds-interactive-primary-active);
+  }
+  .sds-btn--tertiary:disabled,
+  .sds-btn--tertiary.is-disabled {
+    background: transparent;
+    color: var(--sds-text-disabled);
+    cursor: not-allowed;
+  }
+
+  /* ---- Danger (destructive) ---- */
+  .sds-btn--danger {
+    background: var(--sds-color-red-500);
+    color: var(--sds-text-on-primary);
+    border: 1.5px solid var(--sds-color-red-500);
+  }
+  .sds-btn--danger:hover {
+    background: var(--sds-color-red-600);
+    border-color: var(--sds-color-red-600);
+  }
+  .sds-btn--danger:active {
+    background: var(--sds-color-red-650);
+    border-color: var(--sds-color-red-650);
+  }
+  .sds-btn--danger:disabled,
+  .sds-btn--danger.is-disabled {
+    background: var(--sds-color-warm-gray-200);
+    border-color: var(--sds-color-warm-gray-200);
+    color: var(--sds-text-on-primary);
+    cursor: not-allowed;
+  }
+
+  /* ---- Danger Outlined ---- */
+  .sds-btn--danger-outline {
+    background: var(--sds-bg-page);
+    color: var(--sds-color-red-500);
+    border: 1.5px solid var(--sds-color-red-500);
+  }
+  .sds-btn--danger-outline:hover {
+    background: var(--sds-color-red-025);
+    border-color: var(--sds-color-red-600);
+    color: var(--sds-color-red-600);
+  }
+  .sds-btn--danger-outline:active {
+    background: var(--sds-color-red-050);
+    border-color: var(--sds-color-red-650);
+    color: var(--sds-color-red-650);
+  }
+
+  /* ---- Icon inside buttons ---- */
+  .sds-btn--icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sds-btn--icon .material-symbols-outlined {
+    font-size: 18px;
+    color: currentColor;
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+  }
+  .sds-btn--sm .sds-btn--icon .material-symbols-outlined {
+    font-size: 16px;
+  }
+  .sds-btn--lg .sds-btn--icon .material-symbols-outlined {
+    font-size: 20px;
+  }
+
+  /* ---- Icon-only button ---- */
+  .sds-btn--icon-only {
+    padding: var(--sds-space-0);
+    width: 40px;
+  }
+  .sds-btn--icon-only.sds-btn--sm {
+    width: 32px;
+  }
+  .sds-btn--icon-only.sds-btn--lg {
+    width: 48px;
+  }
+
+  /* ===== CONTEXT DEMO ===== */
+  .header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--sds-space-400) var(--sds-space-600);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    background: var(--sds-bg-page);
+  }
+  .header-bar .page-title {
+    font-size: var(--sds-type-heading);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+  }
+  .context-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sds-space-1200) var(--sds-space-600);
+    text-align: center;
+    background: var(--sds-bg-page);
+  }
+  .context-body .empty-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: var(--sds-space-400);
+    opacity: 0.3;
+  }
+  .context-body .empty-title {
+    font-size: 18px;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+    margin-bottom: var(--sds-space-200);
+  }
+  .context-body .empty-desc {
+    font-size: var(--sds-type-body);
+    color: var(--sds-text-tertiary);
+    max-width: 420px;
+    margin-bottom: var(--sds-space-600);
+    line-height: var(--sds-leading-normal);
+  }
+
+  /* ===== STATE CARDS ===== */
+  .states-row {
+    display: flex;
+    gap: var(--sds-space-300);
+    flex-wrap: wrap;
+    margin: var(--sds-space-400) var(--sds-space-0) var(--sds-space-800);
+  }
+  .state-card {
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 8px;
+    background: var(--sds-bg-page);
+    overflow: hidden;
+    min-width: 160px;
+  }
+  .state-card-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: var(--sds-space-200) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-050);
+    color: var(--sds-color-warm-gray-550);
+  }
+  .state-card-body {
+    padding: var(--sds-space-400) var(--sds-space-500);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sds-space-300);
+  }
+
+  /* ===== SPEC TABLE ===== */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sds-type-label);
+    margin: var(--sds-space-400) var(--sds-space-0) var(--sds-space-800);
+  }
+  .spec-table th {
+    text-align: left;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-650);
+    padding: var(--sds-space-250) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-025);
+    border-bottom: 1px solid var(--sds-color-warm-gray-150);
+  }
+  .spec-table td {
+    padding: var(--sds-space-250) var(--sds-space-400);
+    border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    color: var(--sds-color-warm-gray-700);
+    vertical-align: top;
+  }
+  .spec-table td:first-child { font-weight: var(--sds-weight-medium); color: var(--sds-text-primary); }
+  .spec-table code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    background: var(--sds-color-warm-gray-050);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+    color: var(--sds-interactive-primary);
+  }
+</style>
+</head>
+<body>
+
+<h1>Buttons</h1>
+<p class="page-subtitle">Action buttons in primary, secondary, tertiary, and danger variants with three sizes. Buttons support leading icons and icon-only layouts.</p>
+
+<!-- =========== ALL VARIANTS =========== -->
+
+<div class="demo-label">All variants — medium size</div>
+<div class="demo-block">
+  <button class="sds-btn sds-btn--primary sds-btn--md">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">add</span></span>
+    Create project
+  </button>
+  <button class="sds-btn sds-btn--secondary sds-btn--md">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">edit</span></span>
+    Edit
+  </button>
+  <button class="sds-btn sds-btn--tertiary sds-btn--md">View details</button>
+  <button class="sds-btn sds-btn--danger sds-btn--md">Delete</button>
+  <button class="sds-btn sds-btn--danger-outline sds-btn--md">Remove</button>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== IN CONTEXT =========== -->
+<h2>In Context</h2>
+<p>Buttons shown within a realistic page layout with contextual usage.</p>
+
+<div class="demo-label">Empty state with primary CTA</div>
+<div class="demo-block demo-block--full">
+  <div class="header-bar">
+    <span class="page-title">Project Details</span>
+    <button class="sds-btn sds-btn--secondary sds-btn--md">
+      <span class="sds-btn--icon"><span class="material-symbols-outlined">edit</span></span>
+      Edit
+    </button>
+  </div>
+  <div class="context-body">
+    <svg class="empty-icon" viewBox="0 0 48 48" fill="none" stroke="#A6CBD6" stroke-width="1.5">
+      <rect x="4" y="8" width="18" height="14" rx="2" fill="#D9EBED"/>
+      <rect x="26" y="8" width="18" height="14" rx="2" fill="#EBF4F5"/>
+      <rect x="4" y="26" width="18" height="14" rx="2" fill="#EBF4F5"/>
+      <rect x="26" y="26" width="18" height="14" rx="2" fill="#D9EBED"/>
+    </svg>
+    <div class="empty-title">Create your first project</div>
+    <div class="empty-desc">Get started by creating your first project. Projects help you organize and manage your team's work in one place.</div>
+    <button class="sds-btn sds-btn--primary sds-btn--md">
+      <span class="sds-btn--icon"><span class="material-symbols-outlined">add</span></span>
+      Create project
+    </button>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== SIZES =========== -->
+<h2>Sizes</h2>
+<p>Three button sizes for different contexts: large for hero CTAs, medium (default) for standard actions, and small for compact/inline use.</p>
+
+<h3>Primary</h3>
+<div class="demo-block" style="align-items: flex-end;">
+  <button class="sds-btn sds-btn--primary sds-btn--lg">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">add</span></span>
+    Large button
+  </button>
+  <button class="sds-btn sds-btn--primary sds-btn--md">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">add</span></span>
+    Medium button
+  </button>
+  <button class="sds-btn sds-btn--primary sds-btn--sm">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">add</span></span>
+    Small button
+  </button>
+</div>
+
+<h3>Secondary</h3>
+<div class="demo-block" style="align-items: flex-end;">
+  <button class="sds-btn sds-btn--secondary sds-btn--lg">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">edit</span></span>
+    Large button
+  </button>
+  <button class="sds-btn sds-btn--secondary sds-btn--md">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">edit</span></span>
+    Medium button
+  </button>
+  <button class="sds-btn sds-btn--secondary sds-btn--sm">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">edit</span></span>
+    Small button
+  </button>
+</div>
+
+<h3>Tertiary</h3>
+<div class="demo-block" style="align-items: flex-end;">
+  <button class="sds-btn sds-btn--tertiary sds-btn--lg">Large button</button>
+  <button class="sds-btn sds-btn--tertiary sds-btn--md">Medium button</button>
+  <button class="sds-btn sds-btn--tertiary sds-btn--sm">Small button</button>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ICON-ONLY =========== -->
+<h2>Icon-Only Buttons</h2>
+<p>Square buttons containing only an icon, for compact toolbars and inline actions.</p>
+
+<div class="demo-block">
+  <button class="sds-btn sds-btn--primary sds-btn--md sds-btn--icon-only" aria-label="Add">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">add</span></span>
+  </button>
+  <button class="sds-btn sds-btn--secondary sds-btn--md sds-btn--icon-only" aria-label="Edit">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">edit</span></span>
+  </button>
+  <button class="sds-btn sds-btn--tertiary sds-btn--md sds-btn--icon-only" aria-label="More options">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">more_vert</span></span>
+  </button>
+  <button class="sds-btn sds-btn--danger sds-btn--md sds-btn--icon-only" aria-label="Delete">
+    <span class="sds-btn--icon"><span class="material-symbols-outlined">delete</span></span>
+  </button>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== STATES =========== -->
+<h2>Component States</h2>
+<p>All interactive states for each button variant.</p>
+
+<h3>Primary Button</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--primary sds-btn--md" style="cursor: default;">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--primary sds-btn--md" style="cursor: default; background: var(--sds-color-blue-800); border-color: var(--sds-color-blue-800);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Active / Pressed</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--primary sds-btn--md" style="cursor: default; background: var(--sds-color-blue-850); border-color: var(--sds-color-blue-850);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Disabled</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--primary sds-btn--md is-disabled">Button</button>
+    </div>
+  </div>
+</div>
+
+<h3>Secondary Button</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" style="cursor: default;">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" style="cursor: default; background: var(--sds-color-warm-gray-050); border-color: var(--sds-color-warm-gray-900);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Active / Pressed</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" style="cursor: default; background: var(--sds-color-warm-gray-100); border-color: var(--sds-color-warm-gray-900);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Disabled</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--secondary sds-btn--md is-disabled">Button</button>
+    </div>
+  </div>
+</div>
+
+<h3>Tertiary Button</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--tertiary sds-btn--md" style="cursor: default;">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--tertiary sds-btn--md" style="cursor: default; background: var(--sds-color-warm-gray-050); color: var(--sds-color-blue-800);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Active / Pressed</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--tertiary sds-btn--md" style="cursor: default; background: var(--sds-color-warm-gray-100); color: var(--sds-color-blue-850);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Disabled</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--tertiary sds-btn--md is-disabled">Button</button>
+    </div>
+  </div>
+</div>
+
+<h3>Danger Button</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--danger sds-btn--md" style="cursor: default;">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--danger sds-btn--md" style="cursor: default; background: var(--sds-color-red-600); border-color: var(--sds-color-red-600);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Active / Pressed</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--danger sds-btn--md" style="cursor: default; background: var(--sds-color-red-650); border-color: var(--sds-color-red-650);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Disabled</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--danger sds-btn--md is-disabled">Button</button>
+    </div>
+  </div>
+</div>
+
+<h3>Danger Outlined Button</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--danger-outline sds-btn--md" style="cursor: default;">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--danger-outline sds-btn--md" style="cursor: default; background: var(--sds-color-red-025); border-color: var(--sds-color-red-600); color: var(--sds-color-red-600);">Button</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Active / Pressed</div>
+    <div class="state-card-body">
+      <button class="sds-btn sds-btn--danger-outline sds-btn--md" style="cursor: default; background: var(--sds-color-red-050); border-color: var(--sds-color-red-650); color: var(--sds-color-red-650);">Button</button>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ANATOMY & SPECS =========== -->
+<h2>Anatomy &amp; Specs</h2>
+<p>Dimensions, spacing, and token mappings for all button variants and sizes.</p>
+
+<h3>Sizing</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Size</th><th>Height</th><th>Padding</th><th>Font</th><th>Radius</th><th>Icon</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Large</td><td>48px</td><td>12px 24px</td><td>15px / 500</td><td>8px</td><td>18 × 18</td></tr>
+    <tr><td>Medium</td><td>40px</td><td>10px 20px</td><td>14px / 500</td><td>6px</td><td>16 × 16</td></tr>
+    <tr><td>Small</td><td>32px</td><td>6px 12px</td><td>13px / 500</td><td>6px</td><td>16 × 16</td></tr>
+  </tbody>
+</table>
+
+<h3>Primary Button</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Hover</th><th>Active</th><th>Disabled</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Background</td>
+      <td><code>--sds-interactive-primary</code> #013D5B</td>
+      <td><code>--sds-interactive-primary-hover</code> #05314D</td>
+      <td><code>--sds-interactive-primary-active</code> #032740</td>
+      <td>#CACCCF</td>
+    </tr>
+    <tr>
+      <td>Border</td>
+      <td>1.5px solid #013D5B</td>
+      <td>#05314D</td>
+      <td>#032740</td>
+      <td>#CACCCF</td>
+    </tr>
+    <tr>
+      <td>Text</td>
+      <td>#FFFFFF</td>
+      <td>#FFFFFF</td>
+      <td>#FFFFFF</td>
+      <td>#FFFFFF</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Secondary Button</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Hover</th><th>Active</th><th>Disabled</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Background</td>
+      <td>#FFFFFF</td>
+      <td><code>warm-gray-050</code> #F4F1EB</td>
+      <td><code>warm-gray-100</code> #EBE6DD</td>
+      <td>#FFFFFF</td>
+    </tr>
+    <tr>
+      <td>Border</td>
+      <td>1.5px solid <code>warm-gray-800</code> #302D28</td>
+      <td><code>warm-gray-900</code> #1C1A17</td>
+      <td>#1C1A17</td>
+      <td><code>warm-gray-200</code> #D0CBC3</td>
+    </tr>
+    <tr>
+      <td>Text</td>
+      <td><code>warm-gray-900</code> #1C1A17</td>
+      <td>#1C1A17</td>
+      <td>#1C1A17</td>
+      <td><code>warm-gray-300</code> #B0ABA2</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Tertiary Button</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Hover</th><th>Active</th><th>Disabled</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Background</td>
+      <td>transparent</td>
+      <td><code>warm-gray-050</code> #F4F1EB</td>
+      <td><code>warm-gray-100</code> #EBE6DD</td>
+      <td>transparent</td>
+    </tr>
+    <tr>
+      <td>Border</td>
+      <td>none (transparent)</td>
+      <td>transparent</td>
+      <td>transparent</td>
+      <td>transparent</td>
+    </tr>
+    <tr>
+      <td>Text</td>
+      <td><code>blue-750</code> #013D5B</td>
+      <td><code>blue-800</code> #05314D</td>
+      <td><code>blue-850</code> #032740</td>
+      <td><code>warm-gray-300</code> #B0ABA2</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Danger Button</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Hover</th><th>Active</th><th>Disabled</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Background</td>
+      <td><code>red-500</code> #BF5547</td>
+      <td><code>red-600</code> #A33F31</td>
+      <td><code>red-650</code> #8F3629</td>
+      <td>#CACCCF</td>
+    </tr>
+    <tr>
+      <td>Border</td>
+      <td>1.5px solid #BF5547</td>
+      <td>#A33F31</td>
+      <td>#8F3629</td>
+      <td>#CACCCF</td>
+    </tr>
+    <tr>
+      <td>Text</td>
+      <td>#FFFFFF</td>
+      <td>#FFFFFF</td>
+      <td>#FFFFFF</td>
+      <td>#FFFFFF</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Danger Outlined Button</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Default</th><th>Hover</th><th>Active</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Background</td>
+      <td>#FFFFFF</td>
+      <td><code>red-025</code> #FFF6F5</td>
+      <td><code>red-050</code> #FFEEEB</td>
+    </tr>
+    <tr>
+      <td>Border</td>
+      <td>1.5px solid <code>red-500</code> #BF5547</td>
+      <td><code>red-600</code> #A33F31</td>
+      <td><code>red-650</code> #8F3629</td>
+    </tr>
+    <tr>
+      <td>Text</td>
+      <td><code>red-500</code> #BF5547</td>
+      <td><code>red-600</code> #A33F31</td>
+      <td><code>red-650</code> #8F3629</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>General</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Font weight</td><td>500 (medium)</td><td>—</td></tr>
+    <tr><td>Icon–label gap</td><td>8px</td><td>—</td></tr>
+    <tr><td>Border width</td><td>1.5px</td><td>—</td></tr>
+    <tr><td>Transition</td><td>0.15s ease</td><td>—</td></tr>
+    <tr><td>Focus ring</td><td>2px solid #013D5B, 2px offset</td><td><code>--sds-border-focus</code></td></tr>
+    <tr><td>Disabled cursor</td><td>not-allowed</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

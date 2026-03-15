@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Waterfall Chart</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../shared/chart.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+</head>
+<body>
+
+  <h1>Waterfall Chart</h1>
+  <p class="page-subtitle">Sequential increases and decreases between a starting and ending value. Uses color-coded bars for totals, gains, and losses.</p>
+
+  <!-- ============================================================
+       WATERFALL COLOR KEY
+       ============================================================ -->
+  <h2>Waterfall Color Key</h2>
+  <p>Waterfall charts use three semantic colors: a total bar color for start/end values, green for increases, and red for decreases. Floating bars are connected by dashed connector lines.</p>
+
+  <div class="color-strip">
+    <div class="color-strip-item" style="background: var(--sds-chart-1);"><span class="color-strip-label">Total</span></div>
+    <div class="color-strip-item" style="background: var(--sds-color-green-400);"><span class="color-strip-label">Increase</span></div>
+    <div class="color-strip-item" style="background: var(--sds-color-red-450);"><span class="color-strip-label">Decrease</span></div>
+  </div>
+
+  <!-- ============================================================
+       STANDARD WATERFALL CHART
+       ============================================================ -->
+  <h2>Standard Waterfall</h2>
+  <p>Vertical waterfall chart showing how a starting value changes through sequential additions and subtractions to reach a final value. Total bars anchor to the baseline; intermediate bars float.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Revenue Bridge Analysis</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Revenue Bridge Analysis</span>
+        <span class="sds-chart-subtitle">FY 2025 (in thousands)</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Total</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-color-green-400)"></span> Increase</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-color-red-450)"></span> Decrease</span>
+      </div>
+      <!--
+        Data model (in $K):
+        Starting Balance: 500  (total, base=0,   top=500)
+        Revenue:         +300  (increase, base=500, top=800)
+        COGS:            -200  (decrease, base=600, top=800)
+        Expenses:        -150  (decrease, base=450, top=600)
+        Tax:              -80  (decrease, base=370, top=450)
+        Other Income:     +60  (increase, base=450, top=430→ base=370, top=430)
+        Net Income:       430  (total, base=0,   top=430)
+
+        Y-axis: 0–900 mapped to y 200→20 (180px range)
+        Scale: 1K = 0.2px  → 180/900 = 0.2px per unit
+        y(val) = 200 - (val * 180/900) = 200 - val*0.2
+
+        Positions:
+        Starting: y=100 (500*0.2=100 from bottom → y=200-100=100), h=100, from y=100 to y=200
+        Revenue:  base=500→y=100, top=800→y=40, so bar y=40, h=60
+        COGS:     base=600→y=80, top=800→y=40, so bar y=40, h=40 — wait let me recalc
+
+        Let me redo with cleaner numbers:
+        Starting Balance: 500
+        +Revenue: +300 → running = 800
+        -COGS: -200 → running = 600
+        -Expenses: -150 → running = 450
+        -Tax: -80 → running = 370
+        +Other Income: +60 → running = 430
+        Net Income: 430 (total)
+
+        Y range: 0 to 900, mapped to y: 200 (bottom=0) to 20 (top=900)
+        Scale: 180px / 900 = 0.2 px per unit
+        y(v) = 200 - v * 0.2
+
+        Starting (total): top=500 → y=100, bottom=0 → y=200, h=100
+        Revenue (+300): bottom=500 → y=100, top=800 → y=40, h=60
+        COGS (-200): top=800 → y=40, bottom=600 → y=80, h=40
+        Expenses (-150): top=600 → y=80, bottom=450 → y=110, h=30
+        Tax (-80): top=450 → y=110, bottom=370 → y=126, h=16
+        Other Income (+60): bottom=370 → y=126, top=430 → y=114, h=12
+        Net Income (total): top=430 → y=114, bottom=0 → y=200, h=86
+
+        7 bars. X positions with ~65px spacing, bar width=50:
+        x centers: 80, 150, 220, 290, 360, 430, 500
+        x starts:  55, 125, 195, 265, 335, 405, 475
+      -->
+      <svg class="chart-area" viewBox="0 0 560 260" role="img" aria-label="Waterfall chart showing revenue bridge analysis from $500K starting balance to $430K net income">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="56" x2="540" y2="56"/>
+        <line class="chart-grid-line" x1="40" y1="92" x2="540" y2="92"/>
+        <line class="chart-grid-line" x1="40" y1="128" x2="540" y2="128"/>
+        <line class="chart-grid-line" x1="40" y1="164" x2="540" y2="164"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels (0–900 in steps of 200 → but let's do 0,200,400,600,800) -->
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">0</text>
+        <text class="chart-axis-label" x="32" y="168" text-anchor="end">200</text>
+        <text class="chart-axis-label" x="32" y="132" text-anchor="end">400</text>
+        <text class="chart-axis-label" x="32" y="96" text-anchor="end">600</text>
+        <text class="chart-axis-label" x="32" y="60" text-anchor="end">800</text>
+
+        <!-- Starting Balance — total bar: 0→500 -->
+        <rect class="chart-bar" x="55" y="100" width="50" height="100" rx="3" fill="var(--sds-chart-1)"/>
+        <text class="chart-value-label" x="80" y="94" text-anchor="middle">$500K</text>
+
+        <!-- Connector: Starting top → Revenue bottom -->
+        <line class="chart-connector" x1="105" y1="100" x2="125" y2="100"/>
+
+        <!-- Revenue +300: 500→800 -->
+        <rect class="chart-bar" x="125" y="40" width="50" height="60" rx="3" fill="var(--sds-color-green-400)"/>
+        <text class="chart-value-label" x="150" y="34" text-anchor="middle">+$300K</text>
+
+        <!-- Connector: Revenue top → COGS top -->
+        <line class="chart-connector" x1="175" y1="40" x2="195" y2="40"/>
+
+        <!-- COGS -200: 800→600 -->
+        <rect class="chart-bar" x="195" y="40" width="50" height="40" rx="3" fill="var(--sds-color-red-450)"/>
+        <text class="chart-value-label" x="220" y="88" text-anchor="middle">-$200K</text>
+
+        <!-- Connector: COGS bottom → Expenses top -->
+        <line class="chart-connector" x1="245" y1="80" x2="265" y2="80"/>
+
+        <!-- Expenses -150: 600→450 -->
+        <rect class="chart-bar" x="265" y="80" width="50" height="30" rx="3" fill="var(--sds-color-red-450)"/>
+        <text class="chart-value-label" x="290" y="118" text-anchor="middle">-$150K</text>
+
+        <!-- Connector: Expenses bottom → Tax top -->
+        <line class="chart-connector" x1="315" y1="110" x2="335" y2="110"/>
+
+        <!-- Tax -80: 450→370 -->
+        <rect class="chart-bar" x="335" y="110" width="50" height="16" rx="3" fill="var(--sds-color-red-450)"/>
+        <text class="chart-value-label" x="360" y="134" text-anchor="middle">-$80K</text>
+
+        <!-- Connector: Tax bottom → Other Income bottom -->
+        <line class="chart-connector" x1="385" y1="126" x2="405" y2="126"/>
+
+        <!-- Other Income +60: 370→430 -->
+        <rect class="chart-bar" x="405" y="114" width="50" height="12" rx="3" fill="var(--sds-color-green-400)"/>
+        <text class="chart-value-label" x="430" y="108" text-anchor="middle">+$60K</text>
+
+        <!-- Connector: Other Income top → Net Income top -->
+        <line class="chart-connector" x1="455" y1="114" x2="475" y2="114"/>
+
+        <!-- Net Income — total bar: 0→430 -->
+        <rect class="chart-bar" x="475" y="114" width="50" height="86" rx="3" fill="var(--sds-chart-1)"/>
+        <text class="chart-value-label" x="500" y="108" text-anchor="middle">$430K</text>
+
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="80" y="220" text-anchor="middle">Starting</text>
+        <text class="chart-axis-label" x="80" y="232" text-anchor="middle">Balance</text>
+        <text class="chart-axis-label" x="150" y="220" text-anchor="middle">Revenue</text>
+        <text class="chart-axis-label" x="220" y="220" text-anchor="middle">COGS</text>
+        <text class="chart-axis-label" x="290" y="220" text-anchor="middle">Expenses</text>
+        <text class="chart-axis-label" x="360" y="220" text-anchor="middle">Tax</text>
+        <text class="chart-axis-label" x="430" y="220" text-anchor="middle">Other</text>
+        <text class="chart-axis-label" x="430" y="232" text-anchor="middle">Income</text>
+        <text class="chart-axis-label" x="500" y="220" text-anchor="middle">Net</text>
+        <text class="chart-axis-label" x="500" y="232" text-anchor="middle">Income</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HORIZONTAL WATERFALL CHART
+       ============================================================ -->
+  <h2>Horizontal Waterfall</h2>
+  <p>Horizontal orientation of the waterfall chart, useful when category labels are long or when reading left-to-right flow is preferred.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Budget Variance</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Budget Variance</span>
+        <span class="sds-chart-subtitle">Q4 Actuals vs. Plan (in thousands)</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Total</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-color-green-400)"></span> Increase</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-color-red-450)"></span> Decrease</span>
+      </div>
+      <!--
+        Horizontal waterfall — bars grow rightward from a left axis.
+        Data:
+        Planned Budget: 400 (total)
+        +New Clients: +120 → 520
+        -Vendor Costs: -80 → 440
+        +Upsells: +60 → 500
+        -Overhead: -50 → 450
+        -Penalties: -30 → 420
+        Actual Budget: 420 (total)
+
+        X range: 0–600, mapped to x: 140 (left=0) to 540 (right=600)
+        Scale: 400px / 600 = 0.667 px per unit
+        x(v) = 140 + v * 0.667
+
+        7 rows, bar height=22, spacing ~28px
+        Y centers: 30, 62, 94, 126, 158, 190, 222 → but viewBox is 0 0 560 240
+        y starts: 20, 50, 80, 110, 140, 170, 200
+
+        Planned Budget (total): x=140, w=400*0.667=267
+        New Clients (+120): left=400→x=140+267=407, right=520→x=140+347=487, w=80
+        Vendor Costs (-80): left=440→x=140+293=433, right=520→x=487, w=54 — from top of prev
+          Actually for decrease: bar starts at lower value, extends to higher
+          left=440→x=433, right=520→x=487... no.
+          For horizontal: increase bar goes from running_before to running_after (rightward)
+          decrease bar: running_after is less, so bar goes from running_after to running_before
+
+        Let me recalculate more carefully:
+        x(v) = 140 + v * (400/600) = 140 + v * 0.6667
+
+        Planned Budget (total): x=140, right=x(400)=140+267=407, w=267
+        +New Clients: from x(400)=407 to x(520)=140+347=487, w=80
+        -Vendor Costs: from x(440)=140+293=433 to x(520)=487, w=54
+        +Upsells: from x(440)=433 to x(500)=140+333=473, w=40
+        -Overhead: from x(450)=140+300=440 to x(500)=473, w=33
+        -Penalties: from x(420)=140+280=420 to x(450)=440, w=20
+        Actual Budget (total): x=140, right=x(420)=420, w=280
+      -->
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Horizontal waterfall chart showing budget variance from $400K planned to $420K actual">
+        <!-- Vertical grid lines -->
+        <line class="chart-grid-line" x1="140" y1="10" x2="140" y2="216"/>
+        <line class="chart-grid-line" x1="240" y1="10" x2="240" y2="216"/>
+        <line class="chart-grid-line" x1="340" y1="10" x2="340" y2="216"/>
+        <line class="chart-grid-line" x1="440" y1="10" x2="440" y2="216"/>
+        <line class="chart-grid-line" x1="540" y1="10" x2="540" y2="216"/>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="140" y="232" text-anchor="middle">0</text>
+        <text class="chart-axis-label" x="240" y="232" text-anchor="middle">150</text>
+        <text class="chart-axis-label" x="340" y="232" text-anchor="middle">300</text>
+        <text class="chart-axis-label" x="440" y="232" text-anchor="middle">450</text>
+        <text class="chart-axis-label" x="540" y="232" text-anchor="middle">600</text>
+
+        <!-- Planned Budget — total: 0→400 -->
+        <text class="chart-axis-label" x="132" y="30" text-anchor="end">Planned Budget</text>
+        <rect class="chart-bar" x="140" y="18" width="267" height="22" rx="3" fill="var(--sds-chart-1)"/>
+        <text class="chart-value-label" x="413" y="33" text-anchor="start"> $400K</text>
+
+        <!-- Connector: Planned right edge → New Clients right edge -->
+        <line class="chart-connector" x1="407" y1="40" x2="407" y2="48"/>
+
+        <!-- New Clients +120: 400→520 -->
+        <text class="chart-axis-label" x="132" y="62" text-anchor="end">New Clients</text>
+        <rect class="chart-bar" x="407" y="50" width="80" height="22" rx="3" fill="var(--sds-color-green-400)"/>
+        <text class="chart-value-label" x="493" y="65" text-anchor="start"> +$120K</text>
+
+        <!-- Connector: New Clients right edge (520) → Vendor Costs right edge -->
+        <line class="chart-connector" x1="487" y1="72" x2="487" y2="80"/>
+
+        <!-- Vendor Costs -80: 520→440 -->
+        <text class="chart-axis-label" x="132" y="94" text-anchor="end">Vendor Costs</text>
+        <rect class="chart-bar" x="433" y="82" width="54" height="22" rx="3" fill="var(--sds-color-red-450)"/>
+        <text class="chart-value-label" x="427" y="97" text-anchor="end">-$80K</text>
+
+        <!-- Connector: Vendor Costs left edge (440) → Upsells left edge -->
+        <line class="chart-connector" x1="433" y1="104" x2="433" y2="112"/>
+
+        <!-- Upsells +60: 440→500 -->
+        <text class="chart-axis-label" x="132" y="126" text-anchor="end">Upsells</text>
+        <rect class="chart-bar" x="433" y="114" width="40" height="22" rx="3" fill="var(--sds-color-green-400)"/>
+        <text class="chart-value-label" x="479" y="129" text-anchor="start"> +$60K</text>
+
+        <!-- Connector: Upsells right edge (500) → Overhead right edge -->
+        <line class="chart-connector" x1="473" y1="136" x2="473" y2="144"/>
+
+        <!-- Overhead -50: 500→450 -->
+        <text class="chart-axis-label" x="132" y="158" text-anchor="end">Overhead</text>
+        <rect class="chart-bar" x="440" y="146" width="33" height="22" rx="3" fill="var(--sds-color-red-450)"/>
+        <text class="chart-value-label" x="434" y="161" text-anchor="end">-$50K</text>
+
+        <!-- Connector: Overhead left edge (450) → Penalties left edge -->
+        <line class="chart-connector" x1="440" y1="168" x2="440" y2="176"/>
+
+        <!-- Penalties -30: 450→420 -->
+        <text class="chart-axis-label" x="132" y="190" text-anchor="end">Penalties</text>
+        <rect class="chart-bar" x="420" y="178" width="20" height="22" rx="3" fill="var(--sds-color-red-450)"/>
+        <text class="chart-value-label" x="414" y="193" text-anchor="end">-$30K</text>
+
+        <!-- Connector: Penalties left edge (420) → Actual left edge -->
+        <line class="chart-connector" x1="420" y1="200" x2="420" y2="206"/>
+
+        <!-- Actual Budget — total: 0→420 -->
+        <text class="chart-axis-label" x="132" y="220" text-anchor="end">Actual Budget</text>
+        <rect class="chart-bar" x="140" y="208" width="280" height="22" rx="3" fill="var(--sds-chart-1)"/>
+        <text class="chart-value-label" x="426" y="223" text-anchor="start"> $420K</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CHART ANATOMY
+       ============================================================ -->
+  <h2>Chart Anatomy</h2>
+  <p>Structural elements specific to waterfall charts, in addition to the standard chart anatomy shared across all chart types.</p>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Token / Value</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>--sds-chart-bg</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White</td>
+      </tr>
+      <tr>
+        <td>Grid lines</td>
+        <td><code>--sds-chart-grid</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span> warm-gray-100</td>
+      </tr>
+      <tr>
+        <td>Axis line</td>
+        <td><code>--sds-chart-axis</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-300)"></span> warm-gray-300</td>
+      </tr>
+      <tr>
+        <td>Axis labels</td>
+        <td><code>--sds-chart-axis-label</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-550)"></span> warm-gray-550 · 12px</td>
+      </tr>
+      <tr>
+        <td>Total bar</td>
+        <td><code>--sds-chart-1</code></td>
+        <td><span class="swatch" style="background:var(--sds-chart-1)"></span> Navy — start/end totals anchored to baseline</td>
+      </tr>
+      <tr>
+        <td>Increase bar</td>
+        <td><code>--sds-color-green-400</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-green-400)"></span> Green — positive change, floating</td>
+      </tr>
+      <tr>
+        <td>Decrease bar</td>
+        <td><code>--sds-color-red-450</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span> Red — negative change, floating</td>
+      </tr>
+      <tr>
+        <td>Connector lines</td>
+        <td><code>--sds-color-warm-gray-300</code></td>
+        <td>1px dashed (4 3) — links bar edges between steps</td>
+      </tr>
+      <tr>
+        <td>Value labels</td>
+        <td><code>--sds-text-secondary</code></td>
+        <td>11px/500 — above bars (+) or below bars (-)</td>
+      </tr>
+      <tr>
+        <td>Bar corner radius</td>
+        <td>—</td>
+        <td>3px</td>
+      </tr>
+      <tr>
+        <td>Container radius</td>
+        <td>—</td>
+        <td>12px</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td>—</td>
+        <td>24px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       CSS CLASSES
+       ============================================================ -->
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-chart</code></td><td>Container — white bg, border, 12px radius, 24px padding</td></tr>
+      <tr><td><code>.sds-chart-header</code></td><td>Flex row with title and subtitle</td></tr>
+      <tr><td><code>.sds-chart-title</code></td><td>Chart heading — 16px/600</td></tr>
+      <tr><td><code>.sds-chart-subtitle</code></td><td>Secondary text — 13px</td></tr>
+      <tr><td><code>.sds-legend</code></td><td>Horizontal legend container</td></tr>
+      <tr><td><code>.sds-legend-item</code></td><td>Legend entry — swatch + label</td></tr>
+      <tr><td><code>.sds-legend-swatch</code></td><td>10x10px color indicator</td></tr>
+      <tr><td><code>.chart-bar</code></td><td>SVG bar with hover opacity transition</td></tr>
+      <tr><td><code>.chart-connector</code></td><td>Dashed connector line between bars — 1px, warm-gray-300</td></tr>
+      <tr><td><code>.chart-grid-line</code></td><td>Horizontal/vertical grid line</td></tr>
+      <tr><td><code>.chart-axis-line</code></td><td>Primary axis line</td></tr>
+      <tr><td><code>.chart-axis-label</code></td><td>Axis tick label — 12px</td></tr>
+      <tr><td><code>.chart-value-label</code></td><td>Value displayed above/below bars — 11px/500</td></tr>
+    </tbody>
+  </table>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

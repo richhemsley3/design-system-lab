@@ -1,0 +1,1671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Selection Controls</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* Spec table */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+
+    /* Section divider */
+    .section-divider {
+      border: none;
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+      margin: var(--sds-space-1000) 0;
+    }
+
+    /* Screen reader only */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ============================================================
+       SELECTION CONTROLS
+       Advanced selection patterns for checkboxes, radios, and
+       toggles used in enterprise data management interfaces.
+       ============================================================ */
+
+    /* ---- Shared: hidden native input ---- */
+    .sds-checkbox-group input[type="checkbox"],
+    .sds-radio-card-group input[type="radio"],
+    .sds-checkbox-card-group input[type="checkbox"],
+    .sds-chip-group input[type="radio"],
+    .sds-chip-group input[type="checkbox"],
+    .sds-toggle-list input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    /* ============================================================
+       1. CHECKBOX GROUP (with Select All)
+       ============================================================ */
+    .sds-checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .sds-checkbox-group-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-200) 0;
+      cursor: pointer;
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-snug);
+      user-select: none;
+    }
+
+    .sds-checkbox-group-item:hover .sds-checkbox-group-box {
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-checkbox-group-box {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .sds-checkbox-group-box svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+    .sds-checkbox-group-item input:checked + .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-checkbox-group-item input:checked + .sds-checkbox-group-box svg {
+      opacity: 1;
+    }
+
+    .sds-checkbox-group-item input:focus-visible + .sds-checkbox-group-box {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+    /* Indeterminate dash */
+    .sds-checkbox-group-dash {
+      display: none;
+      width: 8px;
+      height: 2px;
+      background: var(--sds-color-white);
+      border-radius: 1px;
+    }
+
+    .sds-checkbox-group-item input.is-indeterminate + .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-checkbox-group-item input.is-indeterminate + .sds-checkbox-group-box svg {
+      display: none;
+    }
+
+    .sds-checkbox-group-item input.is-indeterminate + .sds-checkbox-group-box .sds-checkbox-group-dash {
+      display: block;
+    }
+
+    /* Parent separator */
+    .sds-checkbox-group-parent {
+      font-weight: var(--sds-weight-medium);
+      padding-bottom: var(--sds-space-200);
+      margin-bottom: var(--sds-space-100);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    .sds-checkbox-group-children {
+      display: flex;
+      flex-direction: column;
+      padding-left: var(--sds-space-600);
+    }
+
+    /* ERROR STATE */
+    .sds-checkbox-group.has-error .sds-checkbox-group-box {
+      border-color: var(--sds-color-red-500);
+    }
+
+    .sds-checkbox-group-error {
+      display: none;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-red-500);
+      margin-top: var(--sds-space-150);
+      line-height: var(--sds-leading-normal);
+    }
+
+    .sds-checkbox-group.has-error + .sds-checkbox-group-error {
+      display: block;
+    }
+
+    /* ============================================================
+       2. RADIO CARD GROUP
+       ============================================================ */
+    .sds-radio-card-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+    .sds-radio-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+    .sds-radio-card:hover {
+      border-color: var(--sds-border-strong);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .sds-radio-card-circle {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 50%;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: border-color 0.15s ease;
+    }
+
+    .sds-radio-card-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: transparent;
+      transition: background-color 0.15s ease;
+    }
+
+    .sds-radio-card input:checked ~ .sds-radio-card-circle {
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-radio-card input:checked ~ .sds-radio-card-circle .sds-radio-card-dot {
+      background: var(--sds-interactive-primary);
+    }
+
+    .sds-radio-card:has(input:checked) {
+      border-color: var(--sds-interactive-primary);
+      background: var(--sds-interactive-primary-subtle);
+    }
+
+    .sds-radio-card input:focus-visible ~ .sds-radio-card-circle {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+    .sds-radio-card-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sds-radio-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+    .sds-radio-card-desc {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+    .sds-radio-card-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--sds-interactive-primary-subtle);
+      border-radius: 6px;
+      color: var(--sds-interactive-primary);
+      margin-top: 2px;
+    }
+
+    .sds-radio-card-icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* DISABLED STATE */
+    .sds-radio-card.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    /* ============================================================
+       3. CHECKBOX CARD GROUP
+       ============================================================ */
+    .sds-checkbox-card-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+    .sds-checkbox-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+    .sds-checkbox-card:hover {
+      border-color: var(--sds-border-strong);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .sds-checkbox-card-box {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .sds-checkbox-card-box svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+    .sds-checkbox-card input:checked ~ .sds-checkbox-card-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-checkbox-card input:checked ~ .sds-checkbox-card-box svg {
+      opacity: 1;
+    }
+
+    .sds-checkbox-card:has(input:checked) {
+      border-color: var(--sds-interactive-primary);
+      background: var(--sds-interactive-primary-subtle);
+    }
+
+    .sds-checkbox-card input:focus-visible ~ .sds-checkbox-card-box {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+    .sds-checkbox-card-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sds-checkbox-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+    .sds-checkbox-card-desc {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+    .sds-checkbox-card-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--sds-interactive-primary-subtle);
+      border-radius: 6px;
+      color: var(--sds-interactive-primary);
+      margin-top: 2px;
+    }
+
+    .sds-checkbox-card-icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* DISABLED STATE */
+    .sds-checkbox-card.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    /* ============================================================
+       4. TOGGLE LIST
+       ============================================================ */
+    .sds-toggle-list {
+      display: flex;
+      flex-direction: column;
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .sds-toggle-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.15s ease;
+    }
+
+    .sds-toggle-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .sds-toggle-list-item:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .sds-toggle-list-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .sds-toggle-list-label {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+    .sds-toggle-list-desc {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+    .sds-toggle-list-track {
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+      background: var(--sds-color-warm-gray-250);
+      border-radius: 10px;
+      position: relative;
+      transition: background-color 0.2s ease;
+    }
+
+    .sds-toggle-list-knob {
+      width: 16px;
+      height: 16px;
+      background: var(--sds-color-white);
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+    .sds-toggle-list-item input:checked + .sds-toggle-list-track {
+      background: var(--sds-interactive-primary);
+    }
+
+    .sds-toggle-list-item input:checked + .sds-toggle-list-track .sds-toggle-list-knob {
+      transform: translateX(16px);
+    }
+
+    .sds-toggle-list-item input:focus-visible + .sds-toggle-list-track {
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+    .sds-toggle-list-section {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-450);
+      padding: var(--sds-space-400) var(--sds-space-500) var(--sds-space-200);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    .sds-toggle-list-section:not(:first-child) {
+      border-top: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+    /* LOADING STATE */
+    .sds-toggle-list-item.is-loading {
+      pointer-events: none;
+    }
+
+    @keyframes sds-toggle-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.85; }
+    }
+
+    .sds-toggle-list-item.is-loading .sds-toggle-list-track {
+      animation: sds-toggle-pulse 1.2s ease-in-out infinite;
+    }
+
+    /* ============================================================
+       5. FILTER CHIPS
+       ============================================================ */
+    .sds-chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sds-space-150);
+    }
+
+    .sds-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      min-height: 36px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-secondary);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 100px;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    /* 44px touch target via pseudo-element */
+    .sds-chip::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 44px;
+    }
+
+    .sds-chip:hover {
+      border-color: var(--sds-border-strong);
+      color: var(--sds-text-primary);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .sds-chip:active {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    .sds-chip:has(input:checked) {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+    }
+
+    .sds-chip:has(input:checked):hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+
+    .sds-chip:has(input:checked):active {
+      background: var(--sds-interactive-primary-active, var(--sds-interactive-primary));
+    }
+
+    .sds-chip:has(input:focus-visible) {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+      padding: calc(var(--sds-space-200) - 1px) calc(var(--sds-space-300) - 1px);
+    }
+
+    .sds-chip .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    .sds-chip:has(input:checked) .material-symbols-outlined {
+      color: var(--sds-text-on-primary);
+    }
+
+    /* ============================================================
+       6. INLINE CHECKBOX TABLE
+       ============================================================ */
+    .sds-selection-table-wrapper {
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--sds-color-white);
+    }
+
+    .sds-selection-bar {
+      display: none;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-250) var(--sds-space-400);
+      background: var(--sds-interactive-primary-subtle);
+      border-bottom: 1px solid var(--sds-color-blue-150, var(--sds-border-default));
+      font-size: var(--sds-type-label);
+      color: var(--sds-interactive-primary);
+    }
+
+    .sds-selection-bar.is-visible {
+      display: flex;
+    }
+
+    .sds-selection-bar-count {
+      font-weight: var(--sds-weight-semibold);
+    }
+
+    .sds-selection-bar-actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-left: auto;
+    }
+
+    .sds-selection-bar-btn {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      background: none;
+      border: 1px solid var(--sds-interactive-primary);
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-250);
+      border-radius: 4px;
+      transition: background-color 0.15s ease;
+    }
+
+    .sds-selection-bar-btn:hover {
+      background: rgba(1, 61, 91, 0.08);
+    }
+
+    .sds-selection-bar-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-selection-bar-btn--danger {
+      color: var(--sds-color-red-500);
+      border-color: var(--sds-color-red-500);
+    }
+
+    .sds-selection-bar-btn--danger:hover {
+      background: var(--sds-color-red-025, rgba(220, 38, 38, 0.04));
+    }
+
+    .sds-selection-bar-deselect {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      text-decoration: underline;
+      transition: background-color 0.15s ease;
+    }
+
+    .sds-selection-bar-deselect:hover {
+      background: rgba(1, 61, 91, 0.08);
+    }
+
+    .sds-selection-bar-deselect:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-selection-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+    }
+
+    .sds-selection-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-550);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+    .sds-selection-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+    .sds-selection-table tr:last-child td { border-bottom: none; }
+
+    .sds-selection-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+    .sds-selection-table tbody tr:hover td {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .sds-selection-table tr.is-selected td {
+      background: var(--sds-interactive-primary-subtle);
+    }
+
+    .sds-selection-table th:first-child,
+    .sds-selection-table td:first-child {
+      width: 40px;
+      padding-right: 0;
+    }
+
+    /* Table checkbox (div-based, keyboard accessible) */
+    .sds-table-checkbox {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+    .sds-table-checkbox svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+    }
+
+    .sds-table-checkbox:hover {
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-table-checkbox.is-checked {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-table-checkbox.is-checked svg {
+      opacity: 1;
+    }
+
+    .sds-table-checkbox.is-indeterminate {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+    .sds-table-checkbox-dash {
+      display: none;
+      width: 8px;
+      height: 2px;
+      background: var(--sds-color-white);
+      border-radius: 1px;
+    }
+
+    .sds-table-checkbox.is-indeterminate svg {
+      display: none;
+    }
+
+    .sds-table-checkbox.is-indeterminate .sds-table-checkbox-dash {
+      display: block;
+    }
+
+    .sds-table-checkbox:focus-visible {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+      outline: none;
+    }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 640px) {
+      .sds-radio-card,
+      .sds-checkbox-card {
+        flex-wrap: wrap;
+      }
+
+      .sds-radio-card-content,
+      .sds-checkbox-card-content {
+        width: 100%;
+        flex-basis: 100%;
+      }
+
+      .sds-selection-table-wrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .sds-selection-table {
+        min-width: 500px;
+      }
+
+      .sds-chip-group {
+        gap: var(--sds-space-200);
+      }
+
+      .sds-selection-bar {
+        flex-wrap: wrap;
+        gap: var(--sds-space-200);
+      }
+
+      .sds-selection-bar-actions {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+
+  </style>
+</head>
+<body>
+
+  <h1>Selection Controls</h1>
+  <p class="page-subtitle">Advanced selection patterns for checkboxes, radios, and toggles. These compound components build on the base form inputs to handle multi-select lists, card selectors, settings toggles, filter chips, and table row selection.</p>
+
+  <!-- ============================================================
+       CHECKBOX GROUP
+       ============================================================ -->
+  <h2>Checkbox Group</h2>
+  <p>A vertical stack of checkboxes with an optional parent "Select all" that shows an indeterminate state when some children are checked. Used for permission sets, data classification selection, and bulk operations.</p>
+
+  <h3>With Select All</h3>
+  <div class="demo-block">
+    <div class="demo-label">Interactive</div>
+    <div class="sds-checkbox-group" id="demo-checkbox-group">
+      <label class="sds-checkbox-group-item sds-checkbox-group-parent">
+        <input type="checkbox" id="select-all-group">
+        <span class="sds-checkbox-group-box">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="sds-checkbox-group-dash"></span>
+        </span>
+        Select all classifications
+      </label>
+      <div class="sds-checkbox-group-children">
+        <label class="sds-checkbox-group-item">
+          <input type="checkbox" class="group-child" checked>
+          <span class="sds-checkbox-group-box">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sds-checkbox-group-dash"></span>
+          </span>
+          Public
+        </label>
+        <label class="sds-checkbox-group-item">
+          <input type="checkbox" class="group-child" checked>
+          <span class="sds-checkbox-group-box">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sds-checkbox-group-dash"></span>
+          </span>
+          Internal
+        </label>
+        <label class="sds-checkbox-group-item">
+          <input type="checkbox" class="group-child">
+          <span class="sds-checkbox-group-box">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sds-checkbox-group-dash"></span>
+          </span>
+          Confidential
+        </label>
+        <label class="sds-checkbox-group-item">
+          <input type="checkbox" class="group-child">
+          <span class="sds-checkbox-group-box">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sds-checkbox-group-dash"></span>
+          </span>
+          Restricted
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <h3>Error State (Required)</h3>
+  <div class="demo-block">
+    <div class="demo-label">Validation Error</div>
+    <div class="sds-checkbox-group has-error" id="demo-checkbox-error">
+      <label class="sds-checkbox-group-item sds-checkbox-group-parent">
+        <input type="checkbox" id="select-all-error">
+        <span class="sds-checkbox-group-box">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span class="sds-checkbox-group-dash"></span>
+        </span>
+        Select compliance frameworks
+      </label>
+      <div class="sds-checkbox-group-children">
+        <label class="sds-checkbox-group-item">
+          <input type="checkbox">
+          <span class="sds-checkbox-group-box">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sds-checkbox-group-dash"></span>
+          </span>
+          SOC 2 Type II
+        </label>
+        <label class="sds-checkbox-group-item">
+          <input type="checkbox">
+          <span class="sds-checkbox-group-box">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sds-checkbox-group-dash"></span>
+          </span>
+          GDPR
+        </label>
+        <label class="sds-checkbox-group-item">
+          <input type="checkbox">
+          <span class="sds-checkbox-group-box">
+            <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <span class="sds-checkbox-group-dash"></span>
+          </span>
+          HIPAA
+        </label>
+      </div>
+    </div>
+    <div class="sds-checkbox-group-error">At least one compliance framework is required to create a policy.</div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       RADIO CARDS
+       ============================================================ -->
+  <h2>Radio Cards</h2>
+  <p>Bordered cards with radio selection for choosing between mutually exclusive options. Each card has a title, description, and optional icon. The radio indicator leads for scanability, followed by the icon and content. Use for policy type selection, scan mode configuration, or plan selection.</p>
+
+  <h3>With Icons</h3>
+  <div class="demo-block">
+    <div class="demo-label">Interactive</div>
+    <div class="sds-radio-card-group">
+      <label class="sds-radio-card">
+        <input type="radio" name="scan-mode" checked>
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-icon">
+          <span class="material-symbols-outlined">shield</span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">Full Scan</div>
+          <div class="sds-radio-card-desc">Scan all connected data sources for sensitive data. Recommended for initial setup and quarterly audits.</div>
+        </span>
+      </label>
+      <label class="sds-radio-card">
+        <input type="radio" name="scan-mode">
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-icon">
+          <span class="material-symbols-outlined">bolt</span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">Quick Scan</div>
+          <div class="sds-radio-card-desc">Scan only recently modified files and databases. Faster results for daily monitoring.</div>
+        </span>
+      </label>
+      <label class="sds-radio-card">
+        <input type="radio" name="scan-mode">
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-icon">
+          <span class="material-symbols-outlined">tune</span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">Custom Scan</div>
+          <div class="sds-radio-card-desc">Choose specific data sources and classification rules to apply. Best for targeted compliance checks.</div>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <h3>Without Icons</h3>
+  <div class="demo-block">
+    <div class="demo-label">Interactive</div>
+    <div class="sds-radio-card-group">
+      <label class="sds-radio-card">
+        <input type="radio" name="retention" checked>
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">30 days</div>
+          <div class="sds-radio-card-desc">Retain audit logs for 30 days. Suitable for development environments.</div>
+        </span>
+      </label>
+      <label class="sds-radio-card">
+        <input type="radio" name="retention">
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">1 year</div>
+          <div class="sds-radio-card-desc">Retain audit logs for 1 year. Meets most regulatory requirements.</div>
+        </span>
+      </label>
+      <label class="sds-radio-card">
+        <input type="radio" name="retention">
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">7 years</div>
+          <div class="sds-radio-card-desc">Retain audit logs for 7 years. Required for financial services compliance.</div>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <h3>Disabled State</h3>
+  <div class="demo-block">
+    <div class="demo-label">Disabled — unavailable plan tier</div>
+    <div class="sds-radio-card-group">
+      <label class="sds-radio-card">
+        <input type="radio" name="encryption" checked>
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">Standard Encryption</div>
+          <div class="sds-radio-card-desc">AES-256 encryption at rest for all stored data.</div>
+        </span>
+      </label>
+      <label class="sds-radio-card is-disabled">
+        <input type="radio" name="encryption" disabled>
+        <span class="sds-radio-card-circle">
+          <span class="sds-radio-card-dot"></span>
+        </span>
+        <span class="sds-radio-card-content">
+          <div class="sds-radio-card-title">Customer-Managed Keys</div>
+          <div class="sds-radio-card-desc">Bring your own encryption keys via AWS KMS or Azure Key Vault. Requires Enterprise plan.</div>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       CHECKBOX CARDS
+       ============================================================ -->
+  <h2>Checkbox Cards</h2>
+  <p>Multi-select card pattern for choosing one or more options. Same layout as radio cards but supports multiple selections. The checkbox indicator leads the row for consistent scanability. Use for data source selection, notification channel configuration, or feature enablement.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Interactive</div>
+    <div class="sds-checkbox-card-group">
+      <label class="sds-checkbox-card">
+        <input type="checkbox" checked>
+        <span class="sds-checkbox-card-box">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="sds-checkbox-card-icon">
+          <span class="material-symbols-outlined">database</span>
+        </span>
+        <span class="sds-checkbox-card-content">
+          <div class="sds-checkbox-card-title">SQL Databases</div>
+          <div class="sds-checkbox-card-desc">PostgreSQL, MySQL, SQL Server, and Oracle databases connected to your workspace.</div>
+        </span>
+      </label>
+      <label class="sds-checkbox-card">
+        <input type="checkbox" checked>
+        <span class="sds-checkbox-card-box">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="sds-checkbox-card-icon">
+          <span class="material-symbols-outlined">cloud</span>
+        </span>
+        <span class="sds-checkbox-card-content">
+          <div class="sds-checkbox-card-title">Cloud Storage</div>
+          <div class="sds-checkbox-card-desc">Amazon S3, Google Cloud Storage, and Azure Blob Storage buckets.</div>
+        </span>
+      </label>
+      <label class="sds-checkbox-card">
+        <input type="checkbox">
+        <span class="sds-checkbox-card-box">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="sds-checkbox-card-icon">
+          <span class="material-symbols-outlined">folder</span>
+        </span>
+        <span class="sds-checkbox-card-content">
+          <div class="sds-checkbox-card-title">File Shares</div>
+          <div class="sds-checkbox-card-desc">Network file shares and mounted drives accessible from your infrastructure.</div>
+        </span>
+      </label>
+      <label class="sds-checkbox-card">
+        <input type="checkbox">
+        <span class="sds-checkbox-card-box">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="sds-checkbox-card-icon">
+          <span class="material-symbols-outlined">mail</span>
+        </span>
+        <span class="sds-checkbox-card-content">
+          <div class="sds-checkbox-card-title">Email Archives</div>
+          <div class="sds-checkbox-card-desc">Microsoft 365 and Google Workspace email archives for DLP scanning.</div>
+        </span>
+      </label>
+      <label class="sds-checkbox-card is-disabled">
+        <input type="checkbox" disabled>
+        <span class="sds-checkbox-card-box">
+          <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="sds-checkbox-card-icon">
+          <span class="material-symbols-outlined">chat</span>
+        </span>
+        <span class="sds-checkbox-card-content">
+          <div class="sds-checkbox-card-title">Slack Channels</div>
+          <div class="sds-checkbox-card-desc">Scan Slack messages for sensitive data. Requires Slack integration to be configured.</div>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       TOGGLE LIST
+       ============================================================ -->
+  <h2>Toggle List</h2>
+  <p>A vertical list of settings-style toggle rows with labels and descriptions. The entire row is clickable and highlights on hover to communicate interactivity. Supports optional section grouping for organized settings pages. Use for feature flags, notification preferences, and security settings.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Interactive — grouped settings</div>
+    <div class="sds-toggle-list" id="demo-toggle-list">
+      <div class="sds-toggle-list-section">Notifications</div>
+      <label class="sds-toggle-list-item">
+        <span class="sds-toggle-list-content">
+          <div class="sds-toggle-list-label">Policy violations</div>
+          <div class="sds-toggle-list-desc">Receive alerts when data access violates an active policy.</div>
+        </span>
+        <input type="checkbox" checked>
+        <span class="sds-toggle-list-track">
+          <span class="sds-toggle-list-knob"></span>
+        </span>
+      </label>
+      <label class="sds-toggle-list-item">
+        <span class="sds-toggle-list-content">
+          <div class="sds-toggle-list-label">Scan completions</div>
+          <div class="sds-toggle-list-desc">Notify when scheduled or manual scans finish processing.</div>
+        </span>
+        <input type="checkbox" checked>
+        <span class="sds-toggle-list-track">
+          <span class="sds-toggle-list-knob"></span>
+        </span>
+      </label>
+      <label class="sds-toggle-list-item">
+        <span class="sds-toggle-list-content">
+          <div class="sds-toggle-list-label">Weekly digest</div>
+          <div class="sds-toggle-list-desc">Receive a weekly summary of data security activity and compliance status.</div>
+        </span>
+        <input type="checkbox">
+        <span class="sds-toggle-list-track">
+          <span class="sds-toggle-list-knob"></span>
+        </span>
+      </label>
+      <div class="sds-toggle-list-section">Security</div>
+      <label class="sds-toggle-list-item">
+        <span class="sds-toggle-list-content">
+          <div class="sds-toggle-list-label">Two-factor authentication</div>
+          <div class="sds-toggle-list-desc">Require a second factor when signing in to your account.</div>
+        </span>
+        <input type="checkbox" checked>
+        <span class="sds-toggle-list-track">
+          <span class="sds-toggle-list-knob"></span>
+        </span>
+      </label>
+      <label class="sds-toggle-list-item">
+        <span class="sds-toggle-list-content">
+          <div class="sds-toggle-list-label">Session timeout</div>
+          <div class="sds-toggle-list-desc">Automatically sign out after 30 minutes of inactivity.</div>
+        </span>
+        <input type="checkbox">
+        <span class="sds-toggle-list-track">
+          <span class="sds-toggle-list-knob"></span>
+        </span>
+      </label>
+      <label class="sds-toggle-list-item is-loading">
+        <span class="sds-toggle-list-content">
+          <div class="sds-toggle-list-label">Audit log forwarding</div>
+          <div class="sds-toggle-list-desc">Forward audit events to your SIEM. Connecting to external service...</div>
+        </span>
+        <input type="checkbox">
+        <span class="sds-toggle-list-track">
+          <span class="sds-toggle-list-knob"></span>
+        </span>
+      </label>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       FILTER CHIPS
+       ============================================================ -->
+  <h2>Filter Chips</h2>
+  <p>Pill-shaped toggleable buttons for filtering views. Available in single-select (radio) and multi-select (checkbox) variants. Touch targets meet the 44px WCAG minimum via invisible hit area expansion. Use for dashboard filters, log severity levels, and status filtering.</p>
+
+  <h3>Single Select</h3>
+  <div class="demo-block">
+    <div class="demo-label">Interactive — radio behavior</div>
+    <div class="sds-chip-group">
+      <label class="sds-chip">
+        <input type="radio" name="severity" checked>
+        All
+      </label>
+      <label class="sds-chip">
+        <input type="radio" name="severity">
+        <span class="material-symbols-outlined">error</span>
+        Critical
+      </label>
+      <label class="sds-chip">
+        <input type="radio" name="severity">
+        <span class="material-symbols-outlined">warning</span>
+        High
+      </label>
+      <label class="sds-chip">
+        <input type="radio" name="severity">
+        <span class="material-symbols-outlined">info</span>
+        Medium
+      </label>
+      <label class="sds-chip">
+        <input type="radio" name="severity">
+        Low
+      </label>
+    </div>
+  </div>
+
+  <h3>Multi Select</h3>
+  <div class="demo-block">
+    <div class="demo-label">Interactive — checkbox behavior</div>
+    <div class="sds-chip-group">
+      <label class="sds-chip">
+        <input type="checkbox" checked>
+        PII
+      </label>
+      <label class="sds-chip">
+        <input type="checkbox" checked>
+        PHI
+      </label>
+      <label class="sds-chip">
+        <input type="checkbox">
+        PCI
+      </label>
+      <label class="sds-chip">
+        <input type="checkbox">
+        Credentials
+      </label>
+      <label class="sds-chip">
+        <input type="checkbox">
+        Source Code
+      </label>
+      <label class="sds-chip">
+        <input type="checkbox">
+        Financial
+      </label>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       INLINE CHECKBOX TABLE
+       ============================================================ -->
+  <h2>Inline Checkbox Table</h2>
+  <p>Table rows with leading checkboxes for bulk operations. A selection action bar appears when one or more rows are selected, showing the count, a "Deselect all" link, and contextual bulk actions with bordered buttons for clarity. Use for data tables requiring multi-row operations.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Interactive — select rows to see action bar</div>
+    <div class="sds-selection-table-wrapper" id="demo-selection-table">
+      <div class="sds-selection-bar" id="selection-bar" role="toolbar" aria-label="Bulk actions">
+        <span class="sds-selection-bar-count" id="selection-count">0 selected</span>
+        <button class="sds-selection-bar-deselect" id="deselect-all">Deselect all</button>
+        <div class="sds-selection-bar-actions">
+          <button class="sds-selection-bar-btn">Export</button>
+          <button class="sds-selection-bar-btn">Assign Policy</button>
+          <button class="sds-selection-bar-btn sds-selection-bar-btn--danger">Remove</button>
+        </div>
+      </div>
+      <div aria-live="polite" class="sr-only" id="table-selection-announce"></div>
+      <table class="sds-selection-table">
+        <thead>
+          <tr>
+            <th>
+              <div class="sds-table-checkbox" id="table-select-all" role="checkbox" aria-checked="false" aria-label="Select all rows" tabindex="0">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="sds-table-checkbox-dash"></span>
+              </div>
+            </th>
+            <th>Data Source</th>
+            <th>Type</th>
+            <th>Records</th>
+            <th>Last Scanned</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          <tr>
+            <td>
+              <div class="sds-table-checkbox" role="checkbox" aria-checked="false" aria-label="Select production-users-db" tabindex="0">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="sds-table-checkbox-dash"></span>
+              </div>
+            </td>
+            <td>production-users-db</td>
+            <td>PostgreSQL</td>
+            <td>2,847,391</td>
+            <td>2 hours ago</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="sds-table-checkbox" role="checkbox" aria-checked="false" aria-label="Select analytics-warehouse" tabindex="0">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="sds-table-checkbox-dash"></span>
+              </div>
+            </td>
+            <td>analytics-warehouse</td>
+            <td>BigQuery</td>
+            <td>14,205,882</td>
+            <td>6 hours ago</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="sds-table-checkbox" role="checkbox" aria-checked="false" aria-label="Select customer-documents" tabindex="0">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="sds-table-checkbox-dash"></span>
+              </div>
+            </td>
+            <td>customer-documents</td>
+            <td>S3 Bucket</td>
+            <td>891,204</td>
+            <td>1 day ago</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="sds-table-checkbox" role="checkbox" aria-checked="false" aria-label="Select hr-records" tabindex="0">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="sds-table-checkbox-dash"></span>
+              </div>
+            </td>
+            <td>hr-records</td>
+            <td>MySQL</td>
+            <td>45,821</td>
+            <td>3 days ago</td>
+          </tr>
+          <tr>
+            <td>
+              <div class="sds-table-checkbox" role="checkbox" aria-checked="false" aria-label="Select email-archive-2024" tabindex="0">
+                <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <span class="sds-table-checkbox-dash"></span>
+              </div>
+            </td>
+            <td>email-archive-2024</td>
+            <td>Azure Blob</td>
+            <td>328,109</td>
+            <td>1 week ago</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Checkbox Group</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Checkbox size</td><td><code>16 x 16px</code></td><td>Matches base checkbox from Form Inputs</td></tr>
+      <tr><td>Checkbox border</td><td><code>1.5px solid var(--sds-color-warm-gray-350)</code></td><td>Stronger contrast for enterprise readability</td></tr>
+      <tr><td>Checkbox border-radius</td><td><code>4px</code></td><td></td></tr>
+      <tr><td>Checked background</td><td><code>var(--sds-interactive-primary)</code></td><td></td></tr>
+      <tr><td>Item gap</td><td><code>var(--sds-space-200)</code></td><td>Between checkbox and label</td></tr>
+      <tr><td>Item padding</td><td><code>var(--sds-space-200) 0</code></td><td>Vertical padding per row</td></tr>
+      <tr><td>Children indent</td><td><code>var(--sds-space-600)</code></td><td>Left padding for child items</td></tr>
+      <tr><td>Focus ring</td><td><code>0 0 0 3px rgba(1, 61, 91, 0.15)</code></td><td>Consistent with form inputs</td></tr>
+      <tr><td>Error border</td><td><code>var(--sds-color-red-500)</code></td><td>Applied via <code>.has-error</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Radio / Checkbox Cards</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Card padding</td><td><code>var(--sds-space-400)</code></td><td></td></tr>
+      <tr><td>Card border</td><td><code>1.5px solid var(--sds-border-default)</code></td><td></td></tr>
+      <tr><td>Card border-radius</td><td><code>8px</code></td><td></td></tr>
+      <tr><td>Card gap</td><td><code>var(--sds-space-200)</code></td><td>Between cards</td></tr>
+      <tr><td>Internal gap</td><td><code>var(--sds-space-300)</code></td><td>Between control, icon, content</td></tr>
+      <tr><td>Element order</td><td>Indicator, icon, content</td><td>Indicator leads for scanability</td></tr>
+      <tr><td>Selected border</td><td><code>var(--sds-interactive-primary)</code></td><td></td></tr>
+      <tr><td>Selected background</td><td><code>var(--sds-interactive-primary-subtle)</code></td><td></td></tr>
+      <tr><td>Hover background</td><td><code>var(--sds-color-warm-gray-025)</code></td><td></td></tr>
+      <tr><td>Disabled</td><td><code>opacity: 0.5; pointer-events: none</code></td><td>Via <code>.is-disabled</code></td></tr>
+      <tr><td>Icon container</td><td><code>32 x 32px</code>, <code>border-radius: 6px</code></td><td>Optional</td></tr>
+      <tr><td>Title font</td><td><code>var(--sds-type-body)</code>, <code>var(--sds-weight-medium)</code></td><td></td></tr>
+      <tr><td>Description font</td><td><code>var(--sds-type-label)</code>, <code>var(--sds-text-secondary)</code></td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Toggle List</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Container border</td><td><code>1px solid var(--sds-border-default)</code></td><td></td></tr>
+      <tr><td>Container border-radius</td><td><code>8px</code></td><td></td></tr>
+      <tr><td>Item padding</td><td><code>var(--sds-space-400) var(--sds-space-500)</code></td><td></td></tr>
+      <tr><td>Item divider</td><td><code>1px solid var(--sds-color-warm-gray-100)</code></td><td></td></tr>
+      <tr><td>Row hover</td><td><code>var(--sds-color-warm-gray-025)</code></td><td>Full row highlights on hover</td></tr>
+      <tr><td>Toggle track</td><td><code>36 x 20px</code></td><td>Matches base toggle from Form Inputs</td></tr>
+      <tr><td>Toggle knob</td><td><code>16 x 16px</code></td><td></td></tr>
+      <tr><td>Track off color</td><td><code>var(--sds-color-warm-gray-250)</code></td><td></td></tr>
+      <tr><td>Track on color</td><td><code>var(--sds-interactive-primary)</code></td><td></td></tr>
+      <tr><td>Loading state</td><td>Pulsing opacity, <code>pointer-events: none</code></td><td>Via <code>.is-loading</code></td></tr>
+      <tr><td>Section header</td><td><code>var(--sds-type-overline)</code>, uppercase</td><td></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Filter Chips</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Chip padding</td><td><code>var(--sds-space-200) var(--sds-space-300)</code></td><td>Increased vertical for touch</td></tr>
+      <tr><td>Chip min-height</td><td><code>36px</code> (44px touch target via pseudo)</td><td>Meets WCAG 2.5.8</td></tr>
+      <tr><td>Chip border</td><td><code>1px solid var(--sds-border-default)</code></td><td></td></tr>
+      <tr><td>Chip border-radius</td><td><code>100px</code></td><td>Pill shape</td></tr>
+      <tr><td>Chip gap</td><td><code>var(--sds-space-150)</code></td><td>Between chips</td></tr>
+      <tr><td>Font</td><td><code>var(--sds-type-label)</code>, <code>var(--sds-weight-medium)</code></td><td></td></tr>
+      <tr><td>Default color</td><td><code>var(--sds-text-secondary)</code></td><td></td></tr>
+      <tr><td>Active background</td><td><code>var(--sds-interactive-primary)</code></td><td></td></tr>
+      <tr><td>Active text</td><td><code>var(--sds-text-on-primary)</code></td><td></td></tr>
+      <tr><td>Pressed state</td><td><code>:active</code> darkens background</td><td>Visual feedback on press</td></tr>
+      <tr><td>Icon size</td><td><code>16px</code></td><td>Material Symbols</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Inline Checkbox Table</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Wrapper border</td><td><code>1px solid var(--sds-border-default)</code></td><td></td></tr>
+      <tr><td>Wrapper border-radius</td><td><code>8px</code></td><td></td></tr>
+      <tr><td>Selection bar background</td><td><code>var(--sds-interactive-primary-subtle)</code></td><td>Appears when rows selected</td></tr>
+      <tr><td>Selection bar text</td><td><code>var(--sds-interactive-primary)</code></td><td></td></tr>
+      <tr><td>Selected row background</td><td><code>var(--sds-interactive-primary-subtle)</code></td><td></td></tr>
+      <tr><td>Row hover</td><td><code>var(--sds-color-warm-gray-025)</code></td><td>Hover feedback on all rows</td></tr>
+      <tr><td>Checkbox column width</td><td><code>40px</code></td><td></td></tr>
+      <tr><td>Action buttons</td><td>Bordered, <code>var(--sds-interactive-primary)</code></td><td>Improved contrast over borderless text</td></tr>
+      <tr><td>Danger action</td><td><code>var(--sds-color-red-500)</code></td><td>For destructive actions</td></tr>
+      <tr><td>Deselect all</td><td>Underlined text link in bar</td><td>Quick clear mechanism</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    // ---- Checkbox Group: Select All ----
+    (function() {
+      var parent = document.getElementById('select-all-group');
+      var children = document.querySelectorAll('#demo-checkbox-group .group-child');
+
+      function updateParent() {
+        var checked = [].filter.call(children, function(c) { return c.checked; }).length;
+        if (checked === 0) {
+          parent.checked = false;
+          parent.classList.remove('is-indeterminate');
+        } else if (checked === children.length) {
+          parent.checked = true;
+          parent.classList.remove('is-indeterminate');
+        } else {
+          parent.checked = false;
+          parent.classList.add('is-indeterminate');
+        }
+      }
+
+      parent.addEventListener('change', function() {
+        // When clicking from indeterminate, always check all (expected UX)
+        var wasIndeterminate = parent.classList.contains('is-indeterminate');
+        parent.classList.remove('is-indeterminate');
+        if (wasIndeterminate) {
+          parent.checked = true;
+        }
+        [].forEach.call(children, function(c) { c.checked = parent.checked; });
+      });
+
+      [].forEach.call(children, function(c) {
+        c.addEventListener('change', updateParent);
+      });
+      updateParent();
+    })();
+
+    // ---- Selection Table ----
+    (function() {
+      var wrapper = document.getElementById('demo-selection-table');
+      var selectAll = document.getElementById('table-select-all');
+      var bar = document.getElementById('selection-bar');
+      var countEl = document.getElementById('selection-count');
+      var deselectBtn = document.getElementById('deselect-all');
+      var announceEl = document.getElementById('table-selection-announce');
+      var rows = wrapper.querySelectorAll('tbody tr');
+      var rowCheckboxes = wrapper.querySelectorAll('tbody .sds-table-checkbox');
+
+      function updateState() {
+        var checked = wrapper.querySelectorAll('tbody .sds-table-checkbox.is-checked').length;
+        var total = rowCheckboxes.length;
+
+        // Update selection bar
+        if (checked > 0) {
+          bar.classList.add('is-visible');
+          countEl.textContent = checked + ' selected';
+        } else {
+          bar.classList.remove('is-visible');
+        }
+
+        // Update select-all state
+        selectAll.classList.remove('is-checked', 'is-indeterminate');
+        if (checked === total && total > 0) {
+          selectAll.classList.add('is-checked');
+          selectAll.setAttribute('aria-checked', 'true');
+        } else if (checked > 0) {
+          selectAll.classList.add('is-indeterminate');
+          selectAll.setAttribute('aria-checked', 'mixed');
+        } else {
+          selectAll.setAttribute('aria-checked', 'false');
+        }
+
+        // Update row highlight and aria
+        [].forEach.call(rows, function(row, i) {
+          var isChecked = rowCheckboxes[i].classList.contains('is-checked');
+          if (isChecked) {
+            row.classList.add('is-selected');
+          } else {
+            row.classList.remove('is-selected');
+          }
+          rowCheckboxes[i].setAttribute('aria-checked', isChecked ? 'true' : 'false');
+        });
+
+        // Announce for screen readers
+        if (checked > 0) {
+          announceEl.textContent = checked + ' row' + (checked !== 1 ? 's' : '') + ' selected';
+        } else {
+          announceEl.textContent = 'No rows selected';
+        }
+      }
+
+      function toggleCheckbox(cb) {
+        cb.classList.toggle('is-checked');
+        updateState();
+      }
+
+      // Click and keyboard handlers for row checkboxes
+      [].forEach.call(rowCheckboxes, function(cb) {
+        cb.addEventListener('click', function() {
+          toggleCheckbox(this);
+        });
+        cb.addEventListener('keydown', function(e) {
+          if (e.key === ' ' || e.key === 'Enter') {
+            e.preventDefault();
+            toggleCheckbox(this);
+          }
+        });
+      });
+
+      // Select-all click
+      selectAll.addEventListener('click', function() {
+        var allChecked = this.classList.contains('is-checked');
+        [].forEach.call(rowCheckboxes, function(cb) {
+          if (allChecked) {
+            cb.classList.remove('is-checked');
+          } else {
+            cb.classList.add('is-checked');
+          }
+        });
+        updateState();
+      });
+
+      // Select-all keyboard
+      selectAll.addEventListener('keydown', function(e) {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          this.click();
+        }
+      });
+
+      // Deselect all button
+      deselectBtn.addEventListener('click', function() {
+        [].forEach.call(rowCheckboxes, function(cb) {
+          cb.classList.remove('is-checked');
+        });
+        updateState();
+      });
+    })();
+  </script>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

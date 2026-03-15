@@ -1,0 +1,945 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Tooltips</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ============================================================
+       TOOLTIP — Dark, compact hint on hover
+       ============================================================ */
+
+    .sds-tooltip-trigger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+    }
+
+    .sds-tooltip {
+      position: absolute;
+      z-index: 1000;
+      background: var(--sds-color-warm-gray-900);
+      color: var(--sds-color-white);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      line-height: var(--sds-leading-normal);
+      font-weight: var(--sds-weight-regular);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      max-width: 240px;
+      white-space: normal;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 150ms ease;
+      transition-delay: 150ms;
+    }
+
+    /* Arrow base */
+    .sds-tooltip::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--sds-color-warm-gray-900);
+      transform: rotate(45deg);
+    }
+
+    /* Positions */
+    .sds-tooltip--top {
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .sds-tooltip--top::after {
+      bottom: -3px;
+      left: 50%;
+      margin-left: -3px;
+    }
+
+    .sds-tooltip--bottom {
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .sds-tooltip--bottom::after {
+      top: -3px;
+      left: 50%;
+      margin-left: -3px;
+    }
+
+    .sds-tooltip--left {
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .sds-tooltip--left::after {
+      right: -3px;
+      top: 50%;
+      margin-top: -3px;
+    }
+
+    .sds-tooltip--right {
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .sds-tooltip--right::after {
+      left: -3px;
+      top: 50%;
+      margin-top: -3px;
+    }
+
+    /* Hover reveal */
+    .sds-tooltip-trigger:hover .sds-tooltip {
+      opacity: 1;
+    }
+
+    /* Static (always-visible) variant for previews */
+    .sds-tooltip--static {
+      opacity: 1;
+      position: relative;
+      transition: none;
+    }
+
+    /* ============================================================
+       RICH TOOLTIP
+       ============================================================ */
+
+    .sds-tooltip--rich {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      max-width: 280px;
+    }
+    .sds-tooltip__title {
+      font-weight: var(--sds-weight-semibold);
+      font-size: var(--sds-type-label);
+      margin: 0 0 var(--sds-space-050);
+    }
+    .sds-tooltip__desc {
+      font-size: var(--sds-type-caption);
+      opacity: 0.8;
+      margin: 0;
+    }
+
+    /* ============================================================
+       POPOVER — Light surface, click-triggered
+       ============================================================ */
+
+    .sds-popover-trigger {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .sds-popover {
+      position: absolute;
+      z-index: 1000;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      padding: var(--sds-space-400);
+      max-width: 320px;
+      min-width: 220px;
+      font-family: var(--sds-font-sans);
+      display: none;
+    }
+    .sds-popover.is-open {
+      display: block;
+    }
+    .sds-popover--static {
+      display: block;
+      position: relative;
+    }
+
+    /* Popover arrow */
+    .sds-popover::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--sds-bg-elevated);
+      border-left: 1px solid var(--sds-border-default);
+      border-top: 1px solid var(--sds-border-default);
+      transform: rotate(45deg);
+    }
+    .sds-popover--top { bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); }
+    .sds-popover--top::before { bottom: -6px; left: 50%; margin-left: -5px; border-left: none; border-top: none; border-right: 1px solid var(--sds-border-default); border-bottom: 1px solid var(--sds-border-default); }
+    .sds-popover--bottom { top: calc(100% + 8px); left: 50%; transform: translateX(-50%); }
+    .sds-popover--bottom::before { top: -6px; left: 50%; margin-left: -5px; }
+
+    .sds-popover__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--sds-space-200);
+    }
+    .sds-popover__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+    }
+    .sds-popover__close {
+      background: none;
+      border: none;
+      padding: var(--sds-space-050);
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sds-popover__close:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-popover__body {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-popover__body p {
+      font-size: var(--sds-type-caption);
+      margin: 0 0 var(--sds-space-200);
+    }
+    .sds-popover__body p:last-child { margin-bottom: 0; }
+    .sds-popover__actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-300);
+    }
+    .sds-popover__link {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .sds-popover__link:hover { text-decoration: underline; }
+
+    /* ============================================================
+       INFO ICON PATTERN
+       ============================================================ */
+
+    /* Field label (canonical — matches form-inputs.html) */
+    .sds-field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+    }
+    .sds-info-icon {
+      font-size: 16px;
+      color: var(--sds-text-tertiary);
+      cursor: help;
+    }
+    .sds-info-icon:hover {
+      color: var(--sds-text-secondary);
+    }
+
+    /* ============================================================
+       BUTTON COMPONENT (canonical)
+       ============================================================ */
+
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-btn--sm {
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border-radius: 6px;
+      height: 32px;
+    }
+
+    .sds-btn--secondary {
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-interactive-secondary-border);
+    }
+    .sds-btn--secondary:hover {
+      background: var(--sds-bg-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--secondary:active {
+      background: var(--sds-border-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+
+    /* ============================================================
+       STATIC PREVIEW LAYOUT
+       ============================================================ */
+
+    .static-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: var(--sds-space-800);
+      align-items: start;
+    }
+    .static-preview-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-300);
+    }
+    .static-preview-item .preview-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-400);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+    }
+
+    /* ============================================================
+       SETTINGS PANEL (In Context demo)
+       ============================================================ */
+
+    .settings-panel {
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      padding: var(--sds-space-600);
+      max-width: 480px;
+    }
+    .settings-panel__title {
+      font-size: var(--sds-type-subheading);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0 0 var(--sds-space-500);
+    }
+    /* Form inputs (canonical — matches form-inputs.html) */
+    .settings-panel .sds-field {
+      margin-bottom: var(--sds-space-500);
+    }
+    .settings-panel .sds-field:last-child { margin-bottom: 0; }
+    .settings-panel .sds-input {
+      display: block;
+      width: 100%;
+      margin-top: var(--sds-space-150);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+    }
+    .settings-panel .sds-input:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    .settings-panel .sds-select {
+      display: block;
+      width: 100%;
+      margin-top: var(--sds-space-150);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+      appearance: none;
+    }
+    .settings-panel .sds-select:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+  <h1>Tooltips &amp; Popovers</h1>
+  <p class="page-subtitle">Contextual overlays that provide additional information on hover or click. Use tooltips for brief hints and popovers for richer, interactive content.</p>
+
+  <!-- ========== SIMPLE TOOLTIPS ========== -->
+  <h2>Simple Tooltips</h2>
+  <p>Dark, compact overlays that appear on hover after a 150ms delay. Use for short descriptions, keyboard shortcut hints, or label clarification. Supports four placement positions.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Hover each button</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0;">
+
+      <!-- Top -->
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">Top</button>
+        <span class="sds-tooltip sds-tooltip--top">Data retention policy</span>
+      </span>
+
+      <!-- Right -->
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">Right</button>
+        <span class="sds-tooltip sds-tooltip--right">API rate limit: 1,000 req/min</span>
+      </span>
+
+      <!-- Bottom -->
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">Bottom</button>
+        <span class="sds-tooltip sds-tooltip--bottom">AES-256 encryption enabled</span>
+      </span>
+
+      <!-- Left -->
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">Left</button>
+        <span class="sds-tooltip sds-tooltip--left">Requires admin permissions</span>
+      </span>
+
+    </div>
+  </div>
+
+  <!-- ========== RICH TOOLTIPS ========== -->
+  <h3>Rich Tooltips</h3>
+  <p>Tooltips with a title and description for when a short label is not enough. Wider max-width and increased padding provide room for two-line explanations.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Hover to reveal</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0; gap: var(--sds-space-1200);">
+
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">
+          <span class="material-symbols-outlined" style="font-size: 18px;">lock</span>
+          Encryption
+        </button>
+        <span class="sds-tooltip sds-tooltip--rich sds-tooltip--top">
+          <p class="sds-tooltip__title">End-to-end encryption</p>
+          <p class="sds-tooltip__desc">All data at rest is encrypted with AES-256. Data in transit uses TLS 1.3.</p>
+        </span>
+      </span>
+
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">
+          <span class="material-symbols-outlined" style="font-size: 18px;">speed</span>
+          Rate Limits
+        </button>
+        <span class="sds-tooltip sds-tooltip--rich sds-tooltip--bottom">
+          <p class="sds-tooltip__title">API rate limiting</p>
+          <p class="sds-tooltip__desc">Requests are throttled to 1,000 per minute per API key. Contact support to increase your quota.</p>
+        </span>
+      </span>
+
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">
+          <span class="material-symbols-outlined" style="font-size: 18px;">shield</span>
+          Permissions
+        </button>
+        <span class="sds-tooltip sds-tooltip--rich sds-tooltip--top">
+          <p class="sds-tooltip__title">Role-based access</p>
+          <p class="sds-tooltip__desc">Only Organization Admins and Security Officers can modify this setting.</p>
+        </span>
+      </span>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== POPOVERS ========== -->
+  <h2>Popovers</h2>
+  <p>Light-background overlays triggered by click. Popovers can contain structured content, links, and action buttons. Dismiss with the close button or by clicking outside.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Click to open</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0; gap: var(--sds-space-1200);">
+
+      <!-- Popover 1 -->
+      <span class="sds-popover-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" onclick="togglePopover(this)">
+          <span class="material-symbols-outlined" style="font-size: 18px;">delete_sweep</span>
+          Retention Policy
+        </button>
+        <div class="sds-popover sds-popover--bottom">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Data Retention</p>
+            <button class="sds-popover__close" onclick="closePopover(this)" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <div class="sds-popover__body">
+            <p>Audit logs are retained for 90 days by default. Deleted records are permanently purged after the retention window closes.</p>
+            <p>You can customize retention periods per data classification level in your organization settings.</p>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">View retention settings</a>
+          </div>
+        </div>
+      </span>
+
+      <!-- Popover 2 -->
+      <span class="sds-popover-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" onclick="togglePopover(this)">
+          <span class="material-symbols-outlined" style="font-size: 18px;">key</span>
+          API Keys
+        </button>
+        <div class="sds-popover sds-popover--bottom">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">API Key Permissions</p>
+            <button class="sds-popover__close" onclick="closePopover(this)" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <div class="sds-popover__body">
+            <p>Each API key can be scoped to read-only, read-write, or admin access. Keys inherit the permission level of their creator.</p>
+            <p>Rotate keys every 90 days for compliance with your security policy.</p>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">Manage API keys</a>
+            <a class="sds-popover__link" href="#">View documentation</a>
+          </div>
+        </div>
+      </span>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== INFO ICON PATTERN ========== -->
+  <h2>Info Icon Pattern</h2>
+  <p>A common enterprise pattern: a small <code>info</code> icon placed beside a field label. On hover, it reveals a tooltip explaining the setting or concept in plain language.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Hover the info icons</div>
+    <div style="display: flex; flex-direction: column; gap: var(--sds-space-600); max-width: 400px;">
+
+      <div>
+        <span class="sds-field-label">
+          Data Classification
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">Determines encryption level, access controls, and retention policies applied to this dataset.</span>
+          </span>
+        </span>
+      </div>
+
+      <div>
+        <span class="sds-field-label">
+          Masking Policy
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">Controls how sensitive fields are redacted when viewed by users without elevated permissions.</span>
+          </span>
+        </span>
+      </div>
+
+      <div>
+        <span class="sds-field-label">
+          Replication Factor
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">Number of redundant copies stored across availability zones. Higher values improve durability.</span>
+          </span>
+        </span>
+      </div>
+
+      <div>
+        <span class="sds-field-label">
+          Row-Level Security
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">Restricts query results so users only see rows they are authorized to access based on their role.</span>
+          </span>
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== STATIC PREVIEWS ========== -->
+  <h2>Static Previews</h2>
+  <p>All tooltip and popover variants rendered in their visible state for design review. No interaction required.</p>
+
+  <h3>Simple Tooltip Positions</h3>
+  <div class="demo-block">
+    <div class="demo-label">Always visible</div>
+    <div class="static-preview-grid" style="padding: var(--sds-space-800) 0;">
+
+      <!-- Top -->
+      <div class="static-preview-item">
+        <span class="preview-label">Top</span>
+        <span class="sds-tooltip-trigger" style="margin-top: 48px;">
+          <button class="sds-btn sds-btn--secondary sds-btn--sm">Trigger</button>
+          <span class="sds-tooltip sds-tooltip--top" style="opacity: 1;">Data retention policy</span>
+        </span>
+      </div>
+
+      <!-- Bottom -->
+      <div class="static-preview-item">
+        <span class="preview-label">Bottom</span>
+        <span class="sds-tooltip-trigger" style="margin-bottom: 48px;">
+          <button class="sds-btn sds-btn--secondary sds-btn--sm">Trigger</button>
+          <span class="sds-tooltip sds-tooltip--bottom" style="opacity: 1;">AES-256 encryption enabled</span>
+        </span>
+      </div>
+
+      <!-- Left -->
+      <div class="static-preview-item">
+        <span class="preview-label">Left</span>
+        <span class="sds-tooltip-trigger" style="margin-left: 180px;">
+          <button class="sds-btn sds-btn--secondary sds-btn--sm">Trigger</button>
+          <span class="sds-tooltip sds-tooltip--left" style="opacity: 1;">Requires admin access</span>
+        </span>
+      </div>
+
+      <!-- Right -->
+      <div class="static-preview-item">
+        <span class="preview-label">Right</span>
+        <span class="sds-tooltip-trigger" style="margin-right: 180px;">
+          <button class="sds-btn sds-btn--secondary sds-btn--sm">Trigger</button>
+          <span class="sds-tooltip sds-tooltip--right" style="opacity: 1;">API rate limit: 1,000/min</span>
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <h3>Rich Tooltip</h3>
+  <div class="demo-block">
+    <div class="demo-label">Always visible</div>
+    <div style="display: flex; justify-content: center; padding: var(--sds-space-800) 0 60px;">
+      <span class="sds-tooltip-trigger">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm">
+          <span class="material-symbols-outlined" style="font-size: 18px;">shield</span>
+          Permissions
+        </button>
+        <span class="sds-tooltip sds-tooltip--rich sds-tooltip--bottom" style="opacity: 1;">
+          <p class="sds-tooltip__title">Role-based access control</p>
+          <p class="sds-tooltip__desc">Only Organization Admins and Security Officers can modify encryption and retention settings.</p>
+        </span>
+      </span>
+    </div>
+  </div>
+
+  <h3>Popover</h3>
+  <div class="demo-block">
+    <div class="demo-label">Always visible</div>
+    <div style="display: flex; justify-content: center; padding: var(--sds-space-600) 0;">
+      <div class="sds-popover sds-popover--static" style="max-width: 320px;">
+        <div class="sds-popover__header">
+          <p class="sds-popover__title">Data Retention Policy</p>
+          <button class="sds-popover__close" aria-label="Close popover">
+            <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+          </button>
+        </div>
+        <div class="sds-popover__body">
+          <p>Audit logs are retained for 90 days by default. Deleted records are permanently purged after the retention window.</p>
+          <p>Customize retention periods per data classification in organization settings.</p>
+        </div>
+        <div class="sds-popover__actions">
+          <a class="sds-popover__link" href="#">View retention settings</a>
+          <a class="sds-popover__link" href="#">Documentation</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== IN CONTEXT ========== -->
+  <h2>In Context</h2>
+  <p>A realistic settings panel demonstrating how info-icon tooltips integrate with form fields in an enterprise data security product.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Settings panel example</div>
+    <div class="settings-panel">
+      <p class="settings-panel__title">Data Source Configuration</p>
+
+      <div class="sds-field">
+        <span class="sds-field-label">
+          Connection Name
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">A human-readable name for this data source. Used in audit logs and alert notifications.</span>
+          </span>
+        </span>
+        <input class="sds-input" type="text" placeholder="e.g., Production PostgreSQL" />
+      </div>
+
+      <div class="sds-field">
+        <span class="sds-field-label">
+          Encryption Standard
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">Encryption algorithm applied to data at rest. AES-256 is recommended for compliance with SOC 2 and HIPAA.</span>
+          </span>
+        </span>
+        <select class="sds-select">
+          <option>AES-256 (recommended)</option>
+          <option>AES-128</option>
+          <option>None</option>
+        </select>
+      </div>
+
+      <div class="sds-field">
+        <span class="sds-field-label">
+          Retention Period
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">How long data is kept before automatic deletion. Must meet your organization's regulatory requirements.</span>
+          </span>
+        </span>
+        <select class="sds-select">
+          <option>30 days</option>
+          <option>60 days</option>
+          <option selected>90 days</option>
+          <option>1 year</option>
+          <option>Custom</option>
+        </select>
+      </div>
+
+      <div class="sds-field">
+        <span class="sds-field-label">
+          Access Control
+          <span class="sds-tooltip-trigger">
+            <span class="material-symbols-outlined sds-info-icon">info</span>
+            <span class="sds-tooltip sds-tooltip--right">Determines which roles can query this data source. Restricted sources require explicit grant from a Security Officer.</span>
+          </span>
+        </span>
+        <select class="sds-select">
+          <option>All authenticated users</option>
+          <option selected>Role-based (recommended)</option>
+          <option>Restricted</option>
+        </select>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== SPECIFICATIONS ========== -->
+  <h2>Specifications</h2>
+
+  <h3>Tooltip Anatomy</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Simple Tooltip</th><th>Rich Tooltip</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>var(--sds-color-warm-gray-900)</code></td>
+        <td><code>var(--sds-color-warm-gray-900)</code></td>
+      </tr>
+      <tr>
+        <td>Text color</td>
+        <td><code>var(--sds-color-white)</code></td>
+        <td><code>var(--sds-color-white)</code></td>
+      </tr>
+      <tr>
+        <td>Font size</td>
+        <td><code>var(--sds-type-caption)</code> (12px)</td>
+        <td>Title: <code>var(--sds-type-label)</code> (13px), Desc: <code>var(--sds-type-caption)</code></td>
+      </tr>
+      <tr>
+        <td>Title weight</td>
+        <td>n/a</td>
+        <td><code>var(--sds-weight-semibold)</code></td>
+      </tr>
+      <tr>
+        <td>Padding</td>
+        <td><code>var(--sds-space-100) var(--sds-space-200)</code> (4px 8px)</td>
+        <td><code>var(--sds-space-300) var(--sds-space-400)</code> (12px 16px)</td>
+      </tr>
+      <tr>
+        <td>Border radius</td>
+        <td>4px</td>
+        <td>4px</td>
+      </tr>
+      <tr>
+        <td>Max width</td>
+        <td>240px</td>
+        <td>280px</td>
+      </tr>
+      <tr>
+        <td>Arrow size</td>
+        <td>6px rotated square</td>
+        <td>6px rotated square</td>
+      </tr>
+      <tr>
+        <td>Offset from trigger</td>
+        <td>8px</td>
+        <td>8px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Popover Anatomy</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Background</td><td><code>var(--sds-bg-elevated)</code></td></tr>
+      <tr><td>Border</td><td>1px solid <code>var(--sds-border-default)</code></td></tr>
+      <tr><td>Box shadow</td><td><code>0 4px 16px rgba(0,0,0,0.12)</code></td></tr>
+      <tr><td>Border radius</td><td>8px</td></tr>
+      <tr><td>Padding</td><td><code>var(--sds-space-400)</code> (16px)</td></tr>
+      <tr><td>Max width</td><td>320px</td></tr>
+      <tr><td>Min width</td><td>220px</td></tr>
+      <tr><td>Arrow size</td><td>10px rotated square with border</td></tr>
+      <tr><td>Title font</td><td><code>var(--sds-type-label)</code>, <code>var(--sds-weight-semibold)</code></td></tr>
+      <tr><td>Body font</td><td><code>var(--sds-type-caption)</code>, <code>var(--sds-text-secondary)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Behavior</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Attribute</th><th>Tooltip</th><th>Popover</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Trigger</td><td>Hover / focus</td><td>Click</td></tr>
+      <tr><td>Show delay</td><td>150ms</td><td>Immediate</td></tr>
+      <tr><td>Fade in</td><td>150ms ease</td><td>None (instant)</td></tr>
+      <tr><td>Dismiss</td><td>Mouse leave / blur</td><td>Close button, click outside, Escape key</td></tr>
+      <tr><td>Interactive content</td><td>No (pointer-events: none)</td><td>Yes (links, buttons)</td></tr>
+      <tr><td>Positions</td><td>top, right, bottom, left</td><td>top, bottom</td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-tooltip-trigger</code></td><td>Wrapper around the trigger element; provides positioning context</td></tr>
+      <tr><td><code>.sds-tooltip</code></td><td>Base tooltip element (dark bg, caption text)</td></tr>
+      <tr><td><code>.sds-tooltip--top</code></td><td>Position above trigger (default)</td></tr>
+      <tr><td><code>.sds-tooltip--right</code></td><td>Position to the right of trigger</td></tr>
+      <tr><td><code>.sds-tooltip--bottom</code></td><td>Position below trigger</td></tr>
+      <tr><td><code>.sds-tooltip--left</code></td><td>Position to the left of trigger</td></tr>
+      <tr><td><code>.sds-tooltip--rich</code></td><td>Modifier: larger padding and max-width for title+description</td></tr>
+      <tr><td><code>.sds-tooltip__title</code></td><td>Rich tooltip title (semibold)</td></tr>
+      <tr><td><code>.sds-tooltip__desc</code></td><td>Rich tooltip description (lighter opacity)</td></tr>
+      <tr><td><code>.sds-popover-trigger</code></td><td>Wrapper for popover trigger element</td></tr>
+      <tr><td><code>.sds-popover</code></td><td>Base popover element (light bg, bordered, shadowed)</td></tr>
+      <tr><td><code>.sds-popover--top</code></td><td>Position above trigger</td></tr>
+      <tr><td><code>.sds-popover--bottom</code></td><td>Position below trigger</td></tr>
+      <tr><td><code>.sds-popover__header</code></td><td>Flex row for title and close button</td></tr>
+      <tr><td><code>.sds-popover__title</code></td><td>Popover heading text</td></tr>
+      <tr><td><code>.sds-popover__close</code></td><td>Close button element</td></tr>
+      <tr><td><code>.sds-popover__body</code></td><td>Main content area</td></tr>
+      <tr><td><code>.sds-popover__actions</code></td><td>Footer with action links</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    /* ---- Popover toggle ---- */
+    function togglePopover(btn) {
+      const popover = btn.parentElement.querySelector('.sds-popover');
+      const isOpen = popover.classList.contains('is-open');
+      // Close all open popovers first
+      document.querySelectorAll('.sds-popover.is-open').forEach(p => p.classList.remove('is-open'));
+      if (!isOpen) popover.classList.add('is-open');
+    }
+    function closePopover(btn) {
+      btn.closest('.sds-popover').classList.remove('is-open');
+    }
+    // Close popovers on outside click
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.sds-popover-trigger')) {
+        document.querySelectorAll('.sds-popover.is-open').forEach(p => p.classList.remove('is-open'));
+      }
+    });
+    // Close popovers on Escape
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.sds-popover.is-open').forEach(p => p.classList.remove('is-open'));
+      }
+    });
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

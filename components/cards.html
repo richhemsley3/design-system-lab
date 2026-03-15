@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Cards</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-grid {
+      display: grid;
+      gap: var(--sds-space-500);
+    }
+    .demo-grid--3 { grid-template-columns: repeat(3, 1fr); }
+    .demo-grid--2 { grid-template-columns: repeat(2, 1fr); }
+
+    /* Placeholder content block */
+    .placeholder {
+      background: var(--sds-color-warm-gray-050);
+      border: 1px dashed var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      padding: var(--sds-space-600);
+      text-align: center;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+    .placeholder--sm {
+      padding: var(--sds-space-400);
+    }
+    .placeholder--lg {
+      padding: var(--sds-space-1000) var(--sds-space-600);
+    }
+
+    /* ============================================================
+       BASE CARD
+       ============================================================ */
+    .sds-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    /* Card header */
+    .sds-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      gap: var(--sds-space-300);
+    }
+    .sds-card-header--bordered {
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    .sds-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-900);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    .sds-card-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* Card body */
+    .sds-card-body {
+      padding: var(--sds-space-400) var(--sds-space-500);
+    }
+    .sds-card-header + .sds-card-body {
+      padding-top: var(--sds-space-0);
+    }
+    .sds-card-header--bordered + .sds-card-body {
+      padding-top: var(--sds-space-400);
+    }
+
+    /* Card footer */
+    .sds-card-footer {
+      padding: var(--sds-space-300) var(--sds-space-500);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+    /* Buttons (canonical — matches buttons.html) */
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-btn--sm {
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border-radius: 6px;
+      height: 32px;
+    }
+    .sds-btn--secondary {
+      background: var(--sds-color-white);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-color-warm-gray-200);
+    }
+    .sds-btn--secondary:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .sds-btn--secondary:active {
+      background: var(--sds-color-warm-gray-100);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .sds-btn--primary {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-interactive-primary);
+    }
+    .sds-btn--primary:hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+
+    /* Inline text link */
+    .sds-link {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-blue-750);
+      text-decoration: none;
+      font-weight: var(--sds-weight-medium);
+    }
+    .sds-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Anatomy label overlay */
+    .anatomy-label {
+      font-size: 10px;
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-blue-750);
+      background: var(--sds-color-blue-050);
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 3px;
+      display: inline-block;
+      margin-bottom: var(--sds-space-100);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cards</h1>
+  <p class="page-subtitle">A composable content container with three optional regions: header, body, and footer. Mix and match these slots to build any card layout.</p>
+
+  <!-- ============================================================
+       CARD ANATOMY
+       ============================================================ -->
+  <h2>Card Anatomy</h2>
+
+  <div class="demo-block">
+    <div class="demo-label">Full anatomy — Header + Body + Footer</div>
+    <div style="max-width: 420px;">
+      <div class="sds-card">
+        <div class="sds-card-header sds-card-header--bordered">
+          <h3 class="sds-card-title"><span class="anatomy-label">Header</span></h3>
+          <div class="sds-card-actions">
+            <button class="sds-btn sds-btn--secondary sds-btn--sm">Action</button>
+          </div>
+        </div>
+        <div class="sds-card-body">
+          <span class="anatomy-label">Body</span>
+          <div class="placeholder placeholder--lg">Content area</div>
+        </div>
+        <div class="sds-card-footer">
+          <span class="anatomy-label">Footer</span>
+          <a class="sds-link" href="#" onclick="event.preventDefault()">Link &rarr;</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       BLANK VARIANTS
+       ============================================================ -->
+  <h2>Blank Variants</h2>
+  <p>The four foundational card configurations. Each is an empty shell ready to be filled with content.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">All slot combinations</div>
+    <div class="demo-grid demo-grid--2">
+
+      <!-- 1. Header + Body -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Header + Body</div>
+        <div class="sds-card">
+          <div class="sds-card-header sds-card-header--bordered">
+            <h3 class="sds-card-title">Card Title</h3>
+            <div class="sds-card-actions">
+              <button class="sds-btn sds-btn--secondary sds-btn--sm">Action</button>
+            </div>
+          </div>
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--lg">Body content</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. Header + Body + Footer -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Header + Body + Footer</div>
+        <div class="sds-card">
+          <div class="sds-card-header sds-card-header--bordered">
+            <h3 class="sds-card-title">Card Title</h3>
+            <div class="sds-card-actions">
+              <button class="sds-btn sds-btn--secondary sds-btn--sm">Action</button>
+            </div>
+          </div>
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--lg">Body content</div>
+          </div>
+          <div class="sds-card-footer">
+            <span style="font-size:12px; color:var(--sds-color-warm-gray-450);">Footer meta</span>
+            <a class="sds-link" href="#" onclick="event.preventDefault()">Link &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Body only -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Body Only</div>
+        <div class="sds-card">
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--lg">Body content</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Header (flush) + Body -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Header (no divider) + Body</div>
+        <div class="sds-card">
+          <div class="sds-card-header">
+            <h3 class="sds-card-title">Card Title</h3>
+          </div>
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--lg">Body content</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HEADER VARIATIONS
+       ============================================================ -->
+  <h2>Header Variations</h2>
+  <p>The card header supports a title on the left and an optional actions slot on the right. Add <code>.sds-card-header--bordered</code> to show a bottom divider.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Header options</div>
+    <div class="demo-grid demo-grid--3">
+
+      <!-- Title only -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Title only</div>
+        <div class="sds-card">
+          <div class="sds-card-header sds-card-header--bordered">
+            <h3 class="sds-card-title">Card Title</h3>
+          </div>
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--sm">Content</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title + single action -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Title + Action</div>
+        <div class="sds-card">
+          <div class="sds-card-header sds-card-header--bordered">
+            <h3 class="sds-card-title">Card Title</h3>
+            <div class="sds-card-actions">
+              <button class="sds-btn sds-btn--secondary sds-btn--sm">Action</button>
+            </div>
+          </div>
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--sm">Content</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title + multiple actions -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Title + Multiple Actions</div>
+        <div class="sds-card">
+          <div class="sds-card-header sds-card-header--bordered">
+            <h3 class="sds-card-title">Card Title</h3>
+            <div class="sds-card-actions">
+              <button class="sds-btn sds-btn--secondary sds-btn--sm">Edit</button>
+              <button class="sds-btn sds-btn--secondary sds-btn--sm">Delete</button>
+            </div>
+          </div>
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--sm">Content</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FOOTER VARIATIONS
+       ============================================================ -->
+  <h2>Footer Variations</h2>
+  <p>Footers sit below the body and are separated by a subtle top border. Use for pagination info, timestamps, or secondary links.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Footer options</div>
+    <div class="demo-grid demo-grid--3">
+
+      <!-- Meta + link -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Meta + Link</div>
+        <div class="sds-card">
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--sm">Content</div>
+          </div>
+          <div class="sds-card-footer">
+            <span style="font-size:12px; color:var(--sds-color-warm-gray-450);">Showing 3 of 12</span>
+            <a class="sds-link" href="#" onclick="event.preventDefault()">View all &rarr;</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timestamp only -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Timestamp</div>
+        <div class="sds-card">
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--sm">Content</div>
+          </div>
+          <div class="sds-card-footer">
+            <span style="font-size:12px; color:var(--sds-color-warm-gray-450);">Updated 2 hours ago</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div>
+        <div style="font-size:12px; font-weight:600; color:var(--sds-color-warm-gray-550); margin-bottom:var(--sds-space-200);">Action buttons</div>
+        <div class="sds-card">
+          <div class="sds-card-body">
+            <div class="placeholder placeholder--sm">Content</div>
+          </div>
+          <div class="sds-card-footer">
+            <span></span>
+            <div style="display:flex; gap:var(--sds-space-200);">
+              <button class="sds-btn sds-btn--secondary sds-btn--sm">Cancel</button>
+              <button class="sds-btn sds-btn--primary sds-btn--sm">Save</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       GRID LAYOUTS
+       ============================================================ -->
+  <h2>Grid Layouts</h2>
+  <p>Cards are laid out using CSS Grid. Common arrangements are 2-up and 3-up grids with a <code>20 px</code> gap.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">3-up grid</div>
+    <div class="demo-grid demo-grid--3">
+      <div class="sds-card"><div class="sds-card-body"><div class="placeholder">Card 1</div></div></div>
+      <div class="sds-card"><div class="sds-card-body"><div class="placeholder">Card 2</div></div></div>
+      <div class="sds-card"><div class="sds-card-body"><div class="placeholder">Card 3</div></div></div>
+    </div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-label">2-up grid</div>
+    <div class="demo-grid demo-grid--2">
+      <div class="sds-card"><div class="sds-card-body"><div class="placeholder">Card 1</div></div></div>
+      <div class="sds-card"><div class="sds-card-body"><div class="placeholder">Card 2</div></div></div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPEC TABLE
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Card surface</td>
+        <td>background</td>
+        <td><span class="swatch" style="background:var(--sds-color-white)"></span><code>--sds-bg-card</code></td>
+      </tr>
+      <tr>
+        <td>Card border</td>
+        <td>border</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-150)"></span><code>--sds-border-default</code> &nbsp;1 px</td>
+      </tr>
+      <tr>
+        <td>Card radius</td>
+        <td>border-radius</td>
+        <td><code>8 px</code></td>
+      </tr>
+      <tr>
+        <td>Header padding</td>
+        <td>padding</td>
+        <td><code>16 px 20 px</code></td>
+      </tr>
+      <tr>
+        <td>Header divider</td>
+        <td>border-bottom</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>--sds-border-subtle</code> &nbsp;1 px</td>
+      </tr>
+      <tr>
+        <td>Card title</td>
+        <td>font-size / weight / color</td>
+        <td><code>14 px</code> / <code>600</code> / <code>--sds-text-primary</code></td>
+      </tr>
+      <tr>
+        <td>Body padding</td>
+        <td>padding</td>
+        <td><code>16 px 20 px</code></td>
+      </tr>
+      <tr>
+        <td>Body padding (after bordered header)</td>
+        <td>padding-top</td>
+        <td><code>16 px</code></td>
+      </tr>
+      <tr>
+        <td>Body padding (after flush header)</td>
+        <td>padding-top</td>
+        <td><code>0</code> (content flows directly below title)</td>
+      </tr>
+      <tr>
+        <td>Footer padding</td>
+        <td>padding</td>
+        <td><code>12 px 20 px</code></td>
+      </tr>
+      <tr>
+        <td>Footer divider</td>
+        <td>border-top</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>--sds-border-subtle</code> &nbsp;1 px</td>
+      </tr>
+      <tr>
+        <td>Grid gap</td>
+        <td>gap</td>
+        <td><code>20 px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-card</code></td><td>Card container — white background, border, 8 px radius</td></tr>
+      <tr><td><code>.sds-card-header</code></td><td>Flex row: title left, actions right. Padding 16 px 20 px</td></tr>
+      <tr><td><code>.sds-card-header--bordered</code></td><td>Adds a subtle bottom border below the header</td></tr>
+      <tr><td><code>.sds-card-title</code></td><td>14 px / 600 title text inside header</td></tr>
+      <tr><td><code>.sds-card-actions</code></td><td>Right-aligned action slot inside header</td></tr>
+      <tr><td><code>.sds-card-body</code></td><td>Main content region. Padding 16 px 20 px</td></tr>
+      <tr><td><code>.sds-card-footer</code></td><td>Bottom region with top border. Padding 12 px 20 px</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

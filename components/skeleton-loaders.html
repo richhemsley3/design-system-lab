@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Software DS — Skeleton Loaders</title>
+  <link rel="stylesheet" href="../tokens/colors.css">
+  <link rel="stylesheet" href="../tokens/spacing.css">
+  <link rel="stylesheet" href="../tokens/typography.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ── Reset & page chrome ─────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* ── Demo blocks ─────────────────────────────────── */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       SKELETON LOADER — Shimmer animation
+       ============================================================ */
+    @keyframes sds-skeleton-shimmer {
+      0%   { background-position: -400px 0; }
+      100% { background-position: 400px 0; }
+    }
+
+    .sds-skeleton {
+      background: linear-gradient(
+        90deg,
+        var(--sds-color-warm-gray-100) 0%,
+        var(--sds-color-warm-gray-150) 50%,
+        var(--sds-color-warm-gray-100) 100%
+      );
+      background-size: 800px 100%;
+      animation: sds-skeleton-shimmer 1.5s ease-in-out infinite;
+      border-radius: 4px;
+    }
+
+    /* ── Primitive shapes ────────────────────────────── */
+    .sds-skeleton--text {
+      height: 14px;
+      border-radius: 4px;
+    }
+    .sds-skeleton--circle {
+      border-radius: 50%;
+    }
+    .sds-skeleton--rect {
+      border-radius: 6px;
+    }
+
+    /* ── Text block ──────────────────────────────────── */
+    .sds-skeleton-text-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+    /* ── Card skeleton ───────────────────────────────── */
+    .sds-skeleton-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 320px;
+    }
+    .sds-skeleton-card__image {
+      width: 100%;
+      height: 160px;
+    }
+    .sds-skeleton-card__body {
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-300);
+    }
+    .sds-skeleton-card__title {
+      height: 18px;
+      width: 70%;
+    }
+    .sds-skeleton-card__desc {
+      height: 14px;
+    }
+    .sds-skeleton-card__action {
+      height: 36px;
+      width: 100px;
+      border-radius: 6px;
+      margin-top: var(--sds-space-200);
+    }
+
+    /* ── Table skeleton ──────────────────────────────── */
+    .sds-skeleton-table {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+    .sds-skeleton-table__row {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr 1fr;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      align-items: center;
+    }
+    .sds-skeleton-table__row:last-child {
+      border-bottom: none;
+    }
+    .sds-skeleton-table__row--header {
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .sds-skeleton-table__cell {
+      height: 14px;
+    }
+
+    /* ── List skeleton ───────────────────────────────── */
+    .sds-skeleton-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .sds-skeleton-list__item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-400) 0;
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-skeleton-list__item:last-child {
+      border-bottom: none;
+    }
+    .sds-skeleton-list__avatar {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+    .sds-skeleton-list__lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+    /* ── Toggle demo ─────────────────────────────────── */
+    .toggle-wrapper {
+      position: relative;
+    }
+    /* ---- Button (canonical, from buttons.html) ---- */
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-btn--sm {
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border-radius: 6px;
+      height: 32px;
+    }
+    .sds-btn--primary {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-interactive-primary);
+    }
+    .sds-btn--primary:hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+    .sds-btn--primary:active {
+      background: var(--sds-interactive-primary-active);
+      border-color: var(--sds-interactive-primary-active);
+    }
+    .loaded-content {
+      display: none;
+    }
+    .toggle-wrapper.is-loaded .sds-skeleton-card { display: none; }
+    .toggle-wrapper.is-loaded .loaded-content { display: block; }
+
+    /* Loaded card appearance */
+    .loaded-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 320px;
+    }
+    .loaded-card__image {
+      width: 100%;
+      height: 160px;
+      background: var(--sds-color-blue-050);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--sds-color-blue-500);
+    }
+    .loaded-card__image .material-symbols-outlined {
+      font-size: 48px;
+    }
+    .loaded-card__body {
+      padding: var(--sds-space-500);
+    }
+    .loaded-card__body h4 {
+      margin: 0 0 var(--sds-space-200);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .loaded-card__body p {
+      margin: 0 0 var(--sds-space-400);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+    }
+    .loaded-card__action {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      padding: var(--sds-space-200) var(--sds-space-400);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-white);
+      background: var(--sds-color-blue-500);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* ── Spec table ──────────────────────────────────── */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Skeleton Loaders</h1>
+  <p class="page-subtitle">Placeholder UI that mimics content layout while data is loading. Reduces perceived wait time and prevents layout shift in the data security dashboard.</p>
+
+  <!-- ════════════════════════════════════════════════════
+       1. BASIC SHAPES
+       ════════════════════════════════════════════════════ -->
+  <h2>Basic Shapes</h2>
+  <p>Primitive skeleton elements used to compose more complex loading states. Each shape uses the shimmer animation to indicate activity.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Text lines</div>
+    <div style="display: flex; flex-direction: column; gap: var(--sds-space-200); max-width: 400px;" aria-busy="true">
+      <div class="sds-skeleton sds-skeleton--text" style="width: 100%;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 85%;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 60%;" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-label">Circle (avatar placeholder)</div>
+    <div style="display: flex; gap: var(--sds-space-400); align-items: center;" aria-busy="true">
+      <div class="sds-skeleton sds-skeleton--circle" style="width: 32px; height: 32px;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--circle" style="width: 40px; height: 40px;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--circle" style="width: 48px; height: 48px;" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-label">Rectangle (image / card placeholder)</div>
+    <div style="display: flex; gap: var(--sds-space-400);" aria-busy="true">
+      <div class="sds-skeleton sds-skeleton--rect" style="width: 160px; height: 100px;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--rect" style="width: 240px; height: 100px;" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       2. TEXT BLOCK
+       ════════════════════════════════════════════════════ -->
+  <h2>Text Block</h2>
+  <p>Multiple lines simulating a paragraph. Lines vary in width, with the last line shorter to mimic natural text flow.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Paragraph skeleton</div>
+    <div class="sds-skeleton-text-block" style="max-width: 480px;" aria-busy="true">
+      <div class="sds-skeleton sds-skeleton--text" style="width: 100%;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 95%;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 90%;" aria-hidden="true"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 55%;" aria-hidden="true"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       3. CARD SKELETON
+       ════════════════════════════════════════════════════ -->
+  <h2>Card Skeleton</h2>
+  <p>Complete card loading state matching the card component layout. Includes image, title, description lines, and action button placeholder.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Card loading state</div>
+    <div class="sds-skeleton-card" aria-busy="true">
+      <div class="sds-skeleton sds-skeleton-card__image" aria-hidden="true"></div>
+      <div class="sds-skeleton-card__body">
+        <div class="sds-skeleton sds-skeleton-card__title" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-card__desc" style="width: 100%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-card__desc" style="width: 80%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-card__action" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       4. TABLE SKELETON
+       ════════════════════════════════════════════════════ -->
+  <h2>Table Skeleton</h2>
+  <p>Loading state for data tables with a header row and five body rows. Matches the table component column layout.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Table loading state</div>
+    <div class="sds-skeleton-table" aria-busy="true">
+      <!-- Header row -->
+      <div class="sds-skeleton-table__row sds-skeleton-table__row--header">
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 60%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 50%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 70%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 40%;" aria-hidden="true"></div>
+      </div>
+      <!-- Body rows -->
+      <div class="sds-skeleton-table__row">
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 80%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 65%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 50%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 45%;" aria-hidden="true"></div>
+      </div>
+      <div class="sds-skeleton-table__row">
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 70%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 55%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 60%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 50%;" aria-hidden="true"></div>
+      </div>
+      <div class="sds-skeleton-table__row">
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 85%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 70%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 45%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 55%;" aria-hidden="true"></div>
+      </div>
+      <div class="sds-skeleton-table__row">
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 60%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 80%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 55%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 40%;" aria-hidden="true"></div>
+      </div>
+      <div class="sds-skeleton-table__row">
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 75%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 60%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 65%;" aria-hidden="true"></div>
+        <div class="sds-skeleton sds-skeleton-table__cell" style="width: 50%;" aria-hidden="true"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       5. LIST SKELETON
+       ════════════════════════════════════════════════════ -->
+  <h2>List Skeleton</h2>
+  <p>Loading state for list views with avatar circles and text lines per row.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">List loading state</div>
+    <div class="sds-skeleton-list" aria-busy="true">
+      <div class="sds-skeleton-list__item">
+        <div class="sds-skeleton sds-skeleton--circle sds-skeleton-list__avatar" aria-hidden="true"></div>
+        <div class="sds-skeleton-list__lines">
+          <div class="sds-skeleton sds-skeleton--text" style="width: 45%;" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton--text" style="width: 70%;" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="sds-skeleton-list__item">
+        <div class="sds-skeleton sds-skeleton--circle sds-skeleton-list__avatar" aria-hidden="true"></div>
+        <div class="sds-skeleton-list__lines">
+          <div class="sds-skeleton sds-skeleton--text" style="width: 55%;" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton--text" style="width: 65%;" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="sds-skeleton-list__item">
+        <div class="sds-skeleton sds-skeleton--circle sds-skeleton-list__avatar" aria-hidden="true"></div>
+        <div class="sds-skeleton-list__lines">
+          <div class="sds-skeleton sds-skeleton--text" style="width: 40%;" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton--text" style="width: 75%;" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="sds-skeleton-list__item">
+        <div class="sds-skeleton sds-skeleton--circle sds-skeleton-list__avatar" aria-hidden="true"></div>
+        <div class="sds-skeleton-list__lines">
+          <div class="sds-skeleton sds-skeleton--text" style="width: 50%;" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton--text" style="width: 60%;" aria-hidden="true"></div>
+        </div>
+      </div>
+      <div class="sds-skeleton-list__item">
+        <div class="sds-skeleton sds-skeleton--circle sds-skeleton-list__avatar" aria-hidden="true"></div>
+        <div class="sds-skeleton-list__lines">
+          <div class="sds-skeleton sds-skeleton--text" style="width: 48%;" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton--text" style="width: 68%;" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       6. INTERACTIVE TOGGLE
+       ════════════════════════════════════════════════════ -->
+  <h2>Interactive Toggle</h2>
+  <p>Toggle between skeleton and loaded content to demonstrate the transition. In production, replace the skeleton with real content once data arrives.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Skeleton / loaded toggle</div>
+    <div class="toggle-wrapper" id="toggle-demo">
+      <button class="sds-btn sds-btn--primary sds-btn--sm" id="toggle-btn" type="button" style="margin-bottom: var(--sds-space-500);">
+        <span class="material-symbols-outlined" style="font-size: 18px;">swap_horiz</span>
+        Show loaded content
+      </button>
+
+      <!-- Skeleton state -->
+      <div class="sds-skeleton-card" aria-busy="true">
+        <div class="sds-skeleton sds-skeleton-card__image" aria-hidden="true"></div>
+        <div class="sds-skeleton-card__body">
+          <div class="sds-skeleton sds-skeleton-card__title" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton-card__desc" style="width: 100%;" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton-card__desc" style="width: 80%;" aria-hidden="true"></div>
+          <div class="sds-skeleton sds-skeleton-card__action" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <!-- Loaded state -->
+      <div class="loaded-content">
+        <div class="loaded-card">
+          <div class="loaded-card__image">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <div class="loaded-card__body">
+            <h4>Data Classification Policy</h4>
+            <p>Automatically classify sensitive data across your cloud storage. Last scan completed 12 minutes ago.</p>
+            <button class="loaded-card__action" type="button">
+              <span class="material-symbols-outlined" style="font-size: 16px;">visibility</span>
+              View details
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════
+       7. SPECIFICATIONS
+       ════════════════════════════════════════════════════ -->
+  <h2>Specifications</h2>
+  <p>Token reference for building and customising skeleton loaders.</p>
+
+  <h3>Design Tokens</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Base color</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>--sds-color-warm-gray-100</code></td>
+        <td>Resting skeleton surface</td>
+      </tr>
+      <tr>
+        <td>Highlight color</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-150)"></span><code>--sds-color-warm-gray-150</code></td>
+        <td>Shimmer peak</td>
+      </tr>
+      <tr>
+        <td>Animation</td>
+        <td><code>sds-skeleton-shimmer 1.5s ease-in-out infinite</code></td>
+        <td>Left-to-right gradient sweep</td>
+      </tr>
+      <tr>
+        <td>Text line height</td>
+        <td><code>14px</code></td>
+        <td>Matches body text line height</td>
+      </tr>
+      <tr>
+        <td>Border radius — text</td>
+        <td><code>4px</code></td>
+        <td>Rounded pill for text lines</td>
+      </tr>
+      <tr>
+        <td>Border radius — rect</td>
+        <td><code>6px</code></td>
+        <td>Matches card image radius</td>
+      </tr>
+      <tr>
+        <td>Border radius — circle</td>
+        <td><code>50%</code></td>
+        <td>Avatar placeholder</td>
+      </tr>
+      <tr>
+        <td>Line gap</td>
+        <td><code>--sds-space-200</code></td>
+        <td>Space between text skeleton lines</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-skeleton</code></td><td>Base class — applies shimmer gradient animation</td></tr>
+      <tr><td><code>.sds-skeleton--text</code></td><td>Text line shape — 14 px tall, 4 px radius</td></tr>
+      <tr><td><code>.sds-skeleton--circle</code></td><td>Circle shape — 50% border-radius for avatars</td></tr>
+      <tr><td><code>.sds-skeleton--rect</code></td><td>Rectangle shape — 6 px radius for images and cards</td></tr>
+      <tr><td><code>.sds-skeleton-text-block</code></td><td>Flex column container for multiple text lines</td></tr>
+      <tr><td><code>.sds-skeleton-card</code></td><td>Card loading state container</td></tr>
+      <tr><td><code>.sds-skeleton-table</code></td><td>Table loading state container</td></tr>
+      <tr><td><code>.sds-skeleton-list</code></td><td>List loading state container</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Accessibility</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Attribute</th><th>Applied to</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>aria-busy="true"</code></td><td>Skeleton container</td><td>Signals loading state to assistive technology</td></tr>
+      <tr><td><code>aria-hidden="true"</code></td><td>Individual skeleton elements</td><td>Hides decorative placeholder shapes from screen readers</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    // Interactive toggle
+    const toggleBtn = document.getElementById('toggle-btn');
+    const toggleDemo = document.getElementById('toggle-demo');
+    let isLoaded = false;
+
+    toggleBtn.addEventListener('click', function () {
+      isLoaded = !isLoaded;
+      toggleDemo.classList.toggle('is-loaded', isLoaded);
+      toggleBtn.textContent = '';
+
+      const icon = document.createElement('span');
+      icon.className = 'material-symbols-outlined';
+      icon.style.fontSize = '18px';
+      icon.textContent = 'swap_horiz';
+      toggleBtn.appendChild(icon);
+      toggleBtn.appendChild(document.createTextNode(isLoaded ? ' Show skeleton' : ' Show loaded content'));
+    });
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

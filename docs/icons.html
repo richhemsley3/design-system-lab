@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software DS — UI Icons</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sds-font-sans);
+    background: #FFFFFF;
+    color: var(--sds-text-primary);
+    padding: var(--sds-space-1200) var(--sds-space-1000);
+    line-height: var(--sds-leading-normal);
+  }
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin-bottom: var(--sds-space-200); }
+  .subtitle { font-size: var(--sds-type-subheading); color: #6B6760; margin-bottom: var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+  h2:first-of-type { margin-top: 0; }
+  .desc { font-size: var(--sds-type-body); color: #6B6760; margin-bottom: var(--sds-space-600); }
+
+  .section-divider { border: none; border-top: 1px solid #E0DCD3; margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+  /* Search & filter */
+  .icon-toolbar {
+    display: flex;
+    gap: var(--sds-space-300);
+    align-items: center;
+    margin-bottom: var(--sds-space-600);
+    flex-wrap: wrap;
+  }
+  .icon-search {
+    flex: 1;
+    min-width: 200px;
+    max-width: 400px;
+    padding: var(--sds-space-200) var(--sds-space-300);
+    border: 1px solid #D5D0C8;
+    border-radius: 8px;
+    font-family: var(--sds-font-sans);
+    font-size: var(--sds-type-body);
+    background: #FFFFFF;
+    color: var(--sds-text-primary);
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .icon-search:focus {
+    border-color: var(--sds-interactive-primary);
+    box-shadow: 0 0 0 2px rgba(1, 61, 91, 0.12);
+  }
+  .icon-search::placeholder { color: #A09A92; }
+  .icon-count {
+    font-size: var(--sds-type-caption);
+    color: #948E85;
+  }
+
+  /* Size toggle */
+  .size-toggle {
+    display: flex;
+    gap: var(--sds-space-050);
+    background: var(--sds-bg-subtle);
+    border-radius: 8px;
+    padding: var(--sds-space-050);
+  }
+  .size-btn {
+    padding: var(--sds-space-100) var(--sds-space-250);
+    border: none;
+    border-radius: 6px;
+    font-family: var(--sds-font-sans);
+    font-size: var(--sds-type-caption);
+    font-weight: var(--sds-weight-medium);
+    color: #6B6760;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .size-btn.active {
+    background: #FFFFFF;
+    color: var(--sds-text-primary);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .size-btn:hover:not(.active) { color: var(--sds-text-primary); }
+
+  /* Category heading */
+  h3 {
+    font-size: var(--sds-type-title);
+    font-weight: var(--sds-weight-semibold);
+    margin: var(--sds-space-800) 0 var(--sds-space-300);
+    color: var(--sds-text-primary);
+  }
+  h3:first-of-type { margin-top: 0; }
+  .category-desc {
+    font-size: var(--sds-type-caption);
+    color: #948E85;
+    margin: calc(-1 * var(--sds-space-200)) 0 var(--sds-space-400);
+  }
+
+  /* Icon grid */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: var(--sds-space-200);
+    margin-bottom: var(--sds-space-400);
+  }
+  .icon-grid.size-sm { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+  .icon-grid.size-lg { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); }
+
+  .icon-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--sds-space-150);
+    padding: var(--sds-space-300) var(--sds-space-100);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.12s, box-shadow 0.12s;
+    position: relative;
+  }
+  .icon-cell:hover {
+    background: var(--sds-bg-subtle);
+  }
+  .icon-cell .material-symbols-outlined {
+    font-size: 24px;
+    color: var(--sds-text-primary);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+  }
+  .icon-cell.size-sm .material-symbols-outlined { font-size: 20px; }
+  .icon-cell.size-lg .material-symbols-outlined { font-size: 32px; }
+
+  .icon-name {
+    font-size: 10px;
+    color: #948E85;
+    text-align: center;
+    word-break: break-word;
+    line-height: 1.3;
+  }
+  .icon-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-medium);
+    color: #6B6760;
+    text-align: center;
+    line-height: 1.3;
+  }
+
+  /* Copied tooltip */
+  .icon-cell .copied-tip {
+    position: absolute;
+    top: -4px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%);
+    background: #2B2E33;
+    color: #FFFFFF;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  .icon-cell .copied-tip.show { opacity: 1; }
+
+  /* No results */
+  .no-results {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: var(--sds-space-800) 0;
+    color: #948E85;
+    font-size: var(--sds-type-body);
+  }
+
+  /* Spec table */
+  .spec-table { width: 100%; border-collapse: collapse; margin: var(--sds-space-400) 0 var(--sds-space-600); }
+  .spec-table th, .spec-table td { text-align: left; padding: var(--sds-space-200) var(--sds-space-300); border-bottom: 1px solid #E0DCD3; font-size: var(--sds-type-caption); }
+  .spec-table th { font-weight: var(--sds-weight-semibold); color: #47443F; }
+  .spec-table td { color: #6B6760; }
+  .spec-table code { font-family: var(--sds-font-mono); font-size: 12px; background: var(--sds-bg-subtle); padding: 2px 6px; border-radius: 4px; }
+
+  /* Category section - hidden when filtered out */
+  .category-section.hidden { display: none; }
+</style>
+</head>
+<body>
+
+<h1>UI Icons</h1>
+<p class="subtitle">Google Material Symbols icon set with semantic labels for consistent interface iconography.</p>
+
+<!-- Usage -->
+<h2>Usage</h2>
+<p class="desc">Include the Material Symbols font via CDN, then use the icon name inside a <code>&lt;span class="material-symbols-outlined"&gt;</code> element. Click any icon below to copy its markup.</p>
+
+<table class="spec-table">
+  <thead><tr><th>Property</th><th>Value</th></tr></thead>
+  <tbody>
+    <tr><td>CDN</td><td><code>fonts.googleapis.com/css2?family=Material+Symbols+Outlined</code></td></tr>
+    <tr><td>Element</td><td><code>&lt;span class="material-symbols-outlined"&gt;icon_name&lt;/span&gt;</code></td></tr>
+    <tr><td>Default size</td><td>24px (optical size 24)</td></tr>
+    <tr><td>Weight</td><td>300 (regular)</td></tr>
+    <tr><td>Fill</td><td>0 (outlined)</td></tr>
+    <tr><td>Recommended touch target</td><td>40px × 40px minimum</td></tr>
+  </tbody>
+</table>
+
+<hr class="section-divider">
+
+<!-- Toolbar -->
+<h2>Icon Library</h2>
+<p class="desc">Icons organized by semantic category. Click an icon to copy its HTML snippet to your clipboard.</p>
+
+<div class="icon-toolbar">
+  <input type="text" class="icon-search" id="iconSearch" placeholder="Search icons…" autocomplete="off">
+  <div class="size-toggle">
+    <button class="size-btn" data-size="sm" onclick="setSize('sm')">S</button>
+    <button class="size-btn active" data-size="md" onclick="setSize('md')">M</button>
+    <button class="size-btn" data-size="lg" onclick="setSize('lg')">L</button>
+  </div>
+  <span class="icon-count" id="iconCount"></span>
+</div>
+
+<div id="iconLibrary"></div>
+
+<hr class="section-divider">
+
+<h2>Specification</h2>
+<table class="spec-table">
+  <thead><tr><th>Attribute</th><th>Description</th><th>Values</th></tr></thead>
+  <tbody>
+    <tr><td>Font family</td><td>Material Symbols Outlined</td><td><code>Material Symbols Outlined</code></td></tr>
+    <tr><td>Optical size</td><td>Adjusts detail for target size</td><td><code>20, 24, 40, 48</code></td></tr>
+    <tr><td>Weight</td><td>Stroke weight</td><td><code>100–700</code> (default 300)</td></tr>
+    <tr><td>Fill</td><td>Filled vs outlined style</td><td><code>0</code> (outline) or <code>1</code> (filled)</td></tr>
+    <tr><td>Grade</td><td>Emphasis adjustment</td><td><code>-50</code> to <code>200</code></td></tr>
+    <tr><td>CSS variable setting</td><td>Control via font-variation-settings</td><td><code>'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24</code></td></tr>
+  </tbody>
+</table>
+
+<script>
+/* ---- Icon data organized by semantic category ---- */
+var iconCategories = [
+  {
+    name: 'Navigation',
+    desc: 'Wayfinding, menus, and directional controls',
+    icons: [
+      { name: 'home', label: 'Home' },
+      { name: 'menu', label: 'Menu' },
+      { name: 'close', label: 'Close' },
+      { name: 'arrow_back', label: 'Back' },
+      { name: 'arrow_forward', label: 'Forward' },
+      { name: 'expand_more', label: 'Expand' },
+      { name: 'expand_less', label: 'Collapse' },
+      { name: 'chevron_right', label: 'Chevron right' },
+      { name: 'chevron_left', label: 'Chevron left' },
+      { name: 'more_vert', label: 'More (vertical)' },
+      { name: 'more_horiz', label: 'More (horizontal)' },
+      { name: 'open_in_new', label: 'Open external' },
+      { name: 'fullscreen', label: 'Fullscreen' },
+      { name: 'fullscreen_exit', label: 'Exit fullscreen' },
+      { name: 'first_page', label: 'First page' },
+      { name: 'last_page', label: 'Last page' },
+      { name: 'subdirectory_arrow_right', label: 'Sub-item' },
+    ]
+  },
+  {
+    name: 'Actions',
+    desc: 'Common interactive operations and editing controls',
+    icons: [
+      { name: 'search', label: 'Search' },
+      { name: 'add', label: 'Add' },
+      { name: 'edit', label: 'Edit' },
+      { name: 'delete', label: 'Delete' },
+      { name: 'content_copy', label: 'Copy' },
+      { name: 'content_paste', label: 'Paste' },
+      { name: 'save', label: 'Save' },
+      { name: 'undo', label: 'Undo' },
+      { name: 'redo', label: 'Redo' },
+      { name: 'refresh', label: 'Refresh' },
+      { name: 'download', label: 'Download' },
+      { name: 'upload', label: 'Upload' },
+      { name: 'share', label: 'Share' },
+      { name: 'print', label: 'Print' },
+      { name: 'drag_indicator', label: 'Drag handle' },
+      { name: 'filter_list', label: 'Filter' },
+      { name: 'sort', label: 'Sort' },
+      { name: 'tune', label: 'Adjust / Tune' },
+      { name: 'bookmark', label: 'Bookmark' },
+      { name: 'bookmark_border', label: 'Bookmark (empty)' },
+      { name: 'star', label: 'Favorite' },
+      { name: 'star_border', label: 'Favorite (empty)' },
+      { name: 'link', label: 'Link' },
+      { name: 'link_off', label: 'Unlink' },
+    ]
+  },
+  {
+    name: 'Status & Feedback',
+    desc: 'Alerts, progress indicators, and system state',
+    icons: [
+      { name: 'check_circle', label: 'Success' },
+      { name: 'error', label: 'Error' },
+      { name: 'warning', label: 'Warning' },
+      { name: 'info', label: 'Info' },
+      { name: 'help', label: 'Help' },
+      { name: 'pending', label: 'Pending' },
+      { name: 'hourglass_empty', label: 'In progress' },
+      { name: 'cancel', label: 'Cancel / Denied' },
+      { name: 'block', label: 'Blocked' },
+      { name: 'check', label: 'Checkmark' },
+      { name: 'priority_high', label: 'Priority high' },
+      { name: 'new_releases', label: 'New / Release' },
+      { name: 'verified', label: 'Verified' },
+      { name: 'thumb_up', label: 'Approve' },
+      { name: 'thumb_down', label: 'Reject' },
+      { name: 'flag', label: 'Flag' },
+      { name: 'report', label: 'Report' },
+      { name: 'sync', label: 'Syncing' },
+      { name: 'sync_problem', label: 'Sync error' },
+      { name: 'do_not_disturb', label: 'Do not disturb' },
+    ]
+  },
+  {
+    name: 'Security & Privacy',
+    desc: 'Access control, permissions, and data protection',
+    icons: [
+      { name: 'lock', label: 'Locked' },
+      { name: 'lock_open', label: 'Unlocked' },
+      { name: 'shield', label: 'Shield / Protected' },
+      { name: 'security', label: 'Security' },
+      { name: 'vpn_key', label: 'Key / Credential' },
+      { name: 'key', label: 'Access key' },
+      { name: 'visibility', label: 'Visible' },
+      { name: 'visibility_off', label: 'Hidden' },
+      { name: 'admin_panel_settings', label: 'Admin panel' },
+      { name: 'policy', label: 'Policy' },
+      { name: 'gpp_good', label: 'Privacy good' },
+      { name: 'gpp_bad', label: 'Privacy risk' },
+      { name: 'gpp_maybe', label: 'Privacy warning' },
+      { name: 'encrypted', label: 'Encrypted' },
+      { name: 'no_encryption', label: 'Unencrypted' },
+      { name: 'fingerprint', label: 'Biometric / ID' },
+      { name: 'passkey', label: 'Passkey' },
+      { name: 'verified_user', label: 'Verified user' },
+    ]
+  },
+  {
+    name: 'Data & Content',
+    desc: 'Tables, databases, charts, and content structures',
+    icons: [
+      { name: 'table_chart', label: 'Table' },
+      { name: 'view_list', label: 'List view' },
+      { name: 'grid_view', label: 'Grid view' },
+      { name: 'bar_chart', label: 'Bar chart' },
+      { name: 'show_chart', label: 'Line chart' },
+      { name: 'pie_chart', label: 'Pie chart' },
+      { name: 'analytics', label: 'Analytics' },
+      { name: 'insights', label: 'Insights' },
+      { name: 'trending_up', label: 'Trending up' },
+      { name: 'trending_down', label: 'Trending down' },
+      { name: 'trending_flat', label: 'Trending flat' },
+      { name: 'database', label: 'Database' },
+      { name: 'storage', label: 'Storage' },
+      { name: 'data_object', label: 'Data object / JSON' },
+      { name: 'schema', label: 'Schema' },
+      { name: 'category', label: 'Category' },
+      { name: 'label', label: 'Label / Tag' },
+      { name: 'sell', label: 'Tag (alt)' },
+    ]
+  },
+  {
+    name: 'Files & Documents',
+    desc: 'File types, folders, and document management',
+    icons: [
+      { name: 'description', label: 'Document' },
+      { name: 'article', label: 'Article / Page' },
+      { name: 'folder', label: 'Folder' },
+      { name: 'folder_open', label: 'Folder (open)' },
+      { name: 'create_new_folder', label: 'New folder' },
+      { name: 'snippet_folder', label: 'Snippet folder' },
+      { name: 'attach_file', label: 'Attachment' },
+      { name: 'file_copy', label: 'File copy' },
+      { name: 'note_add', label: 'Add note' },
+      { name: 'picture_as_pdf', label: 'PDF' },
+      { name: 'image', label: 'Image file' },
+      { name: 'code', label: 'Code file' },
+      { name: 'terminal', label: 'Terminal' },
+      { name: 'cloud_upload', label: 'Cloud upload' },
+      { name: 'cloud_download', label: 'Cloud download' },
+      { name: 'cloud', label: 'Cloud' },
+      { name: 'cloud_off', label: 'Offline' },
+    ]
+  },
+  {
+    name: 'Users & People',
+    desc: 'User accounts, teams, and role indicators',
+    icons: [
+      { name: 'person', label: 'User' },
+      { name: 'person_add', label: 'Add user' },
+      { name: 'person_remove', label: 'Remove user' },
+      { name: 'group', label: 'Team / Group' },
+      { name: 'groups', label: 'Organization' },
+      { name: 'manage_accounts', label: 'Manage accounts' },
+      { name: 'account_circle', label: 'Avatar' },
+      { name: 'supervisor_account', label: 'Supervisor' },
+      { name: 'badge', label: 'Badge / Employee' },
+      { name: 'assignment_ind', label: 'Assigned to' },
+      { name: 'how_to_reg', label: 'Registered' },
+      { name: 'person_off', label: 'User disabled' },
+      { name: 'switch_account', label: 'Switch account' },
+    ]
+  },
+  {
+    name: 'Communication',
+    desc: 'Messaging, notifications, and outreach',
+    icons: [
+      { name: 'mail', label: 'Email' },
+      { name: 'drafts', label: 'Draft' },
+      { name: 'send', label: 'Send' },
+      { name: 'chat', label: 'Chat' },
+      { name: 'forum', label: 'Discussion' },
+      { name: 'comment', label: 'Comment' },
+      { name: 'notifications', label: 'Notification' },
+      { name: 'notifications_off', label: 'Muted' },
+      { name: 'campaign', label: 'Announcement' },
+      { name: 'alternate_email', label: 'Email (alt)' },
+      { name: 'mark_email_read', label: 'Email read' },
+      { name: 'mark_email_unread', label: 'Email unread' },
+      { name: 'feedback', label: 'Feedback' },
+      { name: 'contact_support', label: 'Support' },
+    ]
+  },
+  {
+    name: 'Settings & Tools',
+    desc: 'Configuration, preferences, and system tools',
+    icons: [
+      { name: 'settings', label: 'Settings' },
+      { name: 'build', label: 'Build / Tools' },
+      { name: 'construction', label: 'Under construction' },
+      { name: 'handyman', label: 'Maintenance' },
+      { name: 'toggle_on', label: 'Toggle on' },
+      { name: 'toggle_off', label: 'Toggle off' },
+      { name: 'rule', label: 'Rule / Condition' },
+      { name: 'checklist', label: 'Checklist' },
+      { name: 'task_alt', label: 'Task complete' },
+      { name: 'integration_instructions', label: 'Integration' },
+      { name: 'api', label: 'API' },
+      { name: 'webhook', label: 'Webhook' },
+      { name: 'dns', label: 'DNS / Endpoint' },
+      { name: 'hub', label: 'Hub / Network' },
+      { name: 'speed', label: 'Performance' },
+      { name: 'schedule', label: 'Schedule' },
+      { name: 'timer', label: 'Timer' },
+      { name: 'history', label: 'History / Audit' },
+      { name: 'update', label: 'Update' },
+      { name: 'auto_fix_high', label: 'Auto-fix / Magic' },
+    ]
+  },
+  {
+    name: 'Layout & Interface',
+    desc: 'Page structure, panels, and viewport controls',
+    icons: [
+      { name: 'dashboard', label: 'Dashboard' },
+      { name: 'space_dashboard', label: 'Panel layout' },
+      { name: 'view_sidebar', label: 'Sidebar' },
+      { name: 'view_column', label: 'Columns' },
+      { name: 'calendar_today', label: 'Calendar' },
+      { name: 'view_timeline', label: 'Timeline' },
+      { name: 'view_kanban', label: 'Kanban' },
+      { name: 'tab', label: 'Tab' },
+      { name: 'browser_updated', label: 'Browser' },
+      { name: 'width_normal', label: 'Width normal' },
+      { name: 'width_wide', label: 'Width wide' },
+      { name: 'splitscreen', label: 'Split screen' },
+      { name: 'dock_to_right', label: 'Dock right' },
+      { name: 'dock_to_left', label: 'Dock left' },
+    ]
+  },
+];
+
+/* Total icon count */
+var totalIcons = 0;
+iconCategories.forEach(function(cat) { totalIcons += cat.icons.length; });
+
+/* ---- Render ---- */
+function renderLibrary() {
+  var container = document.getElementById('iconLibrary');
+  container.innerHTML = '';
+
+  iconCategories.forEach(function(cat, catIdx) {
+    var section = document.createElement('div');
+    section.className = 'category-section';
+    section.setAttribute('data-category', cat.name.toLowerCase());
+
+    var heading = document.createElement('h3');
+    heading.textContent = cat.name;
+    section.appendChild(heading);
+
+    var desc = document.createElement('p');
+    desc.className = 'category-desc';
+    desc.textContent = cat.desc;
+    section.appendChild(desc);
+
+    var grid = document.createElement('div');
+    grid.className = 'icon-grid';
+
+    cat.icons.forEach(function(icon) {
+      var cell = document.createElement('div');
+      cell.className = 'icon-cell';
+      cell.setAttribute('data-icon', icon.name);
+      cell.setAttribute('data-label', icon.label.toLowerCase());
+      cell.setAttribute('data-category', cat.name.toLowerCase());
+      cell.onclick = function() { copyIcon(icon.name, cell); };
+
+      cell.innerHTML =
+        '<div class="copied-tip">Copied!</div>' +
+        '<span class="material-symbols-outlined">' + icon.name + '</span>' +
+        '<span class="icon-label">' + icon.label + '</span>' +
+        '<span class="icon-name">' + icon.name + '</span>';
+      grid.appendChild(cell);
+    });
+
+    section.appendChild(grid);
+    container.appendChild(section);
+
+    if (catIdx < iconCategories.length - 1) {
+      var divider = document.createElement('hr');
+      divider.className = 'section-divider';
+      divider.style.margin = 'var(--sds-space-800) 0';
+      section.appendChild(divider);
+    }
+  });
+
+  updateCount(totalIcons);
+}
+
+/* ---- Copy to clipboard ---- */
+function copyIcon(name, cell) {
+  var html = '<span class="material-symbols-outlined">' + name + '</span>';
+  navigator.clipboard.writeText(html).then(function() {
+    var tip = cell.querySelector('.copied-tip');
+    tip.classList.add('show');
+    setTimeout(function() { tip.classList.remove('show'); }, 1200);
+  });
+}
+
+/* ---- Search / filter ---- */
+var searchInput = document.getElementById('iconSearch');
+searchInput.addEventListener('input', function() {
+  var query = this.value.toLowerCase().trim();
+  var visible = 0;
+
+  document.querySelectorAll('.icon-cell').forEach(function(cell) {
+    var iconName = cell.getAttribute('data-icon');
+    var iconLabel = cell.getAttribute('data-label');
+    var match = !query || iconName.indexOf(query) !== -1 || iconLabel.indexOf(query) !== -1;
+    cell.style.display = match ? '' : 'none';
+    if (match) visible++;
+  });
+
+  // Hide empty categories
+  document.querySelectorAll('.category-section').forEach(function(section) {
+    var visibleCells = section.querySelectorAll('.icon-cell:not([style*="display: none"])');
+    section.classList.toggle('hidden', visibleCells.length === 0);
+  });
+
+  updateCount(visible);
+});
+
+function updateCount(count) {
+  document.getElementById('iconCount').textContent = count + ' icon' + (count !== 1 ? 's' : '');
+}
+
+/* ---- Size toggle ---- */
+function setSize(size) {
+  document.querySelectorAll('.size-btn').forEach(function(btn) {
+    btn.classList.toggle('active', btn.getAttribute('data-size') === size);
+  });
+  document.querySelectorAll('.icon-grid').forEach(function(grid) {
+    grid.classList.remove('size-sm', 'size-md', 'size-lg');
+    grid.classList.add('size-' + size);
+  });
+  document.querySelectorAll('.icon-cell').forEach(function(cell) {
+    cell.classList.remove('size-sm', 'size-md', 'size-lg');
+    cell.classList.add('size-' + size);
+  });
+}
+
+/* ---- Init ---- */
+renderLibrary();
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

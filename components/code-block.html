@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Code Block</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       CODE BLOCK
+       Formatted code/syntax display for database queries, API
+       responses, configuration files, and code snippets
+       across the platform.
+       ============================================================ */
+
+    .sds-code-block {
+      background: var(--sds-color-warm-gray-900);
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: var(--sds-font-mono);
+      font-size: var(--sds-type-caption);
+      line-height: var(--sds-leading-relaxed);
+      color: var(--sds-color-warm-gray-100);
+    }
+
+    .sds-code-block__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-300) var(--sds-space-500);
+      background: var(--sds-color-warm-gray-850);
+      border-bottom: 1px solid var(--sds-color-warm-gray-750);
+    }
+
+    .sds-code-block__language {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    .sds-code-block__copy {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      background: none;
+      border: none;
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      color: var(--sds-color-warm-gray-400);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: color 0.15s ease, background 0.15s ease;
+      position: relative;
+    }
+    .sds-code-block__copy:hover {
+      color: var(--sds-color-warm-gray-200);
+      background: var(--sds-color-warm-gray-750);
+    }
+    .sds-code-block__copy .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* Copy tooltip */
+    .sds-code-block__copy-tooltip {
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--sds-color-warm-gray-700);
+      color: var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-medium);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+    .sds-code-block__copy-tooltip--visible {
+      opacity: 1;
+    }
+
+    .sds-code-block__content {
+      padding: var(--sds-space-500);
+      margin: 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .sds-code-block__content code {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    /* Line numbers variant */
+    .sds-code-block--line-numbers .sds-code-block__content {
+      padding: var(--sds-space-500) 0;
+    }
+
+    .sds-code-block__line {
+      display: flex;
+      min-height: 1.6em;
+    }
+
+    .sds-code-block__line-number {
+      display: inline-block;
+      width: 40px;
+      flex-shrink: 0;
+      text-align: right;
+      padding-right: var(--sds-space-300);
+      margin-right: var(--sds-space-400);
+      color: var(--sds-color-warm-gray-500);
+      border-right: 1px solid var(--sds-color-warm-gray-750);
+      user-select: none;
+    }
+
+    .sds-code-block__line-text {
+      padding-right: var(--sds-space-500);
+    }
+
+    /* ---- Compact variant ---- */
+    .sds-code-block--compact {
+      font-size: var(--sds-type-overline);
+    }
+    .sds-code-block--compact .sds-code-block__content {
+      padding: var(--sds-space-300);
+    }
+
+    /* ---- Redacted variant ---- */
+    .sds-code-block--redacted .sds-code-block__redacted-value {
+      background: rgba(207, 98, 83, 0.2);
+      color: var(--sds-color-red-300);
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 3px;
+      font-weight: var(--sds-weight-medium);
+      letter-spacing: 0.05em;
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+
+    /* ---- Canonical card (from cards.html) ---- */
+    .sds-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .sds-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      gap: var(--sds-space-300);
+    }
+    .sds-card-header--bordered {
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-900);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .sds-card-body {
+      padding: var(--sds-space-400) var(--sds-space-500);
+    }
+    .sds-card-header + .sds-card-body {
+      padding-top: var(--sds-space-0);
+    }
+    .sds-card-header--bordered + .sds-card-body {
+      padding-top: var(--sds-space-400);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Code Block</h1>
+  <p class="page-subtitle">Formatted code and syntax display for database queries, API responses, configuration files, and code snippets across the platform.</p>
+
+  <!-- ============================================================
+       1. BASIC CODE BLOCK
+       ============================================================ -->
+  <h2>Basic Code Block</h2>
+  <p>A simple code block with monospace font, dark background, and rounded corners. Used for displaying database queries, configuration values, and other code content.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">SQL query</div>
+    <div class="sds-code-block">
+      <pre class="sds-code-block__content"><code>SELECT name, email, role FROM team_members WHERE department = 'engineering' LIMIT 100;</code></pre>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       2. WITH HEADER
+       ============================================================ -->
+  <h2>With Header</h2>
+  <p>Code block with a header bar showing the language label and an interactive copy-to-clipboard button. Clicking the button copies content and briefly shows a confirmation tooltip.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Header with language label and copy action</div>
+    <div class="sds-code-block" id="demo-header-block">
+      <div class="sds-code-block__header">
+        <span class="sds-code-block__language">SQL</span>
+        <button class="sds-code-block__copy" onclick="copyCode(this)" aria-label="Copy code">
+          <span class="material-symbols-outlined">content_copy</span>
+          Copy
+          <span class="sds-code-block__copy-tooltip">Copied!</span>
+        </button>
+      </div>
+      <pre class="sds-code-block__content"><code>SELECT
+  u.email,
+  u.full_name,
+  p.project_name,
+  p.last_updated
+FROM users u
+JOIN project_assignments p ON u.user_id = p.user_id
+WHERE p.status = 'active'
+  AND p.last_updated > '2025-01-01'
+ORDER BY p.last_updated DESC
+LIMIT 50;</code></pre>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       3. WITH LINE NUMBERS
+       ============================================================ -->
+  <h2>With Line Numbers</h2>
+  <p>Code block with a left gutter displaying line numbers. Useful for multi-line configuration files and automation rules where line references are helpful.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Notification rules configuration</div>
+    <div class="sds-code-block sds-code-block--line-numbers">
+      <div class="sds-code-block__header">
+        <span class="sds-code-block__language">Config</span>
+        <button class="sds-code-block__copy" onclick="copyCode(this)" aria-label="Copy code">
+          <span class="material-symbols-outlined">content_copy</span>
+          Copy
+          <span class="sds-code-block__copy-tooltip">Copied!</span>
+        </button>
+      </div>
+      <div class="sds-code-block__content">
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">1</span><span class="sds-code-block__line-text"># Notification Rules</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">2</span><span class="sds-code-block__line-text">[TaskAssigned]</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">3</span><span class="sds-code-block__line-text">channel = email</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">4</span><span class="sds-code-block__line-text">priority = normal</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">5</span><span class="sds-code-block__line-text">action = notify_assignee</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">6</span><span class="sds-code-block__line-text"></span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">7</span><span class="sds-code-block__line-text">[DeadlineApproaching]</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">8</span><span class="sds-code-block__line-text">channel = slack, email</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">9</span><span class="sds-code-block__line-text">priority = high</span></div>
+        <div class="sds-code-block__line"><span class="sds-code-block__line-number">10</span><span class="sds-code-block__line-text">action = notify_team</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       4. REDACTED CONTENT
+       ============================================================ -->
+  <h2>Redacted Content</h2>
+  <p>Code block displaying an API response where certain values are masked. Redacted values are highlighted with a distinctive red-tinted background for clear identification.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">API response with masked values</div>
+    <div class="sds-code-block sds-code-block--redacted">
+      <div class="sds-code-block__header">
+        <span class="sds-code-block__language">JSON</span>
+        <button class="sds-code-block__copy" onclick="copyCode(this)" aria-label="Copy code">
+          <span class="material-symbols-outlined">content_copy</span>
+          Copy
+          <span class="sds-code-block__copy-tooltip">Copied!</span>
+        </button>
+      </div>
+      <pre class="sds-code-block__content"><code>{
+  "user_id": "usr_8f2a1b3c",
+  "email": <span class="sds-code-block__redacted-value">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>,
+  "full_name": <span class="sds-code-block__redacted-value">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>,
+  "phone": <span class="sds-code-block__redacted-value">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>,
+  "department": "engineering",
+  "role": "admin",
+  "api_key": <span class="sds-code-block__redacted-value">&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;&#x2022;</span>,
+  "last_login": "2025-12-14T09:32:00Z"
+}</code></pre>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       5. COMPACT VARIANT
+       ============================================================ -->
+  <h2>Compact Variant</h2>
+  <p>A smaller code block variant suitable for inline display within tables, cards, or summary panels where space is limited.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Compact code blocks for inline use</div>
+    <div style="display: flex; flex-direction: column; gap: var(--sds-space-300);">
+      <div class="sds-code-block sds-code-block--compact">
+        <pre class="sds-code-block__content"><code>pattern: /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i</code></pre>
+      </div>
+      <div class="sds-code-block sds-code-block--compact">
+        <pre class="sds-code-block__content"><code>status: active | role: admin | team: engineering</code></pre>
+      </div>
+      <div class="sds-code-block sds-code-block--compact">
+        <pre class="sds-code-block__content"><code>SELECT COUNT(*) FROM activity_log WHERE event_type = 'user_signup'</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       6. IN CONTEXT
+       ============================================================ -->
+  <h2>In Context</h2>
+  <p>A code block used inside a card-like container representing a validation rule detail view, with title, description, and metadata.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Validation rule detail view</div>
+    <div class="sds-card" style="max-width: 640px;">
+      <div class="sds-card-header">
+        <div>
+          <h3 class="sds-card-title">Email Format Validation</h3>
+          <div style="font-size: var(--sds-type-caption); color: var(--sds-text-tertiary); margin-top: var(--sds-space-100);">Validation rule &middot; Input &middot; Required</div>
+        </div>
+      </div>
+      <div class="sds-card-body">
+        <div class="sds-code-block">
+          <div class="sds-code-block__header">
+            <span class="sds-code-block__language">Regex</span>
+            <button class="sds-code-block__copy" onclick="copyCode(this)" aria-label="Copy code">
+              <span class="material-symbols-outlined">content_copy</span>
+              Copy
+              <span class="sds-code-block__copy-tooltip">Copied!</span>
+            </button>
+          </div>
+          <pre class="sds-code-block__content"><code>/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i</code></pre>
+        </div>
+        <div style="display: flex; gap: var(--sds-space-600); margin-top: var(--sds-space-400); font-size: var(--sds-type-caption); color: var(--sds-text-tertiary);">
+          <span style="display: flex; align-items: center; gap: var(--sds-space-100);">
+            <span class="material-symbols-outlined" style="font-size: 16px;">schedule</span>
+            Updated 2 days ago
+          </span>
+          <span style="display: flex; align-items: center; gap: var(--sds-space-100);">
+            <span class="material-symbols-outlined" style="font-size: 16px;">person</span>
+            Alex Morgan
+          </span>
+          <span style="display: flex; align-items: center; gap: var(--sds-space-100);">
+            <span class="material-symbols-outlined" style="font-size: 16px;">verified</span>
+            Active
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       7. SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>--sds-color-warm-gray-900</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-900)"></span>Dark code surface</td>
+      </tr>
+      <tr>
+        <td>Header background</td>
+        <td><code>--sds-color-warm-gray-850</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-850)"></span>Slightly lighter header</td>
+      </tr>
+      <tr>
+        <td>Text color</td>
+        <td><code>--sds-color-warm-gray-100</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span>Light text on dark</td>
+      </tr>
+      <tr>
+        <td>Line number color</td>
+        <td><code>--sds-color-warm-gray-500</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-500)"></span>Muted gutter text</td>
+      </tr>
+      <tr>
+        <td>Border / dividers</td>
+        <td><code>--sds-color-warm-gray-750</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-750)"></span>Subtle separators</td>
+      </tr>
+      <tr>
+        <td>Copy button idle</td>
+        <td><code>--sds-color-warm-gray-400</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-400)"></span>Ghost button text</td>
+      </tr>
+      <tr>
+        <td>Copy button hover</td>
+        <td><code>--sds-color-warm-gray-200</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-200)"></span>Hover highlight</td>
+      </tr>
+      <tr>
+        <td>Redacted background</td>
+        <td><code>rgba(207, 98, 83, 0.2)</code></td>
+        <td><span class="swatch" style="background:rgba(207,98,83,0.2)"></span>Translucent red</td>
+      </tr>
+      <tr>
+        <td>Redacted text</td>
+        <td><code>--sds-color-red-300</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-300)"></span>Red on dark bg</td>
+      </tr>
+      <tr>
+        <td>Font family</td>
+        <td><code>--sds-font-mono</code></td>
+        <td>Monospace stack</td>
+      </tr>
+      <tr>
+        <td>Font size</td>
+        <td><code>--sds-type-caption</code></td>
+        <td>~13px</td>
+      </tr>
+      <tr>
+        <td>Line height</td>
+        <td><code>--sds-leading-relaxed</code></td>
+        <td>~1.6</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Sizing Specs</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Container</td>
+        <td>border-radius</td>
+        <td><code>8px</code></td>
+      </tr>
+      <tr>
+        <td>Content area</td>
+        <td>padding</td>
+        <td><code>--sds-space-500</code></td>
+      </tr>
+      <tr>
+        <td>Header</td>
+        <td>padding</td>
+        <td><code>--sds-space-300</code> / <code>--sds-space-500</code></td>
+      </tr>
+      <tr>
+        <td>Line number gutter</td>
+        <td>width</td>
+        <td><code>40px</code></td>
+      </tr>
+      <tr>
+        <td>Compact content</td>
+        <td>padding</td>
+        <td><code>--sds-space-300</code></td>
+      </tr>
+      <tr>
+        <td>Compact font size</td>
+        <td>font-size</td>
+        <td><code>var(--sds-type-overline)</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes Reference</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-code-block</code></td><td>Base container with monospace font, dark background, rounded corners</td></tr>
+      <tr><td><code>.sds-code-block__header</code></td><td>Optional header bar with language label and copy button</td></tr>
+      <tr><td><code>.sds-code-block__language</code></td><td>Language/type label displayed in the header</td></tr>
+      <tr><td><code>.sds-code-block__copy</code></td><td>Ghost-style copy-to-clipboard button</td></tr>
+      <tr><td><code>.sds-code-block__content</code></td><td>Pre/code content area with horizontal overflow scroll</td></tr>
+      <tr><td><code>.sds-code-block__line</code></td><td>Individual line wrapper for line-numbered variant</td></tr>
+      <tr><td><code>.sds-code-block__line-number</code></td><td>Line number gutter element, user-select disabled</td></tr>
+      <tr><td><code>.sds-code-block--line-numbers</code></td><td>Modifier enabling line number layout</td></tr>
+      <tr><td><code>.sds-code-block--compact</code></td><td>Smaller variant with reduced padding and font size</td></tr>
+      <tr><td><code>.sds-code-block--redacted</code></td><td>Enables redacted/masked content styling</td></tr>
+      <tr><td><code>.sds-code-block__redacted-value</code></td><td>Inline span for masked values with red-tinted highlight</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Copy-to-clipboard script -->
+  <script>
+    function copyCode(button) {
+      var block = button.closest('.sds-code-block');
+      var content = block.querySelector('.sds-code-block__content');
+      var text = content.textContent || content.innerText;
+      navigator.clipboard.writeText(text.trim()).then(function() {
+        var tooltip = button.querySelector('.sds-code-block__copy-tooltip');
+        var icon = button.querySelector('.material-symbols-outlined');
+        tooltip.classList.add('sds-code-block__copy-tooltip--visible');
+        icon.textContent = 'check';
+        button.setAttribute('aria-label', 'Copied');
+        setTimeout(function() {
+          tooltip.classList.remove('sds-code-block__copy-tooltip--visible');
+          icon.textContent = 'content_copy';
+          button.setAttribute('aria-label', 'Copy code');
+        }, 1500);
+      });
+    }
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

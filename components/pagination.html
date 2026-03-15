@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Software DS — Pagination</title>
+  <link rel="stylesheet" href="../tokens/colors.css">
+  <link rel="stylesheet" href="../tokens/spacing.css">
+  <link rel="stylesheet" href="../tokens/typography.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ── Reset & page chrome ─────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code {
+      font-family: var(--sds-font-mono);
+      font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050);
+      padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px;
+    }
+    .section-divider {
+      border: none; border-top: 1px solid var(--sds-color-warm-gray-100);
+      margin: var(--sds-space-1000) 0;
+    }
+
+    /* ── Demo blocks ─────────────────────────────────── */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold); text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide); color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ── Pagination component ────────────────────────── */
+
+    /* Base pagination nav */
+    .sds-pagination {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+    }
+
+    /* Page button */
+    .sds-pagination__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 var(--sds-space-200);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--sds-color-warm-gray-600);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      user-select: none;
+      line-height: 1;
+    }
+    .sds-pagination__btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-color-warm-gray-800);
+    }
+    .sds-pagination__btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-pagination__btn--active {
+      background: var(--sds-color-blue-100);
+      color: var(--sds-color-blue-750);
+      font-weight: var(--sds-weight-semibold);
+      border-color: var(--sds-color-blue-100);
+    }
+    .sds-pagination__btn--active:hover {
+      background: var(--sds-color-blue-100);
+      color: var(--sds-color-blue-750);
+    }
+    .sds-pagination__btn:disabled,
+    .sds-pagination__btn[aria-disabled="true"] {
+      color: var(--sds-color-warm-gray-300);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+    /* Arrow / icon buttons */
+    .sds-pagination__arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-600);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .sds-pagination__arrow:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-color-warm-gray-800);
+      border-color: var(--sds-color-warm-gray-200);
+    }
+    .sds-pagination__arrow:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-pagination__arrow:disabled,
+    .sds-pagination__arrow[aria-disabled="true"] {
+      color: var(--sds-color-warm-gray-300);
+      border-color: var(--sds-color-warm-gray-100);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .sds-pagination__arrow .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    /* Ellipsis */
+    .sds-pagination__ellipsis {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      color: var(--sds-color-warm-gray-400);
+      font-size: var(--sds-type-label);
+      user-select: none;
+    }
+
+    /* ── With page-size selector ─────────────────────── */
+    .sds-pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sds-space-400);
+      flex-wrap: wrap;
+    }
+    .sds-pagination-bar__info {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-500);
+    }
+    .sds-pagination-bar__right {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+    }
+    .sds-pagination-bar__selector {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-500);
+    }
+    .sds-pagination-bar__select {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-700);
+      cursor: pointer;
+    }
+    .sds-pagination-bar__select:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    /* ── Simple prev/next ────────────────────────────── */
+    .sds-pagination--simple {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+    }
+    .sds-pagination__text-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-700);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .sds-pagination__text-btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .sds-pagination__text-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-pagination__text-btn:disabled {
+      color: var(--sds-color-warm-gray-300);
+      border-color: var(--sds-color-warm-gray-100);
+      cursor: not-allowed;
+    }
+    .sds-pagination__text-btn .material-symbols-outlined {
+      font-size: 16px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .sds-pagination__current {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-500);
+      white-space: nowrap;
+    }
+
+    /* ── Compact ──────────────────────────────────────── */
+    .sds-pagination--compact {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .sds-pagination--compact .sds-pagination__arrow {
+      width: 28px;
+      height: 28px;
+    }
+    .sds-pagination--compact .sds-pagination__arrow .material-symbols-outlined {
+      font-size: 16px;
+    }
+    .sds-pagination--compact .sds-pagination__current {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-500);
+      white-space: nowrap;
+    }
+
+    /* ── Load more ────────────────────────────────────── */
+    .sds-pagination-load-more {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .sds-pagination-load-more__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      padding: var(--sds-space-200) var(--sds-space-600);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-700);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .sds-pagination-load-more__btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .sds-pagination-load-more__btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-pagination-load-more__btn:disabled {
+      color: var(--sds-color-warm-gray-300);
+      border-color: var(--sds-color-warm-gray-100);
+      cursor: not-allowed;
+    }
+    .sds-pagination-load-more__count {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    /* ── Infinite scroll indicator ────────────────────── */
+    .sds-pagination-scroll {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-600) 0;
+    }
+    .sds-pagination-scroll__spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--sds-color-warm-gray-150);
+      border-top-color: var(--sds-color-blue-750);
+      border-radius: 50%;
+      animation: sds-spin 0.8s linear infinite;
+    }
+    .sds-pagination-scroll__text {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+    .sds-pagination-scroll__end {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      padding: var(--sds-space-400) 0;
+    }
+    @keyframes sds-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Simulated list items for scroll demo */
+    .sds-pagination-scroll-demo {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+    }
+    .sds-pagination-scroll-demo__item {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .sds-pagination-scroll-demo__item:last-child {
+      border-bottom: none;
+    }
+
+    /* ── Spec table ───────────────────────────────────── */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px; height: 14px;
+      border-radius: 3px;
+      border: 1px solid rgba(0,0,0,0.08);
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+    }
+
+    /* ── Screen reader only ──────────────────────────── */
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Pagination</h1>
+<p class="page-subtitle">Navigation controls for moving through paged data sets. Six variants from full page-number controls to infinite scroll, designed for enterprise data security workflows.</p>
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 1 — Basic Pagination
+     ═══════════════════════════════════════════════════ -->
+<h2>Basic Pagination</h2>
+<p>Page number buttons with previous/next arrows and ellipsis for large page ranges. The active page is highlighted with the <code>sds-pagination__btn--active</code> class. Use <code>aria-current="page"</code> on the active button for accessibility.</p>
+
+<h3>Default</h3>
+<div class="demo-block">
+  <div class="demo-label">10 Pages — Page 1 Active</div>
+  <nav class="sds-pagination" aria-label="Pagination" data-pagination="basic" data-total="10" data-current="1">
+    <button class="sds-pagination__arrow" aria-label="Previous page" aria-disabled="true" disabled>
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <button class="sds-pagination__btn sds-pagination__btn--active" aria-current="page">1</button>
+    <button class="sds-pagination__btn">2</button>
+    <button class="sds-pagination__btn">3</button>
+    <span class="sds-pagination__ellipsis" aria-hidden="true">&hellip;</span>
+    <button class="sds-pagination__btn">8</button>
+    <button class="sds-pagination__btn">9</button>
+    <button class="sds-pagination__btn">10</button>
+    <button class="sds-pagination__arrow" aria-label="Next page">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </nav>
+</div>
+
+<h3>Mid-range Active</h3>
+<div class="demo-block">
+  <div class="demo-label">10 Pages — Page 5 Active</div>
+  <nav class="sds-pagination" aria-label="Pagination" data-pagination="basic" data-total="10" data-current="5">
+    <button class="sds-pagination__arrow" aria-label="Previous page">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <button class="sds-pagination__btn">1</button>
+    <span class="sds-pagination__ellipsis" aria-hidden="true">&hellip;</span>
+    <button class="sds-pagination__btn">4</button>
+    <button class="sds-pagination__btn sds-pagination__btn--active" aria-current="page">5</button>
+    <button class="sds-pagination__btn">6</button>
+    <span class="sds-pagination__ellipsis" aria-hidden="true">&hellip;</span>
+    <button class="sds-pagination__btn">10</button>
+    <button class="sds-pagination__arrow" aria-label="Next page">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </nav>
+</div>
+
+<h3>Last Page Active</h3>
+<div class="demo-block">
+  <div class="demo-label">10 Pages — Page 10 Active</div>
+  <nav class="sds-pagination" aria-label="Pagination" data-pagination="basic" data-total="10" data-current="10">
+    <button class="sds-pagination__arrow" aria-label="Previous page">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <button class="sds-pagination__btn">1</button>
+    <button class="sds-pagination__btn">2</button>
+    <button class="sds-pagination__btn">3</button>
+    <span class="sds-pagination__ellipsis" aria-hidden="true">&hellip;</span>
+    <button class="sds-pagination__btn">8</button>
+    <button class="sds-pagination__btn">9</button>
+    <button class="sds-pagination__btn sds-pagination__btn--active" aria-current="page">10</button>
+    <button class="sds-pagination__arrow" aria-label="Next page" aria-disabled="true" disabled>
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </nav>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 2 — With Page Size Selector
+     ═══════════════════════════════════════════════════ -->
+<h2>With Page Size Selector</h2>
+<p>Full pagination bar with a dropdown to change items per page and a results summary. Commonly used below data tables in security dashboards to let analysts control how many alerts, events, or records they see at once.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Table Pagination Bar</div>
+  <div class="sds-pagination-bar" data-pagination="bar" data-total-items="247" data-page-size="10" data-current="1">
+    <span class="sds-pagination-bar__info">Showing 1–10 of 247 results</span>
+    <div class="sds-pagination-bar__right">
+      <div class="sds-pagination-bar__selector">
+        <label for="page-size-select">Rows per page:</label>
+        <select id="page-size-select" class="sds-pagination-bar__select">
+          <option value="10" selected>10</option>
+          <option value="25">25</option>
+          <option value="50">50</option>
+          <option value="100">100</option>
+        </select>
+      </div>
+      <nav class="sds-pagination" aria-label="Pagination">
+        <button class="sds-pagination__arrow" aria-label="Previous page" aria-disabled="true" disabled>
+          <span class="material-symbols-outlined">chevron_left</span>
+        </button>
+        <button class="sds-pagination__btn sds-pagination__btn--active" aria-current="page">1</button>
+        <button class="sds-pagination__btn">2</button>
+        <button class="sds-pagination__btn">3</button>
+        <span class="sds-pagination__ellipsis" aria-hidden="true">&hellip;</span>
+        <button class="sds-pagination__btn">25</button>
+        <button class="sds-pagination__arrow" aria-label="Next page">
+          <span class="material-symbols-outlined">chevron_right</span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 3 — Simple Prev/Next
+     ═══════════════════════════════════════════════════ -->
+<h2>Simple Prev/Next</h2>
+<p>Minimal pagination with labeled Previous and Next buttons and a page indicator. Useful for step-through interfaces like review queues or sequential record navigation in data classification workflows.</p>
+
+<h3>First Page</h3>
+<div class="demo-block">
+  <div class="demo-label">Page 1 of 12</div>
+  <div class="sds-pagination--simple" data-pagination="simple" data-total="12" data-current="1">
+    <button class="sds-pagination__text-btn" disabled>
+      <span class="material-symbols-outlined">chevron_left</span>
+      Previous
+    </button>
+    <span class="sds-pagination__current">Page 1 of 12</span>
+    <button class="sds-pagination__text-btn">
+      Next
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </div>
+</div>
+
+<h3>Middle Page</h3>
+<div class="demo-block">
+  <div class="demo-label">Page 7 of 12</div>
+  <div class="sds-pagination--simple" data-pagination="simple" data-total="12" data-current="7">
+    <button class="sds-pagination__text-btn">
+      <span class="material-symbols-outlined">chevron_left</span>
+      Previous
+    </button>
+    <span class="sds-pagination__current">Page 7 of 12</span>
+    <button class="sds-pagination__text-btn">
+      Next
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 4 — Compact
+     ═══════════════════════════════════════════════════ -->
+<h2>Compact</h2>
+<p>Smaller variant with icon-only prev/next buttons and a "Page X of Y" label. Designed for tight spaces like sidebars, card footers, or inline within complex security dashboards where screen real estate is limited.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Compact — Page 3 of 15</div>
+  <nav class="sds-pagination--compact" aria-label="Pagination" data-pagination="compact" data-total="15" data-current="3">
+    <button class="sds-pagination__arrow" aria-label="Previous page">
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <span class="sds-pagination__current">Page 3 of 15</span>
+    <button class="sds-pagination__arrow" aria-label="Next page">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </nav>
+</div>
+
+<div class="demo-block">
+  <div class="demo-label">Compact — First Page (Prev Disabled)</div>
+  <nav class="sds-pagination--compact" aria-label="Pagination" data-pagination="compact" data-total="15" data-current="1">
+    <button class="sds-pagination__arrow" aria-label="Previous page" aria-disabled="true" disabled>
+      <span class="material-symbols-outlined">chevron_left</span>
+    </button>
+    <span class="sds-pagination__current">Page 1 of 15</span>
+    <button class="sds-pagination__arrow" aria-label="Next page">
+      <span class="material-symbols-outlined">chevron_right</span>
+    </button>
+  </nav>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 5 — Load More
+     ═══════════════════════════════════════════════════ -->
+<h2>Load More</h2>
+<p>Button-based pagination that appends additional results below the current set. Shows a count indicator so users know how many items have been loaded and how many remain. Suitable for feeds, activity logs, or audit trails.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Load More — 10 of 84 Shown</div>
+  <div class="sds-pagination-load-more" data-pagination="loadmore" data-total-items="84" data-loaded="10" data-page-size="10">
+    <button class="sds-pagination-load-more__btn">
+      <span class="material-symbols-outlined" style="font-size:16px;font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 20;">add</span>
+      Load more results
+    </button>
+    <span class="sds-pagination-load-more__count">Showing 10 of 84 results</span>
+  </div>
+</div>
+
+<div class="demo-block">
+  <div class="demo-label">Load More — All Loaded</div>
+  <div class="sds-pagination-load-more">
+    <button class="sds-pagination-load-more__btn" disabled>All results loaded</button>
+    <span class="sds-pagination-load-more__count">Showing 84 of 84 results</span>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 6 — Cursor / Infinite Scroll
+     ═══════════════════════════════════════════════════ -->
+<h2>Cursor / Infinite Scroll</h2>
+<p>Scroll-based pagination that automatically loads more content as the user scrolls toward the bottom. Shows a spinner and status text to indicate loading state. Useful for continuous feeds like security event streams or data discovery results.</p>
+
+<h3>Loading State</h3>
+<div class="demo-block">
+  <div class="demo-label">Scrollable List with Loading Indicator</div>
+  <div class="sds-pagination-scroll-demo" data-pagination="scroll">
+    <div class="sds-pagination-scroll-demo__item">Event #1 — DLP policy violation detected on endpoint-042</div>
+    <div class="sds-pagination-scroll-demo__item">Event #2 — Sensitive file access by user jdoe@corp.com</div>
+    <div class="sds-pagination-scroll-demo__item">Event #3 — Classification label changed on Q4-financials.xlsx</div>
+    <div class="sds-pagination-scroll-demo__item">Event #4 — Data export attempt blocked by policy RESTRICT-PII</div>
+    <div class="sds-pagination-scroll-demo__item">Event #5 — New sensitive data source discovered in S3 bucket</div>
+    <div class="sds-pagination-scroll-demo__item">Event #6 — Access review completed for database prod-db-west</div>
+    <div class="sds-pagination-scroll-demo__item">Event #7 — Encryption key rotation initiated for vault-003</div>
+    <div class="sds-pagination-scroll-demo__item">Event #8 — User privilege escalation detected for admin-svc</div>
+    <div class="sds-pagination-scroll" role="status" aria-live="polite">
+      <div class="sds-pagination-scroll__spinner" aria-hidden="true"></div>
+      <span class="sds-pagination-scroll__text">Loading more results&hellip;</span>
+    </div>
+  </div>
+</div>
+
+<h3>End of Results</h3>
+<div class="demo-block">
+  <div class="demo-label">All Items Loaded</div>
+  <div class="sds-pagination-scroll-demo">
+    <div class="sds-pagination-scroll-demo__item">Event #1 — DLP policy violation detected on endpoint-042</div>
+    <div class="sds-pagination-scroll-demo__item">Event #2 — Sensitive file access by user jdoe@corp.com</div>
+    <div class="sds-pagination-scroll-demo__item">Event #3 — Classification label changed on Q4-financials.xlsx</div>
+    <div class="sds-pagination-scroll__end" role="status">All 3 results loaded</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ═══════════════════════════════════════════════════
+     SECTION 7 — Specifications
+     ═══════════════════════════════════════════════════ -->
+<h2>Specifications</h2>
+
+<h3>Token Reference</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Page button</td><td>Size</td><td>32px min-width &times; 32px height</td></tr>
+    <tr><td>Page button</td><td>Border radius</td><td>6px</td></tr>
+    <tr><td>Page button</td><td>Font</td><td><code>--sds-type-label</code> &middot; <code>--sds-weight-medium</code></td></tr>
+    <tr><td>Page button</td><td>Color</td><td><span class="swatch" style="background: var(--sds-color-warm-gray-600)"></span><code>--sds-color-warm-gray-600</code></td></tr>
+    <tr><td>Page button hover</td><td>Background</td><td><span class="swatch" style="background: var(--sds-color-warm-gray-050)"></span><code>--sds-color-warm-gray-050</code></td></tr>
+    <tr><td>Active page</td><td>Background</td><td><span class="swatch" style="background: var(--sds-color-blue-100)"></span><code>--sds-color-blue-100</code></td></tr>
+    <tr><td>Active page</td><td>Color</td><td><span class="swatch" style="background: var(--sds-color-blue-750)"></span><code>--sds-color-blue-750</code></td></tr>
+    <tr><td>Active page</td><td>Font weight</td><td><code>--sds-weight-semibold</code></td></tr>
+    <tr><td>Arrow button</td><td>Size</td><td>32px &times; 32px</td></tr>
+    <tr><td>Arrow button</td><td>Border</td><td><span class="swatch" style="background: var(--sds-color-warm-gray-150)"></span><code>--sds-color-warm-gray-150</code> &middot; 1px solid</td></tr>
+    <tr><td>Arrow icon</td><td>Font size</td><td>18px</td></tr>
+    <tr><td>Disabled state</td><td>Color</td><td><span class="swatch" style="background: var(--sds-color-warm-gray-300)"></span><code>--sds-color-warm-gray-300</code></td></tr>
+    <tr><td>Focus ring</td><td>Outline</td><td><span class="swatch" style="background: var(--sds-border-focus)"></span><code>--sds-border-focus</code> &middot; 2px &middot; 2px offset</td></tr>
+    <tr><td>Spinner</td><td>Size</td><td>24px &times; 24px</td></tr>
+    <tr><td>Spinner</td><td>Color</td><td><span class="swatch" style="background: var(--sds-color-blue-750)"></span><code>--sds-color-blue-750</code> (top border)</td></tr>
+    <tr><td>Compact arrow</td><td>Size</td><td>28px &times; 28px</td></tr>
+    <tr><td>Info text</td><td>Color</td><td><span class="swatch" style="background: var(--sds-color-warm-gray-500)"></span><code>--sds-color-warm-gray-500</code></td></tr>
+  </tbody>
+</table>
+
+<h3>CSS Classes</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Class</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>.sds-pagination</code></td><td>Base flex container for page number buttons</td></tr>
+    <tr><td><code>.sds-pagination__btn</code></td><td>Individual page number button</td></tr>
+    <tr><td><code>.sds-pagination__btn--active</code></td><td>Active/current page — blue background highlight</td></tr>
+    <tr><td><code>.sds-pagination__arrow</code></td><td>Previous/next icon buttons with border</td></tr>
+    <tr><td><code>.sds-pagination__ellipsis</code></td><td>Gap indicator between non-contiguous page ranges</td></tr>
+    <tr><td><code>.sds-pagination-bar</code></td><td>Full-width bar with info text, page-size selector, and pagination</td></tr>
+    <tr><td><code>.sds-pagination-bar__select</code></td><td>Rows-per-page dropdown select</td></tr>
+    <tr><td><code>.sds-pagination--simple</code></td><td>Simple variant with text prev/next buttons</td></tr>
+    <tr><td><code>.sds-pagination__text-btn</code></td><td>Text button with icon for prev/next</td></tr>
+    <tr><td><code>.sds-pagination--compact</code></td><td>Compact variant with smaller arrow buttons</td></tr>
+    <tr><td><code>.sds-pagination-load-more</code></td><td>Load-more container with button and count</td></tr>
+    <tr><td><code>.sds-pagination-load-more__btn</code></td><td>Load-more action button</td></tr>
+    <tr><td><code>.sds-pagination-scroll</code></td><td>Infinite scroll loading indicator container</td></tr>
+    <tr><td><code>.sds-pagination-scroll__spinner</code></td><td>Animated spinner for loading state</td></tr>
+  </tbody>
+</table>
+
+<h3>Accessibility</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Attribute</th><th>Applied to</th><th>Purpose</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>aria-label="Pagination"</code></td><td><code>&lt;nav&gt;</code></td><td>Identifies the navigation landmark for screen readers</td></tr>
+    <tr><td><code>aria-current="page"</code></td><td>Active page button</td><td>Indicates the current page within the set</td></tr>
+    <tr><td><code>aria-disabled="true"</code></td><td>Disabled arrows</td><td>Communicates non-interactive state to assistive tech</td></tr>
+    <tr><td><code>aria-hidden="true"</code></td><td>Ellipsis</td><td>Hides decorative gap indicator from screen readers</td></tr>
+    <tr><td><code>role="status"</code></td><td>Scroll indicator</td><td>Announces loading state changes to screen readers</td></tr>
+    <tr><td><code>aria-live="polite"</code></td><td>Scroll indicator</td><td>Non-intrusive announcement of content updates</td></tr>
+  </tbody>
+</table>
+
+<!-- ═══════════════════════════════════════════════════
+     SCRIPTS
+     ═══════════════════════════════════════════════════ -->
+<script>
+(function() {
+  'use strict';
+
+  /* ── Helper: build page buttons for basic pagination ── */
+  function buildPages(total, current) {
+    var pages = [];
+    if (total <= 7) {
+      for (var i = 1; i <= total; i++) pages.push(i);
+      return pages;
+    }
+    // Always show first page
+    pages.push(1);
+    if (current <= 3) {
+      pages.push(2, 3);
+      pages.push('...');
+      pages.push(total - 2, total - 1, total);
+    } else if (current >= total - 2) {
+      pages.push('...');
+      pages.push(total - 2, total - 1, total);
+    } else {
+      pages.push('...');
+      pages.push(current - 1, current, current + 1);
+      pages.push('...');
+      pages.push(total);
+    }
+    return pages;
+  }
+
+  function renderBasicPagination(nav, total, current) {
+    var html = '';
+    // Prev arrow
+    html += '<button class="sds-pagination__arrow" aria-label="Previous page"' +
+      (current === 1 ? ' aria-disabled="true" disabled' : '') + '>' +
+      '<span class="material-symbols-outlined">chevron_left</span></button>';
+
+    var pages = buildPages(total, current);
+    for (var i = 0; i < pages.length; i++) {
+      if (pages[i] === '...') {
+        html += '<span class="sds-pagination__ellipsis" aria-hidden="true">&hellip;</span>';
+      } else {
+        var isActive = pages[i] === current;
+        html += '<button class="sds-pagination__btn' + (isActive ? ' sds-pagination__btn--active' : '') + '"' +
+          (isActive ? ' aria-current="page"' : '') + '>' + pages[i] + '</button>';
+      }
+    }
+
+    // Next arrow
+    html += '<button class="sds-pagination__arrow" aria-label="Next page"' +
+      (current === total ? ' aria-disabled="true" disabled' : '') + '>' +
+      '<span class="material-symbols-outlined">chevron_right</span></button>';
+
+    nav.innerHTML = html;
+  }
+
+  /* ── Basic pagination click handlers ─────────────── */
+  document.querySelectorAll('[data-pagination="basic"]').forEach(function(nav) {
+    nav.addEventListener('click', function(e) {
+      var btn = e.target.closest('.sds-pagination__btn');
+      var arrow = e.target.closest('.sds-pagination__arrow');
+      var total = parseInt(nav.dataset.total);
+      var current = parseInt(nav.dataset.current);
+
+      if (btn && !btn.classList.contains('sds-pagination__btn--active')) {
+        var page = parseInt(btn.textContent);
+        nav.dataset.current = page;
+        renderBasicPagination(nav, total, page);
+      } else if (arrow && !arrow.disabled) {
+        var label = arrow.getAttribute('aria-label');
+        var newPage = label.indexOf('Previous') >= 0 ? current - 1 : current + 1;
+        if (newPage >= 1 && newPage <= total) {
+          nav.dataset.current = newPage;
+          renderBasicPagination(nav, total, newPage);
+        }
+      }
+    });
+  });
+
+  /* ── Pagination bar with page size selector ──────── */
+  document.querySelectorAll('[data-pagination="bar"]').forEach(function(bar) {
+    var navEl = bar.querySelector('.sds-pagination');
+    var infoEl = bar.querySelector('.sds-pagination-bar__info');
+    var selectEl = bar.querySelector('.sds-pagination-bar__select');
+
+    function updateBar() {
+      var totalItems = parseInt(bar.dataset.totalItems);
+      var pageSize = parseInt(bar.dataset.pageSize);
+      var current = parseInt(bar.dataset.current);
+      var totalPages = Math.ceil(totalItems / pageSize);
+      var start = (current - 1) * pageSize + 1;
+      var end = Math.min(current * pageSize, totalItems);
+
+      infoEl.textContent = 'Showing ' + start + '\u2013' + end + ' of ' + totalItems + ' results';
+      renderBasicPagination(navEl, totalPages, current);
+    }
+
+    if (selectEl) {
+      selectEl.addEventListener('change', function() {
+        bar.dataset.pageSize = selectEl.value;
+        bar.dataset.current = 1;
+        updateBar();
+      });
+    }
+
+    if (navEl) {
+      navEl.addEventListener('click', function(e) {
+        var btn = e.target.closest('.sds-pagination__btn');
+        var arrow = e.target.closest('.sds-pagination__arrow');
+        var totalItems = parseInt(bar.dataset.totalItems);
+        var pageSize = parseInt(bar.dataset.pageSize);
+        var totalPages = Math.ceil(totalItems / pageSize);
+        var current = parseInt(bar.dataset.current);
+
+        if (btn && !btn.classList.contains('sds-pagination__btn--active')) {
+          bar.dataset.current = parseInt(btn.textContent);
+          updateBar();
+        } else if (arrow && !arrow.disabled) {
+          var label = arrow.getAttribute('aria-label');
+          var newPage = label.indexOf('Previous') >= 0 ? current - 1 : current + 1;
+          if (newPage >= 1 && newPage <= totalPages) {
+            bar.dataset.current = newPage;
+            updateBar();
+          }
+        }
+      });
+    }
+  });
+
+  /* ── Simple prev/next ────────────────────────────── */
+  document.querySelectorAll('[data-pagination="simple"]').forEach(function(container) {
+    container.addEventListener('click', function(e) {
+      var btn = e.target.closest('.sds-pagination__text-btn');
+      if (!btn || btn.disabled) return;
+
+      var total = parseInt(container.dataset.total);
+      var current = parseInt(container.dataset.current);
+      var isPrev = btn.textContent.trim().indexOf('Previous') >= 0;
+      var newPage = isPrev ? current - 1 : current + 1;
+
+      if (newPage < 1 || newPage > total) return;
+
+      container.dataset.current = newPage;
+      var buttons = container.querySelectorAll('.sds-pagination__text-btn');
+      var label = container.querySelector('.sds-pagination__current');
+
+      // Update label
+      label.textContent = 'Page ' + newPage + ' of ' + total;
+
+      // Update disabled states
+      buttons[0].disabled = (newPage === 1);
+      buttons[1].disabled = (newPage === total);
+    });
+  });
+
+  /* ── Compact prev/next ───────────────────────────── */
+  document.querySelectorAll('[data-pagination="compact"]').forEach(function(container) {
+    container.addEventListener('click', function(e) {
+      var btn = e.target.closest('.sds-pagination__arrow');
+      if (!btn || btn.disabled) return;
+
+      var total = parseInt(container.dataset.total);
+      var current = parseInt(container.dataset.current);
+      var label = btn.getAttribute('aria-label');
+      var newPage = label.indexOf('Previous') >= 0 ? current - 1 : current + 1;
+
+      if (newPage < 1 || newPage > total) return;
+
+      container.dataset.current = newPage;
+      var arrows = container.querySelectorAll('.sds-pagination__arrow');
+      var text = container.querySelector('.sds-pagination__current');
+
+      text.textContent = 'Page ' + newPage + ' of ' + total;
+      arrows[0].disabled = (newPage === 1);
+      arrows[0].setAttribute('aria-disabled', newPage === 1 ? 'true' : 'false');
+      arrows[1].disabled = (newPage === total);
+      arrows[1].setAttribute('aria-disabled', newPage === total ? 'true' : 'false');
+    });
+  });
+
+  /* ── Load more ───────────────────────────────────── */
+  document.querySelectorAll('[data-pagination="loadmore"]').forEach(function(container) {
+    var btn = container.querySelector('.sds-pagination-load-more__btn');
+    var countEl = container.querySelector('.sds-pagination-load-more__count');
+
+    if (btn) {
+      btn.addEventListener('click', function() {
+        var totalItems = parseInt(container.dataset.totalItems);
+        var loaded = parseInt(container.dataset.loaded);
+        var pageSize = parseInt(container.dataset.pageSize);
+        var newLoaded = Math.min(loaded + pageSize, totalItems);
+
+        container.dataset.loaded = newLoaded;
+        countEl.textContent = 'Showing ' + newLoaded + ' of ' + totalItems + ' results';
+
+        if (newLoaded >= totalItems) {
+          btn.textContent = 'All results loaded';
+          btn.disabled = true;
+        }
+      });
+    }
+  });
+
+})();
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

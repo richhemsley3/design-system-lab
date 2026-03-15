@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Donut Chart</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../shared/chart.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+</head>
+<body>
+
+  <h1>Donut Chart</h1>
+  <p class="page-subtitle">Proportional data shown as ring segments. Supports standard donut, semi-donut gauge, and sparkline variants.</p>
+
+  <!-- ============================================================
+       CHART COLOR PALETTE
+       ============================================================ -->
+  <h2>Chart Color Palette</h2>
+  <p>Eight sequential colors used across all data visualization charts. Each color maintains a minimum 3:1 contrast ratio against white backgrounds.</p>
+
+  <div class="color-strip">
+    <div class="color-strip-item" style="background: var(--sds-chart-1);"><span class="color-strip-label">1</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-2);"><span class="color-strip-label">2</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-3);"><span class="color-strip-label">3</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-4);"><span class="color-strip-label">4</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-5);"><span class="color-strip-label">5</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-6);"><span class="color-strip-label">6</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-7);"><span class="color-strip-label">7</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-8);"><span class="color-strip-label">8</span></div>
+  </div>
+
+  <!-- ============================================================
+       STANDARD DONUT CHART
+       ============================================================ -->
+  <h2>Standard Donut Chart</h2>
+  <p>Circular chart with a hollow center, used for showing part-to-whole relationships. The inner radius is approximately 60% of the outer radius. A center label displays the total or key metric.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">4-segment donut</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Portfolio Distribution</span>
+        <span class="sds-chart-subtitle">Total allocation</span>
+      </div>
+      <div class="chart-donut-wrapper">
+        <!--
+          SVG Donut using stroke-dasharray / stroke-dashoffset technique.
+          Circle: r=70, circumference = 2 * π * 70 ≈ 439.82
+          Segments (percentages → dash lengths):
+            Equities:     40% → 175.93
+            Fixed Income: 30% → 131.95
+            Real Estate:  20% →  87.96
+            Cash:         10% →  43.98
+          stroke-dashoffset rotates each segment to start after the previous one.
+          Initial rotation: -90° (start at 12 o'clock).
+        -->
+        <svg class="chart-area" viewBox="0 0 280 280" width="280" height="280" role="img" aria-label="Donut chart showing portfolio distribution: Equities 40%, Fixed Income 30%, Real Estate 20%, Cash 10%">
+          <!-- Segment 1: Equities — 40% (dash=175.93, offset=0) -->
+          <circle class="chart-donut-segment" cx="140" cy="140" r="70"
+                  stroke="var(--sds-chart-1)" stroke-width="30"
+                  stroke-dasharray="175.93 263.89"
+                  stroke-dashoffset="0"
+                  transform="rotate(-90 140 140)" />
+          <!-- Segment 2: Fixed Income — 30% (dash=131.95, offset after seg1 = -(175.93)) -->
+          <circle class="chart-donut-segment" cx="140" cy="140" r="70"
+                  stroke="var(--sds-chart-2)" stroke-width="30"
+                  stroke-dasharray="131.95 307.87"
+                  stroke-dashoffset="-175.93"
+                  transform="rotate(-90 140 140)" />
+          <!-- Segment 3: Real Estate — 20% (dash=87.96, offset after seg1+2 = -(307.88)) -->
+          <circle class="chart-donut-segment" cx="140" cy="140" r="70"
+                  stroke="var(--sds-chart-3)" stroke-width="30"
+                  stroke-dasharray="87.96 351.86"
+                  stroke-dashoffset="-307.88"
+                  transform="rotate(-90 140 140)" />
+          <!-- Segment 4: Cash — 10% (dash=43.98, offset after seg1+2+3 = -(395.84)) -->
+          <circle class="chart-donut-segment" cx="140" cy="140" r="70"
+                  stroke="var(--sds-chart-4)" stroke-width="30"
+                  stroke-dasharray="43.98 395.84"
+                  stroke-dashoffset="-395.84"
+                  transform="rotate(-90 140 140)" />
+          <!-- Center label -->
+          <text class="chart-donut-center" x="140" y="134" text-anchor="middle" font-size="24">$1.2M</text>
+          <text class="chart-donut-label" x="140" y="154" text-anchor="middle">Total Value</text>
+        </svg>
+      </div>
+      <div class="sds-legend" style="margin-top: var(--sds-space-500); margin-bottom: 0; justify-content:center;">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Equities 40%</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-2)"></span> Fixed Income 30%</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-3)"></span> Real Estate 20%</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-4)"></span> Cash 10%</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SEMI-DONUT CHART
+       ============================================================ -->
+  <h2>Semi-Donut Chart</h2>
+  <p>A half-circle gauge visualization used for progress or goal tracking. Only the top 180° arc is rendered, with a center label showing the current value.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Half-circle gauge</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Goal Progress</span>
+        <span class="sds-chart-subtitle">Q1 revenue target</span>
+      </div>
+      <div class="chart-donut-wrapper">
+        <!--
+          Semi-donut: only the top half (180°) of the circle is used.
+          Half circumference = π * 70 ≈ 219.91
+          Progress: 73% of 219.91 ≈ 160.53
+          Remaining: 27% of 219.91 ≈ 59.38
+          The SVG is clipped to show only the top half via viewBox.
+        -->
+        <svg class="chart-area" viewBox="0 0 280 160" width="280" height="160" role="img" aria-label="Semi-donut gauge showing 73% goal progress toward Q1 revenue target">
+          <!-- Background track — full half circle -->
+          <circle cx="140" cy="140" r="70"
+                  fill="none"
+                  stroke="var(--sds-color-warm-gray-100)" stroke-width="30"
+                  stroke-dasharray="219.91 219.91"
+                  stroke-dashoffset="0"
+                  transform="rotate(180 140 140)" />
+          <!-- Filled progress — 73% of half circle -->
+          <circle class="chart-donut-segment" cx="140" cy="140" r="70"
+                  fill="none"
+                  stroke="var(--sds-chart-1)" stroke-width="30"
+                  stroke-dasharray="160.53 279.29"
+                  stroke-dashoffset="0"
+                  transform="rotate(180 140 140)" />
+          <!-- Center label -->
+          <text class="chart-donut-center" x="140" y="130" text-anchor="middle" font-size="28">73%</text>
+          <text class="chart-donut-label" x="140" y="150" text-anchor="middle">of target</text>
+          <!-- Min / Max labels -->
+          <text class="chart-donut-label" x="55" y="155" text-anchor="middle">0%</text>
+          <text class="chart-donut-label" x="225" y="155" text-anchor="middle">100%</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SMALL DONUT / SPARKLINE
+       ============================================================ -->
+  <h2>Small Donut / Sparkline</h2>
+  <p>Compact donut charts (100px) for dashboard widgets and summary cards. Each uses two segments: a filled portion and a remaining track in warm-gray-100.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Dashboard sparklines</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Key Metrics</span>
+        <span class="sds-chart-subtitle">Current period</span>
+      </div>
+      <div class="chart-sparkline-row">
+        <!--
+          Small donuts: r=35, circumference = 2 * π * 35 ≈ 219.91
+          stroke-width=15, inner radius ≈ 60% of outer.
+        -->
+
+        <!-- Sparkline 1: Uptime 99.2% -->
+        <div class="chart-sparkline-item">
+          <svg viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Uptime at 99.2%">
+            <!-- Background track -->
+            <circle cx="50" cy="50" r="35" fill="none"
+                    stroke="var(--sds-color-warm-gray-100)" stroke-width="15" />
+            <!-- Filled: 99.2% of 219.91 ≈ 218.15 -->
+            <circle class="chart-donut-segment" cx="50" cy="50" r="35" fill="none"
+                    stroke="var(--sds-chart-1)" stroke-width="15"
+                    stroke-dasharray="218.15 1.76"
+                    transform="rotate(-90 50 50)" />
+            <text class="chart-donut-center" x="50" y="53" text-anchor="middle" font-size="14">99.2%</text>
+          </svg>
+          <span class="chart-sparkline-label">Uptime</span>
+        </div>
+
+        <!-- Sparkline 2: Compliance 84% -->
+        <div class="chart-sparkline-item">
+          <svg viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Compliance at 84%">
+            <circle cx="50" cy="50" r="35" fill="none"
+                    stroke="var(--sds-color-warm-gray-100)" stroke-width="15" />
+            <!-- Filled: 84% of 219.91 ≈ 184.72 -->
+            <circle class="chart-donut-segment" cx="50" cy="50" r="35" fill="none"
+                    stroke="var(--sds-chart-2)" stroke-width="15"
+                    stroke-dasharray="184.72 35.19"
+                    transform="rotate(-90 50 50)" />
+            <text class="chart-donut-center" x="50" y="53" text-anchor="middle" font-size="14">84%</text>
+          </svg>
+          <span class="chart-sparkline-label">Compliance</span>
+        </div>
+
+        <!-- Sparkline 3: Coverage 67% -->
+        <div class="chart-sparkline-item">
+          <svg viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="Coverage at 67%">
+            <circle cx="50" cy="50" r="35" fill="none"
+                    stroke="var(--sds-color-warm-gray-100)" stroke-width="15" />
+            <!-- Filled: 67% of 219.91 ≈ 147.34 -->
+            <circle class="chart-donut-segment" cx="50" cy="50" r="35" fill="none"
+                    stroke="var(--sds-chart-4)" stroke-width="15"
+                    stroke-dasharray="147.34 72.57"
+                    transform="rotate(-90 50 50)" />
+            <text class="chart-donut-center" x="50" y="53" text-anchor="middle" font-size="14">67%</text>
+          </svg>
+          <span class="chart-sparkline-label">Coverage</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CHART ANATOMY
+       ============================================================ -->
+  <h2>Chart Anatomy</h2>
+  <p>Standard structural elements used for donut chart variants in the design system.</p>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Token / Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>--sds-chart-bg</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White</td>
+      </tr>
+      <tr>
+        <td>Outer radius</td>
+        <td>SVG <code>r</code> + <code>stroke-width/2</code></td>
+        <td>85 (70 + 15) — full size</td>
+      </tr>
+      <tr>
+        <td>Inner radius</td>
+        <td>SVG <code>r</code> − <code>stroke-width/2</code></td>
+        <td>55 (70 − 15) — ~60% of outer</td>
+      </tr>
+      <tr>
+        <td>Stroke width</td>
+        <td><code>stroke-width</code></td>
+        <td>30 (standard), 15 (sparkline)</td>
+      </tr>
+      <tr>
+        <td>Segment gap</td>
+        <td>—</td>
+        <td>None (segments abut)</td>
+      </tr>
+      <tr>
+        <td>Center text — value</td>
+        <td><code>.chart-donut-center</code></td>
+        <td>24px/700 (standard), 14px/700 (sparkline)</td>
+      </tr>
+      <tr>
+        <td>Center text — label</td>
+        <td><code>.chart-donut-label</code></td>
+        <td>12px · text-secondary</td>
+      </tr>
+      <tr>
+        <td>Track (unfilled)</td>
+        <td><code>--sds-color-warm-gray-100</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span> warm-gray-100</td>
+      </tr>
+      <tr>
+        <td>Hover state</td>
+        <td><code>opacity</code></td>
+        <td>0.8 on segment hover</td>
+      </tr>
+      <tr>
+        <td>Container radius</td>
+        <td>—</td>
+        <td>12px</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td>—</td>
+        <td>24px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       SERIES COLORS
+       ============================================================ -->
+  <h3>Series Color Tokens</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Token</th><th>Color</th><th>Hex</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--sds-chart-1</code></td><td><span class="swatch" style="background:var(--sds-chart-1)"></span></td><td>#013D5B</td><td>Primary segment / single-metric donuts</td></tr>
+      <tr><td><code>--sds-chart-2</code></td><td><span class="swatch" style="background:var(--sds-chart-2)"></span></td><td>#4F8AA0</td><td>Second segment</td></tr>
+      <tr><td><code>--sds-chart-3</code></td><td><span class="swatch" style="background:var(--sds-chart-3)"></span></td><td>#A6CBD6</td><td>Third segment</td></tr>
+      <tr><td><code>--sds-chart-4</code></td><td><span class="swatch" style="background:var(--sds-chart-4)"></span></td><td>#BF5547</td><td>Fourth segment / accent</td></tr>
+      <tr><td><code>--sds-chart-5</code></td><td><span class="swatch" style="background:var(--sds-chart-5)"></span></td><td>#7A9A01</td><td>Fifth segment</td></tr>
+      <tr><td><code>--sds-chart-6</code></td><td><span class="swatch" style="background:var(--sds-chart-6)"></span></td><td>#805AA1</td><td>Sixth segment</td></tr>
+      <tr><td><code>--sds-chart-7</code></td><td><span class="swatch" style="background:var(--sds-chart-7)"></span></td><td>#B29B24</td><td>Seventh segment</td></tr>
+      <tr><td><code>--sds-chart-8</code></td><td><span class="swatch" style="background:var(--sds-chart-8)"></span></td><td>#E57D6E</td><td>Eighth segment</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       CSS CLASSES
+       ============================================================ -->
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-chart</code></td><td>Container — white bg, border, 12px radius, 24px padding</td></tr>
+      <tr><td><code>.sds-chart-header</code></td><td>Flex row with title and subtitle</td></tr>
+      <tr><td><code>.sds-chart-title</code></td><td>Chart heading — 16px/600</td></tr>
+      <tr><td><code>.sds-chart-subtitle</code></td><td>Secondary text — 13px</td></tr>
+      <tr><td><code>.sds-legend</code></td><td>Horizontal legend container</td></tr>
+      <tr><td><code>.sds-legend-item</code></td><td>Legend entry — swatch + label</td></tr>
+      <tr><td><code>.sds-legend-swatch</code></td><td>10x10px color indicator</td></tr>
+      <tr><td><code>.chart-donut-segment</code></td><td>SVG circle segment — fill:none, stroke-based arc with hover opacity transition</td></tr>
+      <tr><td><code>.chart-donut-center</code></td><td>Center value text — bold, primary color</td></tr>
+      <tr><td><code>.chart-donut-label</code></td><td>Center descriptive text or axis label — 12px, secondary color</td></tr>
+      <tr><td><code>.chart-donut-wrapper</code></td><td>Flex column centering the SVG within the chart container</td></tr>
+    </tbody>
+  </table>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

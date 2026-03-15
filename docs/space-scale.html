@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Lab — Space Scale</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sds-font-sans);
+    background: #FFFFFF;
+    color: var(--sds-text-primary);
+    padding: var(--sds-space-1200) var(--sds-space-1000);
+    line-height: var(--sds-leading-normal);
+  }
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin-bottom: var(--sds-space-200); }
+  .subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin-bottom: var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+  .desc { font-size: var(--sds-type-body); color: var(--sds-text-secondary); margin-bottom: var(--sds-space-400); }
+
+  /* Visual scale */
+  .scale-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-200);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .scale-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-400);
+  }
+  .scale-label {
+    width: 140px;
+    flex-shrink: 0;
+    font-size: var(--sds-type-label);
+    font-family: var(--sds-font-mono);
+    color: var(--sds-text-secondary);
+  }
+  .scale-bar-track {
+    flex: 1;
+    position: relative;
+    height: 24px;
+    display: flex;
+    align-items: center;
+  }
+  .scale-bar {
+    height: 16px;
+    background: var(--sds-interactive-primary);
+    border-radius: 4px;
+    min-width: 2px;
+    opacity: 0.85;
+    transition: opacity 0.12s;
+  }
+  .scale-item:hover .scale-bar { opacity: 1; }
+  .scale-value {
+    width: 48px;
+    flex-shrink: 0;
+    text-align: right;
+    font-size: var(--sds-type-label);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+  }
+
+  /* Usage guidelines */
+  .usage-note {
+    background: var(--sds-status-info-bg);
+    border: 1px solid var(--sds-color-blue-150);
+    border-radius: 8px;
+    padding: var(--sds-space-400) var(--sds-space-500);
+    margin: var(--sds-space-400) 0 var(--sds-space-600);
+    font-size: var(--sds-type-label);
+    color: var(--sds-text-primary);
+    line-height: var(--sds-leading-relaxed);
+  }
+  .usage-note strong { color: var(--sds-text-primary); }
+  .usage-note ul {
+    margin: var(--sds-space-200) 0 0 var(--sds-space-500);
+    padding: 0;
+  }
+  .usage-note li { margin-bottom: var(--sds-space-100); }
+
+  /* Spec table */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sds-type-label);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .spec-table th {
+    text-align: left;
+    padding: var(--sds-space-250) var(--sds-space-400);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-secondary);
+    background: var(--sds-bg-subtle);
+    border-bottom: 1px solid var(--sds-border-default);
+  }
+  .spec-table td {
+    padding: var(--sds-space-250) var(--sds-space-400);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    color: var(--sds-text-primary);
+  }
+  .spec-table code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    background: var(--sds-bg-subtle);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+  }
+
+  .section-divider { border: none; border-top: 1px solid var(--sds-border-default); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+</style>
+</head>
+<body>
+
+<h1>Space Scale</h1>
+<p class="subtitle">Pixel-based spacing tokens for consistent padding, margin, and gap values across the design system.</p>
+
+<!-- ============ VISUAL SCALE ============ -->
+<h2>Visual Scale</h2>
+<p class="desc">Each token maps to a fixed pixel value. Bars below show relative size.</p>
+
+<div class="scale-list">
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-0</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 0px;"></div></div>
+    <span class="scale-value">0px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-050</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 2px;"></div></div>
+    <span class="scale-value">2px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-100</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 4px;"></div></div>
+    <span class="scale-value">4px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-150</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 6px;"></div></div>
+    <span class="scale-value">6px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-200</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 24px;"></div></div>
+    <span class="scale-value">8px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-250</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 30px;"></div></div>
+    <span class="scale-value">10px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-300</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 36px;"></div></div>
+    <span class="scale-value">12px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-400</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 56px;"></div></div>
+    <span class="scale-value">16px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-500</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 72px;"></div></div>
+    <span class="scale-value">20px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-600</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 88px;"></div></div>
+    <span class="scale-value">24px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-800</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 128px;"></div></div>
+    <span class="scale-value">32px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-1000</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 168px;"></div></div>
+    <span class="scale-value">40px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-1200</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 208px;"></div></div>
+    <span class="scale-value">48px</span>
+  </div>
+  <div class="scale-item">
+    <span class="scale-label">--sds-space-1600</span>
+    <div class="scale-bar-track"><div class="scale-bar" style="width: 280px;"></div></div>
+    <span class="scale-value">64px</span>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ USAGE GUIDELINES ============ -->
+<h2>Usage Guidelines</h2>
+<div class="usage-note">
+  <strong>Base unit: 8px</strong> — The scale is anchored around multiples of 8px for larger values and 4px for fine control. Common mappings:
+  <ul>
+    <li><strong>Inline spacing</strong> (icon-to-label gaps): <code>--sds-space-150</code> (6px) or <code>--sds-space-200</code> (8px)</li>
+    <li><strong>Component padding</strong>: <code>--sds-space-200</code> (8px) to <code>--sds-space-400</code> (16px)</li>
+    <li><strong>Section gaps</strong>: <code>--sds-space-600</code> (24px) to <code>--sds-space-800</code> (32px)</li>
+    <li><strong>Page-level margins</strong>: <code>--sds-space-1000</code> (40px) to <code>--sds-space-1200</code> (48px)</li>
+  </ul>
+</div>
+<p class="desc">Do <strong>not</strong> tokenize: font sizes, border widths, border-radius, element dimensions (button heights, icon sizes), or values that don't align with the scale.</p>
+
+<hr class="section-divider">
+
+<!-- ============ TOKEN REFERENCE ============ -->
+<h2>Token Reference</h2>
+<p class="desc">All available space tokens with pixel values and typical usage.</p>
+
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Token</th>
+      <th>Value</th>
+      <th>Typical Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--sds-space-0</code></td><td>0px</td><td>Reset spacing</td></tr>
+    <tr><td><code>--sds-space-050</code></td><td>2px</td><td>Hairline padding, code badge inset</td></tr>
+    <tr><td><code>--sds-space-100</code></td><td>4px</td><td>Tight inline padding, tag vertical padding</td></tr>
+    <tr><td><code>--sds-space-150</code></td><td>6px</td><td>Small gaps, swatch info padding</td></tr>
+    <tr><td><code>--sds-space-200</code></td><td>8px</td><td>Icon-to-label gaps, compact component padding</td></tr>
+    <tr><td><code>--sds-space-250</code></td><td>10px</td><td>Nav link gaps, semantic card padding</td></tr>
+    <tr><td><code>--sds-space-300</code></td><td>12px</td><td>Nav sidebar horizontal padding, grid gaps</td></tr>
+    <tr><td><code>--sds-space-400</code></td><td>16px</td><td>Standard component padding, card body, grid gaps</td></tr>
+    <tr><td><code>--sds-space-500</code></td><td>20px</td><td>Chart header margins, nav top padding</td></tr>
+    <tr><td><code>--sds-space-600</code></td><td>24px</td><td>Chart container padding, section spacing</td></tr>
+    <tr><td><code>--sds-space-800</code></td><td>32px</td><td>Demo block padding, section margins</td></tr>
+    <tr><td><code>--sds-space-1000</code></td><td>40px</td><td>Page horizontal padding, heading top margins</td></tr>
+    <tr><td><code>--sds-space-1200</code></td><td>48px</td><td>Page top padding, subtitle bottom margin</td></tr>
+    <tr><td><code>--sds-space-1600</code></td><td>64px</td><td>Large page vertical padding, footer top margin</td></tr>
+  </tbody>
+</table>
+
+<script src="/shared/nav.js"></script>
+</body>
+</html>

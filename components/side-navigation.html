@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software DS — Side Navigation</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    margin: 0;
+    font-family: var(--sds-font-sans);
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    -webkit-font-smoothing: antialiased;
+    line-height: var(--sds-leading-normal);
+  }
+
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+  .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+  h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-150); color: var(--sds-text-primary); }
+  p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+  code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+  .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+  /* ===== DEMO SHELLS ===== */
+  .demo-row {
+    display: flex;
+    gap: var(--sds-space-1200);
+    flex-wrap: wrap;
+    margin-bottom: var(--sds-space-800);
+  }
+  .demo-block {
+    background: var(--sds-color-warm-gray-025);
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    min-height: 540px;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .demo-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400);
+    text-transform: uppercase;
+    letter-spacing: var(--sds-tracking-wide);
+    margin: 0 0 var(--sds-space-400);
+  }
+
+  /* Mock content area */
+  .mock-content {
+    flex: 1;
+    padding: var(--sds-space-600);
+    background: var(--sds-bg-page);
+    min-width: 320px;
+  }
+  .mock-content .breadcrumb {
+    font-size: var(--sds-type-label);
+    color: var(--sds-interactive-primary);
+    margin-bottom: var(--sds-space-100);
+  }
+  .mock-content .breadcrumb .dot { color: var(--sds-color-warm-gray-300); margin: 0 var(--sds-space-100); }
+  .mock-content .page-title {
+    font-size: var(--sds-type-heading);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+    margin-bottom: var(--sds-space-400);
+  }
+  .sds-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    position: relative;
+  }
+  .sds-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sds-space-200);
+    padding: var(--sds-space-300) var(--sds-space-400);
+    font-family: inherit;
+    font-size: var(--sds-type-body);
+    font-weight: var(--sds-weight-regular);
+    line-height: 1.3;
+    color: var(--sds-color-warm-gray-550);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .sds-tab:hover {
+    color: var(--sds-color-warm-gray-900);
+  }
+  .sds-tab.is-active {
+    color: var(--sds-color-warm-gray-900);
+    font-weight: var(--sds-weight-medium);
+    border-bottom-color: var(--sds-color-blue-750);
+  }
+  .sds-tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 20px;
+    height: 20px;
+    padding: 0 var(--sds-space-150);
+    font-size: var(--sds-type-caption);
+    font-weight: var(--sds-weight-medium);
+    line-height: 1;
+    border-radius: 10px;
+    background: var(--sds-color-warm-gray-100);
+    color: var(--sds-color-warm-gray-650);
+  }
+  .sds-tab.is-active .sds-tab-badge {
+    background: var(--sds-color-blue-100);
+    color: var(--sds-color-blue-750);
+  }
+
+  /* ===== EXPANDED SIDE NAVIGATION ===== */
+  .sds-sidenav {
+    width: 220px;
+    min-width: 220px;
+    background: var(--sds-nav-sidebar-bg);
+    border-right: 1px solid var(--sds-border-default);
+    display: flex;
+    flex-direction: column;
+    padding: var(--sds-space-400) var(--sds-space-300);
+    user-select: none;
+    overflow: hidden;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                min-width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sds-sidenav.is-collapsed {
+    width: 56px;
+    min-width: 56px;
+    padding: var(--sds-space-400) var(--sds-space-200);
+    align-items: center;
+  }
+  .sds-sidenav.is-collapsed .sds-sidenav-item {
+    justify-content: center;
+    padding: var(--sds-space-200) var(--sds-space-300);
+    gap: 0;
+  }
+  .sds-sidenav.is-collapsed .sds-sidenav-item-label {
+    width: 0;
+    opacity: 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .sds-sidenav.is-collapsed .sds-sidenav-group-label {
+    font-size: 0;
+    color: transparent;
+    padding: var(--sds-space-500) var(--sds-space-150) var(--sds-space-150);
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sds-sidenav.is-collapsed .sds-sidenav-group-label::after {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 1px;
+    background: var(--sds-border-default);
+  }
+  .sds-sidenav.is-collapsed .sds-sidenav-collapse {
+    justify-content: center;
+  }
+  .sds-sidenav.is-collapsed .sds-sidenav-collapse .material-symbols-outlined {
+    transform: rotate(180deg);
+  }
+
+  /* Animated label text */
+  .sds-sidenav-item-label {
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    opacity: 1;
+  }
+
+  /* Nav group headers */
+  .sds-sidenav-group-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: var(--sds-space-500) var(--sds-space-300) var(--sds-space-150);
+    height: 38px;
+    line-height: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+    box-sizing: border-box;
+    transition: font-size 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                color 0.2s cubic-bezier(0.4, 0, 0.2, 1),
+                padding 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sds-sidenav-group-label::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 1px;
+    background: var(--sds-border-default);
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sds-sidenav-group-label:first-child {
+    padding-top: var(--sds-space-200);
+  }
+
+  /* Nav items */
+  .sds-sidenav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-250);
+    padding: var(--sds-space-200) var(--sds-space-300);
+    border-radius: 8px;
+    font-size: var(--sds-type-body);
+    font-weight: var(--sds-weight-regular);
+    color: var(--sds-color-warm-gray-700);
+    cursor: pointer;
+    text-decoration: none;
+    position: relative;
+    line-height: 1.3;
+    margin: var(--sds-space-050) 0;
+    transition: background 0.12s ease,
+                color 0.12s ease,
+                padding 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                gap 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .sds-sidenav-item:hover {
+    background: var(--sds-bg-subtle);
+    color: var(--sds-text-primary);
+  }
+  .sds-sidenav-item.active {
+    background: var(--sds-nav-item-active-bg);
+    color: var(--sds-nav-item-active-text);
+    font-weight: var(--sds-weight-medium);
+  }
+  .sds-sidenav-item.active:hover {
+    background: var(--sds-color-blue-150);
+    color: var(--sds-nav-item-active-text);
+  }
+  .sds-sidenav-item.active .sds-sidenav-icon .material-symbols-outlined {
+    color: var(--sds-nav-item-active-text);
+  }
+
+  /* Nav icons */
+  .sds-sidenav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .sds-sidenav-icon .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--sds-text-tertiary);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    transition: color 0.12s;
+  }
+  .sds-sidenav-item:hover .sds-sidenav-icon .material-symbols-outlined {
+    color: var(--sds-color-warm-gray-700);
+  }
+  .sds-sidenav-item.active .sds-sidenav-icon .material-symbols-outlined {
+    color: var(--sds-nav-item-active-text);
+  }
+
+  /* Spacer pushes footer to bottom */
+  .sds-sidenav-spacer { flex: 1; }
+
+  /* Footer items */
+  .sds-sidenav-footer {
+    border-top: 1px solid var(--sds-border-default);
+    padding-top: var(--sds-space-200);
+    margin-top: var(--sds-space-200);
+  }
+
+  /* Collapse toggle */
+  .sds-sidenav-collapse {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: var(--sds-space-200) var(--sds-space-300);
+    cursor: pointer;
+    color: var(--sds-color-warm-gray-400);
+    transition: color 0.12s;
+  }
+  .sds-sidenav-collapse:hover { color: var(--sds-color-warm-gray-700); }
+  .sds-sidenav-collapse .material-symbols-outlined {
+    font-size: 18px;
+    color: currentColor;
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ===== COLLAPSED SIDE NAVIGATION ===== */
+  .sds-sidenav-collapsed {
+    width: 56px;
+    min-width: 56px;
+    background: var(--sds-nav-sidebar-bg);
+    border-right: 1px solid var(--sds-border-default);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: var(--sds-space-400) 0;
+    user-select: none;
+  }
+
+  .sds-sidenav-collapsed .sds-sidenav-icon-item {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.12s ease;
+    margin: var(--sds-space-050) 0;
+    position: relative;
+  }
+  .sds-sidenav-collapsed .sds-sidenav-icon-item:hover {
+    background: var(--sds-bg-subtle);
+  }
+  .sds-sidenav-collapsed .sds-sidenav-icon-item.active {
+    background: var(--sds-nav-item-active-bg);
+  }
+  .sds-sidenav-collapsed .sds-sidenav-icon-item .material-symbols-outlined {
+    font-size: 20px;
+    color: var(--sds-text-tertiary);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    transition: color 0.12s;
+  }
+  .sds-sidenav-collapsed .sds-sidenav-icon-item:hover .material-symbols-outlined {
+    color: var(--sds-color-warm-gray-700);
+  }
+  .sds-sidenav-collapsed .sds-sidenav-icon-item.active .material-symbols-outlined {
+    color: var(--sds-nav-item-active-text);
+  }
+
+  /* Tooltip for collapsed items */
+  .sds-sidenav-collapsed .sds-sidenav-icon-item .tooltip {
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--sds-color-warm-gray-900);
+    color: var(--sds-color-white);
+    font-size: var(--sds-type-caption);
+    font-weight: var(--sds-weight-medium);
+    padding: var(--sds-space-100) var(--sds-space-250);
+    border-radius: 6px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s;
+    z-index: 100;
+  }
+  .sds-sidenav-collapsed .sds-sidenav-icon-item:hover .tooltip {
+    opacity: 1;
+  }
+
+  .sds-sidenav-collapsed .icon-divider {
+    width: 24px;
+    height: 1px;
+    background: var(--sds-border-default);
+    margin: var(--sds-space-200) 0;
+  }
+
+  .sds-sidenav-collapsed .sds-sidenav-expand {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--sds-color-warm-gray-400);
+    transition: all 0.12s;
+    margin-top: auto;
+  }
+  .sds-sidenav-collapsed .sds-sidenav-expand:hover {
+    background: var(--sds-bg-subtle);
+    color: var(--sds-color-warm-gray-700);
+  }
+  .sds-sidenav-collapsed .sds-sidenav-expand .material-symbols-outlined {
+    font-size: 18px;
+    color: currentColor;
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+  }
+
+  /* ===== SPEC TABLE ===== */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sds-type-label);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .spec-table th {
+    text-align: left;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-650);
+    padding: var(--sds-space-250) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-025);
+    border-bottom: 1px solid var(--sds-color-warm-gray-150);
+  }
+  .spec-table td {
+    padding: var(--sds-space-250) var(--sds-space-400);
+    border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    color: var(--sds-color-warm-gray-700);
+    vertical-align: top;
+  }
+  .spec-table td:first-child { font-weight: var(--sds-weight-medium); color: var(--sds-text-primary); }
+  .spec-table code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    background: var(--sds-color-warm-gray-050);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+    color: var(--sds-interactive-primary);
+  }
+
+  /* ===== STATE DEMO ===== */
+  .states-row {
+    display: flex;
+    gap: var(--sds-space-300);
+    flex-wrap: wrap;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .state-card {
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 8px;
+    background: var(--sds-bg-page);
+    overflow: hidden;
+    width: 220px;
+  }
+  .state-card-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: var(--sds-space-200) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-050);
+    color: var(--sds-color-warm-gray-550);
+  }
+  .state-card-body {
+    padding: var(--sds-space-300);
+  }
+</style>
+</head>
+<body>
+
+<h1>Side Navigation</h1>
+<p class="page-subtitle">Full-width sidebar with icon + text labels, grouped sections, and active state. Click the collapse/expand button at the bottom to toggle between expanded and collapsed views.</p>
+
+<!-- =========== INTERACTIVE DEMO =========== -->
+
+<div class="demo-label">Live component — <span id="demo-state-label">Expanded (220 px)</span></div>
+<div class="demo-block" id="interactive-demo">
+  <!-- Single animated sidebar -->
+  <nav class="sds-sidenav" id="sidenav" aria-label="Main navigation">
+    <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()">
+      <span class="sds-sidenav-icon">
+        <span class="material-symbols-outlined">dashboard</span>
+      </span>
+      <span class="sds-sidenav-item-label">Dashboard</span>
+    </a>
+
+    <div class="sds-sidenav-group-label">Workspace</div>
+    <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()">
+      <span class="sds-sidenav-icon">
+        <span class="material-symbols-outlined">folder_open</span>
+      </span>
+      <span class="sds-sidenav-item-label">Projects</span>
+    </a>
+    <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()">
+      <span class="sds-sidenav-icon">
+        <span class="material-symbols-outlined">description</span>
+      </span>
+      <span class="sds-sidenav-item-label">Activity</span>
+    </a>
+    <a class="sds-sidenav-item active" href="#" onclick="event.preventDefault()">
+      <span class="sds-sidenav-icon">
+        <span class="material-symbols-outlined">settings</span>
+      </span>
+      <span class="sds-sidenav-item-label">Settings</span>
+    </a>
+
+    <div class="sds-sidenav-group-label">Account</div>
+    <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()">
+      <span class="sds-sidenav-icon">
+        <span class="material-symbols-outlined">extension</span>
+      </span>
+      <span class="sds-sidenav-item-label">Integrations</span>
+    </a>
+    <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()">
+      <span class="sds-sidenav-icon">
+        <span class="material-symbols-outlined">group</span>
+      </span>
+      <span class="sds-sidenav-item-label">Team Members</span>
+    </a>
+    <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()">
+      <span class="sds-sidenav-icon">
+        <span class="material-symbols-outlined">tune</span>
+      </span>
+      <span class="sds-sidenav-item-label">Preferences</span>
+    </a>
+
+    <div class="sds-sidenav-spacer"></div>
+
+    <div class="sds-sidenav-footer">
+      <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()">
+        <span class="sds-sidenav-icon">
+          <span class="material-symbols-outlined">help</span>
+        </span>
+        <span class="sds-sidenav-item-label">Help & Docs</span>
+      </a>
+      <div class="sds-sidenav-collapse" id="btn-toggle">
+        <span class="material-symbols-outlined">keyboard_double_arrow_left</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mock content area -->
+  <div class="mock-content">
+    <div class="breadcrumb">Settings <span class="dot">·</span></div>
+    <div class="page-title">Project Details</div>
+    <div class="sds-tabs">
+      <button class="sds-tab">Overview</button>
+      <button class="sds-tab">Details <span class="sds-tab-badge">0</span></button>
+      <button class="sds-tab">Members <span class="sds-tab-badge">0</span></button>
+      <button class="sds-tab">Permissions <span class="sds-tab-badge">0</span></button>
+      <button class="sds-tab is-active">Activity <span class="sds-tab-badge">0</span></button>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ITEM STATES =========== -->
+<h2>Navigation Item States</h2>
+<p>All interactive states for a single navigation item.</p>
+
+<div class="states-row">
+  <!-- Default -->
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()" style="cursor: default;">
+        <span class="sds-sidenav-icon">
+          <span class="material-symbols-outlined">folder_open</span>
+        </span>
+        Projects
+      </a>
+    </div>
+  </div>
+
+  <!-- Hover -->
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()" style="background: var(--sds-color-warm-gray-050); color: var(--sds-color-warm-gray-900); cursor: default;">
+        <span class="sds-sidenav-icon">
+          <span class="material-symbols-outlined" style="color: var(--sds-color-warm-gray-700);">folder_open</span>
+        </span>
+        Projects
+      </a>
+    </div>
+  </div>
+
+  <!-- Active -->
+  <div class="state-card">
+    <div class="state-card-label">Active / Selected</div>
+    <div class="state-card-body">
+      <a class="sds-sidenav-item active" href="#" onclick="event.preventDefault()" style="cursor: default; background: var(--sds-color-blue-100); color: var(--sds-color-blue-750); font-weight: var(--sds-weight-medium);">
+        <span class="sds-sidenav-icon">
+          <span class="material-symbols-outlined" style="color: var(--sds-color-blue-750);">settings</span>
+        </span>
+        Settings
+      </a>
+    </div>
+  </div>
+
+  <!-- Active Hover -->
+  <div class="state-card">
+    <div class="state-card-label">Active + Hover</div>
+    <div class="state-card-body">
+      <a class="sds-sidenav-item" href="#" onclick="event.preventDefault()" style="background: var(--sds-color-blue-150); color: var(--sds-color-blue-750); font-weight: var(--sds-weight-medium); cursor: default;">
+        <span class="sds-sidenav-icon">
+          <span class="material-symbols-outlined" style="color: var(--sds-color-blue-750);">settings</span>
+        </span>
+        Settings
+      </a>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ANATOMY =========== -->
+<h2>Anatomy &amp; Specs</h2>
+<p>Dimensions, spacing, and token mappings for the side navigation component.</p>
+
+<h3>Expanded Sidebar</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Width</td><td>220px</td><td>—</td></tr>
+    <tr><td>Background</td><td>#FAF8F5</td><td><code>--sds-nav-sidebar-bg</code> (warm-gray-025)</td></tr>
+    <tr><td>Border right</td><td>1px solid</td><td><code>warm-gray-150</code> #E0DCD3</td></tr>
+    <tr><td>Padding</td><td>16px 12px</td><td>—</td></tr>
+    <tr><td>Item height</td><td>36px (auto)</td><td>—</td></tr>
+    <tr><td>Item padding</td><td>8px 12px</td><td>—</td></tr>
+    <tr><td>Item border-radius</td><td>8px</td><td>—</td></tr>
+    <tr><td>Item font</td><td>14px / 400</td><td>—</td></tr>
+    <tr><td>Item color (default)</td><td>#47443F</td><td><code>warm-gray-700</code></td></tr>
+    <tr><td>Item color (hover)</td><td>#1C1A17</td><td><code>warm-gray-900</code></td></tr>
+    <tr><td>Item bg (hover)</td><td>#F4F1EB</td><td><code>warm-gray-050</code></td></tr>
+    <tr><td>Item bg (active)</td><td>#D9EBED</td><td><code>--sds-nav-item-active-bg</code> (blue-100)</td></tr>
+    <tr><td>Item bg (active hover)</td><td>#C1DDE3</td><td><code>blue-150</code></td></tr>
+    <tr><td>Item color (active)</td><td>#013D5B</td><td><code>--sds-nav-item-active-text</code> (blue-750)</td></tr>
+    <tr><td>Icon size</td><td>18 × 18px</td><td>—</td></tr>
+    <tr><td>Icon–label gap</td><td>10px</td><td>—</td></tr>
+    <tr><td>Icon stroke (default)</td><td>#6B6760</td><td><code>warm-gray-550</code></td></tr>
+    <tr><td>Icon stroke (active)</td><td>#013D5B</td><td><code>blue-750</code></td></tr>
+    <tr><td>Group label font</td><td>11px / 600 / uppercase</td><td>—</td></tr>
+    <tr><td>Group label color</td><td>#948E85</td><td><code>warm-gray-400</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Collapsed Sidebar</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Width</td><td>56px</td><td>—</td></tr>
+    <tr><td>Icon hit area</td><td>40 × 40px</td><td>—</td></tr>
+    <tr><td>Icon size</td><td>20 × 20px</td><td>—</td></tr>
+    <tr><td>Border-radius</td><td>8px</td><td>—</td></tr>
+    <tr><td>Tooltip bg</td><td>#1C1A17</td><td><code>warm-gray-900</code></td></tr>
+    <tr><td>Tooltip font</td><td>12px / 500</td><td>—</td></tr>
+    <tr><td>Tooltip offset</td><td>8px from icon edge</td><td>—</td></tr>
+    <tr><td>Section divider</td><td>24px wide, 1px</td><td><code>warm-gray-150</code></td></tr>
+  </tbody>
+</table>
+
+<script>
+(function() {
+  const sidenav = document.getElementById('sidenav');
+  const btnToggle = document.getElementById('btn-toggle');
+  const label = document.getElementById('demo-state-label');
+  let isCollapsed = false;
+
+  btnToggle.addEventListener('click', function() {
+    isCollapsed = !isCollapsed;
+    sidenav.classList.toggle('is-collapsed', isCollapsed);
+    label.textContent = isCollapsed ? 'Collapsed (56 px)' : 'Expanded (220 px)';
+  });
+})();
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

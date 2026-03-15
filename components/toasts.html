@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Toasts</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-400);
+    }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ============================================================
+       INLINE ALERTS
+       Full-width banners with tinted background, colored border,
+       rounded icon badge, and optional dismiss.
+       Inspired by Figma: Toast Messages Notifications Component
+       ============================================================ */
+
+    .sds-alert {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    /* Icon badge — rounded square with colored fill + white symbol */
+    .sds-alert__icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sds-alert__icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-white);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-alert__content {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-alert__title {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+    .sds-alert__message {
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-label);
+    }
+
+    .sds-alert__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-150);
+      color: var(--sds-text-tertiary);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sds-alert__dismiss .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+    .sds-alert__dismiss:hover {
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-subtle);
+    }
+
+    /* ---- Semantic variants (using design system status tokens) ---- */
+    .sds-alert--success {
+      background: var(--sds-status-success-bg);
+      border-color: var(--sds-color-green-100);
+    }
+    .sds-alert--success .sds-alert__icon {
+      background: var(--sds-status-success-strong);
+    }
+
+    .sds-alert--warning {
+      background: var(--sds-status-warning-bg);
+      border-color: var(--sds-color-yellow-100);
+    }
+    .sds-alert--warning .sds-alert__icon {
+      background: var(--sds-status-warning-strong);
+    }
+
+    .sds-alert--error {
+      background: var(--sds-status-error-bg);
+      border-color: var(--sds-color-red-100);
+    }
+    .sds-alert--error .sds-alert__icon {
+      background: var(--sds-status-error-strong);
+    }
+
+    .sds-alert--info {
+      background: var(--sds-status-info-bg);
+      border-color: var(--sds-color-blue-100);
+    }
+    .sds-alert--info .sds-alert__icon {
+      background: var(--sds-status-info-text);
+    }
+
+    .sds-alert--neutral {
+      background: var(--sds-status-neutral-bg);
+      border-color: var(--sds-border-default);
+    }
+    .sds-alert--neutral .sds-alert__icon {
+      background: var(--sds-status-neutral-text);
+    }
+
+    /* ============================================================
+       FLOATING TOASTS
+       Fixed-position notifications that slide in from the right,
+       stack vertically, and auto-dismiss. Same visual treatment
+       as inline alerts but with shadow elevation.
+       ============================================================ */
+
+    .sds-toast-container {
+      position: fixed;
+      top: var(--sds-space-600);
+      right: var(--sds-space-600);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-300);
+      pointer-events: none;
+    }
+
+    .sds-toast {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      width: 380px;
+      padding: var(--sds-space-400);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: var(--sds-color-white);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      pointer-events: auto;
+      animation: sds-toast-slide-in 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+    .sds-toast.is-dismissing {
+      animation: sds-toast-fade-out 200ms ease forwards;
+    }
+
+    @keyframes sds-toast-slide-in {
+      from { opacity: 0; transform: translateX(100%); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+    @keyframes sds-toast-fade-out {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(40px); }
+    }
+
+    /* Toast icon badge */
+    .sds-toast__icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sds-toast__icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-white);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-toast__content {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-toast__title {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+    .sds-toast__message {
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-label);
+    }
+
+    .sds-toast__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-150);
+      color: var(--sds-text-tertiary);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sds-toast__dismiss .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+    .sds-toast__dismiss:hover {
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-subtle);
+    }
+
+    /* ---- Toast color accents (semantic tokens) ---- */
+    .sds-toast--success { border-color: var(--sds-color-green-100); }
+    .sds-toast--success .sds-toast__icon { background: var(--sds-status-success-strong); }
+
+    .sds-toast--warning { border-color: var(--sds-color-yellow-100); }
+    .sds-toast--warning .sds-toast__icon { background: var(--sds-status-warning-strong); }
+
+    .sds-toast--error { border-color: var(--sds-color-red-100); }
+    .sds-toast--error .sds-toast__icon { background: var(--sds-status-error-strong); }
+
+    .sds-toast--info { border-color: var(--sds-color-blue-100); }
+    .sds-toast--info .sds-toast__icon { background: var(--sds-status-info-text); }
+
+    .sds-toast--neutral { border-color: var(--sds-border-default); }
+    .sds-toast--neutral .sds-toast__icon { background: var(--sds-status-neutral-text); }
+
+    /* ---- Trigger buttons ---- */
+    .trigger-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sds-space-200);
+    }
+    .trigger-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-200) var(--sds-space-400);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease;
+    }
+    .trigger-btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .trigger-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .trigger-dot--success { background: var(--sds-status-success-strong); }
+    .trigger-dot--warning { background: var(--sds-status-warning-strong); }
+    .trigger-dot--error { background: var(--sds-status-error-strong); }
+    .trigger-dot--info { background: var(--sds-status-info-text); }
+    .trigger-dot--neutral { background: var(--sds-status-neutral-text); }
+
+    /* ---- Spec tables ---- */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+<h1>Toasts</h1>
+<p class="page-subtitle">Inline alert banners and floating toast notifications for communicating feedback, status changes, and system messages.</p>
+
+<!-- ============ INLINE ALERTS ============ -->
+<h2>Inline Alerts</h2>
+<p>Full-width banners that appear within the page flow. Use for persistent messages that require user attention, such as form validation, warnings, or confirmation feedback.</p>
+
+<div class="demo-block">
+  <div class="demo-label">All Variants</div>
+  <div class="demo-stack">
+    <div class="sds-alert sds-alert--error">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Error Occurred</div>
+        <div class="sds-alert__message">Sorry, please try again later.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--success">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">check</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Message Sent</div>
+        <div class="sds-alert__message">Your message has been sent. We'll get back to you soon.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--info">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Attention</div>
+        <div class="sds-alert__message">Our website will be undergoing scheduled maintenance tonight from 10 PM to 2 AM.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--warning">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__message">Your subscription is about to expire in <strong>3 days</strong>. Renew now to avoid any service interruptions.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--neutral">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">remove</span></span>
+      <span class="sds-alert__content">No changes have been made yet.</span>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="demo-block">
+  <div class="demo-label">With Title &amp; Description</div>
+  <div class="demo-stack">
+    <div class="sds-alert sds-alert--success">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">check</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Policy published</div>
+        <div class="sds-alert__message">The data access policy has been published and is now active across all environments.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--error">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Connection failed</div>
+        <div class="sds-alert__message">Unable to reach the database server. Check your network settings and try again.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--warning">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Approaching limit</div>
+        <div class="sds-alert__message">You have used 85% of your storage quota. Consider archiving older datasets.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+  </div>
+</div>
+
+<div class="demo-block">
+  <div class="demo-label">Dismissible</div>
+  <div class="demo-stack" id="dismissible-demos">
+    <div class="sds-alert sds-alert--info">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
+      <span class="sds-alert__content">Tip: You can drag columns to reorder the table layout.</span>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--success">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">check</span></span>
+      <div class="sds-alert__content">
+        <div class="sds-alert__title">Import complete</div>
+        <div class="sds-alert__message">2,450 records imported successfully with no errors.</div>
+      </div>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="sds-alert sds-alert--neutral">
+      <span class="sds-alert__icon"><span class="material-symbols-outlined">remove</span></span>
+      <span class="sds-alert__content">This feature is in beta. Your feedback is welcome.</span>
+      <button class="sds-alert__dismiss" onclick="this.closest('.sds-alert').remove()" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ FLOATING TOASTS ============ -->
+<h2>Floating Toasts</h2>
+<p>Temporary notifications that appear in the top-right corner of the viewport. They slide in, stack vertically, and auto-dismiss after 5 seconds. Use for transient feedback like save confirmations or background task completion.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Click to trigger</div>
+  <div class="trigger-row">
+    <button class="trigger-btn" onclick="showToast('success', 'Message Sent', 'Your message has been sent. We\u2019ll get back to you soon.')">
+      <span class="trigger-dot trigger-dot--success"></span> Success
+    </button>
+    <button class="trigger-btn" onclick="showToast('warning', 'Approaching Limit', 'You have used 85% of your storage quota.')">
+      <span class="trigger-dot trigger-dot--warning"></span> Warning
+    </button>
+    <button class="trigger-btn" onclick="showToast('error', 'Error Occurred', 'Sorry, please try again later.')">
+      <span class="trigger-dot trigger-dot--error"></span> Error
+    </button>
+    <button class="trigger-btn" onclick="showToast('info', 'Attention', 'Scheduled maintenance tonight from 10 PM to 2 AM.')">
+      <span class="trigger-dot trigger-dot--info"></span> Info
+    </button>
+    <button class="trigger-btn" onclick="showToast('neutral', '', 'No new notifications.')">
+      <span class="trigger-dot trigger-dot--neutral"></span> Neutral
+    </button>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ SPECIFICATION ============ -->
+<h2>Specification</h2>
+
+<h3>Layout &amp; Spacing</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td><code>--sds-space-400</code> (16px)</td></tr>
+    <tr><td>Gap</td><td><code>--sds-space-300</code> (12px)</td></tr>
+    <tr><td>Border radius</td><td>12px</td></tr>
+    <tr><td>Border</td><td>1px solid (variant color)</td></tr>
+    <tr><td>Icon badge</td><td>24 &times; 24px, border-radius 6px</td></tr>
+    <tr><td>Icon symbol</td><td>16 &times; 16px, white stroke</td></tr>
+    <tr><td>Box shadow</td><td>0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04)</td></tr>
+    <tr><td>Title</td><td><code>--sds-type-body</code> (14px), <code>--sds-weight-semibold</code></td></tr>
+    <tr><td>Message</td><td><code>--sds-type-label</code> (13px), <code>warm-gray-550</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Floating Toast</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Token / Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Width</td><td>380px</td></tr>
+    <tr><td>Shadow</td><td>0 4px 16px rgba(0,0,0,0.10)</td></tr>
+    <tr><td>Slide-in</td><td>300ms cubic-bezier(0.4, 0, 0.2, 1)</td></tr>
+    <tr><td>Fade-out</td><td>200ms ease</td></tr>
+    <tr><td>Auto-dismiss</td><td>5 000ms</td></tr>
+    <tr><td>Stack gap</td><td><code>--sds-space-300</code> (12px)</td></tr>
+    <tr><td>Position</td><td>Fixed, top-right (24px inset)</td></tr>
+    <tr><td>z-index</td><td>9999</td></tr>
+  </tbody>
+</table>
+
+<h3>Color Variants</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Variant</th><th>Background</th><th>Border</th><th>Icon Badge</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Success</td>
+      <td><span class="swatch" style="background:var(--sds-status-success-bg)"></span><code>--sds-status-success-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-green-100)"></span><code>green-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-success-strong)"></span><code>--sds-status-success-strong</code></td>
+    </tr>
+    <tr>
+      <td>Warning</td>
+      <td><span class="swatch" style="background:var(--sds-status-warning-bg)"></span><code>--sds-status-warning-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-yellow-100)"></span><code>yellow-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-warning-strong)"></span><code>--sds-status-warning-strong</code></td>
+    </tr>
+    <tr>
+      <td>Error</td>
+      <td><span class="swatch" style="background:var(--sds-status-error-bg)"></span><code>--sds-status-error-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-red-100)"></span><code>red-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-error-strong)"></span><code>--sds-status-error-strong</code></td>
+    </tr>
+    <tr>
+      <td>Info</td>
+      <td><span class="swatch" style="background:var(--sds-status-info-bg)"></span><code>--sds-status-info-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-color-blue-100)"></span><code>blue-100</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-info-text)"></span><code>--sds-status-info-text</code></td>
+    </tr>
+    <tr>
+      <td>Neutral</td>
+      <td><span class="swatch" style="background:var(--sds-status-neutral-bg)"></span><code>--sds-status-neutral-bg</code></td>
+      <td><span class="swatch" style="background:var(--sds-border-default)"></span><code>--sds-border-default</code></td>
+      <td><span class="swatch" style="background:var(--sds-status-neutral-text)"></span><code>--sds-status-neutral-text</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- Toast container for floating toasts -->
+<div class="sds-toast-container" id="toast-container"></div>
+
+<script>
+  /* ---- Status icons (Material Symbols on colored badge) ---- */
+  var toastIcons = {
+    success: '<span class="material-symbols-outlined">check</span>',
+    warning: '<span class="material-symbols-outlined">warning</span>',
+    error:   '<span class="material-symbols-outlined">error</span>',
+    info:    '<span class="material-symbols-outlined">info</span>',
+    neutral: '<span class="material-symbols-outlined">remove</span>'
+  };
+
+  function showToast(type, title, message) {
+    var container = document.getElementById('toast-container');
+
+    var toast = document.createElement('div');
+    toast.className = 'sds-toast sds-toast--' + type;
+
+    var contentHtml = '';
+    if (title) {
+      contentHtml = '<div class="sds-toast__content">' +
+        '<div class="sds-toast__title">' + title + '</div>' +
+        '<div class="sds-toast__message">' + message + '</div>' +
+      '</div>';
+    } else {
+      contentHtml = '<span class="sds-toast__content" style="padding-top:var(--sds-space-100)">' + message + '</span>';
+    }
+
+    toast.innerHTML =
+      '<span class="sds-toast__icon">' + toastIcons[type] + '</span>' +
+      contentHtml +
+      '<button class="sds-toast__dismiss" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>';
+
+    container.appendChild(toast);
+
+    /* Dismiss handler */
+    var dismissBtn = toast.querySelector('.sds-toast__dismiss');
+    dismissBtn.addEventListener('click', function () {
+      dismissToast(toast);
+    });
+
+    /* Auto-dismiss after 5s */
+    var timer = setTimeout(function () {
+      dismissToast(toast);
+    }, 5000);
+
+    toast._timer = timer;
+  }
+
+  function dismissToast(toast) {
+    if (toast._dismissed) return;
+    toast._dismissed = true;
+    clearTimeout(toast._timer);
+    toast.classList.add('is-dismissing');
+    toast.addEventListener('animationend', function () {
+      toast.remove();
+    });
+  }
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

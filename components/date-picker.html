@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Date Picker</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+      padding-top: var(--sds-space-250);
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: var(--sds-space-400);
+    }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ============================================================
+       DATE PICKER COMPONENT
+       ============================================================ */
+
+    /* -- Input trigger -- */
+    .sds-datepicker {
+      position: relative;
+      display: inline-block;
+    }
+    .sds-datepicker-input {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      height: 40px;
+      padding: 0 var(--sds-space-300);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      min-width: 180px;
+    }
+    .sds-datepicker-input:hover {
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .sds-datepicker-input:focus,
+    .sds-datepicker-input.is-active {
+      outline: none;
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    .sds-datepicker-input .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--sds-color-warm-gray-400);
+    }
+    .sds-datepicker-input-text {
+      flex: 1;
+    }
+    .sds-datepicker-input-text.is-placeholder {
+      color: var(--sds-color-warm-gray-350);
+    }
+
+    /* -- Dropdown panel -- */
+    .sds-datepicker-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      z-index: 1000;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      padding: var(--sds-space-400);
+      display: none;
+    }
+    .sds-datepicker-dropdown.is-open {
+      display: block;
+    }
+
+    /* -- Calendar -- */
+    .sds-calendar {
+      width: 280px;
+      user-select: none;
+    }
+    .sds-calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--sds-space-300);
+    }
+    .sds-calendar-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .sds-calendar-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border: none;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--sds-color-warm-gray-500);
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+    }
+    .sds-calendar-nav:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-calendar-nav:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-calendar-nav .material-symbols-outlined {
+      font-size: 20px;
+    }
+    .sds-calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      text-align: center;
+      margin-bottom: var(--sds-space-100);
+    }
+    .sds-calendar-weekday {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-400);
+      padding: var(--sds-space-100) 0;
+    }
+    .sds-calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 2px;
+    }
+    .sds-calendar-day {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      margin: 0 auto;
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-primary);
+      border: none;
+      border-radius: 8px;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.12s, color 0.12s;
+      position: relative;
+      font-family: inherit;
+    }
+    .sds-calendar-day:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+    .sds-calendar-day:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-calendar-day.is-today {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-blue-700);
+      background: var(--sds-color-blue-050);
+    }
+    .sds-calendar-day.is-selected {
+      background: var(--sds-color-blue-750);
+      color: var(--sds-color-white);
+      font-weight: var(--sds-weight-semibold);
+    }
+    .sds-calendar-day.is-selected:hover {
+      background: var(--sds-color-blue-700);
+    }
+    .sds-calendar-day.is-outside {
+      color: var(--sds-color-warm-gray-250);
+    }
+    .sds-calendar-day.is-disabled {
+      color: var(--sds-color-warm-gray-200);
+      pointer-events: none;
+    }
+
+    /* -- Range highlighting -- */
+    .sds-calendar-day.is-range-start {
+      background: var(--sds-color-blue-750);
+      color: var(--sds-color-white);
+      font-weight: var(--sds-weight-semibold);
+      border-radius: 8px 0 0 8px;
+    }
+    .sds-calendar-day.is-range-end {
+      background: var(--sds-color-blue-750);
+      color: var(--sds-color-white);
+      font-weight: var(--sds-weight-semibold);
+      border-radius: 0 8px 8px 0;
+    }
+    .sds-calendar-day.is-in-range {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-800);
+      border-radius: 0;
+    }
+    .sds-calendar-day.is-range-start.is-range-end {
+      border-radius: 8px;
+    }
+
+    /* -- Date range input -- */
+    .sds-datepicker-range {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .sds-datepicker-range-inputs {
+      display: inline-flex;
+      align-items: center;
+      height: 40px;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .sds-datepicker-range-inputs:hover {
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .sds-datepicker-range-inputs.is-active {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    .sds-datepicker-range-field {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: 0 var(--sds-space-300);
+      font-size: var(--sds-type-body);
+      font-family: inherit;
+      color: var(--sds-text-primary);
+      min-width: 140px;
+    }
+    .sds-datepicker-range-field .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-color-warm-gray-400);
+    }
+    .sds-datepicker-range-field .is-placeholder {
+      color: var(--sds-color-warm-gray-350);
+    }
+    .sds-datepicker-range-sep {
+      font-size: var(--sds-type-body);
+      color: var(--sds-color-warm-gray-300);
+      padding: 0 var(--sds-space-050);
+    }
+
+    /* -- Range dropdown with presets -- */
+    .sds-datepicker-range-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      z-index: 1000;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06);
+      display: none;
+    }
+    .sds-datepicker-range-dropdown.is-open {
+      display: flex;
+    }
+    .sds-datepicker-presets {
+      width: 160px;
+      padding: var(--sds-space-300);
+      border-right: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-050);
+    }
+    .sds-datepicker-preset {
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      background: transparent;
+      border: none;
+      padding: var(--sds-space-200) var(--sds-space-250);
+      border-radius: 6px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.12s, color 0.12s;
+    }
+    .sds-datepicker-preset:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-datepicker-preset.is-active {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-750);
+      font-weight: var(--sds-weight-semibold);
+    }
+    .sds-datepicker-preset:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -2px;
+    }
+    .sds-datepicker-range-calendar {
+      padding: var(--sds-space-400);
+    }
+
+    /* -- Inline calendar -- */
+    .sds-calendar-inline {
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 12px;
+      padding: var(--sds-space-400);
+      display: inline-block;
+    }
+
+    /* -- Date + time -- */
+    .sds-datepicker-time-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-300);
+      padding-top: var(--sds-space-300);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-datepicker-time-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-500);
+    }
+    .sds-datepicker-time-input {
+      height: 32px;
+      padding: 0 var(--sds-space-250);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 6px;
+      width: 90px;
+      text-align: center;
+    }
+    .sds-datepicker-time-input:focus {
+      outline: none;
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+    /* -- Presets panel (standalone) -- */
+    .sds-datepicker-with-presets {
+      display: inline-flex;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .sds-datepicker-with-presets .sds-datepicker-presets {
+      padding: var(--sds-space-400);
+    }
+    .sds-datepicker-with-presets .sds-calendar {
+      padding: var(--sds-space-400);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+  <h1>Date Picker</h1>
+  <p class="page-subtitle">Calendar-based date selection for audit log filtering, policy scheduling, scan dates, and report periods in enterprise data security workflows.</p>
+
+  <!-- ============================================================
+       SINGLE DATE PICKER
+       ============================================================ -->
+  <h2>Single Date Picker</h2>
+  <p>An input field with a calendar icon that opens a dropdown calendar on click. Navigate months with arrow controls and select a single date. Today's date is highlighted, and the selected date uses the primary accent color.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Default</div>
+    <div class="demo-row">
+      <div class="demo-row-label">Closed</div>
+      <div class="demo-row-items">
+        <div class="sds-datepicker" data-datepicker="single-demo-closed">
+          <button class="sds-datepicker-input" type="button" aria-haspopup="dialog" aria-expanded="false">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span class="sds-datepicker-input-text is-placeholder">Select date</span>
+            <span class="material-symbols-outlined" style="font-size:18px; color: var(--sds-color-warm-gray-300);">expand_more</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="demo-row">
+      <div class="demo-row-label">Open</div>
+      <div class="demo-row-items">
+        <div class="sds-datepicker" data-datepicker="single-demo">
+          <button class="sds-datepicker-input is-active" type="button" aria-haspopup="dialog" aria-expanded="true">
+            <span class="material-symbols-outlined">calendar_today</span>
+            <span class="sds-datepicker-input-text is-placeholder">Select date</span>
+            <span class="material-symbols-outlined" style="font-size:18px; color: var(--sds-color-warm-gray-300);">expand_more</span>
+          </button>
+          <div class="sds-datepicker-dropdown is-open" role="dialog" aria-label="Choose date" style="position:relative; top:8px;">
+            <div class="sds-calendar" id="cal-single-demo" role="grid" aria-label="Calendar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-block">
+    <div class="demo-label">Interactive</div>
+    <p style="font-size: var(--sds-type-caption); color: var(--sds-color-warm-gray-400); margin-bottom: var(--sds-space-400);">Click the input to open, select a date, and use arrow keys to navigate.</p>
+    <div class="sds-datepicker" data-datepicker="single-interactive">
+      <button class="sds-datepicker-input" type="button" aria-haspopup="dialog" aria-expanded="false">
+        <span class="material-symbols-outlined">calendar_today</span>
+        <span class="sds-datepicker-input-text is-placeholder">Select date</span>
+        <span class="material-symbols-outlined" style="font-size:18px; color: var(--sds-color-warm-gray-300);">expand_more</span>
+      </button>
+      <div class="sds-datepicker-dropdown" role="dialog" aria-label="Choose date">
+        <div class="sds-calendar" id="cal-single-interactive" role="grid" aria-label="Calendar"></div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       DATE RANGE PICKER
+       ============================================================ -->
+  <h2>Date Range Picker</h2>
+  <p>Two connected inputs for selecting a start and end date. The calendar highlights the selected range. Quick-select presets provide common date ranges used in security audit workflows.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Range with Presets</div>
+    <div class="sds-datepicker-range" data-datepicker="range-demo">
+      <div class="sds-datepicker-range-inputs" role="button" tabindex="0" aria-haspopup="dialog" aria-expanded="false">
+        <div class="sds-datepicker-range-field">
+          <span class="material-symbols-outlined">calendar_today</span>
+          <span id="range-start-display" class="is-placeholder">Start date</span>
+        </div>
+        <span class="sds-datepicker-range-sep">–</span>
+        <div class="sds-datepicker-range-field">
+          <span id="range-end-display" class="is-placeholder">End date</span>
+        </div>
+      </div>
+      <div class="sds-datepicker-range-dropdown" role="dialog" aria-label="Choose date range">
+        <div class="sds-datepicker-presets">
+          <button class="sds-datepicker-preset" data-preset="7">Last 7 days</button>
+          <button class="sds-datepicker-preset" data-preset="30">Last 30 days</button>
+          <button class="sds-datepicker-preset" data-preset="90">Last 90 days</button>
+          <button class="sds-datepicker-preset is-active" data-preset="custom">Custom range</button>
+        </div>
+        <div class="sds-datepicker-range-calendar">
+          <div class="sds-calendar" id="cal-range-demo" role="grid" aria-label="Calendar"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       CALENDAR GRID
+       ============================================================ -->
+  <h2>Calendar Grid</h2>
+  <p>A standalone inline calendar, always visible. Useful for dashboard widgets or embedded date selection where a dropdown pattern is not needed.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Inline calendar</div>
+    <div class="sds-calendar-inline">
+      <div class="sds-calendar" id="cal-inline-demo" role="grid" aria-label="Calendar"></div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       WITH TIME
+       ============================================================ -->
+  <h2>With Time</h2>
+  <p>Date and time picker for scheduling policies, setting scan times, or defining precise audit windows. The time input sits below the calendar within the same panel.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Date + Time</div>
+    <div class="sds-datepicker" data-datepicker="datetime-demo">
+      <button class="sds-datepicker-input" type="button" aria-haspopup="dialog" aria-expanded="false">
+        <span class="material-symbols-outlined">calendar_today</span>
+        <span class="sds-datepicker-input-text is-placeholder">Select date &amp; time</span>
+        <span class="material-symbols-outlined" style="font-size:18px; color: var(--sds-color-warm-gray-300);">expand_more</span>
+      </button>
+      <div class="sds-datepicker-dropdown" role="dialog" aria-label="Choose date and time">
+        <div class="sds-calendar" id="cal-datetime-demo" role="grid" aria-label="Calendar"></div>
+        <div class="sds-datepicker-time-row">
+          <span class="sds-datepicker-time-label">Time</span>
+          <input type="time" class="sds-datepicker-time-input" id="time-input-demo" value="09:00" aria-label="Select time" />
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       PRESETS PANEL
+       ============================================================ -->
+  <h2>Presets Panel</h2>
+  <p>A side panel with quick-select options displayed alongside the calendar. Ideal for report period selection where users frequently choose standard intervals.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Calendar with Presets</div>
+    <div class="sds-datepicker-with-presets">
+      <div class="sds-datepicker-presets">
+        <button class="sds-datepicker-preset" data-panel-preset="today">Today</button>
+        <button class="sds-datepicker-preset" data-panel-preset="yesterday">Yesterday</button>
+        <button class="sds-datepicker-preset" data-panel-preset="7">Last 7 days</button>
+        <button class="sds-datepicker-preset" data-panel-preset="30">Last 30 days</button>
+        <button class="sds-datepicker-preset" data-panel-preset="90">Last 90 days</button>
+        <button class="sds-datepicker-preset" data-panel-preset="thisMonth">This month</button>
+        <button class="sds-datepicker-preset" data-panel-preset="lastMonth">Last month</button>
+      </div>
+      <div class="sds-calendar" id="cal-presets-demo" role="grid" aria-label="Calendar"></div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+  <p>Token reference and sizing details for the date picker component.</p>
+
+  <h3>Input Trigger</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Height</td><td><code>40px</code></td></tr>
+      <tr><td>Border radius</td><td><code>8px</code></td></tr>
+      <tr><td>Border color</td><td><code>var(--sds-border-default)</code></td></tr>
+      <tr><td>Background</td><td><code>var(--sds-bg-elevated)</code></td></tr>
+      <tr><td>Focus ring</td><td><code>var(--sds-border-focus)</code> + <code>3px</code> box-shadow <code>var(--sds-color-blue-100)</code></td></tr>
+      <tr><td>Font size</td><td><code>var(--sds-type-body)</code></td></tr>
+      <tr><td>Icon size</td><td><code>20px</code></td></tr>
+      <tr><td>Padding</td><td><code>0 var(--sds-space-300)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Calendar Grid</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Calendar width</td><td><code>280px</code></td></tr>
+      <tr><td>Day cell size</td><td><code>36px &times; 36px</code></td></tr>
+      <tr><td>Day border radius</td><td><code>8px</code></td></tr>
+      <tr><td>Today background</td><td><code>var(--sds-color-blue-050)</code></td></tr>
+      <tr><td>Today text</td><td><code>var(--sds-color-blue-700)</code></td></tr>
+      <tr><td>Selected background</td><td><code>var(--sds-color-blue-750)</code></td></tr>
+      <tr><td>Selected text</td><td><code>var(--sds-color-white)</code></td></tr>
+      <tr><td>Range background</td><td><code>var(--sds-color-blue-050)</code></td></tr>
+      <tr><td>Range text</td><td><code>var(--sds-color-blue-800)</code></td></tr>
+      <tr><td>Weekday header font</td><td><code>var(--sds-type-caption)</code></td></tr>
+      <tr><td>Day font size</td><td><code>var(--sds-type-label)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Dropdown Panel</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Border radius</td><td><code>12px</code></td></tr>
+      <tr><td>Border</td><td><code>1px solid var(--sds-border-default)</code></td></tr>
+      <tr><td>Shadow</td><td><code>0 8px 24px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.06)</code></td></tr>
+      <tr><td>Padding</td><td><code>var(--sds-space-400)</code></td></tr>
+      <tr><td>Background</td><td><code>var(--sds-bg-elevated)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-datepicker</code></td><td>Root wrapper for single date picker</td></tr>
+      <tr><td><code>.sds-datepicker-input</code></td><td>Trigger input button</td></tr>
+      <tr><td><code>.sds-datepicker-dropdown</code></td><td>Dropdown panel container</td></tr>
+      <tr><td><code>.sds-calendar</code></td><td>Calendar grid wrapper</td></tr>
+      <tr><td><code>.sds-calendar-day</code></td><td>Individual day cell button</td></tr>
+      <tr><td><code>.sds-calendar-day.is-today</code></td><td>Today indicator</td></tr>
+      <tr><td><code>.sds-calendar-day.is-selected</code></td><td>Selected date</td></tr>
+      <tr><td><code>.sds-calendar-day.is-range-start</code></td><td>Range start date</td></tr>
+      <tr><td><code>.sds-calendar-day.is-range-end</code></td><td>Range end date</td></tr>
+      <tr><td><code>.sds-calendar-day.is-in-range</code></td><td>Date within selected range</td></tr>
+      <tr><td><code>.sds-datepicker-range</code></td><td>Root wrapper for date range picker</td></tr>
+      <tr><td><code>.sds-datepicker-presets</code></td><td>Presets side panel</td></tr>
+      <tr><td><code>.sds-datepicker-preset</code></td><td>Individual preset button</td></tr>
+      <tr><td><code>.sds-calendar-inline</code></td><td>Inline (always-visible) calendar container</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    (function() {
+      'use strict';
+
+      var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      var DAYS = ['S','M','T','W','T','F','S'];
+
+      var today = new Date();
+      today.setHours(0,0,0,0);
+
+      // ---- Utility ----
+      function daysInMonth(year, month) {
+        return new Date(year, month + 1, 0).getDate();
+      }
+      function firstDayOfMonth(year, month) {
+        return new Date(year, month, 1).getDay();
+      }
+      function sameDay(a, b) {
+        return a && b && a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate();
+      }
+      function formatDate(d) {
+        if (!d) return '';
+        var mm = String(d.getMonth() + 1).padStart(2, '0');
+        var dd = String(d.getDate()).padStart(2, '0');
+        return d.getFullYear() + '-' + mm + '-' + dd;
+      }
+      function formatDateDisplay(d) {
+        if (!d) return '';
+        return MONTHS[d.getMonth()].slice(0, 3) + ' ' + d.getDate() + ', ' + d.getFullYear();
+      }
+      function isBetween(date, start, end) {
+        if (!start || !end) return false;
+        return date > start && date < end;
+      }
+
+      // ---- Calendar Renderer ----
+      function renderCalendar(el, opts) {
+        var year = opts.year;
+        var month = opts.month;
+        var selected = opts.selected || null;
+        var rangeStart = opts.rangeStart || null;
+        var rangeEnd = opts.rangeEnd || null;
+        var onSelect = opts.onSelect || function() {};
+        var onNav = opts.onNav || function() {};
+
+        var html = '';
+        // Header
+        html += '<div class="sds-calendar-header">';
+        html += '<button class="sds-calendar-nav" data-nav="prev" aria-label="Previous month"><span class="material-symbols-outlined">chevron_left</span></button>';
+        html += '<span class="sds-calendar-title">' + MONTHS[month] + ' ' + year + '</span>';
+        html += '<button class="sds-calendar-nav" data-nav="next" aria-label="Next month"><span class="material-symbols-outlined">chevron_right</span></button>';
+        html += '</div>';
+
+        // Weekday headers
+        html += '<div class="sds-calendar-weekdays">';
+        for (var w = 0; w < 7; w++) {
+          html += '<div class="sds-calendar-weekday">' + DAYS[w] + '</div>';
+        }
+        html += '</div>';
+
+        // Day grid
+        html += '<div class="sds-calendar-grid" role="grid">';
+        var firstDay = firstDayOfMonth(year, month);
+        var totalDays = daysInMonth(year, month);
+        var prevMonthDays = daysInMonth(year, month - 1 < 0 ? year - 1 : year, month - 1 < 0 ? 11 : month - 1);
+
+        // Previous month fill
+        for (var p = firstDay - 1; p >= 0; p--) {
+          var prevDay = prevMonthDays - p;
+          html += '<button class="sds-calendar-day is-outside" tabindex="-1" disabled aria-disabled="true">' + prevDay + '</button>';
+        }
+
+        // Current month
+        for (var d = 1; d <= totalDays; d++) {
+          var date = new Date(year, month, d);
+          date.setHours(0,0,0,0);
+          var classes = ['sds-calendar-day'];
+          if (sameDay(date, today)) classes.push('is-today');
+          if (sameDay(date, selected)) classes.push('is-selected');
+          if (sameDay(date, rangeStart)) classes.push('is-range-start');
+          if (sameDay(date, rangeEnd)) classes.push('is-range-end');
+          if (isBetween(date, rangeStart, rangeEnd)) classes.push('is-in-range');
+          var isFocusable = (sameDay(date, selected) || sameDay(date, rangeStart) || (d === 1 && !selected && !rangeStart));
+          html += '<button class="' + classes.join(' ') + '" data-date="' + formatDate(date) + '" tabindex="' + (isFocusable ? '0' : '-1') + '" aria-label="' + MONTHS[month] + ' ' + d + ', ' + year + '">' + d + '</button>';
+        }
+
+        // Next month fill
+        var totalCells = firstDay + totalDays;
+        var remaining = (7 - (totalCells % 7)) % 7;
+        for (var n = 1; n <= remaining; n++) {
+          html += '<button class="sds-calendar-day is-outside" tabindex="-1" disabled aria-disabled="true">' + n + '</button>';
+        }
+        html += '</div>';
+
+        el.innerHTML = html;
+
+        // Nav events
+        el.querySelectorAll('[data-nav]').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            onNav(btn.dataset.nav);
+          });
+        });
+
+        // Day click events
+        el.querySelectorAll('.sds-calendar-day:not(.is-outside)').forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var parts = btn.dataset.date.split('-');
+            var clickedDate = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+            clickedDate.setHours(0,0,0,0);
+            onSelect(clickedDate);
+          });
+        });
+
+        // Keyboard navigation
+        el.addEventListener('keydown', function(e) {
+          var focused = el.querySelector('.sds-calendar-day:focus');
+          if (!focused || !focused.dataset.date) return;
+
+          var parts = focused.dataset.date.split('-');
+          var current = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+          var newDate = null;
+
+          if (e.key === 'ArrowRight') { newDate = new Date(current); newDate.setDate(newDate.getDate() + 1); }
+          else if (e.key === 'ArrowLeft') { newDate = new Date(current); newDate.setDate(newDate.getDate() - 1); }
+          else if (e.key === 'ArrowDown') { newDate = new Date(current); newDate.setDate(newDate.getDate() + 7); }
+          else if (e.key === 'ArrowUp') { newDate = new Date(current); newDate.setDate(newDate.getDate() - 7); }
+          else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onSelect(current);
+            return;
+          } else {
+            return;
+          }
+
+          e.preventDefault();
+          // Navigate to new month if needed
+          if (newDate.getMonth() !== month || newDate.getFullYear() !== year) {
+            onNav(newDate.getMonth() > month || newDate.getFullYear() > year ? 'next' : 'prev', newDate);
+          } else {
+            var target = el.querySelector('[data-date="' + formatDate(newDate) + '"]');
+            if (target) {
+              el.querySelectorAll('.sds-calendar-day').forEach(function(d) { d.tabIndex = -1; });
+              target.tabIndex = 0;
+              target.focus();
+            }
+          }
+        });
+      }
+
+
+      // ============================================================
+      // 1) Single Date Picker — Static Demo
+      // ============================================================
+      (function() {
+        var viewYear = today.getFullYear();
+        var viewMonth = today.getMonth();
+        var el = document.getElementById('cal-single-demo');
+        if (!el) return;
+
+        function render() {
+          renderCalendar(el, {
+            year: viewYear, month: viewMonth, selected: null,
+            onSelect: function() {},
+            onNav: function(dir) {
+              if (dir === 'prev') { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+              else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+              render();
+            }
+          });
+        }
+        render();
+      })();
+
+
+      // ============================================================
+      // 2) Single Date Picker — Interactive
+      // ============================================================
+      (function() {
+        var container = document.querySelector('[data-datepicker="single-interactive"]');
+        if (!container) return;
+        var btn = container.querySelector('.sds-datepicker-input');
+        var dropdown = container.querySelector('.sds-datepicker-dropdown');
+        var textEl = btn.querySelector('.sds-datepicker-input-text');
+        var calEl = document.getElementById('cal-single-interactive');
+        var viewYear = today.getFullYear();
+        var viewMonth = today.getMonth();
+        var selected = null;
+
+        function render() {
+          renderCalendar(calEl, {
+            year: viewYear, month: viewMonth, selected: selected,
+            onSelect: function(d) {
+              selected = d;
+              textEl.textContent = formatDateDisplay(d);
+              textEl.classList.remove('is-placeholder');
+              close();
+            },
+            onNav: function(dir, focusDate) {
+              if (dir === 'prev') { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+              else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+              render();
+              if (focusDate) {
+                var target = calEl.querySelector('[data-date="' + formatDate(focusDate) + '"]');
+                if (target) { target.tabIndex = 0; target.focus(); }
+              }
+            }
+          });
+        }
+
+        function open() {
+          dropdown.classList.add('is-open');
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-expanded', 'true');
+          render();
+          // Focus first focusable day
+          setTimeout(function() {
+            var focusTarget = calEl.querySelector('.sds-calendar-day[tabindex="0"]');
+            if (focusTarget) focusTarget.focus();
+          }, 0);
+        }
+
+        function close() {
+          dropdown.classList.remove('is-open');
+          btn.classList.remove('is-active');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+
+        function toggle(e) {
+          e.stopPropagation();
+          if (dropdown.classList.contains('is-open')) close(); else open();
+        }
+
+        btn.addEventListener('click', toggle);
+
+        // Close on outside click
+        document.addEventListener('click', function(e) {
+          if (!container.contains(e.target)) close();
+        });
+
+        // Escape to close
+        container.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') { close(); btn.focus(); }
+        });
+
+        render();
+      })();
+
+
+      // ============================================================
+      // 3) Date Range Picker
+      // ============================================================
+      (function() {
+        var container = document.querySelector('[data-datepicker="range-demo"]');
+        if (!container) return;
+        var trigger = container.querySelector('.sds-datepicker-range-inputs');
+        var dropdown = container.querySelector('.sds-datepicker-range-dropdown');
+        var calEl = document.getElementById('cal-range-demo');
+        var startDisplay = document.getElementById('range-start-display');
+        var endDisplay = document.getElementById('range-end-display');
+        var presets = container.querySelectorAll('.sds-datepicker-preset');
+        var viewYear = today.getFullYear();
+        var viewMonth = today.getMonth();
+        var rangeStart = null;
+        var rangeEnd = null;
+        var selectingEnd = false;
+
+        function render() {
+          renderCalendar(calEl, {
+            year: viewYear, month: viewMonth,
+            rangeStart: rangeStart, rangeEnd: rangeEnd,
+            onSelect: function(d) {
+              if (!selectingEnd || !rangeStart || d < rangeStart) {
+                rangeStart = d;
+                rangeEnd = null;
+                selectingEnd = true;
+                updateDisplays();
+                render();
+              } else {
+                rangeEnd = d;
+                selectingEnd = false;
+                updateDisplays();
+                render();
+                close();
+              }
+            },
+            onNav: function(dir) {
+              if (dir === 'prev') { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+              else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+              render();
+            }
+          });
+        }
+
+        function updateDisplays() {
+          if (rangeStart) {
+            startDisplay.textContent = formatDateDisplay(rangeStart);
+            startDisplay.classList.remove('is-placeholder');
+          } else {
+            startDisplay.textContent = 'Start date';
+            startDisplay.classList.add('is-placeholder');
+          }
+          if (rangeEnd) {
+            endDisplay.textContent = formatDateDisplay(rangeEnd);
+            endDisplay.classList.remove('is-placeholder');
+          } else {
+            endDisplay.textContent = 'End date';
+            endDisplay.classList.add('is-placeholder');
+          }
+        }
+
+        function setActivePreset(el) {
+          presets.forEach(function(p) { p.classList.remove('is-active'); });
+          if (el) el.classList.add('is-active');
+        }
+
+        function open() {
+          dropdown.classList.add('is-open');
+          trigger.classList.add('is-active');
+          trigger.setAttribute('aria-expanded', 'true');
+          render();
+        }
+
+        function close() {
+          dropdown.classList.remove('is-open');
+          trigger.classList.remove('is-active');
+          trigger.setAttribute('aria-expanded', 'false');
+        }
+
+        trigger.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (dropdown.classList.contains('is-open')) close(); else open();
+        });
+
+        document.addEventListener('click', function(e) {
+          if (!container.contains(e.target)) close();
+        });
+
+        container.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') { close(); trigger.focus(); }
+        });
+
+        // Presets
+        presets.forEach(function(btn) {
+          btn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            var preset = btn.dataset.preset;
+            if (preset === 'custom') {
+              setActivePreset(btn);
+              selectingEnd = false;
+              rangeStart = null;
+              rangeEnd = null;
+              updateDisplays();
+              render();
+              return;
+            }
+            var days = parseInt(preset);
+            rangeEnd = new Date(today);
+            rangeStart = new Date(today);
+            rangeStart.setDate(rangeStart.getDate() - days);
+            selectingEnd = false;
+            setActivePreset(btn);
+            viewYear = rangeStart.getFullYear();
+            viewMonth = rangeStart.getMonth();
+            updateDisplays();
+            render();
+          });
+        });
+
+        render();
+      })();
+
+
+      // ============================================================
+      // 4) Inline Calendar
+      // ============================================================
+      (function() {
+        var el = document.getElementById('cal-inline-demo');
+        if (!el) return;
+        var viewYear = today.getFullYear();
+        var viewMonth = today.getMonth();
+        var selected = new Date(today);
+
+        function render() {
+          renderCalendar(el, {
+            year: viewYear, month: viewMonth, selected: selected,
+            onSelect: function(d) {
+              selected = d;
+              render();
+            },
+            onNav: function(dir, focusDate) {
+              if (dir === 'prev') { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+              else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+              render();
+              if (focusDate) {
+                var target = el.querySelector('[data-date="' + formatDate(focusDate) + '"]');
+                if (target) { target.tabIndex = 0; target.focus(); }
+              }
+            }
+          });
+        }
+        render();
+      })();
+
+
+      // ============================================================
+      // 5) Date + Time Picker
+      // ============================================================
+      (function() {
+        var container = document.querySelector('[data-datepicker="datetime-demo"]');
+        if (!container) return;
+        var btn = container.querySelector('.sds-datepicker-input');
+        var dropdown = container.querySelector('.sds-datepicker-dropdown');
+        var textEl = btn.querySelector('.sds-datepicker-input-text');
+        var calEl = document.getElementById('cal-datetime-demo');
+        var timeInput = document.getElementById('time-input-demo');
+        var viewYear = today.getFullYear();
+        var viewMonth = today.getMonth();
+        var selected = null;
+
+        function updateDisplay() {
+          if (selected) {
+            textEl.textContent = formatDateDisplay(selected) + ' ' + timeInput.value;
+            textEl.classList.remove('is-placeholder');
+          }
+        }
+
+        function render() {
+          renderCalendar(calEl, {
+            year: viewYear, month: viewMonth, selected: selected,
+            onSelect: function(d) {
+              selected = d;
+              updateDisplay();
+              render();
+            },
+            onNav: function(dir, focusDate) {
+              if (dir === 'prev') { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+              else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+              render();
+              if (focusDate) {
+                var target = calEl.querySelector('[data-date="' + formatDate(focusDate) + '"]');
+                if (target) { target.tabIndex = 0; target.focus(); }
+              }
+            }
+          });
+        }
+
+        timeInput.addEventListener('change', updateDisplay);
+
+        function open() {
+          dropdown.classList.add('is-open');
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-expanded', 'true');
+          render();
+        }
+
+        function close() {
+          dropdown.classList.remove('is-open');
+          btn.classList.remove('is-active');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          if (dropdown.classList.contains('is-open')) close(); else open();
+        });
+
+        document.addEventListener('click', function(e) {
+          if (!container.contains(e.target)) close();
+        });
+
+        container.addEventListener('keydown', function(e) {
+          if (e.key === 'Escape') { close(); btn.focus(); }
+        });
+
+        render();
+      })();
+
+
+      // ============================================================
+      // 6) Presets Panel (standalone)
+      // ============================================================
+      (function() {
+        var calEl = document.getElementById('cal-presets-demo');
+        if (!calEl) return;
+        var panel = calEl.closest('.sds-datepicker-with-presets');
+        var presets = panel.querySelectorAll('[data-panel-preset]');
+        var viewYear = today.getFullYear();
+        var viewMonth = today.getMonth();
+        var rangeStart = null;
+        var rangeEnd = null;
+
+        function render() {
+          renderCalendar(calEl, {
+            year: viewYear, month: viewMonth,
+            rangeStart: rangeStart, rangeEnd: rangeEnd,
+            selected: (rangeStart && !rangeEnd) ? rangeStart : null,
+            onSelect: function(d) {
+              rangeStart = d;
+              rangeEnd = null;
+              setActivePreset(null);
+              render();
+            },
+            onNav: function(dir, focusDate) {
+              if (dir === 'prev') { viewMonth--; if (viewMonth < 0) { viewMonth = 11; viewYear--; } }
+              else { viewMonth++; if (viewMonth > 11) { viewMonth = 0; viewYear++; } }
+              render();
+              if (focusDate) {
+                var target = calEl.querySelector('[data-date="' + formatDate(focusDate) + '"]');
+                if (target) { target.tabIndex = 0; target.focus(); }
+              }
+            }
+          });
+        }
+
+        function setActivePreset(el) {
+          presets.forEach(function(p) { p.classList.remove('is-active'); });
+          if (el) el.classList.add('is-active');
+        }
+
+        presets.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            var key = btn.dataset.panelPreset;
+            setActivePreset(btn);
+            rangeEnd = new Date(today);
+
+            if (key === 'today') {
+              rangeStart = new Date(today);
+              rangeEnd = new Date(today);
+            } else if (key === 'yesterday') {
+              rangeStart = new Date(today); rangeStart.setDate(rangeStart.getDate() - 1);
+              rangeEnd = new Date(rangeStart);
+            } else if (key === 'thisMonth') {
+              rangeStart = new Date(today.getFullYear(), today.getMonth(), 1);
+              rangeEnd = new Date(today);
+            } else if (key === 'lastMonth') {
+              rangeStart = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+              rangeEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+            } else {
+              var days = parseInt(key);
+              rangeStart = new Date(today); rangeStart.setDate(rangeStart.getDate() - days);
+            }
+
+            viewYear = rangeStart.getFullYear();
+            viewMonth = rangeStart.getMonth();
+            render();
+          });
+        });
+
+        render();
+      })();
+
+    })();
+  </script>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

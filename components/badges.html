@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Badges & Status Indicators</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* Demo row */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* ============================================================
+       COUNT BADGES
+       Pill-shaped numeric indicators for notification counts,
+       tab labels, and card headers.
+       ============================================================ */
+
+    .sds-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 var(--sds-space-150);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      border-radius: 10px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    /* ---- Badge color variants ---- */
+    .sds-badge--default {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+    .sds-badge--primary {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+    .sds-badge--danger {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+    .sds-badge--danger-solid {
+      background: var(--sds-color-red-450);
+      color: var(--sds-color-white);
+    }
+
+    /* ---- Badge sizes ---- */
+    .sds-badge--sm {
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+      padding: 0 var(--sds-space-100);
+      border-radius: 8px;
+    }
+    .sds-badge--lg {
+      min-width: 24px;
+      height: 24px;
+      font-size: var(--sds-type-label);
+      padding: 0 var(--sds-space-200);
+      border-radius: 12px;
+    }
+
+    /* ============================================================
+       DOT BADGES
+       Small colored dots overlaid on icons or avatars to
+       indicate status or unread count.
+       ============================================================ */
+
+    .sds-dot-badge-wrapper {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .sds-dot-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--sds-color-red-450);
+      border: 2px solid var(--sds-color-white);
+    }
+
+    .sds-dot-badge--with-count {
+      width: auto;
+      height: 16px;
+      min-width: 16px;
+      top: -6px;
+      right: -8px;
+      border-radius: 8px;
+      padding: 0 var(--sds-space-100);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* ============================================================
+       STATUS INDICATORS
+       Inline dot + label combinations for live status display.
+       ============================================================ */
+
+    .sds-status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .sds-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .sds-status--online .sds-status-dot  { background: var(--sds-color-green-400); }
+    .sds-status--online .sds-status-label { color: var(--sds-color-green-500); }
+
+    .sds-status--away .sds-status-dot    { background: var(--sds-color-yellow-350); }
+    .sds-status--away .sds-status-label   { color: var(--sds-color-yellow-550); }
+
+    .sds-status--offline .sds-status-dot { background: var(--sds-color-red-450); }
+    .sds-status--offline .sds-status-label { color: var(--sds-color-red-550); }
+
+    .sds-status--busy .sds-status-dot    { background: var(--sds-color-blue-450); }
+    .sds-status--busy .sds-status-label   { color: var(--sds-color-blue-700); }
+
+    /* Pulse animation for processing / busy */
+    @keyframes sds-pulse {
+      0%   { opacity: 1; transform: scale(1); }
+      50%  { opacity: 0.5; transform: scale(1.3); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    .sds-status--busy .sds-status-dot {
+      animation: sds-pulse 1.5s ease-in-out infinite;
+    }
+
+    .sds-status-label {
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+    /* ============================================================
+       ICON BADGE WRAPPER
+       For overlaying badges on Material Symbols icons.
+       ============================================================ */
+
+    .sds-icon-badge-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sds-icon-badge-wrapper .material-symbols-outlined {
+      font-size: 24px;
+      color: var(--sds-color-warm-gray-600);
+    }
+
+    .sds-icon-badge-wrapper .sds-badge--floating {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+      padding: 0 var(--sds-space-100);
+      border-radius: 8px;
+      border: 2px solid var(--sds-color-white);
+    }
+
+    .sds-icon-badge-wrapper .sds-dot-floating {
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sds-color-red-450);
+      border: 2px solid var(--sds-color-white);
+    }
+
+    /* ============================================================
+       AVATAR WITH STATUS
+       Status dot positioned on avatar circles.
+       ============================================================ */
+
+    .sds-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      flex-shrink: 0;
+      position: relative;
+      user-select: none;
+    }
+
+    .sds-avatar--teal    { background: var(--sds-color-blue-450); }
+    .sds-avatar--purple  { background: var(--sds-color-purple-550); }
+    .sds-avatar--green   { background: var(--sds-color-green-400); }
+    .sds-avatar--amber   { background: var(--sds-color-yellow-350); }
+
+    .sds-avatar-status {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--sds-color-white);
+    }
+
+    .sds-avatar-status--online  { background: var(--sds-color-green-400); }
+    .sds-avatar-status--away    { background: var(--sds-color-yellow-350); }
+    .sds-avatar-status--offline { background: var(--sds-color-warm-gray-300); }
+    .sds-avatar-status--busy    { background: var(--sds-color-red-450); }
+
+    /* ============================================================
+       SEVERITY BADGES
+       Distinct color-coded labels for security finding severity.
+       ============================================================ */
+
+    .sds-severity {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+    }
+
+    .sds-severity-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .sds-severity--critical {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+    .sds-severity--critical .sds-severity-dot { background: var(--sds-color-red-450); }
+
+    .sds-severity--high {
+      background: var(--sds-color-yellow-050);
+      color: var(--sds-color-yellow-650);
+    }
+    .sds-severity--high .sds-severity-dot { background: var(--sds-color-yellow-550); }
+
+    .sds-severity--medium {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+    .sds-severity--medium .sds-severity-dot { background: var(--sds-color-yellow-350); }
+
+    .sds-severity--low {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+    .sds-severity--low .sds-severity-dot { background: var(--sds-color-blue-450); }
+
+    .sds-severity--info {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+    .sds-severity--info .sds-severity-dot { background: var(--sds-color-warm-gray-400); }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Badges & Status Indicators</h1>
+  <p class="page-subtitle">Numeric badges, overlay dots, and inline status indicators for communicating counts, presence, and security severity across the data platform.</p>
+
+  <!-- ============================================================
+       1. COUNT BADGES
+       ============================================================ -->
+  <h2>Count Badges</h2>
+  <p>Pill-shaped numeric indicators for notification counts, tab labels, and card headers. Available in three sizes and three color variants.</p>
+
+  <h3>Colors</h3>
+
+  <div class="demo-block">
+    <div class="demo-label">Color variants</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Default</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--default">3</span>
+        <span class="sds-badge sds-badge--default">12</span>
+        <span class="sds-badge sds-badge--default">99+</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Primary</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--primary">3</span>
+        <span class="sds-badge sds-badge--primary">12</span>
+        <span class="sds-badge sds-badge--primary">99+</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Danger</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--danger">3</span>
+        <span class="sds-badge sds-badge--danger">12</span>
+        <span class="sds-badge sds-badge--danger">99+</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>Sizes</h3>
+
+  <div class="demo-block">
+    <div class="demo-label">Size comparison</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Small (16px)</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--sm sds-badge--default">3</span>
+        <span class="sds-badge sds-badge--sm sds-badge--primary">7</span>
+        <span class="sds-badge sds-badge--sm sds-badge--danger">12</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Medium (20px)</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--default">3</span>
+        <span class="sds-badge sds-badge--primary">7</span>
+        <span class="sds-badge sds-badge--danger">12</span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Large (24px)</span>
+      <div class="demo-row-items">
+        <span class="sds-badge sds-badge--lg sds-badge--default">3</span>
+        <span class="sds-badge sds-badge--lg sds-badge--primary">7</span>
+        <span class="sds-badge sds-badge--lg sds-badge--danger">12</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       2. DOT BADGES
+       ============================================================ -->
+  <h2>Dot Badges</h2>
+  <p>Small colored dots overlaid on icons or avatars to indicate unread notifications or status. Positioned absolutely at the top-right with a white border for contrast.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Dot only vs. dot with count</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Dot only</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-600);">
+        <span class="sds-dot-badge-wrapper">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="sds-dot-badge"></span>
+        </span>
+        <span class="sds-dot-badge-wrapper">
+          <span class="material-symbols-outlined">mail</span>
+          <span class="sds-dot-badge"></span>
+        </span>
+        <span class="sds-dot-badge-wrapper">
+          <span class="material-symbols-outlined">chat</span>
+          <span class="sds-dot-badge"></span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">With count</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-600);">
+        <span class="sds-dot-badge-wrapper">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="sds-dot-badge sds-dot-badge--with-count sds-badge--danger-solid">3</span>
+        </span>
+        <span class="sds-dot-badge-wrapper">
+          <span class="material-symbols-outlined">mail</span>
+          <span class="sds-dot-badge sds-dot-badge--with-count sds-badge--danger-solid">12</span>
+        </span>
+        <span class="sds-dot-badge-wrapper">
+          <span class="material-symbols-outlined">chat</span>
+          <span class="sds-dot-badge sds-dot-badge--with-count sds-badge--danger-solid">99+</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       3. STATUS INDICATORS
+       ============================================================ -->
+  <h2>Status Indicators</h2>
+  <p>Inline dot-and-label combinations for communicating live status. The busy/processing state includes a pulse animation to convey ongoing activity.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">All status states</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Online</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--online">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Online</span>
+        </span>
+        <span class="sds-status sds-status--online">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Active</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Away</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--away">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Away</span>
+        </span>
+        <span class="sds-status sds-status--away">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Warning</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Offline</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--offline">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Offline</span>
+        </span>
+        <span class="sds-status sds-status--offline">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Error</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Busy</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--busy">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Busy</span>
+        </span>
+        <span class="sds-status sds-status--busy">
+          <span class="sds-status-dot"></span>
+          <span class="sds-status-label">Processing</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       4. BADGE ON ICONS
+       ============================================================ -->
+  <h2>Badge on Icons</h2>
+  <p>Count badges and dot indicators overlaid on Material Symbols icons. Commonly used in toolbar actions and navigation elements.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Icon overlay examples</div>
+    <div class="demo-row">
+      <span class="demo-row-label">With count</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-800);">
+        <span class="sds-icon-badge-wrapper">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="sds-badge sds-badge--floating sds-badge--danger-solid">5</span>
+        </span>
+        <span class="sds-icon-badge-wrapper">
+          <span class="material-symbols-outlined">mail</span>
+          <span class="sds-badge sds-badge--floating sds-badge--danger-solid">23</span>
+        </span>
+        <span class="sds-icon-badge-wrapper">
+          <span class="material-symbols-outlined">shield</span>
+          <span class="sds-badge sds-badge--floating sds-badge--danger-solid">3</span>
+        </span>
+        <span class="sds-icon-badge-wrapper">
+          <span class="material-symbols-outlined">bug_report</span>
+          <span class="sds-badge sds-badge--floating sds-badge--danger-solid">99+</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Dot only</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-800);">
+        <span class="sds-icon-badge-wrapper">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="sds-dot-floating"></span>
+        </span>
+        <span class="sds-icon-badge-wrapper">
+          <span class="material-symbols-outlined">mail</span>
+          <span class="sds-dot-floating"></span>
+        </span>
+        <span class="sds-icon-badge-wrapper">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="sds-dot-floating"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       5. BADGE ON AVATARS
+       ============================================================ -->
+  <h2>Badge on Avatars</h2>
+  <p>Status dots positioned at the bottom-right of avatar circles to indicate user presence. The white border ensures visibility against any avatar background.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Avatar status examples</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Online</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-400);">
+        <span class="sds-avatar sds-avatar--teal">
+          JD
+          <span class="sds-avatar-status sds-avatar-status--online"></span>
+        </span>
+        <span class="sds-avatar sds-avatar--purple">
+          AK
+          <span class="sds-avatar-status sds-avatar-status--online"></span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Away</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-400);">
+        <span class="sds-avatar sds-avatar--green">
+          MR
+          <span class="sds-avatar-status sds-avatar-status--away"></span>
+        </span>
+        <span class="sds-avatar sds-avatar--amber">
+          SL
+          <span class="sds-avatar-status sds-avatar-status--away"></span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Offline</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-400);">
+        <span class="sds-avatar sds-avatar--teal">
+          PW
+          <span class="sds-avatar-status sds-avatar-status--offline"></span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Busy</span>
+      <div class="demo-row-items" style="gap: var(--sds-space-400);">
+        <span class="sds-avatar sds-avatar--purple">
+          TN
+          <span class="sds-avatar-status sds-avatar-status--busy"></span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       6. SEVERITY BADGES
+       ============================================================ -->
+  <h2>Severity Badges</h2>
+  <p>Color-coded labels for categorizing security findings by severity level. Each level uses a distinct color to ensure quick identification in security dashboards and reports.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">All severity levels</div>
+    <div style="display: flex; flex-wrap: wrap; gap: var(--sds-space-200); align-items: center;">
+      <span class="sds-severity sds-severity--critical"><span class="sds-severity-dot"></span>Critical</span>
+      <span class="sds-severity sds-severity--high"><span class="sds-severity-dot"></span>High</span>
+      <span class="sds-severity sds-severity--medium"><span class="sds-severity-dot"></span>Medium</span>
+      <span class="sds-severity sds-severity--low"><span class="sds-severity-dot"></span>Low</span>
+      <span class="sds-severity sds-severity--info"><span class="sds-severity-dot"></span>Info</span>
+    </div>
+  </div>
+
+  <h3>In Context</h3>
+  <p>Severity badges as they appear alongside security finding descriptions.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Security findings</div>
+    <div style="display: flex; flex-direction: column; gap: var(--sds-space-400);">
+      <div style="display: flex; align-items: center; gap: var(--sds-space-300);">
+        <span class="sds-severity sds-severity--critical"><span class="sds-severity-dot"></span>Critical</span>
+        <span style="font-size: var(--sds-type-label); color: var(--sds-color-warm-gray-700);">Unencrypted PII detected in database export</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--sds-space-300);">
+        <span class="sds-severity sds-severity--high"><span class="sds-severity-dot"></span>High</span>
+        <span style="font-size: var(--sds-type-label); color: var(--sds-color-warm-gray-700);">Access policy allows overly broad permissions</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--sds-space-300);">
+        <span class="sds-severity sds-severity--medium"><span class="sds-severity-dot"></span>Medium</span>
+        <span style="font-size: var(--sds-type-label); color: var(--sds-color-warm-gray-700);">Unused service account with active credentials</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--sds-space-300);">
+        <span class="sds-severity sds-severity--low"><span class="sds-severity-dot"></span>Low</span>
+        <span style="font-size: var(--sds-type-label); color: var(--sds-color-warm-gray-700);">Resource tagging convention not followed</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--sds-space-300);">
+        <span class="sds-severity sds-severity--info"><span class="sds-severity-dot"></span>Info</span>
+        <span style="font-size: var(--sds-type-label); color: var(--sds-color-warm-gray-700);">New data classification rule applied</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       7. SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Count Badge Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Size</th><th>Class</th><th>Height</th><th>Min Width</th><th>Font Size</th><th>Radius</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small</td>
+        <td><code>.sds-badge--sm</code></td>
+        <td><code>16 px</code></td>
+        <td><code>16 px</code></td>
+        <td><code>10 px</code></td>
+        <td><code>8 px</code></td>
+      </tr>
+      <tr>
+        <td>Medium (default)</td>
+        <td><code>.sds-badge</code></td>
+        <td><code>20 px</code></td>
+        <td><code>20 px</code></td>
+        <td><code>12 px</code></td>
+        <td><code>10 px</code></td>
+      </tr>
+      <tr>
+        <td>Large</td>
+        <td><code>.sds-badge--lg</code></td>
+        <td><code>24 px</code></td>
+        <td><code>24 px</code></td>
+        <td><code>13 px</code></td>
+        <td><code>12 px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Count Badge Colors</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Variant</th><th>Class</th><th>Background</th><th>Text Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Default</td>
+        <td><code>.sds-badge--default</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>warm-gray-100</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-650)"></span><code>warm-gray-650</code></td>
+      </tr>
+      <tr>
+        <td>Primary</td>
+        <td><code>.sds-badge--primary</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-050)"></span><code>blue-050</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-700)"></span><code>blue-700</code></td>
+      </tr>
+      <tr>
+        <td>Danger</td>
+        <td><code>.sds-badge--danger</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-050)"></span><code>red-050</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>red-550</code></td>
+      </tr>
+      <tr>
+        <td>Danger Solid</td>
+        <td><code>.sds-badge--danger-solid</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>red-450</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-white)"></span><code>white</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Status Indicator Colors</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>State</th><th>Class</th><th>Dot Color</th><th>Label Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Online / Active</td>
+        <td><code>.sds-status--online</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-green-400)"></span><code>green-400</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-green-500)"></span><code>green-500</code></td>
+      </tr>
+      <tr>
+        <td>Away / Warning</td>
+        <td><code>.sds-status--away</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-350)"></span><code>yellow-350</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-550)"></span><code>yellow-550</code></td>
+      </tr>
+      <tr>
+        <td>Offline / Error</td>
+        <td><code>.sds-status--offline</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>red-450</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>red-550</code></td>
+      </tr>
+      <tr>
+        <td>Busy / Processing</td>
+        <td><code>.sds-status--busy</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-450)"></span><code>blue-450</code> + pulse</td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-700)"></span><code>blue-700</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Severity Badge Colors</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Level</th><th>Class</th><th>Background</th><th>Text Color</th><th>Dot Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Critical</td>
+        <td><code>.sds-severity--critical</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-050)"></span><code>red-050</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>red-550</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>red-450</code></td>
+      </tr>
+      <tr>
+        <td>High</td>
+        <td><code>.sds-severity--high</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-050)"></span><code>yellow-050</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-650)"></span><code>yellow-650</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-550)"></span><code>yellow-550</code></td>
+      </tr>
+      <tr>
+        <td>Medium</td>
+        <td><code>.sds-severity--medium</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-025)"></span><code>yellow-025</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-550)"></span><code>yellow-550</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-350)"></span><code>yellow-350</code></td>
+      </tr>
+      <tr>
+        <td>Low</td>
+        <td><code>.sds-severity--low</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-050)"></span><code>blue-050</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-700)"></span><code>blue-700</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-450)"></span><code>blue-450</code></td>
+      </tr>
+      <tr>
+        <td>Info</td>
+        <td><code>.sds-severity--info</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>warm-gray-100</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-650)"></span><code>warm-gray-650</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-400)"></span><code>warm-gray-400</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes Reference</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-badge</code></td><td>Base count badge (pill-shaped)</td></tr>
+      <tr><td><code>.sds-badge--default</code></td><td>Gray count badge</td></tr>
+      <tr><td><code>.sds-badge--primary</code></td><td>Blue count badge</td></tr>
+      <tr><td><code>.sds-badge--danger</code></td><td>Red count badge (subtle)</td></tr>
+      <tr><td><code>.sds-badge--danger-solid</code></td><td>Red count badge (solid, for overlays)</td></tr>
+      <tr><td><code>.sds-badge--sm</code></td><td>Small size modifier (16 px)</td></tr>
+      <tr><td><code>.sds-badge--lg</code></td><td>Large size modifier (24 px)</td></tr>
+      <tr><td><code>.sds-dot-badge-wrapper</code></td><td>Positioning wrapper for dot overlay</td></tr>
+      <tr><td><code>.sds-dot-badge</code></td><td>Overlay dot (no count)</td></tr>
+      <tr><td><code>.sds-dot-badge--with-count</code></td><td>Overlay dot with count label</td></tr>
+      <tr><td><code>.sds-status</code></td><td>Inline status indicator wrapper</td></tr>
+      <tr><td><code>.sds-status--online</code></td><td>Green: online / active</td></tr>
+      <tr><td><code>.sds-status--away</code></td><td>Amber: away / warning</td></tr>
+      <tr><td><code>.sds-status--offline</code></td><td>Red: offline / error</td></tr>
+      <tr><td><code>.sds-status--busy</code></td><td>Blue with pulse: busy / processing</td></tr>
+      <tr><td><code>.sds-severity</code></td><td>Base severity badge</td></tr>
+      <tr><td><code>.sds-severity--critical</code></td><td>Red: critical severity</td></tr>
+      <tr><td><code>.sds-severity--high</code></td><td>Orange: high severity</td></tr>
+      <tr><td><code>.sds-severity--medium</code></td><td>Yellow: medium severity</td></tr>
+      <tr><td><code>.sds-severity--low</code></td><td>Blue: low severity</td></tr>
+      <tr><td><code>.sds-severity--info</code></td><td>Gray: informational</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

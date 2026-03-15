@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Breadcrumbs</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--sds-font-sans); background: var(--sds-bg-page); color: var(--sds-text-primary); -webkit-font-smoothing: antialiased; }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ===== Demo blocks ===== */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-600);
+    }
+
+    /* ============================================================
+       BREADCRUMBS COMPONENT
+       ============================================================ */
+
+    .sds-breadcrumb {
+      display: flex;
+      align-items: center;
+    }
+
+    .sds-breadcrumb__list {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .sds-breadcrumb__item {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .sds-breadcrumb__separator {
+      display: inline-flex;
+      align-items: center;
+      color: var(--sds-color-warm-gray-350);
+      font-size: 18px;
+      margin: 0 var(--sds-space-050);
+      user-select: none;
+    }
+
+    .sds-breadcrumb__link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-secondary);
+      text-decoration: none;
+      padding: var(--sds-space-050) var(--sds-space-100);
+      border-radius: 4px;
+      transition: color 0.15s ease, background 0.15s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .sds-breadcrumb__link:hover {
+      color: var(--sds-interactive-primary);
+      background: var(--sds-color-blue-050);
+    }
+
+    .sds-breadcrumb__link:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+    .sds-breadcrumb__link .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    .sds-breadcrumb__current {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      padding: var(--sds-space-050) var(--sds-space-100);
+      white-space: nowrap;
+    }
+
+    .sds-breadcrumb__current .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* ---- Ellipsis / Collapsed ---- */
+
+    .sds-breadcrumb__ellipsis {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-secondary);
+      background: none;
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--sds-font-sans);
+      transition: background 0.15s ease, border-color 0.15s ease;
+      padding: 0;
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+
+    .sds-breadcrumb__ellipsis:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+      color: var(--sds-text-primary);
+    }
+
+    .sds-breadcrumb__ellipsis:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-breadcrumb__collapsed {
+      display: none;
+    }
+
+    .sds-breadcrumb__collapsed.is-expanded {
+      display: contents;
+    }
+
+    .sds-breadcrumb__ellipsis-wrapper {
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .sds-breadcrumb__ellipsis-wrapper.is-hidden {
+      display: none;
+    }
+
+    /* ---- Dropdown ---- */
+
+    .sds-breadcrumb__dropdown-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .sds-breadcrumb__dropdown-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-secondary);
+      text-decoration: none;
+      padding: var(--sds-space-050) var(--sds-space-100);
+      border-radius: 4px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: color 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .sds-breadcrumb__dropdown-trigger:hover {
+      color: var(--sds-interactive-primary);
+      background: var(--sds-color-blue-050);
+    }
+
+    .sds-breadcrumb__dropdown-trigger:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-breadcrumb__dropdown-trigger .material-symbols-outlined {
+      font-size: 16px;
+      transition: transform 0.15s ease;
+    }
+
+    .sds-breadcrumb__dropdown-trigger.is-open .material-symbols-outlined {
+      transform: rotate(180deg);
+    }
+
+    .sds-breadcrumb__dropdown-menu {
+      position: absolute;
+      top: calc(100% + var(--sds-space-100));
+      left: 0;
+      min-width: 200px;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      padding: var(--sds-space-100) 0;
+      z-index: 100;
+      display: none;
+    }
+
+    .sds-breadcrumb__dropdown-menu.is-open {
+      display: block;
+    }
+
+    .sds-breadcrumb__dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      width: 100%;
+      padding: var(--sds-space-200) var(--sds-space-400);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-primary);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: background 0.1s ease;
+      text-align: left;
+    }
+
+    .sds-breadcrumb__dropdown-item:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-breadcrumb__dropdown-item:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    .sds-breadcrumb__dropdown-item.is-active {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-interactive-primary);
+    }
+
+    .sds-breadcrumb__dropdown-item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-tertiary);
+    }
+
+    .sds-breadcrumb__dropdown-item.is-active .material-symbols-outlined {
+      color: var(--sds-interactive-primary);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: middle; margin-right: var(--sds-space-100); border: 1px solid rgba(0,0,0,0.08); }
+  </style>
+</head>
+<body>
+
+  <h1>Breadcrumbs</h1>
+  <p class="page-subtitle">Hierarchical navigation showing the user's current location within the application structure. Essential for deep enterprise workflows like policy management, data catalog browsing, and audit trails.</p>
+
+  <!-- ============================================================
+       BASIC BREADCRUMBS
+       ============================================================ -->
+  <h2>Basic Breadcrumbs</h2>
+  <p>Simple text links separated by chevron icons. The last item represents the current page and is rendered as bold, non-interactive text with <code>aria-current="page"</code>.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Default</div>
+    <div class="demo-stack">
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Home</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Settings</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">General</span>
+          </li>
+        </ol>
+      </nav>
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Home</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Data Catalog</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Databases</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">Production PostgreSQL</span>
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       WITH ICONS
+       ============================================================ -->
+  <h2>With Icons</h2>
+  <p>Leading icons on breadcrumb items provide additional visual context, especially useful when items represent distinct entity types (e.g. home, folder, file).</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Icon breadcrumbs</div>
+    <div class="demo-stack">
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">home</span>
+              Home
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">shield</span>
+              Security
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">policy</span>
+              Policies
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">
+              <span class="material-symbols-outlined" aria-hidden="true">description</span>
+              DLP Policy #42
+            </span>
+          </li>
+        </ol>
+      </nav>
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">home</span>
+              Home
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">storage</span>
+              Data Catalog
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">database</span>
+              Databases
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">
+              <span class="material-symbols-outlined" aria-hidden="true">table_chart</span>
+              users_pii
+            </span>
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       COLLAPSED / TRUNCATED
+       ============================================================ -->
+  <h2>Collapsed / Truncated</h2>
+  <p>When breadcrumb trails exceed four levels, middle items are collapsed behind an ellipsis button. Clicking the ellipsis expands the full path inline. This keeps the component compact while still providing access to the full hierarchy.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Click ellipsis to expand</div>
+    <div class="demo-stack">
+
+      <!-- Collapsed breadcrumb 1 -->
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb" id="collapsed-demo-1">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Home</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__ellipsis-wrapper">
+            <button class="sds-breadcrumb__ellipsis" aria-label="Show full path" onclick="expandBreadcrumb(this)">&hellip;</button>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__collapsed">
+            <a href="#" class="sds-breadcrumb__link">Settings</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__collapsed">
+            <a href="#" class="sds-breadcrumb__link">Security</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__collapsed">
+            <a href="#" class="sds-breadcrumb__link">Policies</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">DLP Rules</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">Credit Card Detection</span>
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Collapsed breadcrumb 2 -->
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb" id="collapsed-demo-2">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Home</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__ellipsis-wrapper">
+            <button class="sds-breadcrumb__ellipsis" aria-label="Show full path" onclick="expandBreadcrumb(this)">&hellip;</button>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__collapsed">
+            <a href="#" class="sds-breadcrumb__link">Data Catalog</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__collapsed">
+            <a href="#" class="sds-breadcrumb__link">Databases</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__collapsed">
+            <a href="#" class="sds-breadcrumb__link">Production PostgreSQL</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Tables</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">users_pii</span>
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       WITH DROPDOWN
+       ============================================================ -->
+  <h2>With Dropdown</h2>
+  <p>A breadcrumb item that opens a dropdown menu for switching between sibling pages at the same hierarchy level. Useful for navigating between related policies, tables, or data sources without going back up the tree.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Click the dropdown item to switch siblings</div>
+    <div class="demo-stack">
+
+      <!-- Dropdown breadcrumb 1 -->
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Home</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Settings</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Policies</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__dropdown-wrapper">
+            <button class="sds-breadcrumb__dropdown-trigger" onclick="toggleBreadcrumbDropdown(this)" aria-haspopup="true" aria-expanded="false">
+              DLP Rules
+              <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
+            </button>
+            <div class="sds-breadcrumb__dropdown-menu" role="menu">
+              <a href="#" class="sds-breadcrumb__dropdown-item is-active" role="menuitem">
+                <span class="material-symbols-outlined" aria-hidden="true">check</span>
+                DLP Rules
+              </a>
+              <a href="#" class="sds-breadcrumb__dropdown-item" role="menuitem">Access Control Rules</a>
+              <a href="#" class="sds-breadcrumb__dropdown-item" role="menuitem">Encryption Policies</a>
+              <a href="#" class="sds-breadcrumb__dropdown-item" role="menuitem">Retention Policies</a>
+              <a href="#" class="sds-breadcrumb__dropdown-item" role="menuitem">Masking Rules</a>
+            </div>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">Credit Card Detection</span>
+          </li>
+        </ol>
+      </nav>
+
+      <!-- Dropdown breadcrumb 2 -->
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Data Catalog</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item sds-breadcrumb__dropdown-wrapper">
+            <button class="sds-breadcrumb__dropdown-trigger" onclick="toggleBreadcrumbDropdown(this)" aria-haspopup="true" aria-expanded="false">
+              Production PostgreSQL
+              <span class="material-symbols-outlined" aria-hidden="true">expand_more</span>
+            </button>
+            <div class="sds-breadcrumb__dropdown-menu" role="menu">
+              <a href="#" class="sds-breadcrumb__dropdown-item is-active" role="menuitem">
+                <span class="material-symbols-outlined" aria-hidden="true">check</span>
+                Production PostgreSQL
+              </a>
+              <a href="#" class="sds-breadcrumb__dropdown-item" role="menuitem">Staging PostgreSQL</a>
+              <a href="#" class="sds-breadcrumb__dropdown-item" role="menuitem">Analytics Snowflake</a>
+              <a href="#" class="sds-breadcrumb__dropdown-item" role="menuitem">Marketing Redshift</a>
+            </div>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">Tables</a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">users_pii</span>
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       DEEP HIERARCHY EXAMPLES
+       ============================================================ -->
+  <h2>Deep Hierarchy Examples</h2>
+  <p>Realistic breadcrumb trails from a data security product, demonstrating how the component handles deep navigation paths across different product areas.</p>
+
+  <h3>Policy Management</h3>
+  <div class="demo-block">
+    <div class="demo-label">Settings path</div>
+    <div class="demo-stack">
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">home</span>
+              Home
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">settings</span>
+              Settings
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">policy</span>
+              Policies
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">rule</span>
+              DLP Rules
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">
+              <span class="material-symbols-outlined" aria-hidden="true">description</span>
+              SSN Detection Rule
+            </span>
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+
+  <h3>Data Catalog</h3>
+  <div class="demo-block">
+    <div class="demo-label">Catalog path</div>
+    <div class="demo-stack">
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">home</span>
+              Home
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">storage</span>
+              Data Catalog
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">database</span>
+              Databases
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">table_chart</span>
+              Tables
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">
+              <span class="material-symbols-outlined" aria-hidden="true">view_column</span>
+              Columns
+            </span>
+          </li>
+        </ol>
+      </nav>
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">storage</span>
+              Data Catalog
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">database</span>
+              Production PostgreSQL
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">table_chart</span>
+              customer_records
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">
+              <span class="material-symbols-outlined" aria-hidden="true">view_column</span>
+              email_address
+            </span>
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+
+  <h3>Audit &amp; Compliance</h3>
+  <div class="demo-block">
+    <div class="demo-label">Audit path</div>
+    <div class="demo-stack">
+
+      <nav class="sds-breadcrumb" aria-label="Breadcrumb">
+        <ol class="sds-breadcrumb__list">
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">home</span>
+              Home
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">fact_check</span>
+              Compliance
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <a href="#" class="sds-breadcrumb__link">
+              <span class="material-symbols-outlined" aria-hidden="true">history</span>
+              Audit Logs
+            </a>
+            <span class="sds-breadcrumb__separator material-symbols-outlined" aria-hidden="true">chevron_right</span>
+          </li>
+          <li class="sds-breadcrumb__item">
+            <span class="sds-breadcrumb__current" aria-current="page">
+              <span class="material-symbols-outlined" aria-hidden="true">receipt_long</span>
+              Event #AUD-2026-03847
+            </span>
+          </li>
+        </ol>
+      </nav>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Link text</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-text-secondary)"></span><code>--sds-text-secondary</code></td>
+      </tr>
+      <tr>
+        <td>Link text (hover)</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-interactive-primary)"></span><code>--sds-interactive-primary</code></td>
+      </tr>
+      <tr>
+        <td>Link background (hover)</td>
+        <td>background</td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-050)"></span><code>--sds-color-blue-050</code></td>
+      </tr>
+      <tr>
+        <td>Current page text</td>
+        <td>color, font-weight</td>
+        <td><span class="swatch" style="background:var(--sds-text-primary)"></span><code>--sds-text-primary</code> &nbsp;600</td>
+      </tr>
+      <tr>
+        <td>Separator icon</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-350)"></span><code>--sds-color-warm-gray-350</code></td>
+      </tr>
+      <tr>
+        <td>Separator icon</td>
+        <td>size</td>
+        <td><code>18px</code></td>
+      </tr>
+      <tr>
+        <td>Font size</td>
+        <td>font-size</td>
+        <td><code>--sds-type-label</code> (13px)</td>
+      </tr>
+      <tr>
+        <td>Item padding</td>
+        <td>padding</td>
+        <td><code>var(--sds-space-050) var(--sds-space-100)</code> (2px 4px)</td>
+      </tr>
+      <tr>
+        <td>Separator spacing</td>
+        <td>margin</td>
+        <td><code>0 var(--sds-space-050)</code> (0 2px)</td>
+      </tr>
+      <tr>
+        <td>Item icon size</td>
+        <td>font-size</td>
+        <td><code>16px</code></td>
+      </tr>
+      <tr>
+        <td>Icon-to-text gap</td>
+        <td>gap</td>
+        <td><code>var(--sds-space-100)</code> (4px)</td>
+      </tr>
+      <tr>
+        <td>Focus ring</td>
+        <td>outline</td>
+        <td><span class="swatch" style="background:var(--sds-border-focus)"></span><code>--sds-border-focus</code> &nbsp;2px, offset 2px</td>
+      </tr>
+      <tr>
+        <td>Link border-radius</td>
+        <td>border-radius</td>
+        <td><code>4px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Ellipsis Button</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Size</td><td><code>28px &times; 28px</code></td></tr>
+      <tr><td>Border</td><td>1px solid <code>--sds-color-warm-gray-200</code></td></tr>
+      <tr><td>Border (hover)</td><td><code>--sds-color-warm-gray-300</code></td></tr>
+      <tr><td>Background (hover)</td><td><code>--sds-color-warm-gray-050</code></td></tr>
+      <tr><td>Border radius</td><td><code>4px</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Dropdown Menu</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Background</td><td><code>--sds-bg-elevated</code></td></tr>
+      <tr><td>Border</td><td>1px solid <code>--sds-border-default</code></td></tr>
+      <tr><td>Border radius</td><td><code>8px</code></td></tr>
+      <tr><td>Box shadow</td><td><code>0 4px 16px rgba(0,0,0,0.12)</code></td></tr>
+      <tr><td>Min width</td><td><code>200px</code></td></tr>
+      <tr><td>Item padding</td><td><code>var(--sds-space-200) var(--sds-space-400)</code></td></tr>
+      <tr><td>Item hover bg</td><td><code>--sds-color-warm-gray-050</code></td></tr>
+      <tr><td>Active item color</td><td><code>--sds-interactive-primary</code></td></tr>
+      <tr><td>Active item weight</td><td><code>--sds-weight-semibold</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>Accessibility</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Requirement</th><th>Implementation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Landmark</td><td><code>&lt;nav&gt;</code> with <code>aria-label="Breadcrumb"</code></td></tr>
+      <tr><td>List structure</td><td><code>&lt;ol&gt;</code> for ordered hierarchy; <code>&lt;li&gt;</code> per item</td></tr>
+      <tr><td>Current page</td><td><code>aria-current="page"</code> on the last item</td></tr>
+      <tr><td>Separators</td><td><code>aria-hidden="true"</code> on chevron icons</td></tr>
+      <tr><td>Ellipsis button</td><td><code>aria-label="Show full path"</code></td></tr>
+      <tr><td>Dropdown trigger</td><td><code>aria-haspopup="true"</code>, <code>aria-expanded</code> toggled</td></tr>
+      <tr><td>Dropdown menu</td><td><code>role="menu"</code> with <code>role="menuitem"</code> children</td></tr>
+      <tr><td>Focus</td><td><code>:focus-visible</code> ring using <code>--sds-border-focus</code> (2px, offset 2px)</td></tr>
+      <tr><td>Keyboard</td><td>Escape closes dropdown; Tab moves through links</td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-breadcrumb</code></td><td>Root wrapper (<code>nav</code> element)</td></tr>
+      <tr><td><code>.sds-breadcrumb__list</code></td><td>Ordered list container</td></tr>
+      <tr><td><code>.sds-breadcrumb__item</code></td><td>List item wrapper</td></tr>
+      <tr><td><code>.sds-breadcrumb__link</code></td><td>Clickable ancestor link</td></tr>
+      <tr><td><code>.sds-breadcrumb__current</code></td><td>Non-interactive current page text (bold)</td></tr>
+      <tr><td><code>.sds-breadcrumb__separator</code></td><td>Chevron icon between items</td></tr>
+      <tr><td><code>.sds-breadcrumb__ellipsis</code></td><td>Expand button for collapsed items</td></tr>
+      <tr><td><code>.sds-breadcrumb__collapsed</code></td><td>Hidden items revealed on expand</td></tr>
+      <tr><td><code>.sds-breadcrumb__dropdown-wrapper</code></td><td>Positioning context for dropdown</td></tr>
+      <tr><td><code>.sds-breadcrumb__dropdown-trigger</code></td><td>Button that opens sibling menu</td></tr>
+      <tr><td><code>.sds-breadcrumb__dropdown-menu</code></td><td>Dropdown panel with sibling links</td></tr>
+      <tr><td><code>.sds-breadcrumb__dropdown-item</code></td><td>Individual menu item</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    /* ---- Expand collapsed breadcrumb items ---- */
+    function expandBreadcrumb(btn) {
+      var nav = btn.closest('.sds-breadcrumb');
+      var collapsed = nav.querySelectorAll('.sds-breadcrumb__collapsed');
+      collapsed.forEach(function(el) {
+        el.classList.add('is-expanded');
+      });
+      var wrapper = btn.closest('.sds-breadcrumb__ellipsis-wrapper');
+      wrapper.classList.add('is-hidden');
+    }
+
+    /* ---- Dropdown toggle ---- */
+    function toggleBreadcrumbDropdown(trigger) {
+      var menu = trigger.nextElementSibling;
+      var isOpen = menu.classList.contains('is-open');
+
+      // Close all open dropdowns first
+      document.querySelectorAll('.sds-breadcrumb__dropdown-menu.is-open').forEach(function(m) {
+        m.classList.remove('is-open');
+        m.previousElementSibling.classList.remove('is-open');
+        m.previousElementSibling.setAttribute('aria-expanded', 'false');
+      });
+
+      if (!isOpen) {
+        menu.classList.add('is-open');
+        trigger.classList.add('is-open');
+        trigger.setAttribute('aria-expanded', 'true');
+      }
+    }
+
+    /* ---- Close dropdowns on outside click ---- */
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.sds-breadcrumb__dropdown-wrapper')) {
+        document.querySelectorAll('.sds-breadcrumb__dropdown-menu.is-open').forEach(function(m) {
+          m.classList.remove('is-open');
+          m.previousElementSibling.classList.remove('is-open');
+          m.previousElementSibling.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+
+    /* ---- Close dropdowns on Escape ---- */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.sds-breadcrumb__dropdown-menu.is-open').forEach(function(m) {
+          m.classList.remove('is-open');
+          var trigger = m.previousElementSibling;
+          trigger.classList.remove('is-open');
+          trigger.setAttribute('aria-expanded', 'false');
+          trigger.focus();
+        });
+      }
+    });
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

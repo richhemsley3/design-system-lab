@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Command Palette</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+
+    /* ============================================================
+       COMMAND PALETTE COMPONENT
+       ============================================================ */
+
+    /* Trigger button */
+    .sds-cmd-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-secondary);
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      padding: var(--sds-space-200) var(--sds-space-400);
+      cursor: pointer;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      height: 40px;
+    }
+    .sds-cmd-trigger:hover {
+      border-color: var(--sds-border-strong);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    }
+    .sds-cmd-trigger:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-cmd-trigger .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-tertiary);
+    }
+    .sds-cmd-trigger-text {
+      flex: 1;
+      text-align: left;
+    }
+    .sds-cmd-kbd {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-tertiary);
+      background: var(--sds-color-warm-gray-050);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 4px;
+      padding: var(--sds-space-050) var(--sds-space-150);
+      line-height: 1;
+      min-width: 22px;
+      height: 20px;
+    }
+
+    /* Overlay */
+    .sds-command-palette-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding-top: 120px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.15s ease, visibility 0.15s ease;
+    }
+    .sds-command-palette-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Palette container */
+    .sds-command-palette {
+      width: 100%;
+      max-width: 560px;
+      background: var(--sds-bg-elevated);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.16);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateY(-8px) scale(0.98);
+      transition: transform 0.15s ease;
+      max-height: 480px;
+    }
+    .sds-command-palette-overlay.is-open .sds-command-palette {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Search header */
+    .sds-cmd-search {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-border-default);
+    }
+    .sds-cmd-search .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--sds-text-tertiary);
+      flex-shrink: 0;
+    }
+    .sds-cmd-search-input {
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-primary);
+      padding: 0;
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-cmd-search-input::placeholder {
+      color: var(--sds-text-tertiary);
+    }
+    .sds-cmd-search-hint {
+      flex-shrink: 0;
+    }
+
+    /* Results list */
+    .sds-cmd-results {
+      overflow-y: auto;
+      padding: var(--sds-space-200) 0;
+      flex: 1;
+    }
+
+    /* Group header */
+    .sds-cmd-group-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-text-tertiary);
+      padding: var(--sds-space-200) var(--sds-space-400) var(--sds-space-100);
+      margin: 0;
+    }
+    .sds-cmd-group + .sds-cmd-group .sds-cmd-group-label {
+      border-top: 1px solid var(--sds-color-warm-gray-050);
+      padding-top: var(--sds-space-300);
+      margin-top: var(--sds-space-100);
+    }
+
+    /* Result item */
+    .sds-cmd-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-200) var(--sds-space-400);
+      cursor: pointer;
+      transition: background 0.1s ease;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font-family: var(--sds-font-sans);
+    }
+    .sds-cmd-item:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -2px;
+    }
+    .sds-cmd-item:hover,
+    .sds-cmd-item.is-active {
+      background: var(--sds-color-blue-050);
+    }
+    .sds-cmd-item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-secondary);
+      flex-shrink: 0;
+    }
+    .sds-cmd-item.is-active .material-symbols-outlined {
+      color: var(--sds-interactive-primary);
+    }
+    .sds-cmd-item-label {
+      flex: 1;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-snug);
+    }
+    .sds-cmd-item.is-active .sds-cmd-item-label {
+      color: var(--sds-interactive-primary);
+      font-weight: var(--sds-weight-medium);
+    }
+    .sds-cmd-item-shortcut {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+      flex-shrink: 0;
+    }
+
+    /* Match highlight */
+    .sds-cmd-match {
+      background: var(--sds-color-yellow-100);
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    /* Empty state */
+    .sds-cmd-empty {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sds-space-1000) var(--sds-space-400);
+      text-align: center;
+    }
+    .sds-cmd-empty .material-symbols-outlined {
+      font-size: 40px;
+      color: var(--sds-color-warm-gray-200);
+      margin-bottom: var(--sds-space-300);
+    }
+    .sds-cmd-empty-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin: 0 0 var(--sds-space-100);
+    }
+    .sds-cmd-empty-desc {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      margin: 0;
+    }
+
+    /* Footer */
+    .sds-cmd-footer {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-200) var(--sds-space-400);
+      border-top: 1px solid var(--sds-border-default);
+      background: var(--sds-color-warm-gray-025);
+    }
+    .sds-cmd-footer-hint {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+
+    /* ---- Inline static palette (for demo blocks) ---- */
+    .sds-cmd-static {
+      width: 100%;
+      max-width: 560px;
+      background: var(--sds-bg-elevated);
+      border-radius: 12px;
+      border: 1px solid var(--sds-border-default);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      max-height: 420px;
+    }
+
+    /* ---- Spec table ---- */
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+<h1>Command Palette</h1>
+<p class="page-subtitle">A keyboard-first navigation interface for quickly finding pages, executing actions, and accessing settings. Activated with <code>⌘K</code> to provide instant access across the application.</p>
+
+<!-- ============ BASIC COMMAND PALETTE ============ -->
+<h2>Basic Command Palette</h2>
+<p>A modal overlay with a search input and grouped results. Opens via a trigger button or the <code>⌘K</code> keyboard shortcut. Results are organized by category for quick scanning.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Trigger</div>
+  <div class="demo-row">
+    <button class="sds-cmd-trigger" onclick="openPalette('palette-basic')">
+      <span class="material-symbols-outlined">search</span>
+      <span class="sds-cmd-trigger-text">Search or jump to&hellip;</span>
+      <kbd class="sds-cmd-kbd">⌘K</kbd>
+    </button>
+  </div>
+</div>
+
+<div class="demo-block">
+  <div class="demo-label">Static Preview</div>
+  <div class="sds-cmd-static">
+    <div class="sds-cmd-search">
+      <span class="material-symbols-outlined">search</span>
+      <input class="sds-cmd-search-input" type="text" placeholder="Search or jump to&hellip;" disabled />
+      <kbd class="sds-cmd-kbd">ESC</kbd>
+    </div>
+    <div class="sds-cmd-results">
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Pages</div>
+        <div class="sds-cmd-item is-active" role="option">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="sds-cmd-item-label">Dashboard</span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">shield</span>
+          <span class="sds-cmd-item-label">Data Security Policies</span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">monitoring</span>
+          <span class="sds-cmd-item-label">Activity Monitor</span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Actions</div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">add_circle</span>
+          <span class="sds-cmd-item-label">Create New Policy</span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">upload</span>
+          <span class="sds-cmd-item-label">Import Configuration</span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Recent</div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">history</span>
+          <span class="sds-cmd-item-label">PII Detection Rules</span>
+        </div>
+      </div>
+    </div>
+    <div class="sds-cmd-footer">
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↑↓</kbd> Navigate</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↵</kbd> Select</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">ESC</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+<!-- Interactive overlay for Basic palette -->
+<div id="palette-basic" class="sds-command-palette-overlay" role="dialog" aria-label="Command palette" onclick="closeOverlayPalette(event)">
+  <div class="sds-command-palette" role="combobox" aria-expanded="true" aria-haspopup="listbox">
+    <div class="sds-cmd-search">
+      <span class="material-symbols-outlined">search</span>
+      <input class="sds-cmd-search-input" type="text" placeholder="Search or jump to&hellip;" aria-label="Search commands" />
+      <kbd class="sds-cmd-kbd">ESC</kbd>
+    </div>
+    <div class="sds-cmd-results" role="listbox" aria-label="Results">
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Pages</div>
+        <div class="sds-cmd-item is-active" role="option" id="basic-opt-0" tabindex="-1">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="sds-cmd-item-label">Dashboard</span>
+        </div>
+        <div class="sds-cmd-item" role="option" id="basic-opt-1" tabindex="-1">
+          <span class="material-symbols-outlined">shield</span>
+          <span class="sds-cmd-item-label">Data Security Policies</span>
+        </div>
+        <div class="sds-cmd-item" role="option" id="basic-opt-2" tabindex="-1">
+          <span class="material-symbols-outlined">monitoring</span>
+          <span class="sds-cmd-item-label">Activity Monitor</span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Actions</div>
+        <div class="sds-cmd-item" role="option" id="basic-opt-3" tabindex="-1">
+          <span class="material-symbols-outlined">add_circle</span>
+          <span class="sds-cmd-item-label">Create New Policy</span>
+        </div>
+        <div class="sds-cmd-item" role="option" id="basic-opt-4" tabindex="-1">
+          <span class="material-symbols-outlined">upload</span>
+          <span class="sds-cmd-item-label">Import Configuration</span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Recent</div>
+        <div class="sds-cmd-item" role="option" id="basic-opt-5" tabindex="-1">
+          <span class="material-symbols-outlined">history</span>
+          <span class="sds-cmd-item-label">PII Detection Rules</span>
+        </div>
+      </div>
+    </div>
+    <div class="sds-cmd-footer">
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↑↓</kbd> Navigate</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↵</kbd> Select</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">ESC</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ WITH ICONS & SHORTCUTS ============ -->
+<h2>With Icons &amp; Shortcuts</h2>
+<p>Each result item displays a leading Material Symbol icon for visual identification and an optional trailing keyboard shortcut badge for power users.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Icons &amp; Keyboard Shortcut Badges</div>
+  <div class="sds-cmd-static">
+    <div class="sds-cmd-search">
+      <span class="material-symbols-outlined">search</span>
+      <input class="sds-cmd-search-input" type="text" placeholder="Type a command&hellip;" disabled />
+      <kbd class="sds-cmd-kbd">ESC</kbd>
+    </div>
+    <div class="sds-cmd-results">
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Navigation</div>
+        <div class="sds-cmd-item is-active" role="option">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="sds-cmd-item-label">Dashboard</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">G</kbd><kbd class="sds-cmd-kbd">D</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">shield</span>
+          <span class="sds-cmd-item-label">Security Policies</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">G</kbd><kbd class="sds-cmd-kbd">P</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">person</span>
+          <span class="sds-cmd-item-label">User Management</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">G</kbd><kbd class="sds-cmd-kbd">U</kbd></span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Actions</div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">add_circle</span>
+          <span class="sds-cmd-item-label">Create New Policy</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">⌘</kbd><kbd class="sds-cmd-kbd">N</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">scan</span>
+          <span class="sds-cmd-item-label">Run Data Scan</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">⌘</kbd><kbd class="sds-cmd-kbd">⇧</kbd><kbd class="sds-cmd-kbd">S</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">download</span>
+          <span class="sds-cmd-item-label">Export Audit Log</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">⌘</kbd><kbd class="sds-cmd-kbd">E</kbd></span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Settings</div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="sds-cmd-item-label">General Settings</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">⌘</kbd><kbd class="sds-cmd-kbd">,</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">palette</span>
+          <span class="sds-cmd-item-label">Theme Preferences</span>
+        </div>
+      </div>
+    </div>
+    <div class="sds-cmd-footer">
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↑↓</kbd> Navigate</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↵</kbd> Select</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">ESC</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ SEARCH FILTERING ============ -->
+<h2>Search Filtering</h2>
+<p>Type in the search input to filter results in real time. Matching text is highlighted within result labels. Open the interactive demo below to try it.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive — Try Typing to Filter</div>
+  <div class="demo-row">
+    <button class="sds-cmd-trigger" onclick="openPalette('palette-filter')">
+      <span class="material-symbols-outlined">search</span>
+      <span class="sds-cmd-trigger-text">Open filterable palette&hellip;</span>
+      <kbd class="sds-cmd-kbd">⌘K</kbd>
+    </button>
+  </div>
+</div>
+
+<!-- Interactive overlay for Filtering palette -->
+<div id="palette-filter" class="sds-command-palette-overlay" role="dialog" aria-label="Command palette with filtering" onclick="closeOverlayPalette(event)">
+  <div class="sds-command-palette" role="combobox" aria-expanded="true" aria-haspopup="listbox">
+    <div class="sds-cmd-search">
+      <span class="material-symbols-outlined">search</span>
+      <input class="sds-cmd-search-input js-filter-input" type="text" placeholder="Search or jump to&hellip;" aria-label="Search commands" />
+      <kbd class="sds-cmd-kbd">ESC</kbd>
+    </div>
+    <div class="sds-cmd-results js-filter-results" role="listbox" aria-label="Filtered results"></div>
+    <div class="sds-cmd-footer">
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↑↓</kbd> Navigate</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↵</kbd> Select</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">ESC</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ GROUPED RESULTS ============ -->
+<h2>Grouped Results</h2>
+<p>Results are organized under clearly labeled group headers: Navigation, Actions, Settings, and Recent. Groups without matching results are hidden during search filtering.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Four-Group Layout</div>
+  <div class="sds-cmd-static">
+    <div class="sds-cmd-search">
+      <span class="material-symbols-outlined">search</span>
+      <input class="sds-cmd-search-input" type="text" placeholder="Search or jump to&hellip;" disabled />
+      <kbd class="sds-cmd-kbd">ESC</kbd>
+    </div>
+    <div class="sds-cmd-results">
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Navigation</div>
+        <div class="sds-cmd-item is-active" role="option">
+          <span class="material-symbols-outlined">dashboard</span>
+          <span class="sds-cmd-item-label">Dashboard</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">G</kbd><kbd class="sds-cmd-kbd">D</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">shield</span>
+          <span class="sds-cmd-item-label">Data Security Policies</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">G</kbd><kbd class="sds-cmd-kbd">P</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">monitoring</span>
+          <span class="sds-cmd-item-label">Activity Monitor</span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">database</span>
+          <span class="sds-cmd-item-label">Data Sources</span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Actions</div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">add_circle</span>
+          <span class="sds-cmd-item-label">Create New Policy</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">⌘</kbd><kbd class="sds-cmd-kbd">N</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">scan</span>
+          <span class="sds-cmd-item-label">Run Data Scan</span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">download</span>
+          <span class="sds-cmd-item-label">Export Audit Log</span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Settings</div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">settings</span>
+          <span class="sds-cmd-item-label">General Settings</span>
+          <span class="sds-cmd-item-shortcut"><kbd class="sds-cmd-kbd">⌘</kbd><kbd class="sds-cmd-kbd">,</kbd></span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">notifications</span>
+          <span class="sds-cmd-item-label">Notification Preferences</span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">key</span>
+          <span class="sds-cmd-item-label">API Keys &amp; Tokens</span>
+        </div>
+      </div>
+      <div class="sds-cmd-group">
+        <div class="sds-cmd-group-label">Recent</div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">history</span>
+          <span class="sds-cmd-item-label">PII Detection Rules</span>
+        </div>
+        <div class="sds-cmd-item" role="option">
+          <span class="material-symbols-outlined">history</span>
+          <span class="sds-cmd-item-label">Encryption Policy — Production</span>
+        </div>
+      </div>
+    </div>
+    <div class="sds-cmd-footer">
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↑↓</kbd> Navigate</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">↵</kbd> Select</span>
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">ESC</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ EMPTY STATE ============ -->
+<h2>Empty State</h2>
+<p>When the search query returns no matching results, the palette displays a friendly empty state with guidance to try a different query.</p>
+
+<div class="demo-block">
+  <div class="demo-label">No Results Found</div>
+  <div class="sds-cmd-static">
+    <div class="sds-cmd-search">
+      <span class="material-symbols-outlined">search</span>
+      <input class="sds-cmd-search-input" type="text" value="xyzabc123" disabled />
+      <kbd class="sds-cmd-kbd">ESC</kbd>
+    </div>
+    <div class="sds-cmd-results">
+      <div class="sds-cmd-empty">
+        <span class="material-symbols-outlined">search_off</span>
+        <p class="sds-cmd-empty-title">No results found</p>
+        <p class="sds-cmd-empty-desc">Try a different search term or browse available commands.</p>
+      </div>
+    </div>
+    <div class="sds-cmd-footer">
+      <span class="sds-cmd-footer-hint"><kbd class="sds-cmd-kbd">ESC</kbd> Close</span>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ SPECIFICATIONS ============ -->
+<h2>Specifications</h2>
+<p>Token reference and structural dimensions for the command palette component.</p>
+
+<h3>Anatomy</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Class</th>
+      <th>Token / Value</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Overlay</td>
+      <td><code>.sds-command-palette-overlay</code></td>
+      <td>rgba(0,0,0,0.5)</td>
+      <td>Fixed fullscreen, z-index 9000, padding-top 120px</td>
+    </tr>
+    <tr>
+      <td>Container</td>
+      <td><code>.sds-command-palette</code></td>
+      <td>max-width 560px, max-height 480px</td>
+      <td>12px radius, <code>--sds-shadow-xl</code>, flex column</td>
+    </tr>
+    <tr>
+      <td>Search bar</td>
+      <td><code>.sds-cmd-search</code></td>
+      <td><code>--sds-space-300</code> / <code>--sds-space-400</code></td>
+      <td>Bottom border, flex row with icon + input + hint</td>
+    </tr>
+    <tr>
+      <td>Results list</td>
+      <td><code>.sds-cmd-results</code></td>
+      <td><code>--sds-space-200</code> vertical padding</td>
+      <td>Scrollable overflow-y, flex: 1</td>
+    </tr>
+    <tr>
+      <td>Group label</td>
+      <td><code>.sds-cmd-group-label</code></td>
+      <td><code>--sds-type-overline</code></td>
+      <td>Uppercase, <code>--sds-tracking-wide</code></td>
+    </tr>
+    <tr>
+      <td>Result item</td>
+      <td><code>.sds-cmd-item</code></td>
+      <td><code>--sds-space-200</code> / <code>--sds-space-400</code></td>
+      <td>Icon 18px, label flex:1, optional shortcut badge</td>
+    </tr>
+    <tr>
+      <td>Active item</td>
+      <td><code>.sds-cmd-item.is-active</code></td>
+      <td><code>--sds-color-blue-050</code></td>
+      <td>Label color <code>--sds-interactive-primary</code></td>
+    </tr>
+    <tr>
+      <td>Footer</td>
+      <td><code>.sds-cmd-footer</code></td>
+      <td><code>--sds-space-200</code> / <code>--sds-space-400</code></td>
+      <td>Top border, <code>--sds-color-warm-gray-025</code> background</td>
+    </tr>
+    <tr>
+      <td>Empty state</td>
+      <td><code>.sds-cmd-empty</code></td>
+      <td><code>--sds-space-1000</code> padding</td>
+      <td>Centered icon, title, description</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Keyboard Interactions</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Key</th>
+      <th>Action</th>
+      <th>Context</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>⌘K</code></td>
+      <td>Open command palette</td>
+      <td>Global — works anywhere in the application</td>
+    </tr>
+    <tr>
+      <td><code>Escape</code></td>
+      <td>Close command palette</td>
+      <td>While palette is open</td>
+    </tr>
+    <tr>
+      <td><code>↑</code> / <code>↓</code></td>
+      <td>Navigate between result items</td>
+      <td>While palette is open, wraps around</td>
+    </tr>
+    <tr>
+      <td><code>Enter</code></td>
+      <td>Select the active result</td>
+      <td>Activates the highlighted item</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>ARIA Roles</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Role / Attribute</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Overlay</td>
+      <td><code>role="dialog"</code>, <code>aria-label</code></td>
+      <td>Announced as dialog on open</td>
+    </tr>
+    <tr>
+      <td>Palette container</td>
+      <td><code>role="combobox"</code>, <code>aria-expanded</code>, <code>aria-haspopup="listbox"</code></td>
+      <td>Composite widget pattern</td>
+    </tr>
+    <tr>
+      <td>Results list</td>
+      <td><code>role="listbox"</code>, <code>aria-label</code></td>
+      <td>Contains all option items</td>
+    </tr>
+    <tr>
+      <td>Result item</td>
+      <td><code>role="option"</code></td>
+      <td>Each selectable result</td>
+    </tr>
+    <tr>
+      <td>Search input</td>
+      <td><code>aria-activedescendant</code></td>
+      <td>Points to active option ID</td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  /* ============================================================
+     COMMAND PALETTE — Interactive JS
+     ============================================================ */
+
+  /* ---------- Data for the filterable palette ---------- */
+  var cmdData = [
+    { group: 'Navigation', icon: 'dashboard',    label: 'Dashboard',                   shortcut: 'G D' },
+    { group: 'Navigation', icon: 'shield',        label: 'Data Security Policies',      shortcut: 'G P' },
+    { group: 'Navigation', icon: 'monitoring',    label: 'Activity Monitor',            shortcut: '' },
+    { group: 'Navigation', icon: 'database',      label: 'Data Sources',                shortcut: '' },
+    { group: 'Navigation', icon: 'person',        label: 'User Management',             shortcut: 'G U' },
+    { group: 'Navigation', icon: 'description',   label: 'Audit Reports',               shortcut: '' },
+    { group: 'Actions',    icon: 'add_circle',    label: 'Create New Policy',           shortcut: '⌘ N' },
+    { group: 'Actions',    icon: 'scan',          label: 'Run Data Scan',               shortcut: '⌘ ⇧ S' },
+    { group: 'Actions',    icon: 'download',      label: 'Export Audit Log',            shortcut: '⌘ E' },
+    { group: 'Actions',    icon: 'upload',        label: 'Import Configuration',        shortcut: '' },
+    { group: 'Actions',    icon: 'lock',          label: 'Lock Environment',            shortcut: '' },
+    { group: 'Settings',   icon: 'settings',      label: 'General Settings',            shortcut: '⌘ ,' },
+    { group: 'Settings',   icon: 'notifications', label: 'Notification Preferences',    shortcut: '' },
+    { group: 'Settings',   icon: 'key',           label: 'API Keys & Tokens',           shortcut: '' },
+    { group: 'Settings',   icon: 'palette',       label: 'Theme Preferences',           shortcut: '' },
+    { group: 'Recent',     icon: 'history',       label: 'PII Detection Rules',         shortcut: '' },
+    { group: 'Recent',     icon: 'history',       label: 'Encryption Policy — Production', shortcut: '' },
+    { group: 'Recent',     icon: 'history',       label: 'Access Control Review',       shortcut: '' }
+  ];
+
+  var activeIndex = 0;
+  var visibleItems = [];
+
+  /* ---------- Open / Close ---------- */
+  function openPalette(id) {
+    var overlay = document.getElementById(id);
+    if (!overlay) return;
+    overlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+    var input = overlay.querySelector('.sds-cmd-search-input');
+    if (input) {
+      input.value = '';
+      setTimeout(function() { input.focus(); }, 60);
+    }
+    if (id === 'palette-filter') {
+      renderFilterResults('');
+    }
+    activeIndex = 0;
+    updateActiveItem(overlay);
+  }
+
+  function closePalette(id) {
+    var overlay = document.getElementById(id);
+    if (!overlay) return;
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  function closeOverlayPalette(event) {
+    if (event.target === event.currentTarget) {
+      event.currentTarget.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  /* ---------- Filtering ---------- */
+  function highlightMatch(text, query) {
+    if (!query) return text;
+    var idx = text.toLowerCase().indexOf(query.toLowerCase());
+    if (idx === -1) return text;
+    return text.substring(0, idx) +
+      '<span class="sds-cmd-match">' + text.substring(idx, idx + query.length) + '</span>' +
+      text.substring(idx + query.length);
+  }
+
+  function renderFilterResults(query) {
+    var container = document.querySelector('#palette-filter .js-filter-results');
+    if (!container) return;
+
+    var filtered = cmdData.filter(function(item) {
+      return !query || item.label.toLowerCase().indexOf(query.toLowerCase()) !== -1;
+    });
+
+    visibleItems = [];
+    if (filtered.length === 0) {
+      container.innerHTML =
+        '<div class="sds-cmd-empty">' +
+          '<span class="material-symbols-outlined">search_off</span>' +
+          '<p class="sds-cmd-empty-title">No results found</p>' +
+          '<p class="sds-cmd-empty-desc">Try a different search term or browse available commands.</p>' +
+        '</div>';
+      return;
+    }
+
+    var groups = {};
+    var groupOrder = ['Navigation', 'Actions', 'Settings', 'Recent'];
+    filtered.forEach(function(item) {
+      if (!groups[item.group]) groups[item.group] = [];
+      groups[item.group].push(item);
+    });
+
+    var html = '';
+    var optIndex = 0;
+    groupOrder.forEach(function(groupName) {
+      if (!groups[groupName]) return;
+      html += '<div class="sds-cmd-group">';
+      html += '<div class="sds-cmd-group-label">' + groupName + '</div>';
+      groups[groupName].forEach(function(item) {
+        var id = 'filter-opt-' + optIndex;
+        html += '<div class="sds-cmd-item" role="option" id="' + id + '" tabindex="-1">';
+        html += '<span class="material-symbols-outlined">' + item.icon + '</span>';
+        html += '<span class="sds-cmd-item-label">' + highlightMatch(item.label, query) + '</span>';
+        if (item.shortcut) {
+          html += '<span class="sds-cmd-item-shortcut">';
+          item.shortcut.split(' ').forEach(function(k) {
+            html += '<kbd class="sds-cmd-kbd">' + k + '</kbd>';
+          });
+          html += '</span>';
+        }
+        html += '</div>';
+        visibleItems.push(id);
+        optIndex++;
+      });
+      html += '</div>';
+    });
+
+    container.innerHTML = html;
+    activeIndex = 0;
+    updateActiveItem(document.getElementById('palette-filter'));
+  }
+
+  /* ---------- Keyboard navigation ---------- */
+  function updateActiveItem(overlay) {
+    if (!overlay) return;
+    var items = overlay.querySelectorAll('.sds-cmd-item');
+    items.forEach(function(el, i) {
+      el.classList.toggle('is-active', i === activeIndex);
+    });
+    var input = overlay.querySelector('.sds-cmd-search-input');
+    if (items[activeIndex] && input) {
+      input.setAttribute('aria-activedescendant', items[activeIndex].id || '');
+      items[activeIndex].scrollIntoView({ block: 'nearest' });
+    }
+  }
+
+  /* ---------- Global listeners ---------- */
+
+  /* Cmd+K to open */
+  document.addEventListener('keydown', function(e) {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      var anyOpen = document.querySelector('.sds-command-palette-overlay.is-open');
+      if (anyOpen) {
+        anyOpen.classList.remove('is-open');
+        document.body.style.overflow = '';
+      } else {
+        openPalette('palette-filter');
+      }
+    }
+  });
+
+  /* Escape, arrows, enter inside palette */
+  document.addEventListener('keydown', function(e) {
+    var openOverlay = document.querySelector('.sds-command-palette-overlay.is-open');
+    if (!openOverlay) return;
+
+    if (e.key === 'Escape') {
+      openOverlay.classList.remove('is-open');
+      document.body.style.overflow = '';
+      return;
+    }
+
+    var items = openOverlay.querySelectorAll('.sds-cmd-item');
+    if (!items.length) return;
+
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      activeIndex = (activeIndex + 1) % items.length;
+      updateActiveItem(openOverlay);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      activeIndex = (activeIndex - 1 + items.length) % items.length;
+      updateActiveItem(openOverlay);
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (items[activeIndex]) {
+        var label = items[activeIndex].querySelector('.sds-cmd-item-label');
+        if (label) {
+          /* Visual feedback on selection */
+          items[activeIndex].style.background = 'var(--sds-color-blue-100)';
+          setTimeout(function() {
+            openOverlay.classList.remove('is-open');
+            document.body.style.overflow = '';
+            items[activeIndex].style.background = '';
+          }, 150);
+        }
+      }
+    }
+  });
+
+  /* Real-time filtering input */
+  document.addEventListener('input', function(e) {
+    if (e.target.classList.contains('js-filter-input')) {
+      renderFilterResults(e.target.value);
+    }
+  });
+
+  /* Hover to activate item */
+  document.addEventListener('mouseover', function(e) {
+    var item = e.target.closest('.sds-cmd-item');
+    if (!item) return;
+    var overlay = item.closest('.sds-command-palette-overlay, .sds-cmd-static');
+    if (!overlay) return;
+    var items = overlay.querySelectorAll('.sds-cmd-item');
+    items.forEach(function(el, i) {
+      if (el === item) activeIndex = i;
+      el.classList.toggle('is-active', el === item);
+    });
+  });
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

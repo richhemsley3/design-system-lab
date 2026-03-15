@@ -1,0 +1,1467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Lab</title>
+<link rel="stylesheet" href="tokens/colors.css">
+<link rel="stylesheet" href="tokens/spacing.css">
+<link rel="stylesheet" href="tokens/typography.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--sds-font-sans);
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    padding: var(--sds-space-1600) var(--sds-space-1000);
+    line-height: var(--sds-leading-normal);
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  .logo-row {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-400);
+    margin-bottom: var(--sds-space-300);
+  }
+  .logo-mark {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    background: var(--sds-interactive-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .logo-mark svg {
+    width: 22px;
+    height: 22px;
+    fill: var(--sds-color-white);
+  }
+
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); }
+  .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin-bottom: var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-caption); font-weight: var(--sds-weight-light); margin: var(--sds-space-1000) 0 var(--sds-space-400); color: var(--sds-text-secondary); text-transform: uppercase; letter-spacing: var(--sds-tracking-wide); }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--sds-space-400);
+  }
+
+  .card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--sds-border-default);
+    border-radius: 12px;
+    background: var(--sds-bg-card);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  }
+  .card:hover {
+    border-color: var(--sds-border-strong);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  .card-preview {
+    height: 160px;
+    background: var(--sds-bg-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 1px solid var(--sds-border-subtle);
+    overflow: hidden;
+    padding: var(--sds-space-400);
+  }
+  .card-preview svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .card-body {
+    padding: var(--sds-space-400);
+  }
+  .card-title {
+    font-size: var(--sds-type-title);
+    font-weight: var(--sds-weight-semibold);
+    margin-bottom: var(--sds-space-100);
+  }
+  .card-desc {
+    font-size: var(--sds-type-label);
+    color: var(--sds-text-secondary);
+    line-height: 1.4;
+  }
+
+  .footer {
+    margin-top: var(--sds-space-1600);
+    padding-top: var(--sds-space-600);
+    border-top: 1px solid var(--sds-border-subtle);
+    font-size: var(--sds-type-caption);
+    color: var(--sds-text-tertiary);
+  }
+  .footer code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-overline);
+    background: var(--sds-bg-subtle);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div class="logo-row">
+  <div class="logo-mark">
+    <svg viewBox="0 0 16 16"><path d="M6 1v5.3L3.2 11a2.5 2.5 0 0 0 2.1 4h5.4a2.5 2.5 0 0 0 2.1-4L10 6.3V1H6zm1.5 1h1v5l3 5a1 1 0 0 1-.8 1.5H5.3A1 1 0 0 1 4.5 12l3-5V2z"/></svg>
+  </div>
+  <h1>Design System Lab</h1>
+</div>
+<p class="page-subtitle">Design system tokens, patterns, and components for building consistent application interfaces.</p>
+
+<!-- ===== TOKENS ===== -->
+<h2>Tokens</h2>
+<div class="card-grid">
+  <a class="card" href="docs/color-palette.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Color swatches — stacked blocks -->
+        <rect x="88" y="34" width="28" height="60" rx="6" fill="#013D5B"/>
+        <rect x="108" y="42" width="28" height="52" rx="6" fill="#A6CBD6"/>
+        <rect x="128" y="50" width="28" height="44" rx="6" fill="#FAF8F5"/>
+        <rect x="148" y="42" width="28" height="52" rx="6" fill="#BF5547" opacity="0.75"/>
+        <rect x="168" y="36" width="28" height="58" rx="6" fill="#7A9A01" opacity="0.7"/>
+        <!-- Small floating blocks -->
+        <rect x="72" y="50" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.6"/>
+        <rect x="202" y="44" width="12" height="12" rx="3" fill="#BF5547" opacity="0.35"/>
+        <rect x="198" y="78" width="8" height="8" rx="2" fill="#013D5B" opacity="0.15"/>
+        <circle cx="78" cy="82" r="4" fill="#A6CBD6" opacity="0.4"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Color Palette</div>
+      <div class="card-desc">Full color system with warm grays, cool grays, brand palette, and semantic mappings.</div>
+    </div>
+  </a>
+
+  <!-- Space Scale -->
+  <a class="card" href="docs/space-scale.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Horizontal bars representing the scale -->
+        <rect x="80" y="28" width="120" height="8" rx="3" fill="#013D5B"/>
+        <rect x="80" y="42" width="88" height="8" rx="3" fill="#013D5B" opacity="0.8"/>
+        <rect x="80" y="56" width="64" height="8" rx="3" fill="#013D5B" opacity="0.65"/>
+        <rect x="80" y="70" width="40" height="8" rx="3" fill="#013D5B" opacity="0.5"/>
+        <rect x="80" y="84" width="20" height="8" rx="3" fill="#013D5B" opacity="0.35"/>
+        <rect x="80" y="98" width="8" height="8" rx="3" fill="#013D5B" opacity="0.2"/>
+        <!-- Ruler marks -->
+        <rect x="72" y="28" width="2" height="78" rx="1" fill="#E8E4DD" opacity="0.6"/>
+        <!-- Floating accents -->
+        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="222" cy="44" r="5" fill="#A6CBD6" opacity="0.3"/>
+        <rect x="214" y="82" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Space Scale</div>
+      <div class="card-desc">Pixel-based spacing tokens for consistent padding, margin, and gap values.</div>
+    </div>
+  </a>
+
+  <!-- Type Scale -->
+  <a class="card" href="docs/type-scale.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Large "Aa" letterform -->
+        <text x="68" y="82" font-family="'Proxima Nova', -apple-system, BlinkMacSystemFont, sans-serif" font-size="72" font-weight="700" fill="#013D5B" letter-spacing="-2">Aa</text>
+        <!-- Stacked type specimens to the right -->
+        <rect x="172" y="30" width="56" height="7" rx="2.5" fill="#013D5B" opacity="0.7"/>
+        <rect x="172" y="43" width="44" height="6" rx="2" fill="#013D5B" opacity="0.5"/>
+        <rect x="172" y="55" width="52" height="5" rx="2" fill="#013D5B" opacity="0.35"/>
+        <rect x="172" y="65" width="38" height="4.5" rx="2" fill="#013D5B" opacity="0.25"/>
+        <rect x="172" y="75" width="48" height="4" rx="2" fill="#013D5B" opacity="0.18"/>
+        <!-- Baseline rule under Aa -->
+        <rect x="68" y="88" width="90" height="2" rx="1" fill="#A6CBD6" opacity="0.6"/>
+        <!-- x-height marker -->
+        <rect x="60" y="52" width="4" height="36" rx="1.5" fill="#D9EBED" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="48" y="36" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.4"/>
+        <circle cx="236" cy="44" r="5" fill="#BF5547" opacity="0.25"/>
+        <rect x="226" y="86" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.15"/>
+        <circle cx="166" cy="98" r="4" fill="#A6CBD6" opacity="0.3"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Type Scale</div>
+      <div class="card-desc">Proxima Nova type scale with size, weight, line height, and tracking tokens.</div>
+    </div>
+  </a>
+
+  <!-- Icons -->
+  <a class="card" href="docs/icons.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Icon grid: 4 rounded squares with symbols -->
+        <rect x="92" y="28" width="40" height="40" rx="8" fill="#013D5B"/>
+        <path d="M112 40l-6 8h4v4h4v-4h4l-6-8z" fill="#FFFFFF" opacity="0.9"/>
+        <rect x="148" y="28" width="40" height="40" rx="8" fill="#013D5B" opacity="0.7"/>
+        <circle cx="168" cy="48" r="6" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+        <path d="M172 52l4 4" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+        <rect x="92" y="60" width="40" height="40" rx="8" fill="#013D5B" opacity="0.5"/>
+        <path d="M106 80h12M112 74v12" stroke="#FFFFFF" stroke-width="2" opacity="0.9"/>
+        <rect x="148" y="60" width="40" height="40" rx="8" fill="#013D5B" opacity="0.35"/>
+        <path d="M160 80h16M160 74h16M160 86h10" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
+        <!-- Floating accents -->
+        <rect x="72" y="44" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="210" cy="38" r="5" fill="#A6CBD6" opacity="0.3"/>
+        <rect x="204" y="80" width="8" height="8" rx="2" fill="#013D5B" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">UI Icons</div>
+      <div class="card-desc">Google Material Symbols icon library with semantic labels organized by category.</div>
+    </div>
+  </a>
+</div>
+
+<!-- ===== COMPONENTS ===== -->
+<h2>Components</h2>
+<div class="card-grid">
+
+  <!-- Accordion -->
+  <a class="card" href="components/accordion.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Accordion section 1 (expanded) -->
+        <rect x="72" y="20" width="136" height="24" rx="5" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect x="84" y="29" width="56" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
+        <path d="M194 30l-4 4-4-4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Expanded content -->
+        <rect x="72" y="44" width="136" height="20" rx="0" fill="#F4F1EB"/>
+        <rect x="84" y="50" width="100" height="4" rx="2" fill="#D5CFC4"/>
+        <rect x="84" y="58" width="76" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
+        <!-- Accordion section 2 (collapsed) -->
+        <rect x="72" y="64" width="136" height="24" rx="5" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect x="84" y="73" width="48" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
+        <path d="M190 75l4-4 4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Accordion section 3 (collapsed) -->
+        <rect x="72" y="88" width="136" height="24" rx="5" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect x="84" y="97" width="60" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
+        <path d="M190 99l4-4 4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Floating accents -->
+        <rect x="56" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="36" r="5" fill="#05314D" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Accordion</div>
+      <div class="card-desc">Expandable content sections with chevron indicators for progressive disclosure of information.</div>
+    </div>
+  </a>
+
+  <!-- Alerts -->
+  <a class="card" href="components/alerts.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Info alert -->
+        <rect x="68" y="20" width="144" height="26" rx="5" fill="#FFFFFF" stroke="#D9EBED" stroke-width="1.5"/>
+        <rect x="68" y="20" width="4" height="26" rx="2" fill="#05314D"/>
+        <circle cx="84" cy="33" r="6" fill="#D9EBED"/>
+        <rect x="96" y="30" width="64" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Warning alert -->
+        <rect x="68" y="52" width="144" height="26" rx="5" fill="#FFFFFF" stroke="#F4F1EB" stroke-width="1.5"/>
+        <rect x="68" y="52" width="4" height="26" rx="2" fill="#D4A843"/>
+        <circle cx="84" cy="65" r="6" fill="#FFF3D4"/>
+        <rect x="96" y="62" width="56" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Error alert -->
+        <rect x="68" y="84" width="144" height="26" rx="5" fill="#FFFFFF" stroke="#F4F1EB" stroke-width="1.5"/>
+        <rect x="68" y="84" width="4" height="26" rx="2" fill="#BF5547"/>
+        <circle cx="84" cy="97" r="6" fill="#BF5547" opacity="0.15"/>
+        <rect x="96" y="94" width="72" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Floating accents -->
+        <rect x="224" y="48" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="56" cy="80" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Alerts</div>
+      <div class="card-desc">Inline alert banners with info, warning, and error variants for contextual user feedback.</div>
+    </div>
+  </a>
+
+  <!-- Avatars -->
+  <a class="card" href="components/avatars.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Avatar group (overlapping) -->
+        <circle cx="108" cy="52" r="20" fill="#013D5B" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="108" y="57" text-anchor="middle" font-size="14" font-weight="600" fill="#FFFFFF" font-family="sans-serif">SC</text>
+        <circle cx="136" cy="52" r="20" fill="#4F8AA0" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="136" y="57" text-anchor="middle" font-size="14" font-weight="600" fill="#FFFFFF" font-family="sans-serif">MJ</text>
+        <circle cx="164" cy="52" r="20" fill="#BF5547" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="164" y="57" text-anchor="middle" font-size="14" font-weight="600" fill="#FFFFFF" font-family="sans-serif">ER</text>
+        <!-- +N badge -->
+        <circle cx="188" cy="52" r="16" fill="#E8E4DD" stroke="#FFFFFF" stroke-width="2"/>
+        <text x="188" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="#6B6760" font-family="sans-serif">+4</text>
+        <!-- Status dots -->
+        <circle cx="122" cy="66" r="5" fill="#5CAF6E" stroke="#FFFFFF" stroke-width="1.5"/>
+        <circle cx="150" cy="66" r="5" fill="#D4A843" stroke="#FFFFFF" stroke-width="1.5"/>
+        <!-- Name lines below -->
+        <rect x="88" y="84" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="88" y="93" width="32" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
+        <rect x="148" y="84" width="56" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="148" y="93" width="40" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="60" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="226" cy="66" r="5" fill="#7A9A01" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Avatars</div>
+      <div class="card-desc">User avatars with initials, status indicators, color variants, and overlapping groups.</div>
+    </div>
+  </a>
+
+  <!-- Badges -->
+  <a class="card" href="components/badges.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Count badge on icon -->
+        <rect x="80" y="34" width="36" height="36" rx="8" fill="#F4F1EB"/>
+        <rect x="88" y="42" width="20" height="20" rx="4" fill="#D5CFC4"/>
+        <circle cx="112" cy="38" r="10" fill="#BF5547"/>
+        <text x="112" y="42" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF" font-family="sans-serif">3</text>
+        <!-- Status dots row -->
+        <circle cx="148" cy="42" r="5" fill="#7A9A01"/>
+        <rect x="158" y="39" width="32" height="5" rx="2.5" fill="#D5CFC4"/>
+        <circle cx="148" cy="58" r="5" fill="#D4A843"/>
+        <rect x="158" y="55" width="28" height="5" rx="2.5" fill="#D5CFC4"/>
+        <circle cx="148" cy="74" r="5" fill="#BF5547"/>
+        <rect x="158" y="71" width="36" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Pill badges -->
+        <rect x="80" y="86" width="40" height="18" rx="9" fill="#D9EBED"/>
+        <text x="100" y="98" text-anchor="middle" font-size="10" font-weight="600" fill="#05314D" font-family="sans-serif">12</text>
+        <rect x="128" y="86" width="48" height="18" rx="9" fill="#05314D"/>
+        <text x="152" y="98" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF" font-family="sans-serif">New</text>
+        <!-- Floating accents -->
+        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="218" cy="88" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Badges</div>
+      <div class="card-desc">Count badges, status dots, and pill indicators for notifications and state display.</div>
+    </div>
+  </a>
+
+  <!-- Breadcrumbs -->
+  <a class="card" href="components/breadcrumbs.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Breadcrumb trail -->
+        <rect x="60" y="50" width="160" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <!-- Home -->
+        <rect x="72" y="60" width="28" height="5" rx="2.5" fill="#05314D" opacity="0.4"/>
+        <!-- Chevron 1 -->
+        <path d="M106 60l3 3-3 3" stroke="#D5CFC4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Section -->
+        <rect x="116" y="60" width="36" height="5" rx="2.5" fill="#05314D" opacity="0.4"/>
+        <!-- Chevron 2 -->
+        <path d="M158 60l3 3-3 3" stroke="#D5CFC4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Current page -->
+        <rect x="168" y="60" width="40" height="5" rx="2.5" fill="#47443F" opacity="0.7"/>
+        <!-- Floating accents -->
+        <rect x="56" y="36" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="78" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Breadcrumbs</div>
+      <div class="card-desc">Navigation breadcrumb trails with chevron separators showing the current page hierarchy.</div>
+    </div>
+  </a>
+
+  <!-- Buttons -->
+  <a class="card" href="components/buttons.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Primary button -->
+        <rect x="72" y="28" width="96" height="34" rx="6" fill="#013D5B"/>
+        <rect x="92" y="41" width="56" height="6" rx="3" fill="#A6CBD6"/>
+        <!-- Secondary button -->
+        <rect x="84" y="70" width="80" height="32" rx="6" fill="#FFFFFF"/>
+        <rect x="84" y="70" width="80" height="32" rx="6" fill="#E8E4DD" opacity="0.4"/>
+        <rect x="102" y="82" width="44" height="6" rx="3" fill="#013D5B" opacity="0.4"/>
+        <!-- Cursor -->
+        <g transform="translate(174, 50)">
+          <path d="M0 0l2 18 6-6 4 8 4-2-4-8 7-1L0 0z" fill="#013D5B"/>
+        </g>
+        <!-- Tertiary link line -->
+        <rect x="176" y="80" width="40" height="5" rx="2.5" fill="#013D5B" opacity="0.2"/>
+        <rect x="176" y="88" width="40" height="2" rx="1" fill="#013D5B" opacity="0.15"/>
+        <!-- Floating accents -->
+        <rect x="56" y="74" width="10" height="10" rx="3" fill="#BF5547" opacity="0.25"/>
+        <circle cx="210" cy="34" r="6" fill="#D9EBED" opacity="0.4"/>
+        <rect x="216" y="60" width="8" height="8" rx="2" fill="#7A9A01" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Buttons</div>
+      <div class="card-desc">Primary, secondary, tertiary, and danger variants with three sizes, icon support, and full state documentation.</div>
+    </div>
+  </a>
+
+  <!-- Cards -->
+  <a class="card" href="components/cards.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Back card (offset shadow) -->
+        <rect x="90" y="22" width="110" height="80" rx="8" fill="#D9EBED" opacity="0.5"/>
+        <!-- Main card -->
+        <rect x="78" y="28" width="110" height="80" rx="8" fill="#FFFFFF"/>
+        <!-- Card header block -->
+        <rect x="78" y="28" width="110" height="24" rx="8" fill="#FAF8F5"/>
+        <rect x="78" y="44" width="110" height="8" fill="#FAF8F5"/>
+        <!-- Card header divider -->
+        <rect x="78" y="52" width="110" height="1.5" fill="#E8E4DD"/>
+        <!-- Card content lines -->
+        <rect x="90" y="36" width="40" height="5" rx="2.5" fill="#013D5B" opacity="0.5"/>
+        <rect x="90" y="62" width="76" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="90" y="72" width="60" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="90" y="82" width="68" height="4" rx="2" fill="#E8E4DD" opacity="0.6"/>
+        <!-- Corner accent block -->
+        <rect x="168" y="34" width="12" height="12" rx="3" fill="#A6CBD6" opacity="0.5"/>
+        <!-- Floating accents -->
+        <circle cx="214" cy="42" r="6" fill="#BF5547" opacity="0.25"/>
+        <rect x="58" y="76" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.2"/>
+        <rect x="208" y="80" width="14" height="14" rx="4" fill="#013D5B" opacity="0.08"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Cards</div>
+      <div class="card-desc">Blank foundational card variants for building content containers, panels, and data displays.</div>
+    </div>
+  </a>
+
+  <!-- Command Palette -->
+  <a class="card" href="components/command-palette.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Overlay dim -->
+        <rect x="52" y="12" width="176" height="104" rx="6" fill="#1C1A17" opacity="0.1"/>
+        <!-- Palette panel -->
+        <rect x="72" y="18" width="136" height="92" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <!-- Search input -->
+        <rect x="82" y="26" width="116" height="22" rx="5" fill="#F4F1EB"/>
+        <circle cx="92" cy="37" r="5" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <path d="M96 40l3 3" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.4"/>
+        <rect x="102" y="34" width="48" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Result item 1 (active) -->
+        <rect x="82" y="54" width="116" height="16" rx="4" fill="#D9EBED" opacity="0.4"/>
+        <rect x="90" y="59" width="8" height="6" rx="2" fill="#05314D" opacity="0.3"/>
+        <rect x="104" y="59" width="52" height="5" rx="2.5" fill="#05314D" opacity="0.4"/>
+        <!-- Result item 2 -->
+        <rect x="90" y="76" width="8" height="6" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="104" y="76" width="44" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Result item 3 -->
+        <rect x="90" y="90" width="8" height="6" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="104" y="90" width="56" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Floating accents -->
+        <rect x="56" y="60" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="226" cy="40" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Command Palette</div>
+      <div class="card-desc">Keyboard-driven command search overlay with filtered results for quick navigation and actions.</div>
+    </div>
+  </a>
+
+  <!-- Data Lists -->
+  <a class="card" href="components/data-lists.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Key-value pairs -->
+        <rect x="72" y="26" width="136" height="76" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <!-- Row 1 -->
+        <rect x="84" y="36" width="36" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
+        <rect x="140" y="36" width="56" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Divider -->
+        <line x1="84" y1="48" x2="196" y2="48" stroke="#F4F1EB" stroke-width="1"/>
+        <!-- Row 2 -->
+        <rect x="84" y="54" width="28" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
+        <rect x="140" y="54" width="48" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Divider -->
+        <line x1="84" y1="66" x2="196" y2="66" stroke="#F4F1EB" stroke-width="1"/>
+        <!-- Row 3 -->
+        <rect x="84" y="72" width="40" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
+        <rect x="140" y="72" width="44" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Divider -->
+        <line x1="84" y1="84" x2="196" y2="84" stroke="#F4F1EB" stroke-width="1"/>
+        <!-- Row 4 -->
+        <rect x="84" y="90" width="32" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
+        <rect x="140" y="90" width="52" height="5" rx="2.5" fill="#D5CFC4"/>
+        <!-- Floating accents -->
+        <rect x="56" y="48" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="82" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Data Lists</div>
+      <div class="card-desc">Key-value pair layouts for displaying structured metadata and detail information.</div>
+    </div>
+  </a>
+
+  <!-- Date Picker -->
+  <a class="card" href="components/date-picker.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Calendar panel -->
+        <rect x="76" y="16" width="128" height="96" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <!-- Month header -->
+        <rect x="110" y="24" width="60" height="6" rx="3" fill="#47443F" opacity="0.5"/>
+        <path d="M94 27l-4-3-4 3" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round" transform="rotate(90 90 27)"/>
+        <path d="M190 27l4-3 4 3" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round" transform="rotate(-90 194 27)"/>
+        <!-- Day headers -->
+        <rect x="86" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="102" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="118" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="134" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="150" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="166" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <rect x="182" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <!-- Day grid row 1 -->
+        <circle cx="90" cy="52" r="6" fill="none"/><text x="90" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">1</text>
+        <circle cx="106" cy="52" r="6" fill="none"/><text x="106" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">2</text>
+        <circle cx="122" cy="52" r="6" fill="none"/><text x="122" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">3</text>
+        <circle cx="138" cy="52" r="6" fill="#05314D"/><text x="138" y="54" text-anchor="middle" font-size="7" fill="#FFFFFF" font-family="sans-serif">4</text>
+        <circle cx="154" cy="52" r="6" fill="none"/><text x="154" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">5</text>
+        <circle cx="170" cy="52" r="6" fill="none"/><text x="170" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">6</text>
+        <circle cx="186" cy="52" r="6" fill="none"/><text x="186" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">7</text>
+        <!-- Day grid row 2 -->
+        <rect x="84" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="100" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="116" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="132" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="148" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="164" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="180" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <!-- Day grid row 3 -->
+        <rect x="84" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="100" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="116" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="132" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="148" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="164" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="180" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <!-- Day grid row 4 -->
+        <rect x="84" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="100" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="116" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="132" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="148" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="164" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <rect x="180" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <!-- Floating accents -->
+        <rect x="56" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="220" cy="92" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Date Picker</div>
+      <div class="card-desc">Calendar date selection with month navigation, selected state, and day grid layout.</div>
+    </div>
+  </a>
+
+  <!-- Dropdown Menus -->
+  <a class="card" href="components/dropdown-menus.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Trigger button -->
+        <rect x="86" y="18" width="72" height="24" rx="5" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1"/>
+        <rect x="96" y="27" width="36" height="5" rx="2.5" fill="#013D5B" opacity="0.4"/>
+        <path d="M148 28l4 4 4-4" stroke="#A09A91" stroke-width="1.5" fill="none"/>
+        <!-- Menu panel -->
+        <rect x="86" y="44" width="120" height="72" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
+        <!-- Menu items -->
+        <rect x="94" y="52" width="12" height="12" rx="3" fill="#E8E4DD" opacity="0.5"/>
+        <rect x="112" y="55" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
+        <!-- Active item -->
+        <rect x="90" y="68" width="112" height="14" rx="4" fill="#D9EBED" opacity="0.4"/>
+        <rect x="94" y="72" width="12" height="6" rx="2" fill="#013D5B" opacity="0.3"/>
+        <rect x="112" y="73" width="56" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
+        <!-- Divider -->
+        <rect x="94" y="86" width="104" height="1" fill="#E8E4DD"/>
+        <!-- Danger item -->
+        <rect x="94" y="94" width="12" height="12" rx="3" fill="#BF5547" opacity="0.15"/>
+        <rect x="112" y="97" width="40" height="5" rx="2.5" fill="#BF5547" opacity="0.3"/>
+        <!-- Floating accents -->
+        <rect x="62" y="60" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="46" r="5" fill="#7A9A01" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Dropdown Menus</div>
+      <div class="card-desc">Action menus with icons, sections, keyboard shortcuts, and destructive item variants.</div>
+    </div>
+  </a>
+
+  <!-- Empty States -->
+  <a class="card" href="components/empty-states.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Empty box / inbox icon -->
+        <rect x="112" y="28" width="56" height="40" rx="4" fill="#F4F1EB" stroke="#D5CFC4" stroke-width="1.5"/>
+        <path d="M112 48h56" stroke="#D5CFC4" stroke-width="1"/>
+        <path d="M112 48l-8 -12h72l-8 12" stroke="#D5CFC4" stroke-width="1.5" fill="#EBE6DD"/>
+        <!-- Dashed line inside box -->
+        <line x1="126" y1="56" x2="154" y2="56" stroke="#D5CFC4" stroke-width="1" stroke-dasharray="3 2"/>
+        <!-- Text placeholder lines -->
+        <rect x="104" y="78" width="72" height="5" rx="2.5" fill="#D5CFC4"/>
+        <rect x="112" y="88" width="56" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <!-- Action button -->
+        <rect x="116" y="100" width="48" height="14" rx="4" fill="#05314D"/>
+        <rect x="126" y="105" width="28" height="4" rx="2" fill="#D9EBED"/>
+        <!-- Floating accents -->
+        <rect x="62" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="218" cy="36" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Empty States</div>
+      <div class="card-desc">Placeholder illustrations with messaging and action buttons for empty content areas.</div>
+    </div>
+  </a>
+
+  <!-- File Upload -->
+  <a class="card" href="components/file-upload.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Dashed drop zone -->
+        <rect x="72" y="20" width="136" height="88" rx="8" fill="#F4F1EB" stroke="#D5CFC4" stroke-width="2" stroke-dasharray="6 4"/>
+        <!-- Upload cloud icon -->
+        <path d="M122 52a16 16 0 0 1 30-4 12 12 0 0 1 8 20h-40a12 12 0 0 1-6-20z" fill="#D9EBED" stroke="#05314D" stroke-width="1.5" opacity="0.6"/>
+        <!-- Upload arrow -->
+        <path d="M140 58v16" stroke="#05314D" stroke-width="2" stroke-linecap="round"/>
+        <path d="M134 64l6-6 6 6" stroke="#05314D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Text lines -->
+        <rect x="104" y="82" width="72" height="5" rx="2.5" fill="#47443F" opacity="0.3"/>
+        <rect x="112" y="92" width="56" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="42" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">File Upload</div>
+      <div class="card-desc">Drag-and-drop upload zones with cloud icon, helper text, and file type guidance.</div>
+    </div>
+  </a>
+
+  <!-- Form Inputs -->
+  <a class="card" href="components/form-inputs.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Text input -->
+        <rect x="72" y="24" width="136" height="30" rx="5" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1.5"/>
+        <rect x="82" y="36" width="60" height="5" rx="2.5" fill="#E8E4DD"/>
+        <!-- Label -->
+        <rect x="72" y="14" width="36" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
+        <!-- Checkbox row -->
+        <rect x="72" y="66" width="14" height="14" rx="3" fill="#013D5B"/>
+        <path d="M76 73l3 3 5-6" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="92" y="69" width="44" height="5" rx="2.5" fill="#E8E4DD"/>
+        <!-- Toggle -->
+        <rect x="72" y="92" width="32" height="18" rx="9" fill="#013D5B"/>
+        <circle cx="94" cy="101" r="7" fill="#FFFFFF"/>
+        <rect x="112" y="97" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
+        <!-- Select dropdown -->
+        <rect x="148" y="66" width="60" height="24" rx="5" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1"/>
+        <rect x="156" y="75" width="30" height="4" rx="2" fill="#E8E4DD"/>
+        <path d="M198 75l4 4 4-4" stroke="#A09A91" stroke-width="1.5" fill="none"/>
+        <!-- Floating accents -->
+        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="226" cy="40" r="5" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Form Inputs</div>
+      <div class="card-desc">Text fields, selects, checkboxes, radios, and toggles with validation states and sizes.</div>
+    </div>
+  </a>
+
+  <!-- Header -->
+  <a class="card" href="components/header.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Header bar -->
+        <rect x="50" y="40" width="180" height="36" rx="6" fill="#FFFFFF"/>
+        <!-- Logo block -->
+        <rect x="60" y="48" width="20" height="20" rx="5" fill="#013D5B"/>
+        <rect x="66" y="54" width="8" height="8" rx="2" fill="#A6CBD6"/>
+        <!-- Nav placeholder blocks -->
+        <rect x="88" y="55" width="24" height="6" rx="3" fill="#E8E4DD"/>
+        <rect x="118" y="55" width="18" height="6" rx="3" fill="#E8E4DD"/>
+        <!-- Help circle -->
+        <circle cx="190" cy="58" r="10" fill="#D9EBED"/>
+        <circle cx="190" cy="58" r="4" fill="#A6CBD6"/>
+        <!-- User avatar -->
+        <circle cx="216" cy="58" r="10" fill="#013D5B"/>
+        <circle cx="216" cy="55" r="4" fill="#A6CBD6"/>
+        <rect x="210" y="61" width="12" height="6" rx="3" fill="#A6CBD6"/>
+        <!-- Shadow bar below -->
+        <rect x="54" y="76" width="172" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="42" y="82" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.4"/>
+        <circle cx="234" cy="86" r="5" fill="#BF5547" opacity="0.25"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Header</div>
+      <div class="card-desc">Full-width utility header with logo, help button, and user profile dropdown.</div>
+    </div>
+  </a>
+
+  <!-- Modals -->
+  <a class="card" href="components/modals.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Overlay dim -->
+        <rect x="52" y="16" width="176" height="96" rx="6" fill="#1C1A17" opacity="0.15"/>
+        <!-- Modal panel -->
+        <rect x="72" y="26" width="136" height="76" rx="8" fill="#FFFFFF"/>
+        <!-- Modal header -->
+        <rect x="84" y="36" width="56" height="6" rx="3" fill="#013D5B" opacity="0.5"/>
+        <!-- Close X -->
+        <path d="M196 34l-4 4m4 0l-4-4" stroke="#A09A91" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Divider -->
+        <rect x="72" y="48" width="136" height="1" fill="#E8E4DD"/>
+        <!-- Body text lines -->
+        <rect x="84" y="56" width="100" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="84" y="64" width="80" height="4" rx="2" fill="#E8E4DD" opacity="0.6"/>
+        <!-- Footer buttons -->
+        <rect x="72" y="80" width="136" height="1" fill="#E8E4DD"/>
+        <rect x="146" y="86" width="50" height="10" rx="4" fill="#013D5B"/>
+        <rect x="106" y="86" width="36" height="10" rx="4" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1"/>
+        <!-- Floating accents -->
+        <circle cx="46" cy="78" r="5" fill="#D9EBED" opacity="0.4"/>
+        <rect x="234" cy="42" width="8" height="8" rx="2" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Modals</div>
+      <div class="card-desc">Dialog overlays for confirmations, forms, and informational content with multiple sizes.</div>
+    </div>
+  </a>
+
+  <!-- Pagination -->
+  <a class="card" href="components/pagination.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Pagination bar -->
+        <!-- Prev arrow -->
+        <rect x="72" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <path d="M84 60l-4 4 4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Page 1 (active) -->
+        <rect x="104" y="50" width="28" height="28" rx="6" fill="#05314D"/>
+        <text x="118" y="68" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF" font-family="sans-serif">1</text>
+        <!-- Page 2 -->
+        <rect x="136" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <text x="150" y="68" text-anchor="middle" font-size="11" fill="#47443F" font-family="sans-serif">2</text>
+        <!-- Page 3 -->
+        <rect x="168" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <text x="182" y="68" text-anchor="middle" font-size="11" fill="#47443F" font-family="sans-serif">3</text>
+        <!-- Next arrow -->
+        <rect x="200" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <path d="M216 60l4 4-4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <!-- Floating accents -->
+        <rect x="56" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="240" cy="82" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Pagination</div>
+      <div class="card-desc">Page number controls with previous/next arrows for navigating through paged content.</div>
+    </div>
+  </a>
+
+  <!-- Popover -->
+  <a class="card" href="components/popover.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Trigger button -->
+        <rect x="108" y="84" width="64" height="24" rx="5" fill="#F4F1EB" stroke="#D5CFC4" stroke-width="1"/>
+        <rect x="120" y="93" width="40" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
+        <!-- Popover card -->
+        <rect x="82" y="18" width="116" height="58" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <!-- Arrow pointing down -->
+        <path d="M134 76l6 6 6-6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect x="134" y="72" width="12" height="5" fill="#FFFFFF"/>
+        <!-- Popover content -->
+        <rect x="94" y="28" width="72" height="6" rx="3" fill="#47443F" opacity="0.5"/>
+        <rect x="94" y="40" width="92" height="4" rx="2" fill="#D5CFC4"/>
+        <rect x="94" y="50" width="80" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
+        <rect x="94" y="60" width="60" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <!-- Floating accents -->
+        <rect x="56" y="46" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="36" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Popover</div>
+      <div class="card-desc">Floating content cards with arrow pointers triggered by buttons or interactive elements.</div>
+    </div>
+  </a>
+
+  <!-- Progress -->
+  <a class="card" href="components/progress.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Progress bar -->
+        <rect x="72" y="30" width="136" height="6" rx="3" fill="#E8E4DD"/>
+        <rect x="72" y="30" width="88" height="6" rx="3" fill="#013D5B"/>
+        <!-- Percentage -->
+        <text x="214" y="35" font-size="10" fill="#6B6760" font-family="sans-serif">65%</text>
+        <!-- Spinner -->
+        <circle cx="92" cy="64" r="14" stroke="#E8E4DD" stroke-width="2.5" fill="none"/>
+        <path d="M92 50a14 14 0 0 1 14 14" stroke="#013D5B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Stepper -->
+        <circle cx="116" cy="98" r="8" fill="#013D5B"/>
+        <path d="M113 98l2 2 4-4" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <rect x="124" y="97" width="20" height="2" rx="1" fill="#013D5B"/>
+        <circle cx="152" cy="98" r="8" fill="#013D5B" opacity="0.8"/>
+        <circle cx="152" cy="98" r="3" fill="#FFFFFF"/>
+        <rect x="160" y="97" width="20" height="2" rx="1" fill="#E8E4DD"/>
+        <circle cx="188" cy="98" r="8" fill="none" stroke="#E8E4DD" stroke-width="2"/>
+        <!-- Skeleton shimmer block -->
+        <rect x="140" y="50" width="68" height="8" rx="4" fill="#E8E4DD"/>
+        <rect x="140" y="62" width="52" height="8" rx="4" fill="#E8E4DD" opacity="0.6"/>
+        <rect x="140" y="74" width="60" height="8" rx="4" fill="#E8E4DD" opacity="0.35"/>
+        <!-- Floating accents -->
+        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="230" cy="42" r="5" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Progress</div>
+      <div class="card-desc">Progress bars, spinners, step indicators, and skeleton loaders for loading states.</div>
+    </div>
+  </a>
+
+  <!-- Search -->
+  <a class="card" href="components/search.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect x="68" y="40" width="144" height="32" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1.5"/>
+        <circle cx="86" cy="56" r="7" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.5"/>
+        <path d="M91 61l4 4" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>
+        <rect x="100" y="53" width="60" height="5" rx="2.5" fill="#D5CFC4"/>
+        <path d="M198 52l-4 4m4 0l-4-4" stroke="#D5CFC4" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="68" y="76" width="144" height="12" rx="4" fill="#F4F1EB"/>
+        <rect x="78" y="80" width="48" height="4" rx="2" fill="#D5CFC4"/>
+        <rect x="68" y="92" width="144" height="12" rx="4" fill="#F4F1EB" opacity="0.6"/>
+        <rect x="78" y="96" width="56" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
+        <rect x="56" y="32" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="228" cy="86" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Search</div>
+      <div class="card-desc">Search input with magnifying glass icon, suggestion dropdown, and clear button.</div>
+    </div>
+  </a>
+
+  <!-- Selection Controls -->
+  <a class="card" href="components/selection-controls.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Checkbox group container -->
+        <rect x="70" y="20" width="140" height="88" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
+        <!-- Select all row -->
+        <rect x="84" y="30" width="14" height="14" rx="3" fill="#013D5B"/>
+        <path d="M88 37l3 3 5-5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="104" y="34" width="42" height="4" rx="2" fill="#1C1A17" opacity="0.5"/>
+        <!-- Divider -->
+        <line x1="84" y1="50" x2="196" y2="50" stroke="#E8E4DD" stroke-width="0.5"/>
+        <!-- Child row 1 (checked) -->
+        <rect x="94" y="56" width="14" height="14" rx="3" fill="#013D5B"/>
+        <path d="M98 63l3 3 5-5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="114" y="60" width="36" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Child row 2 (unchecked) -->
+        <rect x="94" y="76" width="14" height="14" rx="3" fill="none" stroke="#D0CBC3" stroke-width="1.5"/>
+        <rect x="114" y="80" width="28" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Filter chips floating -->
+        <rect x="42" y="86" width="24" height="12" rx="6" fill="#013D5B" opacity="0.6"/>
+        <rect x="218" y="32" width="20" height="12" rx="6" fill="#D9EBED" opacity="0.6"/>
+        <!-- Toggle accent -->
+        <rect x="224" y="76" width="22" height="12" rx="6" fill="#013D5B" opacity="0.3"/>
+        <circle cx="240" cy="82" r="4" fill="white" opacity="0.8"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Selection Controls</div>
+      <div class="card-desc">Checkbox groups, radio cards, toggle lists, filter chips, and table row selection patterns.</div>
+    </div>
+  </a>
+
+  <!-- Side Navigation -->
+  <a class="card" href="components/side-navigation.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Expanded sidebar -->
+        <rect x="68" y="16" width="76" height="96" rx="8" fill="#FAF8F5"/>
+        <!-- Group label -->
+        <rect x="80" y="26" width="28" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Inactive item -->
+        <rect x="78" y="36" width="58" height="10" rx="4" fill="transparent"/>
+        <rect x="80" y="38" width="8" height="6" rx="2" fill="#E8E4DD"/>
+        <rect x="92" y="39" width="30" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Active item -->
+        <rect x="76" y="50" width="62" height="14" rx="6" fill="#D9EBED"/>
+        <rect x="82" y="54" width="8" height="6" rx="2" fill="#013D5B"/>
+        <rect x="94" y="55" width="32" height="4" rx="2" fill="#013D5B" opacity="0.6"/>
+        <!-- Inactive item -->
+        <rect x="78" y="70" width="58" height="10" rx="4" fill="transparent"/>
+        <rect x="80" y="72" width="8" height="6" rx="2" fill="#E8E4DD"/>
+        <rect x="92" y="73" width="26" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Group label 2 -->
+        <rect x="80" y="88" width="24" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Inactive item -->
+        <rect x="80" y="96" width="8" height="6" rx="2" fill="#E8E4DD"/>
+        <rect x="92" y="97" width="30" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Collapsed sidebar (faded) -->
+        <rect x="162" y="16" width="32" height="96" rx="8" fill="#FAF8F5" opacity="0.5"/>
+        <rect x="172" y="38" width="12" height="12" rx="4" fill="#D9EBED" opacity="0.5"/>
+        <rect x="174" y="40" width="8" height="8" rx="2" fill="#013D5B" opacity="0.25"/>
+        <rect x="174" y="58" width="8" height="8" rx="2" fill="#E8E4DD" opacity="0.4"/>
+        <rect x="174" y="74" width="8" height="8" rx="2" fill="#E8E4DD" opacity="0.4"/>
+        <!-- Collapse arrow -->
+        <circle cx="152" cy="64" r="7" fill="#E8E4DD" opacity="0.5"/>
+        <!-- Floating accents -->
+        <circle cx="210" cy="34" r="5" fill="#BF5547" opacity="0.2"/>
+        <rect x="50" y="66" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.4"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Side Navigation</div>
+      <div class="card-desc">Animated sidebar with grouped sections, active states, and smooth collapse/expand transitions.</div>
+    </div>
+  </a>
+
+  <!-- Side Panel -->
+  <a class="card" href="components/side-panel.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Main content area (dimmed) -->
+        <rect x="52" y="16" width="176" height="96" rx="6" fill="#1C1A17" opacity="0.08"/>
+        <!-- Content placeholder lines -->
+        <rect x="62" y="30" width="80" height="5" rx="2.5" fill="#D5CFC4" opacity="0.3"/>
+        <rect x="62" y="42" width="64" height="4" rx="2" fill="#D5CFC4" opacity="0.2"/>
+        <rect x="62" y="52" width="72" height="4" rx="2" fill="#D5CFC4" opacity="0.2"/>
+        <!-- Side panel sliding from right -->
+        <rect x="158" y="16" width="76" height="96" rx="0 6 6 0" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <!-- Panel header -->
+        <rect x="168" y="26" width="44" height="6" rx="3" fill="#47443F" opacity="0.5"/>
+        <path d="M224 28l-4 4m4 0l-4-4" stroke="#D5CFC4" stroke-width="1.5" stroke-linecap="round"/>
+        <!-- Panel content -->
+        <rect x="168" y="42" width="56" height="4" rx="2" fill="#D5CFC4"/>
+        <rect x="168" y="52" width="48" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
+        <rect x="168" y="62" width="52" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
+        <!-- Panel action button -->
+        <rect x="168" y="80" width="56" height="14" rx="4" fill="#05314D"/>
+        <rect x="180" y="85" width="32" height="4" rx="2" fill="#D9EBED"/>
+        <!-- Slide arrow indicator -->
+        <path d="M154 64l-6-4v8z" fill="#D5CFC4" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="42" y="72" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="146" cy="30" r="4" fill="#05314D" opacity="0.1"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Side Panel</div>
+      <div class="card-desc">Sliding panel overlay from the right edge for detail views, forms, and secondary content.</div>
+    </div>
+  </a>
+
+  <!-- Skeleton Loaders -->
+  <a class="card" href="components/skeleton-loaders.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Card skeleton -->
+        <rect x="72" y="20" width="136" height="88" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <!-- Image placeholder -->
+        <rect x="82" y="30" width="116" height="28" rx="4" fill="#EBE6DD"/>
+        <!-- Shimmer effect on image -->
+        <rect x="82" y="30" width="40" height="28" rx="4" fill="#F4F1EB" opacity="0.6"/>
+        <!-- Avatar circle skeleton -->
+        <circle cx="96" cy="72" r="10" fill="#EBE6DD"/>
+        <!-- Title line skeleton -->
+        <rect x="112" y="66" width="72" height="6" rx="3" fill="#EBE6DD"/>
+        <!-- Subtitle line skeleton -->
+        <rect x="112" y="78" width="52" height="4" rx="2" fill="#EBE6DD" opacity="0.6"/>
+        <!-- Button skeleton -->
+        <rect x="82" y="92" width="48" height="10" rx="4" fill="#EBE6DD"/>
+        <rect x="136" y="92" width="48" height="10" rx="4" fill="#EBE6DD" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="226" cy="44" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Skeleton Loaders</div>
+      <div class="card-desc">Shimmer placeholder shapes mimicking content layout while data is loading.</div>
+    </div>
+  </a>
+
+  <!-- Stepper -->
+  <a class="card" href="components/stepper.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Step 1 (completed) -->
+        <circle cx="80" cy="56" r="14" fill="#05314D"/>
+        <path d="M74 56l4 4 8-8" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="68" y="76" width="24" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
+        <!-- Connector 1 (done) -->
+        <rect x="94" y="55" width="32" height="2" rx="1" fill="#05314D"/>
+        <!-- Step 2 (active) -->
+        <circle cx="140" cy="56" r="14" fill="#05314D" opacity="0.8"/>
+        <text x="140" y="60" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF" font-family="sans-serif">2</text>
+        <rect x="128" y="76" width="24" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
+        <!-- Connector 2 (pending) -->
+        <rect x="154" y="55" width="32" height="2" rx="1" fill="#D5CFC4"/>
+        <!-- Step 3 (pending) -->
+        <circle cx="200" cy="56" r="14" fill="none" stroke="#D5CFC4" stroke-width="2"/>
+        <text x="200" y="60" text-anchor="middle" font-size="12" fill="#D5CFC4" font-family="sans-serif">3</text>
+        <rect x="188" y="76" width="24" height="5" rx="2.5" fill="#D5CFC4" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="54" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="232" cy="80" r="5" fill="#05314D" opacity="0.12"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Stepper</div>
+      <div class="card-desc">Numbered step indicators connected by lines showing progress through a multi-step workflow.</div>
+    </div>
+  </a>
+
+  <!-- Tables -->
+  <a class="card" href="components/tables.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Table container -->
+        <rect x="56" y="22" width="168" height="84" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
+        <!-- Header row -->
+        <rect x="57" y="23" width="166" height="16" rx="5" fill="#FAF8F5"/>
+        <!-- Header texts -->
+        <rect x="66" y="29" width="28" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
+        <rect x="110" y="29" width="22" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
+        <rect x="148" y="29" width="18" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
+        <rect x="186" y="29" width="24" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
+        <!-- Row 1 -->
+        <rect x="66" y="47" width="32" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="110" y="47" width="24" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="148" y="45" width="24" height="8" rx="4" fill="#E5F0D1" opacity="0.8"/>
+        <rect x="186" y="47" width="28" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Row divider -->
+        <line x1="66" y1="57" x2="214" y2="57" stroke="#E8E4DD" stroke-width="0.5"/>
+        <!-- Row 2 (selected) -->
+        <rect x="57" y="58" width="166" height="18" fill="#D9EBED" opacity="0.35"/>
+        <rect x="66" y="65" width="36" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
+        <rect x="110" y="65" width="20" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
+        <rect x="148" y="63" width="28" height="8" rx="4" fill="#FFF3D4" opacity="0.8"/>
+        <rect x="186" y="65" width="22" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
+        <!-- Row divider -->
+        <line x1="66" y1="77" x2="214" y2="77" stroke="#E8E4DD" stroke-width="0.5"/>
+        <!-- Row 3 -->
+        <rect x="66" y="83" width="28" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="110" y="83" width="26" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="148" y="81" width="22" height="8" rx="4" fill="#E5F0D1" opacity="0.8"/>
+        <rect x="186" y="83" width="26" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Sort indicator -->
+        <path d="M96 28l3 5h-6z" fill="#013D5B" opacity="0.4"/>
+        <!-- Floating accents -->
+        <circle cx="42" cy="82" r="5" fill="#D9EBED" opacity="0.4"/>
+        <rect x="230" cy="36" width="8" height="8" rx="2" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Tables</div>
+      <div class="card-desc">Data tables with sorting, pagination, and bulk actions for managing lists and records.</div>
+    </div>
+  </a>
+
+  <!-- Tabs -->
+  <a class="card" href="components/tabs.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Tab panel body -->
+        <rect x="52" y="50" width="176" height="46" rx="0" fill="#FFFFFF"/>
+        <!-- Tab divider line -->
+        <rect x="52" y="50" width="176" height="2" fill="#E8E4DD"/>
+        <!-- Active tab -->
+        <rect x="56" y="34" width="50" height="18" rx="0" fill="#FFFFFF"/>
+        <rect x="66" y="40" width="30" height="5" rx="2.5" fill="#013D5B" opacity="0.6"/>
+        <rect x="56" y="50" width="50" height="3" fill="#013D5B"/>
+        <!-- Inactive tabs -->
+        <rect x="116" y="40" width="28" height="5" rx="2.5" fill="#E8E4DD"/>
+        <!-- Badge on tab -->
+        <rect x="150" y="38" width="14" height="9" rx="4.5" fill="#D9EBED"/>
+        <rect x="172" y="40" width="36" height="5" rx="2.5" fill="#E8E4DD"/>
+        <!-- Content lines -->
+        <rect x="64" y="60" width="100" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="64" y="70" width="80" height="4" rx="2" fill="#E8E4DD" opacity="0.6"/>
+        <rect x="64" y="80" width="60" height="4" rx="2" fill="#E8E4DD" opacity="0.35"/>
+        <!-- Floating accents -->
+        <circle cx="44" cy="82" r="5" fill="#D9EBED" opacity="0.4"/>
+        <rect x="234" y="40" width="10" height="10" rx="3" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Tabs</div>
+      <div class="card-desc">Horizontal tab navigation with active underline, count badges, and content panels.</div>
+    </div>
+  </a>
+
+  <!-- Tags -->
+  <a class="card" href="components/tags.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Red tag -->
+        <rect x="66" y="30" width="72" height="22" rx="4" fill="#BF5547" opacity="0.15"/>
+        <circle cx="78" cy="41" r="4" fill="#BF5547" opacity="0.6"/>
+        <rect x="86" y="38" width="40" height="5" rx="2.5" fill="#BF5547" opacity="0.45"/>
+        <!-- Blue tag -->
+        <rect x="148" y="30" width="68" height="22" rx="4" fill="#013D5B" opacity="0.12"/>
+        <circle cx="160" cy="41" r="4" fill="#013D5B" opacity="0.5"/>
+        <rect x="168" y="38" width="36" height="5" rx="2.5" fill="#013D5B" opacity="0.35"/>
+        <!-- Green tag -->
+        <rect x="76" y="58" width="64" height="22" rx="4" fill="#7A9A01" opacity="0.15"/>
+        <circle cx="88" cy="69" r="4" fill="#7A9A01" opacity="0.6"/>
+        <rect x="96" y="66" width="32" height="5" rx="2.5" fill="#7A9A01" opacity="0.45"/>
+        <!-- Navy tag -->
+        <rect x="150" y="58" width="74" height="22" rx="4" fill="#A6CBD6" opacity="0.4"/>
+        <circle cx="162" cy="69" r="4" fill="#013D5B" opacity="0.5"/>
+        <rect x="170" y="66" width="42" height="5" rx="2.5" fill="#013D5B" opacity="0.35"/>
+        <!-- Purple tag -->
+        <rect x="98" y="86" width="80" height="22" rx="4" fill="#8B6AAF" opacity="0.12"/>
+        <circle cx="110" cy="97" r="4" fill="#8B6AAF" opacity="0.5"/>
+        <rect x="118" y="94" width="48" height="5" rx="2.5" fill="#8B6AAF" opacity="0.35"/>
+        <!-- Floating accents -->
+        <rect x="50" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="234" cy="50" r="5" fill="#BF5547" opacity="0.2"/>
+        <rect x="226" y="86" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Tags</div>
+      <div class="card-desc">Status tags, count badges, and inline dots in six semantic colors with multiple sizes.</div>
+    </div>
+  </a>
+
+  <!-- Toasts -->
+  <a class="card" href="components/toasts.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Toast 1 — success -->
+        <rect x="68" y="24" width="150" height="28" rx="6" fill="#FFFFFF"/>
+        <rect x="68" y="24" width="4" height="28" rx="2" fill="#7A9A01"/>
+        <rect x="80" y="34" width="10" height="10" rx="5" fill="#7A9A01" opacity="0.3"/>
+        <rect x="96" y="35" width="56" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="96" y="43" width="36" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
+        <!-- Toast 2 — warning -->
+        <rect x="74" y="58" width="150" height="28" rx="6" fill="#FFFFFF"/>
+        <rect x="74" y="58" width="4" height="28" rx="2" fill="#D4A843"/>
+        <rect x="86" y="68" width="10" height="10" rx="5" fill="#D4A843" opacity="0.3"/>
+        <rect x="102" y="69" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="102" y="77" width="64" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
+        <!-- Toast 3 — error -->
+        <rect x="80" y="92" width="150" height="28" rx="6" fill="#FFFFFF"/>
+        <rect x="80" y="92" width="4" height="28" rx="2" fill="#BF5547"/>
+        <rect x="92" y="102" width="10" height="10" rx="5" fill="#BF5547" opacity="0.3"/>
+        <rect x="108" y="103" width="42" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="108" y="111" width="54" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
+        <!-- Floating accents -->
+        <rect x="54" y="46" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="236" cy="48" r="5" fill="#A6CBD6" opacity="0.3"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Toasts</div>
+      <div class="card-desc">Inline alert banners and floating toast notifications for feedback and status messages.</div>
+    </div>
+  </a>
+
+  <!-- Tooltips -->
+  <a class="card" href="components/tooltips.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Dark tooltip (top) -->
+        <rect x="92" y="24" width="96" height="28" rx="4" fill="#1C1A17"/>
+        <rect x="102" y="34" width="64" height="5" rx="2.5" fill="#FFFFFF" opacity="0.7"/>
+        <rect x="102" y="42" width="40" height="4" rx="2" fill="#FFFFFF" opacity="0.4"/>
+        <!-- Arrow down -->
+        <path d="M140 52l6-6h-12z" fill="#1C1A17"/>
+        <!-- Trigger element -->
+        <circle cx="140" cy="68" r="10" fill="#D9EBED"/>
+        <circle cx="140" cy="66" r="2" fill="#013D5B" opacity="0.5"/>
+        <rect x="138" y="70" width="4" height="4" rx="1" fill="#013D5B" opacity="0.5"/>
+        <!-- Light popover (bottom right) -->
+        <rect x="158" y="82" width="76" height="32" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
+        <rect x="166" y="90" width="48" height="5" rx="2.5" fill="#013D5B" opacity="0.3"/>
+        <rect x="166" y="100" width="36" height="4" rx="2" fill="#E8E4DD"/>
+        <!-- Arrow up -->
+        <path d="M180 82l5 -5h-10z" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
+        <!-- Floating accents -->
+        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="232" cy="38" r="5" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Tooltips</div>
+      <div class="card-desc">Dark tooltips, rich tooltips with titles, and light popovers for contextual information.</div>
+    </div>
+  </a>
+</div>
+
+<!-- ===== DATA VISUALIZATION ===== -->
+<h2>Data Visualization</h2>
+<div class="card-grid">
+
+  <!-- Area Chart -->
+  <a class="card" href="data-viz/area-chart.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <path d="M72 90L100 72 128 78 156 52 184 60 212 48 212 100 72 100Z" fill="#013D5B" opacity="0.15"/>
+        <polyline points="72,90 100,72 128,78 156,52 184,60 212,48" stroke="#013D5B" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M72 96L100 84 128 88 156 70 184 78 212 66 212 100 72 100Z" fill="#A6CBD6" opacity="0.25"/>
+        <polyline points="72,96 100,84 128,88 156,70 184,78 212,66" stroke="#A6CBD6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="72" y="100" width="140" height="2" rx="1" fill="#E8E4DD"/>
+        <rect x="54" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="226" cy="40" r="5" fill="#7A9A01" opacity="0.2"/>
+        <rect x="220" y="82" width="10" height="10" rx="3" fill="#BF5547" opacity="0.15"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Area Chart</div>
+      <div class="card-desc">Filled area, stacked area, and gradient area charts for trend visualization.</div>
+    </div>
+  </a>
+
+  <!-- Bar Chart -->
+  <a class="card" href="data-viz/bar-chart.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect x="80" y="72" width="24" height="34" rx="3" fill="#013D5B"/>
+        <rect x="110" y="52" width="24" height="54" rx="3" fill="#4F8AA0"/>
+        <rect x="140" y="36" width="24" height="70" rx="3" fill="#A6CBD6"/>
+        <rect x="170" y="58" width="24" height="48" rx="3" fill="#BF5547"/>
+        <rect x="72" y="106" width="128" height="2" rx="1" fill="#E8E4DD"/>
+        <rect x="72" y="36" width="2" height="70" rx="1" fill="#E8E4DD" opacity="0.6"/>
+        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="218" cy="44" r="5" fill="#7A9A01" opacity="0.2"/>
+        <rect x="210" y="86" width="10" height="10" rx="3" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Bar Chart</div>
+      <div class="card-desc">Vertical, grouped, stacked, and horizontal bar charts for categorical data comparison.</div>
+    </div>
+  </a>
+
+  <!-- Donut Chart -->
+  <a class="card" href="data-viz/donut-chart.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <circle cx="140" cy="64" r="36" stroke="#013D5B" stroke-width="18" fill="none" stroke-dasharray="90 226" stroke-dashoffset="0"/>
+        <circle cx="140" cy="64" r="36" stroke="#4F8AA0" stroke-width="18" fill="none" stroke-dasharray="56 226" stroke-dashoffset="-90"/>
+        <circle cx="140" cy="64" r="36" stroke="#A6CBD6" stroke-width="18" fill="none" stroke-dasharray="45 226" stroke-dashoffset="-146"/>
+        <circle cx="140" cy="64" r="36" stroke="#BF5547" stroke-width="18" fill="none" stroke-dasharray="35 226" stroke-dashoffset="-191"/>
+        <rect x="132" y="58" width="16" height="5" rx="2.5" fill="#013D5B" opacity="0.5"/>
+        <rect x="134" y="66" width="12" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="56" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="82" r="5" fill="#7A9A01" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Donut Chart</div>
+      <div class="card-desc">Standard donut, semi-donut gauge, and sparkline donuts for part-to-whole data.</div>
+    </div>
+  </a>
+
+  <!-- Histogram -->
+  <a class="card" href="data-viz/histogram.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect x="72" y="82" width="18" height="18" fill="#013D5B" opacity="0.5"/>
+        <rect x="90" y="68" width="18" height="32" fill="#013D5B" opacity="0.65"/>
+        <rect x="108" y="50" width="18" height="50" fill="#013D5B" opacity="0.8"/>
+        <rect x="126" y="34" width="18" height="66" fill="#013D5B"/>
+        <rect x="144" y="42" width="18" height="58" fill="#013D5B" opacity="0.85"/>
+        <rect x="162" y="56" width="18" height="44" fill="#013D5B" opacity="0.7"/>
+        <rect x="180" y="72" width="18" height="28" fill="#013D5B" opacity="0.55"/>
+        <rect x="198" y="84" width="18" height="16" fill="#013D5B" opacity="0.4"/>
+        <rect x="72" y="100" width="144" height="2" rx="1" fill="#E8E4DD"/>
+        <path d="M76 94Q108 56 140 38Q172 56 210 92" stroke="#BF5547" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
+        <rect x="54" y="54" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="228" cy="68" r="5" fill="#7A9A01" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Histogram</div>
+      <div class="card-desc">Frequency distribution charts with optional distribution curves and grouped overlays.</div>
+    </div>
+  </a>
+
+  <!-- Line Chart -->
+  <a class="card" href="data-viz/line-chart.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <polyline points="76,80 106,60 136,68 166,42 196,54" stroke="#013D5B" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="76" cy="80" r="5" fill="#013D5B"/>
+        <circle cx="106" cy="60" r="5" fill="#013D5B"/>
+        <circle cx="136" cy="68" r="5" fill="#013D5B"/>
+        <circle cx="166" cy="42" r="5" fill="#013D5B"/>
+        <circle cx="196" cy="54" r="5" fill="#013D5B"/>
+        <polyline points="76,90 106,76 136,82 166,62 196,70" stroke="#A6CBD6" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="106" cy="76" r="3.5" fill="#A6CBD6"/>
+        <circle cx="166" cy="62" r="3.5" fill="#A6CBD6"/>
+        <rect x="72" y="100" width="130" height="2" rx="1" fill="#E8E4DD"/>
+        <rect x="58" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="222" cy="72" r="5" fill="#BF5547" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Line Chart</div>
+      <div class="card-desc">Single and multi-line charts with data points, tooltips, and area fill variants.</div>
+    </div>
+  </a>
+
+  <!-- Waterfall Chart -->
+  <a class="card" href="data-viz/waterfall-chart.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect x="72" y="32" width="22" height="68" rx="2" fill="#013D5B"/>
+        <rect x="100" y="32" width="22" height="24" rx="2" fill="#7A9A01"/>
+        <line x1="122" y1="56" x2="128" y2="56" stroke="#E8E4DD" stroke-width="1.5" stroke-dasharray="2 2"/>
+        <rect x="128" y="56" width="22" height="18" rx="2" fill="#BF5547"/>
+        <line x1="150" y1="74" x2="156" y2="74" stroke="#E8E4DD" stroke-width="1.5" stroke-dasharray="2 2"/>
+        <rect x="156" y="74" width="22" height="12" rx="2" fill="#BF5547"/>
+        <line x1="178" y1="86" x2="184" y2="86" stroke="#E8E4DD" stroke-width="1.5" stroke-dasharray="2 2"/>
+        <rect x="184" y="32" width="22" height="54" rx="2" fill="#013D5B" opacity="0.7"/>
+        <rect x="72" y="100" width="134" height="2" rx="1" fill="#E8E4DD"/>
+        <rect x="56" y="68" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="224" cy="46" r="5" fill="#8B6AAF" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Waterfall Chart</div>
+      <div class="card-desc">Bridge analysis charts showing how values increase and decrease from start to end.</div>
+    </div>
+  </a>
+
+</div>
+
+<!-- ===== TOOLS ===== -->
+<h2>Tools</h2>
+<div class="card-grid">
+  <a class="card" href="docs/color-sampler.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Backdrop circle -->
+        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <!-- Screenshot frame -->
+        <rect x="80" y="22" width="96" height="72" rx="6" fill="#FFFFFF"/>
+        <!-- Image color blocks -->
+        <rect x="86" y="28" width="84" height="18" rx="3" fill="#013D5B" opacity="0.1"/>
+        <rect x="86" y="50" width="38" height="14" rx="3" fill="#D9EBED" opacity="0.5"/>
+        <rect x="128" y="50" width="38" height="14" rx="3" fill="#BF5547" opacity="0.15"/>
+        <rect x="86" y="68" width="56" height="10" rx="3" fill="#7A9A01" opacity="0.1"/>
+        <!-- Eyedropper tool -->
+        <g transform="translate(190, 36) rotate(28)">
+          <rect x="-4" y="-18" width="8" height="26" rx="3" fill="#013D5B"/>
+          <rect x="-3" y="-20" width="6" height="6" rx="3" fill="#A6CBD6"/>
+          <rect x="-3" y="8" width="6" height="10" rx="2" fill="#C4A57B" opacity="0.8"/>
+        </g>
+        <!-- Sampled color chip -->
+        <rect x="190" y="74" width="26" height="18" rx="5" fill="#BF5547"/>
+        <rect x="194" y="78" width="18" height="4" rx="2" fill="#FFFFFF" opacity="0.5"/>
+        <rect x="194" y="84" width="12" height="4" rx="2" fill="#FFFFFF" opacity="0.3"/>
+        <!-- Crosshair target -->
+        <circle cx="108" cy="38" r="8" fill="#013D5B" opacity="0.08"/>
+        <circle cx="108" cy="38" r="3" fill="#013D5B" opacity="0.15"/>
+        <!-- Floating accents -->
+        <rect x="62" y="42" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
+        <circle cx="230" cy="52" r="5" fill="#7A9A01" opacity="0.2"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Color Sampler</div>
+      <div class="card-desc">Upload a screenshot and sample pixel colors to identify token values.</div>
+    </div>
+  </a>
+</div>
+
+<div class="footer">
+  <p>Token files: <code>tokens/colors.css</code> &middot; <code>tokens/spacing.css</code> &middot; <code>tokens/typography.css</code> &middot; <code>tokens/colors.json</code> &middot; <code>tokens/semantic-colors.json</code></p>
+</div>
+
+<script src="/shared/nav.js"></script>
+</body>
+</html>

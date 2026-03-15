@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Filter Bar</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* Demo row */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* ============================================================
+       FILTER BAR
+       A complex multi-attribute filtering system for lists,
+       tables, and search results. Filter chips can be
+       added, removed, and combined.
+       ============================================================ */
+
+    .sds-filter-bar {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--sds-space-200);
+      min-height: 44px;
+      position: relative;
+    }
+
+    .sds-filter-bar__filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--sds-space-200);
+    }
+
+    .sds-filter-bar__add {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      background: none;
+      border: none;
+      color: var(--sds-color-blue-700);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-150);
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+    .sds-filter-bar__add:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+    .sds-filter-bar__add .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    .sds-filter-bar__placeholder {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-350);
+    }
+
+    .sds-filter-bar__clear {
+      background: none;
+      border: none;
+      color: var(--sds-color-warm-gray-500);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-150);
+      text-decoration: none;
+    }
+    .sds-filter-bar__clear:hover {
+      text-decoration: underline;
+    }
+
+    .sds-filter-bar__count {
+      color: var(--sds-color-warm-gray-450);
+      font-size: var(--sds-type-caption);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+    /* ---- Filter Chip ---- */
+
+    .sds-filter-chip {
+      background: var(--sds-color-warm-gray-050);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      padding: var(--sds-space-100) var(--sds-space-200);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-size: var(--sds-type-caption);
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      cursor: default;
+    }
+
+    .sds-filter-chip:hover {
+      border-color: var(--sds-color-warm-gray-300);
+      background: var(--sds-color-warm-gray-100);
+    }
+
+    .sds-filter-chip--active {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1,61,91,0.15);
+    }
+    .sds-filter-chip--active:hover {
+      border-color: var(--sds-border-focus);
+    }
+
+    .sds-filter-chip__indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .sds-filter-chip__label {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+    .sds-filter-chip__operator {
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-color-warm-gray-450);
+    }
+
+    .sds-filter-chip__value {
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-blue-700);
+    }
+
+    .sds-filter-chip__remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--sds-color-warm-gray-400);
+      transition: color 0.15s ease;
+      line-height: 1;
+    }
+    .sds-filter-chip__remove:hover {
+      color: var(--sds-color-warm-gray-700);
+    }
+    .sds-filter-chip__remove .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    /* ---- Filter Dropdown ---- */
+
+    .sds-filter-dropdown {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: var(--sds-space-200) 0;
+      min-width: 220px;
+      position: absolute;
+      top: calc(100% + var(--sds-space-100));
+      left: var(--sds-space-300);
+      z-index: 10;
+      display: none;
+    }
+    .sds-filter-dropdown--open {
+      display: block;
+    }
+
+    .sds-filter-dropdown__item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-200) var(--sds-space-400);
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+      cursor: pointer;
+      transition: background 0.1s ease;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font: inherit;
+    }
+    .sds-filter-dropdown__item:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+    .sds-filter-dropdown__item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    /* ---- Demo-specific: static dropdown (for showcase) ---- */
+    .sds-filter-dropdown--static {
+      position: static;
+      display: block;
+    }
+
+    /* ---- Context demo helpers ---- */
+    .context-table-placeholder {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .context-table-placeholder__header {
+      display: flex;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .context-table-placeholder__header span {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-550);
+      flex: 1;
+    }
+    .context-table-placeholder__row {
+      display: flex;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .context-table-placeholder__row:last-child {
+      border-bottom: none;
+    }
+    .context-table-placeholder__row span {
+      flex: 1;
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .context-table-placeholder__row .placeholder-bar {
+      height: 10px;
+      background: var(--sds-color-warm-gray-100);
+      border-radius: 4px;
+      width: 70%;
+    }
+    .context-result-count {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      padding: var(--sds-space-300) 0 var(--sds-space-200);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+
+    /* ---- Tags (from tags.html canonical source) ---- */
+
+    .sds-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .sds-tag--error {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Filter Bar</h1>
+  <p class="page-subtitle">A multi-attribute filtering system for lists, tables, and search results. Combines filter chips that can be added, removed, and composed.</p>
+
+  <!-- ============================================================
+       EMPTY STATE
+       ============================================================ -->
+  <h2>Empty State</h2>
+  <p>The default filter bar with just the "Add filter" trigger and placeholder text. Shown when no filters are active.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">No active filters</div>
+    <div class="sds-filter-bar" id="demo-empty">
+      <button class="sds-filter-bar__add" onclick="toggleDropdown(this)">
+        <span class="material-symbols-outlined">add</span>
+        Add filter
+      </button>
+      <span class="sds-filter-bar__placeholder">Filter results...</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH ACTIVE FILTERS
+       ============================================================ -->
+  <h2>With Active Filters</h2>
+  <p>Three active filter chips with remove buttons, a "Clear all" action, and a result count pushed to the right.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">3 filters applied</div>
+    <div class="sds-filter-bar" id="demo-active">
+      <div class="sds-filter-bar__filters">
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__indicator" style="background: var(--sds-color-red-450);"></span>
+          <span class="sds-filter-chip__label">Status</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Overdue</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Status filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Project</span>
+          <span class="sds-filter-chip__operator">contains</span>
+          <span class="sds-filter-chip__value">Marketing</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Project filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Category</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Design</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Category filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+      </div>
+      <button class="sds-filter-bar__add" onclick="toggleDropdown(this)">
+        <span class="material-symbols-outlined">add</span>
+        Add filter
+      </button>
+      <button class="sds-filter-bar__clear" onclick="clearAll(this)">Clear all</button>
+      <span class="sds-filter-bar__count">23 results</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       FILTER CHIP STATES
+       ============================================================ -->
+  <h2>Filter Chip States</h2>
+  <p>Individual chips shown across their interactive states.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Interactive states</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Default</span>
+      <div class="demo-row-items">
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Status</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Active</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Status filter"><span class="material-symbols-outlined">close</span></button>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Hover</span>
+      <div class="demo-row-items">
+        <span class="sds-filter-chip" style="border-color: var(--sds-color-warm-gray-300); background: var(--sds-color-warm-gray-100);">
+          <span class="sds-filter-chip__label">Status</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Active</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Status filter"><span class="material-symbols-outlined">close</span></button>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Active</span>
+      <div class="demo-row-items">
+        <span class="sds-filter-chip sds-filter-chip--active">
+          <span class="sds-filter-chip__label">Status</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Active</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Status filter"><span class="material-symbols-outlined">close</span></button>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">With indicator</span>
+      <div class="demo-row-items">
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__indicator" style="background: var(--sds-color-red-450);"></span>
+          <span class="sds-filter-chip__label">Priority</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Urgent</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Priority filter"><span class="material-symbols-outlined">close</span></button>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH DROPDOWN
+       ============================================================ -->
+  <h2>With Dropdown</h2>
+  <p>The filter attribute selector dropdown shown in its open state. Each option uses a Material Symbols icon for quick scanning.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Attribute selector — open</div>
+    <div style="display: flex; gap: var(--sds-space-600); align-items: flex-start;">
+      <div class="sds-filter-dropdown sds-filter-dropdown--static">
+        <button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, 'Status', 'is', 'Active')">
+          <span class="material-symbols-outlined">flag</span>
+          Status
+        </button>
+        <button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, 'Project', 'contains', 'Marketing')">
+          <span class="material-symbols-outlined">folder</span>
+          Project
+        </button>
+        <button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, 'Category', 'is', 'Design')">
+          <span class="material-symbols-outlined">label</span>
+          Category
+        </button>
+        <button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, 'Priority', 'is', 'High')">
+          <span class="material-symbols-outlined">warning</span>
+          Priority
+        </button>
+        <button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, 'Date Range', 'after', '2026-03-01')">
+          <span class="material-symbols-outlined">calendar_today</span>
+          Date Range
+        </button>
+        <button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, 'Assignee', 'is', 'Engineering')">
+          <span class="material-symbols-outlined">person</span>
+          Assignee
+        </button>
+        <button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, 'Team', 'is', 'Product')">
+          <span class="material-symbols-outlined">group</span>
+          Team
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       COMPLEX FILTER
+       ============================================================ -->
+  <h2>Complex Filter</h2>
+  <p>A realistic filter bar with five filters applied, showing multiple operators and multi-value selections.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">5 filters — realistic scenario</div>
+    <div class="sds-filter-bar" id="demo-complex">
+      <div class="sds-filter-bar__filters">
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__indicator" style="background: var(--sds-color-red-450);"></span>
+          <span class="sds-filter-chip__label">Priority</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Urgent, High</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Priority filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Project</span>
+          <span class="sds-filter-chip__operator">is not</span>
+          <span class="sds-filter-chip__value">Archived</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Project filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Category</span>
+          <span class="sds-filter-chip__operator">contains</span>
+          <span class="sds-filter-chip__value">Design, Engineering</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Category filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Created</span>
+          <span class="sds-filter-chip__operator">after</span>
+          <span class="sds-filter-chip__value">2026-03-01</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Created filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Assignee</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Engineering</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Assignee filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+      </div>
+      <button class="sds-filter-bar__add" onclick="toggleDropdown(this)">
+        <span class="material-symbols-outlined">add</span>
+      </button>
+      <button class="sds-filter-bar__clear" onclick="clearAll(this)">Clear all</button>
+      <span class="sds-filter-bar__count">8 results</span>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT
+       ============================================================ -->
+  <h2>In Context</h2>
+  <p>Filter bar positioned above a data table, showing the realistic layout: filter bar, result count, then table content.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Page layout pattern</div>
+    <div class="sds-filter-bar" id="demo-context">
+      <div class="sds-filter-bar__filters">
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__indicator" style="background: var(--sds-color-red-450);"></span>
+          <span class="sds-filter-chip__label">Priority</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Urgent</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Priority filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+        <span class="sds-filter-chip">
+          <span class="sds-filter-chip__label">Team</span>
+          <span class="sds-filter-chip__operator">is</span>
+          <span class="sds-filter-chip__value">Product</span>
+          <button class="sds-filter-chip__remove" aria-label="Remove Team filter" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>
+        </span>
+      </div>
+      <button class="sds-filter-bar__add" onclick="toggleDropdown(this)">
+        <span class="material-symbols-outlined">add</span>
+        Add filter
+      </button>
+      <button class="sds-filter-bar__clear" onclick="clearAll(this)">Clear all</button>
+      <span class="sds-filter-bar__count">12 results</span>
+    </div>
+    <div class="context-result-count">Showing 12 of 1,284 items</div>
+    <div class="context-table-placeholder">
+      <div class="context-table-placeholder__header">
+        <span>Task Name</span>
+        <span>Team</span>
+        <span>Priority</span>
+        <span>Due Date</span>
+        <span>Assignee</span>
+      </div>
+      <div class="context-table-placeholder__row">
+        <span>Homepage redesign</span>
+        <span>Product</span>
+        <span class="sds-tag sds-tag--error">Urgent</span>
+        <span style="color: var(--sds-color-warm-gray-450);">Mar 14, 2026</span>
+        <span>Emily Chen</span>
+      </div>
+      <div class="context-table-placeholder__row">
+        <span>Onboarding flow update</span>
+        <span>Product</span>
+        <span class="sds-tag sds-tag--error">Urgent</span>
+        <span style="color: var(--sds-color-warm-gray-450);">Mar 14, 2026</span>
+        <span>James Park</span>
+      </div>
+      <div class="context-table-placeholder__row">
+        <span>Q1 analytics report</span>
+        <span>Product</span>
+        <span class="sds-tag sds-tag--error">Urgent</span>
+        <span style="color: var(--sds-color-warm-gray-450);">Mar 13, 2026</span>
+        <span>Sarah Kim</span>
+      </div>
+      <div class="context-table-placeholder__row">
+        <span>Mobile navigation audit</span>
+        <span>Product</span>
+        <span class="sds-tag sds-tag--error">Urgent</span>
+        <span style="color: var(--sds-color-warm-gray-450);">Mar 12, 2026</span>
+        <span>Alex Rivera</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Filter Bar — background</td>
+        <td>background</td>
+        <td><code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Filter Bar — border</td>
+        <td>border</td>
+        <td><code>--sds-color-warm-gray-150</code></td>
+      </tr>
+      <tr>
+        <td>Filter Bar — radius</td>
+        <td>border-radius</td>
+        <td><code>8px</code></td>
+      </tr>
+      <tr>
+        <td>Filter Bar — padding</td>
+        <td>padding</td>
+        <td><code>--sds-space-200</code> <code>--sds-space-300</code></td>
+      </tr>
+      <tr>
+        <td>Chip — background</td>
+        <td>background</td>
+        <td><code>--sds-color-warm-gray-050</code></td>
+      </tr>
+      <tr>
+        <td>Chip — border</td>
+        <td>border</td>
+        <td><code>--sds-color-warm-gray-200</code></td>
+      </tr>
+      <tr>
+        <td>Chip — radius</td>
+        <td>border-radius</td>
+        <td><code>6px</code></td>
+      </tr>
+      <tr>
+        <td>Chip — font-size</td>
+        <td>font-size</td>
+        <td><code>--sds-type-caption</code></td>
+      </tr>
+      <tr>
+        <td>Chip label — color</td>
+        <td>color</td>
+        <td><code>--sds-color-warm-gray-700</code></td>
+      </tr>
+      <tr>
+        <td>Chip operator — color</td>
+        <td>color</td>
+        <td><code>--sds-color-warm-gray-450</code></td>
+      </tr>
+      <tr>
+        <td>Chip value — color</td>
+        <td>color</td>
+        <td><code>--sds-color-blue-700</code></td>
+      </tr>
+      <tr>
+        <td>Chip hover — bg</td>
+        <td>background</td>
+        <td><code>--sds-color-warm-gray-100</code></td>
+      </tr>
+      <tr>
+        <td>Chip hover — border</td>
+        <td>border-color</td>
+        <td><code>--sds-color-warm-gray-300</code></td>
+      </tr>
+      <tr>
+        <td>Chip active — border</td>
+        <td>border-color</td>
+        <td><code>--sds-border-focus</code></td>
+      </tr>
+      <tr>
+        <td>Chip active — shadow</td>
+        <td>box-shadow</td>
+        <td><code>0 0 0 3px rgba(1,61,91,0.15)</code></td>
+      </tr>
+      <tr>
+        <td>Remove icon — size</td>
+        <td>font-size</td>
+        <td><code>14px</code></td>
+      </tr>
+      <tr>
+        <td>Remove icon — color</td>
+        <td>color</td>
+        <td><code>--sds-color-warm-gray-400</code></td>
+      </tr>
+      <tr>
+        <td>Add button — color</td>
+        <td>color</td>
+        <td><code>--sds-color-blue-700</code></td>
+      </tr>
+      <tr>
+        <td>Clear all — color</td>
+        <td>color</td>
+        <td><code>--sds-color-warm-gray-500</code></td>
+      </tr>
+      <tr>
+        <td>Result count — color</td>
+        <td>color</td>
+        <td><code>--sds-color-warm-gray-450</code></td>
+      </tr>
+      <tr>
+        <td>Dropdown — shadow</td>
+        <td>box-shadow</td>
+        <td><code>0 4px 12px rgba(0,0,0,0.08)</code></td>
+      </tr>
+      <tr>
+        <td>Dropdown item — hover bg</td>
+        <td>background</td>
+        <td><code>--sds-color-warm-gray-025</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Height</th><th>Padding</th><th>Gap</th><th>Font Size</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Filter Bar</td>
+        <td><code>44px</code> min</td>
+        <td><code>--sds-space-200</code> / <code>--sds-space-300</code></td>
+        <td><code>--sds-space-200</code></td>
+        <td>—</td>
+      </tr>
+      <tr>
+        <td>Filter Chip</td>
+        <td>auto</td>
+        <td><code>--sds-space-100</code> / <code>--sds-space-200</code></td>
+        <td><code>--sds-space-100</code></td>
+        <td><code>--sds-type-caption</code></td>
+      </tr>
+      <tr>
+        <td>Dropdown</td>
+        <td>auto</td>
+        <td><code>--sds-space-200</code> / <code>0</code></td>
+        <td>—</td>
+        <td><code>--sds-type-label</code></td>
+      </tr>
+      <tr>
+        <td>Dropdown Item</td>
+        <td>auto</td>
+        <td><code>--sds-space-200</code> / <code>--sds-space-400</code></td>
+        <td><code>--sds-space-200</code></td>
+        <td><code>--sds-type-label</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-filter-bar</code></td><td>Outer container — horizontal bar with flex-wrap layout</td></tr>
+      <tr><td><code>.sds-filter-bar__filters</code></td><td>Wrapper for active filter chips</td></tr>
+      <tr><td><code>.sds-filter-bar__add</code></td><td>"Add filter" ghost button with + icon</td></tr>
+      <tr><td><code>.sds-filter-bar__clear</code></td><td>"Clear all" text link to remove all filters</td></tr>
+      <tr><td><code>.sds-filter-bar__count</code></td><td>Result count display, pushed to far right</td></tr>
+      <tr><td><code>.sds-filter-bar__placeholder</code></td><td>Placeholder text for empty state</td></tr>
+      <tr><td><code>.sds-filter-chip</code></td><td>Individual filter pill — inline-flex container</td></tr>
+      <tr><td><code>.sds-filter-chip__label</code></td><td>Attribute name (e.g., "Status")</td></tr>
+      <tr><td><code>.sds-filter-chip__operator</code></td><td>Operator text (e.g., "is", "contains")</td></tr>
+      <tr><td><code>.sds-filter-chip__value</code></td><td>Filter value (e.g., "Critical")</td></tr>
+      <tr><td><code>.sds-filter-chip__remove</code></td><td>Remove button with close icon</td></tr>
+      <tr><td><code>.sds-filter-chip__indicator</code></td><td>Optional 6px colored dot indicator</td></tr>
+      <tr><td><code>.sds-filter-chip--active</code></td><td>Modifier: chip in editing/focused state</td></tr>
+      <tr><td><code>.sds-filter-dropdown</code></td><td>Attribute selector dropdown panel</td></tr>
+      <tr><td><code>.sds-filter-dropdown__item</code></td><td>Individual dropdown option row</td></tr>
+      <tr><td><code>.sds-filter-dropdown--open</code></td><td>Modifier: shows the dropdown</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       JAVASCRIPT
+       ============================================================ -->
+  <script>
+    /* Remove a single filter chip */
+    function removeChip(btn) {
+      const chip = btn.closest('.sds-filter-chip');
+      if (chip) chip.remove();
+    }
+
+    /* Clear all chips from a filter bar */
+    function clearAll(btn) {
+      const bar = btn.closest('.sds-filter-bar');
+      if (!bar) return;
+      bar.querySelectorAll('.sds-filter-chip').forEach(c => c.remove());
+    }
+
+    /* Toggle dropdown visibility for "Add filter" */
+    function toggleDropdown(btn) {
+      const bar = btn.closest('.sds-filter-bar');
+      if (!bar) return;
+      let dd = bar.querySelector('.sds-filter-dropdown');
+      if (!dd) {
+        dd = document.createElement('div');
+        dd.className = 'sds-filter-dropdown';
+        dd.innerHTML = [
+          { icon: 'flag', label: 'Status', op: 'is', val: 'Active' },
+          { icon: 'folder', label: 'Project', op: 'contains', val: 'Marketing' },
+          { icon: 'label', label: 'Category', op: 'is', val: 'Design' },
+          { icon: 'warning', label: 'Priority', op: 'is', val: 'High' },
+          { icon: 'calendar_today', label: 'Date Range', op: 'after', val: '2026-03-01' },
+          { icon: 'person', label: 'Assignee', op: 'is', val: 'Engineering' },
+          { icon: 'group', label: 'Team', op: 'is', val: 'Product' }
+        ].map(item =>
+          '<button class="sds-filter-dropdown__item" onclick="addChipFromDropdown(this, \'' + item.label + '\', \'' + item.op + '\', \'' + item.val + '\')">' +
+            '<span class="material-symbols-outlined">' + item.icon + '</span>' +
+            item.label +
+          '</button>'
+        ).join('');
+        bar.appendChild(dd);
+      }
+      dd.classList.toggle('sds-filter-dropdown--open');
+    }
+
+    /* Add a chip from a dropdown selection */
+    function addChipFromDropdown(el, label, op, val) {
+      const bar = el.closest('.sds-filter-bar');
+      if (!bar) return;
+      /* Close dropdown */
+      const dd = el.closest('.sds-filter-dropdown');
+      if (dd) dd.classList.remove('sds-filter-dropdown--open');
+      /* Find or create filters container */
+      let filters = bar.querySelector('.sds-filter-bar__filters');
+      if (!filters) {
+        filters = document.createElement('div');
+        filters.className = 'sds-filter-bar__filters';
+        bar.prepend(filters);
+      }
+      /* Create chip */
+      const chip = document.createElement('span');
+      chip.className = 'sds-filter-chip';
+      chip.innerHTML =
+        '<span class="sds-filter-chip__label">' + label + '</span>' +
+        '<span class="sds-filter-chip__operator">' + op + '</span>' +
+        '<span class="sds-filter-chip__value">' + val + '</span>' +
+        '<button class="sds-filter-chip__remove" onclick="removeChip(this)"><span class="material-symbols-outlined">close</span></button>';
+      filters.appendChild(chip);
+      /* Remove placeholder if present */
+      const ph = bar.querySelector('.sds-filter-bar__placeholder');
+      if (ph) ph.remove();
+    }
+
+    /* Close dropdowns when clicking outside */
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.sds-filter-bar__add') && !e.target.closest('.sds-filter-dropdown')) {
+        document.querySelectorAll('.sds-filter-dropdown--open').forEach(dd => {
+          if (!dd.classList.contains('sds-filter-dropdown--static')) {
+            dd.classList.remove('sds-filter-dropdown--open');
+          }
+        });
+      }
+    });
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

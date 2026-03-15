@@ -1,0 +1,1277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Popover</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ============================================================
+       BUTTON COMPONENT (canonical)
+       ============================================================ */
+
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-btn--sm {
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border-radius: 6px;
+      height: 32px;
+    }
+
+    .sds-btn--secondary {
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-interactive-secondary-border);
+    }
+    .sds-btn--secondary:hover {
+      background: var(--sds-bg-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--secondary:active {
+      background: var(--sds-border-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+
+    /* ============================================================
+       POPOVER COMPONENT
+       ============================================================ */
+
+    .sds-popover-anchor {
+      position: relative;
+      display: inline-flex;
+    }
+
+    .sds-popover {
+      position: absolute;
+      z-index: 1000;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      padding: var(--sds-space-400);
+      max-width: 320px;
+      min-width: 220px;
+      font-family: var(--sds-font-sans);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 150ms ease, visibility 150ms ease;
+    }
+    .sds-popover.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Static variant for previews */
+    .sds-popover--static {
+      position: relative;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Arrow base */
+    .sds-popover::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--sds-bg-elevated);
+      border-left: 1px solid var(--sds-border-default);
+      border-top: 1px solid var(--sds-border-default);
+      transform: rotate(45deg);
+    }
+
+    /* Positions */
+    .sds-popover--top {
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .sds-popover--top::before {
+      bottom: -6px;
+      left: 50%;
+      margin-left: -5px;
+      border-left: none;
+      border-top: none;
+      border-right: 1px solid var(--sds-border-default);
+      border-bottom: 1px solid var(--sds-border-default);
+    }
+
+    .sds-popover--bottom {
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .sds-popover--bottom::before {
+      top: -6px;
+      left: 50%;
+      margin-left: -5px;
+    }
+
+    .sds-popover--left {
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .sds-popover--left::before {
+      right: -6px;
+      top: 50%;
+      margin-top: -5px;
+      border-left: none;
+      border-top: none;
+      border-right: 1px solid var(--sds-border-default);
+      border-bottom: 1px solid var(--sds-border-default);
+      transform: rotate(-45deg);
+    }
+
+    .sds-popover--right {
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+    .sds-popover--right::before {
+      left: -6px;
+      top: 50%;
+      margin-top: -5px;
+      transform: rotate(225deg);
+    }
+
+    /* Sub-elements */
+    .sds-popover__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--sds-space-200);
+    }
+    .sds-popover__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+    }
+    .sds-popover__close {
+      background: none;
+      border: none;
+      padding: var(--sds-space-050);
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sds-popover__close:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-popover__close:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-popover__body {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-popover__body p {
+      font-size: var(--sds-type-caption);
+      margin: 0 0 var(--sds-space-200);
+    }
+    .sds-popover__body p:last-child { margin-bottom: 0; }
+    .sds-popover__actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-300);
+    }
+    .sds-popover__link {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .sds-popover__link:hover { text-decoration: underline; }
+    .sds-popover__link:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    /* ============================================================
+       RICH CONTENT POPOVER — PROFILE CARD
+       ============================================================ */
+
+    .sds-popover__profile {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      margin-bottom: var(--sds-space-300);
+    }
+    .sds-popover__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      flex-shrink: 0;
+    }
+    .sds-popover__profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .sds-popover__profile-name {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .sds-popover__profile-role {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+    .sds-popover__meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+      padding-top: var(--sds-space-200);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-popover__meta-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+    }
+    .sds-popover__meta-row .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-text-tertiary);
+    }
+
+    /* ============================================================
+       RICH CONTENT — RESOURCE PREVIEW
+       ============================================================ */
+
+    .sds-popover__resource-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-interactive-primary);
+      flex-shrink: 0;
+    }
+    .sds-popover__resource-icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+    .sds-popover__resource-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      margin-bottom: var(--sds-space-250);
+    }
+    .sds-popover__resource-title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .sds-popover__resource-subtitle {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+
+    /* ============================================================
+       RICH CONTENT — QUICK ACTIONS
+       ============================================================ */
+
+    .sds-popover__action-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+    .sds-popover__action-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-200) var(--sds-space-150);
+      border-radius: 6px;
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-primary);
+      cursor: pointer;
+      transition: background 100ms ease;
+    }
+    .sds-popover__action-item:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+    .sds-popover__action-item:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -2px;
+    }
+    .sds-popover__action-item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-tertiary);
+    }
+    .sds-popover__action-item--danger {
+      color: var(--sds-sentiment-negative);
+    }
+    .sds-popover__action-item--danger .material-symbols-outlined {
+      color: var(--sds-sentiment-negative);
+    }
+
+    /* ============================================================
+       CONFIRMATION POPOVER
+       ============================================================ */
+
+    .sds-popover--confirm {
+      max-width: 280px;
+      min-width: 200px;
+    }
+    .sds-popover__confirm-msg {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+      margin: 0 0 var(--sds-space-300);
+    }
+    .sds-popover__confirm-actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      justify-content: flex-end;
+    }
+    .sds-popover__btn {
+      padding: var(--sds-space-100) var(--sds-space-300);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      border: 1px solid var(--sds-border-default);
+      background: var(--sds-bg-elevated);
+      color: var(--sds-text-primary);
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+    .sds-popover__btn:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+    .sds-popover__btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-popover__btn--danger {
+      background: var(--sds-sentiment-negative);
+      color: var(--sds-color-white);
+      border-color: var(--sds-sentiment-negative);
+    }
+    .sds-popover__btn--danger:hover {
+      opacity: 0.9;
+      background: var(--sds-sentiment-negative);
+    }
+    .sds-popover__btn--primary {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+      border-color: var(--sds-interactive-primary);
+    }
+    .sds-popover__btn--primary:hover {
+      opacity: 0.9;
+      background: var(--sds-interactive-primary);
+    }
+
+    /* ============================================================
+       FORM POPOVER
+       ============================================================ */
+
+    .sds-popover--form {
+      max-width: 300px;
+      min-width: 260px;
+    }
+    /* Form inputs in popovers (canonical names — matches form-inputs.html) */
+    .sds-popover--form .sds-field {
+      margin-bottom: var(--sds-space-300);
+    }
+    .sds-popover--form .sds-field:last-of-type {
+      margin-bottom: 0;
+    }
+    .sds-popover--form .sds-field-label {
+      display: block;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-100);
+    }
+    .sds-popover--form .sds-input {
+      display: block;
+      width: 100%;
+      padding: var(--sds-space-150) var(--sds-space-250);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+    }
+    .sds-popover--form .sds-input:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    .sds-popover--form .sds-textarea {
+      display: block;
+      width: 100%;
+      padding: var(--sds-space-150) var(--sds-space-250);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+      resize: vertical;
+      min-height: 60px;
+    }
+    .sds-popover--form .sds-textarea:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    .sds-popover__form-actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      justify-content: flex-end;
+      margin-top: var(--sds-space-300);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+  <h1>Popover</h1>
+  <p class="page-subtitle">Click-triggered floating panels for contextual content, confirmations, quick actions, and inline forms. Popovers provide richer interactions than tooltips without the weight of a full modal.</p>
+
+  <!-- ========== BASIC POPOVER ========== -->
+  <h2>Basic Popover</h2>
+  <p>Click-triggered floating panels with a title, body text, and optional action links. An arrow caret points to the trigger element. White background with a subtle shadow and 8px border-radius. Supports four placement positions: top, bottom, left, and right.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Click each button &mdash; placement variants</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-1200) 0; gap: var(--sds-space-1000); flex-wrap: wrap;">
+
+      <!-- Top -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">arrow_upward</span>
+          Top
+        </button>
+        <div class="sds-popover sds-popover--top" role="dialog" aria-label="Data retention info">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Data Retention</p>
+            <button class="sds-popover__close" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <div class="sds-popover__body">
+            <p>Audit logs are retained for 90 days by default. Deleted records are permanently purged after the retention window.</p>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">View settings</a>
+          </div>
+        </div>
+      </span>
+
+      <!-- Bottom -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">arrow_downward</span>
+          Bottom
+        </button>
+        <div class="sds-popover sds-popover--bottom" role="dialog" aria-label="Encryption info">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Encryption</p>
+            <button class="sds-popover__close" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <div class="sds-popover__body">
+            <p>All data at rest is encrypted with AES-256. Data in transit uses TLS 1.3 for end-to-end protection.</p>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">View documentation</a>
+          </div>
+        </div>
+      </span>
+
+      <!-- Left -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">arrow_back</span>
+          Left
+        </button>
+        <div class="sds-popover sds-popover--left" role="dialog" aria-label="API keys info">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">API Key Scope</p>
+            <button class="sds-popover__close" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <div class="sds-popover__body">
+            <p>Each key can be scoped to read-only, read-write, or admin access. Keys inherit the permission level of their creator.</p>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">Manage keys</a>
+          </div>
+        </div>
+      </span>
+
+      <!-- Right -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">arrow_forward</span>
+          Right
+        </button>
+        <div class="sds-popover sds-popover--right" role="dialog" aria-label="Permissions info">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Permissions</p>
+            <button class="sds-popover__close" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <div class="sds-popover__body">
+            <p>Only Organization Admins and Security Officers can modify encryption and access control settings.</p>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">View roles</a>
+          </div>
+        </div>
+      </span>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== RICH CONTENT POPOVER ========== -->
+  <h2>Rich Content Popover</h2>
+  <p>Popovers with structured content such as user profile cards, resource previews, and quick action lists. Ideal for inline detail panels that keep users in context without navigating away.</p>
+
+  <h3>User Profile Card</h3>
+  <div class="demo-block">
+    <div class="demo-label">Click to reveal profile</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0;">
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">person</span>
+          Sarah Chen
+        </button>
+        <div class="sds-popover sds-popover--bottom" role="dialog" aria-label="User profile for Sarah Chen" style="min-width: 260px;">
+          <div class="sds-popover__profile">
+            <div class="sds-popover__avatar">SC</div>
+            <div class="sds-popover__profile-info">
+              <span class="sds-popover__profile-name">Sarah Chen</span>
+              <span class="sds-popover__profile-role">Security Officer</span>
+            </div>
+          </div>
+          <div class="sds-popover__meta">
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">mail</span>
+              s.chen@acmecorp.com
+            </div>
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">schedule</span>
+              Last active 2 hours ago
+            </div>
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">shield</span>
+              Admin, Data Steward
+            </div>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">View full profile</a>
+            <a class="sds-popover__link" href="#">Message</a>
+          </div>
+        </div>
+      </span>
+    </div>
+  </div>
+
+  <h3>Resource Preview</h3>
+  <div class="demo-block">
+    <div class="demo-label">Click to preview resource</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0;">
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">database</span>
+          customers_pii
+        </button>
+        <div class="sds-popover sds-popover--bottom" role="dialog" aria-label="Resource preview for customers_pii" style="min-width: 280px;">
+          <div class="sds-popover__resource-header">
+            <div class="sds-popover__resource-icon">
+              <span class="material-symbols-outlined">database</span>
+            </div>
+            <div>
+              <div class="sds-popover__resource-title">customers_pii</div>
+              <div class="sds-popover__resource-subtitle">PostgreSQL &middot; Production</div>
+            </div>
+          </div>
+          <div class="sds-popover__body">
+            <p>Contains personally identifiable information for 1.2M customer records. Classified as Highly Sensitive.</p>
+          </div>
+          <div class="sds-popover__meta" style="margin-top: var(--sds-space-200);">
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">lock</span>
+              AES-256 encryption
+            </div>
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">visibility_off</span>
+              Column masking enabled
+            </div>
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">group</span>
+              3 authorized roles
+            </div>
+          </div>
+          <div class="sds-popover__actions">
+            <a class="sds-popover__link" href="#">View details</a>
+            <a class="sds-popover__link" href="#">Access log</a>
+          </div>
+        </div>
+      </span>
+    </div>
+  </div>
+
+  <h3>Quick Actions List</h3>
+  <div class="demo-block">
+    <div class="demo-label">Click for actions menu</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0;">
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">more_vert</span>
+          Actions
+        </button>
+        <div class="sds-popover sds-popover--bottom" role="dialog" aria-label="Quick actions" style="padding: var(--sds-space-200); min-width: 200px;">
+          <ul class="sds-popover__action-list">
+            <li class="sds-popover__action-item">
+              <span class="material-symbols-outlined">edit</span>
+              Edit policy
+            </li>
+            <li class="sds-popover__action-item">
+              <span class="material-symbols-outlined">content_copy</span>
+              Duplicate
+            </li>
+            <li class="sds-popover__action-item">
+              <span class="material-symbols-outlined">download</span>
+              Export as JSON
+            </li>
+            <li class="sds-popover__action-item">
+              <span class="material-symbols-outlined">history</span>
+              View audit log
+            </li>
+            <li class="sds-popover__action-item sds-popover__action-item--danger">
+              <span class="material-symbols-outlined">delete</span>
+              Delete policy
+            </li>
+          </ul>
+        </div>
+      </span>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== CONFIRMATION POPOVER ========== -->
+  <h2>Confirmation Popover</h2>
+  <p>A lightweight inline confirmation that appears as a popover instead of a full modal dialog. Best suited for simple destructive actions where you want to confirm intent without interrupting the user's flow.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Click to trigger confirmation</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0; gap: var(--sds-space-1000); flex-wrap: wrap;">
+
+      <!-- Delete confirmation -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click" style="color: var(--sds-sentiment-negative); border-color: var(--sds-sentiment-negative);">
+          <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+          Delete Rule
+        </button>
+        <div class="sds-popover sds-popover--bottom sds-popover--confirm" role="alertdialog" aria-label="Confirm deletion">
+          <p class="sds-popover__title" style="margin-bottom: var(--sds-space-150);">Delete masking rule?</p>
+          <p class="sds-popover__confirm-msg">This will permanently remove the masking rule from all associated data sources. This action cannot be undone.</p>
+          <div class="sds-popover__confirm-actions">
+            <button class="sds-popover__btn" data-popover-cancel>Cancel</button>
+            <button class="sds-popover__btn sds-popover__btn--danger" data-popover-confirm>Delete</button>
+          </div>
+        </div>
+      </span>
+
+      <!-- Revoke confirmation -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">key_off</span>
+          Revoke Key
+        </button>
+        <div class="sds-popover sds-popover--bottom sds-popover--confirm" role="alertdialog" aria-label="Confirm revoke">
+          <p class="sds-popover__title" style="margin-bottom: var(--sds-space-150);">Revoke API key?</p>
+          <p class="sds-popover__confirm-msg">Any services using this key will immediately lose access. You can generate a new key afterward.</p>
+          <div class="sds-popover__confirm-actions">
+            <button class="sds-popover__btn" data-popover-cancel>Cancel</button>
+            <button class="sds-popover__btn sds-popover__btn--danger" data-popover-confirm>Revoke</button>
+          </div>
+        </div>
+      </span>
+
+      <!-- Non-destructive confirmation -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">publish</span>
+          Publish Policy
+        </button>
+        <div class="sds-popover sds-popover--bottom sds-popover--confirm" role="alertdialog" aria-label="Confirm publish">
+          <p class="sds-popover__title" style="margin-bottom: var(--sds-space-150);">Publish policy changes?</p>
+          <p class="sds-popover__confirm-msg">This will apply the updated access control policy across all production data sources immediately.</p>
+          <div class="sds-popover__confirm-actions">
+            <button class="sds-popover__btn" data-popover-cancel>Cancel</button>
+            <button class="sds-popover__btn sds-popover__btn--primary" data-popover-confirm>Publish</button>
+          </div>
+        </div>
+      </span>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== HOVER POPOVER ========== -->
+  <h2>Hover Popover</h2>
+  <p>Triggered on hover with a 300ms enter delay to prevent accidental activation. Shows additional contextual information without requiring a click. The popover remains open while the cursor is over the trigger or the popover itself.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Hover over each item</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0; gap: var(--sds-space-1000); flex-wrap: wrap;">
+
+      <!-- Hover: policy status -->
+      <span class="sds-popover-anchor" data-popover-trigger="hover">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false">
+          <span class="material-symbols-outlined" style="font-size: 18px; color: var(--sds-sentiment-positive);">check_circle</span>
+          SOC 2 Compliant
+        </button>
+        <div class="sds-popover sds-popover--bottom" role="tooltip">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">SOC 2 Type II</p>
+          </div>
+          <div class="sds-popover__body">
+            <p>All controls passed the most recent audit. Next audit window begins April 2026.</p>
+          </div>
+          <div class="sds-popover__meta" style="margin-top: var(--sds-space-100);">
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">event</span>
+              Last audited: Jan 15, 2026
+            </div>
+          </div>
+        </div>
+      </span>
+
+      <!-- Hover: column info -->
+      <span class="sds-popover-anchor" data-popover-trigger="hover">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false">
+          <span class="material-symbols-outlined" style="font-size: 18px;">visibility_off</span>
+          email (masked)
+        </button>
+        <div class="sds-popover sds-popover--bottom" role="tooltip">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Column: email</p>
+          </div>
+          <div class="sds-popover__body">
+            <p>This column is masked for users without the Data Steward role. Partial masking applied: j***@example.com.</p>
+          </div>
+          <div class="sds-popover__meta" style="margin-top: var(--sds-space-100);">
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">shield</span>
+              Classification: PII
+            </div>
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">rule</span>
+              Masking: Partial redaction
+            </div>
+          </div>
+        </div>
+      </span>
+
+      <!-- Hover: user badge -->
+      <span class="sds-popover-anchor" data-popover-trigger="hover">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false">
+          <span class="material-symbols-outlined" style="font-size: 18px;">person</span>
+          Marcus Lee
+        </button>
+        <div class="sds-popover sds-popover--bottom" role="tooltip" style="min-width: 240px;">
+          <div class="sds-popover__profile">
+            <div class="sds-popover__avatar" style="background: var(--sds-color-warm-gray-500);">ML</div>
+            <div class="sds-popover__profile-info">
+              <span class="sds-popover__profile-name">Marcus Lee</span>
+              <span class="sds-popover__profile-role">Data Engineer</span>
+            </div>
+          </div>
+          <div class="sds-popover__meta">
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">schedule</span>
+              Last active 15 min ago
+            </div>
+            <div class="sds-popover__meta-row">
+              <span class="material-symbols-outlined">badge</span>
+              Read-only access
+            </div>
+          </div>
+        </div>
+      </span>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== POPOVER WITH FORM ========== -->
+  <h2>Popover with Form</h2>
+  <p>Contains a small inline form for quick edits, adding notes, or renaming items. Avoids a full modal for simple single-field or two-field interactions. Submission closes the popover.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Click to open inline forms</div>
+    <div class="demo-row" style="justify-content: center; padding: var(--sds-space-800) 0; gap: var(--sds-space-1000); flex-wrap: wrap;">
+
+      <!-- Add note form -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">add_comment</span>
+          Add Note
+        </button>
+        <div class="sds-popover sds-popover--bottom sds-popover--form" role="dialog" aria-label="Add a note">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Add Note</p>
+            <button class="sds-popover__close" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <form onsubmit="event.preventDefault(); closePopoverFromForm(this);">
+            <div class="sds-field">
+              <label class="sds-field-label" for="note-text">Note</label>
+              <textarea class="sds-textarea" id="note-text" placeholder="Add a note about this policy..." rows="3"></textarea>
+            </div>
+            <div class="sds-popover__form-actions">
+              <button type="button" class="sds-popover__btn" data-popover-cancel>Cancel</button>
+              <button type="submit" class="sds-popover__btn sds-popover__btn--primary">Save Note</button>
+            </div>
+          </form>
+        </div>
+      </span>
+
+      <!-- Quick rename form -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
+          Rename
+        </button>
+        <div class="sds-popover sds-popover--bottom sds-popover--form" role="dialog" aria-label="Rename data source">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Rename Data Source</p>
+            <button class="sds-popover__close" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <form onsubmit="event.preventDefault(); closePopoverFromForm(this);">
+            <div class="sds-field">
+              <label class="sds-field-label" for="rename-input">Name</label>
+              <input class="sds-input" id="rename-input" type="text" value="Production PostgreSQL" />
+            </div>
+            <div class="sds-popover__form-actions">
+              <button type="button" class="sds-popover__btn" data-popover-cancel>Cancel</button>
+              <button type="submit" class="sds-popover__btn sds-popover__btn--primary">Save</button>
+            </div>
+          </form>
+        </div>
+      </span>
+
+      <!-- Quick edit tags form -->
+      <span class="sds-popover-anchor">
+        <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false" data-popover-trigger="click">
+          <span class="material-symbols-outlined" style="font-size: 18px;">label</span>
+          Edit Tags
+        </button>
+        <div class="sds-popover sds-popover--bottom sds-popover--form" role="dialog" aria-label="Edit tags">
+          <div class="sds-popover__header">
+            <p class="sds-popover__title">Edit Tags</p>
+            <button class="sds-popover__close" aria-label="Close popover">
+              <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
+            </button>
+          </div>
+          <form onsubmit="event.preventDefault(); closePopoverFromForm(this);">
+            <div class="sds-field">
+              <label class="sds-field-label" for="tag-input">Tags (comma-separated)</label>
+              <input class="sds-input" id="tag-input" type="text" value="pii, production, gdpr" />
+            </div>
+            <div class="sds-field">
+              <label class="sds-field-label" for="tag-note">Classification note</label>
+              <input class="sds-input" id="tag-note" type="text" placeholder="Optional note..." />
+            </div>
+            <div class="sds-popover__form-actions">
+              <button type="button" class="sds-popover__btn" data-popover-cancel>Cancel</button>
+              <button type="submit" class="sds-popover__btn sds-popover__btn--primary">Update</button>
+            </div>
+          </form>
+        </div>
+      </span>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ========== SPECIFICATIONS ========== -->
+  <h2>Specifications</h2>
+
+  <h3>Popover Anatomy</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Background</td><td><code>var(--sds-bg-elevated)</code></td></tr>
+      <tr><td>Border</td><td>1px solid <code>var(--sds-border-default)</code></td></tr>
+      <tr><td>Box shadow</td><td><code>0 4px 16px rgba(0,0,0,0.12)</code></td></tr>
+      <tr><td>Border radius</td><td>8px</td></tr>
+      <tr><td>Padding</td><td><code>var(--sds-space-400)</code> (16px)</td></tr>
+      <tr><td>Max width</td><td>320px</td></tr>
+      <tr><td>Min width</td><td>220px</td></tr>
+      <tr><td>Arrow size</td><td>10px rotated square with border</td></tr>
+      <tr><td>Offset from trigger</td><td>8px</td></tr>
+      <tr><td>z-index</td><td>1000</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Typography</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Font Size</th><th>Weight</th><th>Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Title</td>
+        <td><code>var(--sds-type-label)</code></td>
+        <td><code>var(--sds-weight-semibold)</code></td>
+        <td><code>var(--sds-text-primary)</code></td>
+      </tr>
+      <tr>
+        <td>Body text</td>
+        <td><code>var(--sds-type-caption)</code></td>
+        <td><code>var(--sds-weight-regular)</code></td>
+        <td><code>var(--sds-text-secondary)</code></td>
+      </tr>
+      <tr>
+        <td>Action link</td>
+        <td><code>var(--sds-type-caption)</code></td>
+        <td><code>var(--sds-weight-medium)</code></td>
+        <td><code>var(--sds-interactive-primary)</code></td>
+      </tr>
+      <tr>
+        <td>Meta row</td>
+        <td><code>var(--sds-type-caption)</code></td>
+        <td><code>var(--sds-weight-regular)</code></td>
+        <td><code>var(--sds-text-secondary)</code></td>
+      </tr>
+      <tr>
+        <td>Form label</td>
+        <td><code>var(--sds-type-caption)</code></td>
+        <td><code>var(--sds-weight-medium)</code></td>
+        <td><code>var(--sds-text-primary)</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Variants</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Variant</th><th>Trigger</th><th>Use Case</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Basic</td><td>Click</td><td>Contextual info with title, body, and optional actions</td></tr>
+      <tr><td>Rich content</td><td>Click</td><td>Profile cards, resource previews, action menus</td></tr>
+      <tr><td>Confirmation</td><td>Click</td><td>Inline confirm/cancel for destructive or significant actions</td></tr>
+      <tr><td>Hover</td><td>Hover (300ms delay)</td><td>Supplemental info without click commitment</td></tr>
+      <tr><td>Form</td><td>Click</td><td>Quick edit, rename, add note, edit tags</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Behavior</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Attribute</th><th>Click Popover</th><th>Hover Popover</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Trigger</td><td>Click on trigger element</td><td>Mouseenter with 300ms delay</td></tr>
+      <tr><td>Dismiss</td><td>Close button, click outside, Escape key</td><td>Mouseleave (150ms grace period)</td></tr>
+      <tr><td>Interactive content</td><td>Yes (links, buttons, forms)</td><td>Yes (links, meta info)</td></tr>
+      <tr><td>Positions</td><td>top, bottom, left, right</td><td>top, bottom, left, right</td></tr>
+      <tr><td>Focus management</td><td>Focus moves into popover on open</td><td>No focus trap</td></tr>
+      <tr><td>Animation</td><td>150ms opacity fade</td><td>150ms opacity fade</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Accessibility</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Attribute</th><th>Value</th><th>Applied to</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>aria-haspopup</code></td><td><code>"true"</code></td><td>Trigger button</td></tr>
+      <tr><td><code>aria-expanded</code></td><td><code>"true"</code> / <code>"false"</code></td><td>Trigger button (toggled)</td></tr>
+      <tr><td><code>role="dialog"</code></td><td>For interactive popovers</td><td>Popover container</td></tr>
+      <tr><td><code>role="alertdialog"</code></td><td>For confirmation popovers</td><td>Confirmation popover</td></tr>
+      <tr><td><code>role="tooltip"</code></td><td>For hover popovers</td><td>Hover popover container</td></tr>
+      <tr><td><code>aria-label</code></td><td>Descriptive label</td><td>Popover container</td></tr>
+      <tr><td>Escape key</td><td>Closes active popover</td><td>Document-level listener</td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-popover-anchor</code></td><td>Wrapper for trigger + popover; provides positioning context</td></tr>
+      <tr><td><code>.sds-popover</code></td><td>Base popover container (elevated bg, border, shadow)</td></tr>
+      <tr><td><code>.sds-popover--top</code></td><td>Position above trigger</td></tr>
+      <tr><td><code>.sds-popover--bottom</code></td><td>Position below trigger</td></tr>
+      <tr><td><code>.sds-popover--left</code></td><td>Position to the left of trigger</td></tr>
+      <tr><td><code>.sds-popover--right</code></td><td>Position to the right of trigger</td></tr>
+      <tr><td><code>.sds-popover--confirm</code></td><td>Modifier: narrower width for confirmation dialogs</td></tr>
+      <tr><td><code>.sds-popover--form</code></td><td>Modifier: sized for inline form content</td></tr>
+      <tr><td><code>.sds-popover--static</code></td><td>Modifier: always visible for design review</td></tr>
+      <tr><td><code>.sds-popover__header</code></td><td>Flex row for title and close button</td></tr>
+      <tr><td><code>.sds-popover__title</code></td><td>Popover heading text</td></tr>
+      <tr><td><code>.sds-popover__close</code></td><td>Close button element</td></tr>
+      <tr><td><code>.sds-popover__body</code></td><td>Main content area</td></tr>
+      <tr><td><code>.sds-popover__actions</code></td><td>Footer with action links</td></tr>
+      <tr><td><code>.sds-popover__profile</code></td><td>Profile card layout (avatar + info)</td></tr>
+      <tr><td><code>.sds-popover__meta</code></td><td>Metadata rows with icons</td></tr>
+      <tr><td><code>.sds-popover__action-list</code></td><td>Quick actions menu list</td></tr>
+      <tr><td><code>.sds-popover__action-item</code></td><td>Individual action row with icon</td></tr>
+      <tr><td><code>.sds-popover__btn</code></td><td>Button within popover (confirm/cancel)</td></tr>
+      <tr><td><code>.sds-popover__btn--danger</code></td><td>Destructive action button variant</td></tr>
+      <tr><td><code>.sds-popover__btn--primary</code></td><td>Primary action button variant</td></tr>
+      <tr><td><code>.sds-input</code></td><td>Text input (canonical — matches form-inputs.html)</td></tr>
+      <tr><td><code>.sds-textarea</code></td><td>Textarea (canonical — matches form-inputs.html)</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    /* ============================================================
+       POPOVER INTERACTIVE BEHAVIOR
+       ============================================================ */
+
+    /* ---- Click-triggered popovers ---- */
+    document.querySelectorAll('[data-popover-trigger="click"]').forEach(function(trigger) {
+      trigger.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var anchor = trigger.closest('.sds-popover-anchor');
+        var popover = anchor.querySelector('.sds-popover');
+        var isOpen = popover.classList.contains('is-open');
+
+        // Close all open popovers first
+        closeAllPopovers();
+
+        if (!isOpen) {
+          openPopover(anchor, popover, trigger);
+        }
+      });
+    });
+
+    /* ---- Close buttons ---- */
+    document.querySelectorAll('.sds-popover__close').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var anchor = btn.closest('.sds-popover-anchor');
+        var popover = anchor.querySelector('.sds-popover');
+        var trigger = anchor.querySelector('[aria-haspopup]');
+        closePopover(anchor, popover, trigger);
+      });
+    });
+
+    /* ---- Cancel buttons ---- */
+    document.querySelectorAll('[data-popover-cancel]').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var anchor = btn.closest('.sds-popover-anchor');
+        var popover = anchor.querySelector('.sds-popover');
+        var trigger = anchor.querySelector('[aria-haspopup]');
+        closePopover(anchor, popover, trigger);
+      });
+    });
+
+    /* ---- Confirm buttons (demo: just close) ---- */
+    document.querySelectorAll('[data-popover-confirm]').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var anchor = btn.closest('.sds-popover-anchor');
+        var popover = anchor.querySelector('.sds-popover');
+        var trigger = anchor.querySelector('[aria-haspopup]');
+        closePopover(anchor, popover, trigger);
+      });
+    });
+
+    /* ---- Hover-triggered popovers ---- */
+    document.querySelectorAll('[data-popover-trigger="hover"]').forEach(function(anchor) {
+      var popover = anchor.querySelector('.sds-popover');
+      var trigger = anchor.querySelector('[aria-haspopup]');
+      var enterTimer = null;
+      var leaveTimer = null;
+
+      function showHover() {
+        clearTimeout(leaveTimer);
+        enterTimer = setTimeout(function() {
+          openPopover(anchor, popover, trigger);
+        }, 300);
+      }
+
+      function hideHover() {
+        clearTimeout(enterTimer);
+        leaveTimer = setTimeout(function() {
+          closePopover(anchor, popover, trigger);
+        }, 150);
+      }
+
+      anchor.addEventListener('mouseenter', showHover);
+      anchor.addEventListener('mouseleave', hideHover);
+
+      // Keep open while hovering the popover itself
+      popover.addEventListener('mouseenter', function() {
+        clearTimeout(leaveTimer);
+      });
+      popover.addEventListener('mouseleave', hideHover);
+    });
+
+    /* ---- Click outside to dismiss ---- */
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.sds-popover-anchor')) {
+        closeAllPopovers();
+      }
+    });
+
+    /* ---- Escape key to dismiss ---- */
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        closeAllPopovers();
+      }
+    });
+
+    /* ---- Helper functions ---- */
+    function openPopover(anchor, popover, trigger) {
+      popover.classList.add('is-open');
+      if (trigger) trigger.setAttribute('aria-expanded', 'true');
+
+      // Move focus into the popover for click-triggered ones
+      var focusable = popover.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+      if (focusable && anchor.getAttribute('data-popover-trigger') !== 'hover') {
+        focusable.focus();
+      }
+    }
+
+    function closePopover(anchor, popover, trigger) {
+      popover.classList.remove('is-open');
+      if (trigger) {
+        trigger.setAttribute('aria-expanded', 'false');
+        // Return focus to trigger for click-triggered popovers
+        if (anchor.querySelector('[data-popover-trigger="click"]')) {
+          trigger.focus();
+        }
+      }
+    }
+
+    function closeAllPopovers() {
+      document.querySelectorAll('.sds-popover.is-open').forEach(function(popover) {
+        var anchor = popover.closest('.sds-popover-anchor');
+        // Skip hover-triggered popovers (they manage their own lifecycle)
+        if (anchor && anchor.getAttribute('data-popover-trigger') === 'hover') return;
+        var trigger = anchor ? anchor.querySelector('[aria-haspopup]') : null;
+        popover.classList.remove('is-open');
+        if (trigger) trigger.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function closePopoverFromForm(form) {
+      var anchor = form.closest('.sds-popover-anchor');
+      var popover = anchor.querySelector('.sds-popover');
+      var trigger = anchor.querySelector('[aria-haspopup]');
+      closePopover(anchor, popover, trigger);
+    }
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

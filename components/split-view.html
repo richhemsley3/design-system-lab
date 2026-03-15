@@ -1,0 +1,1041 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Split View</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+
+    /* ============================================================
+       SPLIT VIEW / RESIZABLE PANES COMPONENT
+       ============================================================ */
+
+    /* Outer container */
+    .sds-split {
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+      height: 400px;
+    }
+
+    /* Individual pane */
+    .sds-split__pane {
+      overflow: auto;
+      min-width: 200px;
+      min-height: 0;
+      position: relative;
+    }
+
+    .sds-split__pane--primary {
+      flex: 0 0 40%;
+    }
+
+    .sds-split__pane--secondary {
+      flex: 1 1 0%;
+    }
+
+    /* Divider */
+    .sds-split__divider {
+      width: 5px;
+      flex-shrink: 0;
+      background: var(--sds-color-warm-gray-100);
+      cursor: col-resize;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+      z-index: 1;
+    }
+
+    .sds-split__divider:hover {
+      background: var(--sds-color-warm-gray-200);
+    }
+
+    .sds-split__divider:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -1px;
+    }
+
+    .sds-split__divider--active,
+    .sds-split__divider--active:hover {
+      background: var(--sds-color-blue-450);
+    }
+
+    /* Divider handle (grip dots) */
+    .sds-split__divider-handle {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      pointer-events: none;
+    }
+
+    .sds-split__divider-handle span {
+      display: block;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--sds-color-warm-gray-350);
+    }
+
+    .sds-split__divider--active .sds-split__divider-handle span {
+      background: var(--sds-color-white);
+    }
+
+    /* Vertical variant */
+    .sds-split--vertical {
+      flex-direction: column;
+    }
+
+    .sds-split--vertical .sds-split__pane {
+      min-width: 0;
+      min-height: 150px;
+    }
+
+    .sds-split--vertical .sds-split__divider {
+      width: auto;
+      height: 5px;
+      cursor: row-resize;
+      flex-direction: row;
+    }
+
+    .sds-split--vertical .sds-split__divider-handle {
+      flex-direction: row;
+    }
+
+    /* Bordered variant */
+    .sds-split--bordered .sds-split__pane {
+      border: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+    .sds-split--bordered .sds-split__pane + .sds-split__divider + .sds-split__pane {
+      border-left: none;
+    }
+
+    /* Pane header */
+    .sds-split__pane-header {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+    .sds-split__pane-header-title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    .sds-split__pane-header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+    }
+
+    .sds-split__pane-header-actions button {
+      border: none;
+      background: transparent;
+      padding: var(--sds-space-100);
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .sds-split__pane-header-actions button:hover {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-text-primary);
+    }
+
+    .sds-split__pane-header-actions button:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-split__pane-header-actions .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* Pane content */
+    .sds-split__pane-content {
+      padding: var(--sds-space-400);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    /* Pane with header uses flex column layout */
+    .sds-split__pane--has-header {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ---- Demo helpers ---- */
+    .demo-list-item {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      cursor: default;
+    }
+
+    .demo-list-item:last-child {
+      border-bottom: none;
+    }
+
+    .demo-list-item:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .demo-detail-placeholder {
+      padding: var(--sds-space-600);
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-body);
+      text-align: center;
+    }
+
+    .demo-code-block {
+      padding: var(--sds-space-400);
+      font-family: var(--sds-font-mono);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-primary);
+      line-height: 1.6;
+      white-space: pre;
+      margin: 0;
+    }
+
+    .demo-results-block {
+      padding: var(--sds-space-400);
+      font-family: var(--sds-font-mono);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      line-height: 1.5;
+    }
+
+    /* Data browser demo */
+    .demo-db-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
+    .demo-db-row:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .demo-db-row.is-selected {
+      background: var(--sds-color-blue-050);
+    }
+
+    .demo-db-row:last-child {
+      border-bottom: none;
+    }
+
+    .demo-db-row-icon {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+    }
+
+    .demo-db-row-icon .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-tertiary);
+    }
+
+    .demo-db-row-count {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+
+    .demo-col-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-body);
+    }
+
+    .demo-col-table th {
+      text-align: left;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+    .demo-col-table td {
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border-bottom: 1px solid var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+
+    .sds-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+    .sds-tag--error {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+
+    .sds-tag--warning {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+
+    .sds-tag--success {
+      background: var(--sds-color-green-025);
+      color: var(--sds-color-green-500);
+    }
+
+    /* Three-pane demo */
+    .demo-tree-item {
+      padding: var(--sds-space-200) var(--sds-space-300);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      cursor: default;
+    }
+
+    .demo-tree-item:hover {
+      background: var(--sds-color-warm-gray-025);
+      color: var(--sds-text-primary);
+    }
+
+    .demo-tree-item .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-text-tertiary);
+    }
+
+    .demo-tree-item--nested {
+      padding-left: var(--sds-space-600);
+    }
+
+    .demo-tree-item--active {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-600);
+    }
+
+    .demo-mini-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-caption);
+    }
+
+    .demo-mini-table th {
+      text-align: left;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-tertiary);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .demo-mini-table td {
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border-bottom: 1px solid var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+
+    /* Detail panel in three-pane */
+    .demo-detail-section {
+      margin-bottom: var(--sds-space-400);
+    }
+
+    .demo-detail-section-title {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-tertiary);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      margin: 0 0 var(--sds-space-200);
+    }
+
+    .demo-detail-kv {
+      display: flex;
+      justify-content: space-between;
+      padding: var(--sds-space-150) 0;
+      font-size: var(--sds-type-caption);
+      border-bottom: 1px solid var(--sds-color-warm-gray-050);
+    }
+
+    .demo-detail-kv-label {
+      color: var(--sds-text-tertiary);
+    }
+
+    .demo-detail-kv-value {
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-medium);
+    }
+
+    /* ---- Spec tables ---- */
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+<h1>Split View</h1>
+<p class="page-subtitle">Resizable dual-pane layout for master-detail patterns. Used for browsing records, viewing item details, and working with list-detail workflows.</p>
+
+
+<!-- ============ BASIC HORIZONTAL SPLIT ============ -->
+<h2>Basic Horizontal Split</h2>
+<p>Two panes side by side with a draggable divider. Drag the center bar to resize.</p>
+
+<div class="demo-block">
+  <p class="demo-label">Horizontal &mdash; 40 / 60</p>
+  <div class="sds-split" id="split-basic" style="height: 400px;">
+    <div class="sds-split__pane sds-split__pane--primary">
+      <div class="demo-list-item">Project Alpha — Q1 Roadmap</div>
+      <div class="demo-list-item">Project Beta — Launch Plan</div>
+      <div class="demo-list-item">Project Gamma — Migration</div>
+      <div class="demo-list-item">Project Delta — Redesign</div>
+      <div class="demo-list-item">Project Epsilon — API v2</div>
+      <div class="demo-list-item">Project Zeta — Onboarding</div>
+      <div class="demo-list-item">Project Eta — Analytics</div>
+      <div class="demo-list-item">Project Theta — Billing</div>
+    </div>
+    <div class="sds-split__divider" data-split="split-basic" tabindex="0" role="separator" aria-orientation="vertical">
+      <div class="sds-split__divider-handle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="sds-split__pane sds-split__pane--secondary">
+      <div class="demo-detail-placeholder">
+        <span class="material-symbols-outlined" style="font-size: 40px; display: block; margin-bottom: var(--sds-space-300); color: var(--sds-color-warm-gray-200);">description</span>
+        Select a project from the left pane to view details
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<hr class="section-divider">
+
+
+<!-- ============ VERTICAL SPLIT ============ -->
+<h2>Vertical Split</h2>
+<p>Top and bottom panes separated by a horizontal divider. Useful for query editors with results panels below.</p>
+
+<div class="demo-block">
+  <p class="demo-label">Vertical &mdash; Query / Results</p>
+  <div class="sds-split sds-split--vertical" id="split-vertical" style="height: 500px;">
+    <div class="sds-split__pane sds-split__pane--primary" style="flex-basis: 45%;">
+      <pre class="demo-code-block">SELECT
+  u.email,
+  u.full_name,
+  u.department,
+  COUNT(p.id) AS project_count
+FROM users u
+LEFT JOIN projects p
+  ON p.owner_id = u.id
+  AND p.status = 'active'
+WHERE u.role = 'manager'
+GROUP BY u.id
+ORDER BY project_count DESC
+LIMIT 25;</pre>
+    </div>
+    <div class="sds-split__divider" data-split="split-vertical" data-direction="vertical" tabindex="0" role="separator" aria-orientation="horizontal">
+      <div class="sds-split__divider-handle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="sds-split__pane sds-split__pane--secondary">
+      <div class="demo-results-block">
+        <div style="color: var(--sds-color-green-600); margin-bottom: var(--sds-space-200);">Query completed &mdash; 12 rows returned (0.034s)</div>
+        <table class="demo-mini-table">
+          <thead>
+            <tr><th>email</th><th>full_name</th><th>department</th><th>project_count</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>j.chen@acme.io</td><td>Jessica Chen</td><td>Engineering</td><td>12</td></tr>
+            <tr><td>m.kumar@acme.io</td><td>Manoj Kumar</td><td>Product</td><td>9</td></tr>
+            <tr><td>s.oconnor@acme.io</td><td>Sarah O'Connor</td><td>Engineering</td><td>8</td></tr>
+            <tr><td>r.tanaka@acme.io</td><td>Riku Tanaka</td><td>Design</td><td>7</td></tr>
+            <tr><td>l.martinez@acme.io</td><td>Luis Martinez</td><td>Marketing</td><td>5</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<hr class="section-divider">
+
+
+<!-- ============ WITH PANE HEADERS ============ -->
+<h2>With Pane Headers</h2>
+<p>Pane headers provide context and actions for each split region. Headers stay pinned while content scrolls.</p>
+
+<div class="demo-block">
+  <p class="demo-label">Headers with title &amp; actions</p>
+  <div class="sds-split" id="split-headers" style="height: 400px;">
+    <div class="sds-split__pane sds-split__pane--primary sds-split__pane--has-header">
+      <div class="sds-split__pane-header">
+        <span class="sds-split__pane-header-title">
+          <span class="material-symbols-outlined" style="font-size: 18px;">database</span>
+          Integrations
+        </span>
+        <div class="sds-split__pane-header-actions">
+          <button type="button" title="Filter"><span class="material-symbols-outlined">filter_list</span></button>
+        </div>
+      </div>
+      <div class="sds-split__pane-content">
+        <div class="demo-list-item">Slack &mdash; Messaging</div>
+        <div class="demo-list-item">Jira &mdash; Project Tracking</div>
+        <div class="demo-list-item">GitHub &mdash; Source Control</div>
+        <div class="demo-list-item">Figma &mdash; Design</div>
+        <div class="demo-list-item">Salesforce &mdash; CRM</div>
+        <div class="demo-list-item">HubSpot &mdash; Marketing</div>
+      </div>
+    </div>
+    <div class="sds-split__divider" data-split="split-headers" tabindex="0" role="separator" aria-orientation="vertical">
+      <div class="sds-split__divider-handle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="sds-split__pane sds-split__pane--secondary sds-split__pane--has-header">
+      <div class="sds-split__pane-header">
+        <span class="sds-split__pane-header-title">Details</span>
+        <div class="sds-split__pane-header-actions">
+          <button type="button" title="Close"><span class="material-symbols-outlined">close</span></button>
+        </div>
+      </div>
+      <div class="sds-split__pane-content">
+        <div class="demo-detail-placeholder">
+          <span class="material-symbols-outlined" style="font-size: 40px; display: block; margin-bottom: var(--sds-space-300); color: var(--sds-color-warm-gray-200);">info</span>
+          Select an integration to view connection details
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<hr class="section-divider">
+
+
+<!-- ============ IN CONTEXT: DATA BROWSER ============ -->
+<h2>In Context: Resource Browser</h2>
+<p>A realistic master-detail view for browsing resources. Click a category on the left to see its items and status tags on the right.</p>
+
+<div class="demo-block">
+  <p class="demo-label">Interactive resource browser</p>
+  <div class="sds-split" id="split-browser" style="height: 420px;">
+    <div class="sds-split__pane sds-split__pane--primary sds-split__pane--has-header" style="flex-basis: 35%;">
+      <div class="sds-split__pane-header">
+        <span class="sds-split__pane-header-title">
+          <span class="material-symbols-outlined" style="font-size: 18px;">folder</span>
+          Categories
+        </span>
+        <div class="sds-split__pane-header-actions">
+          <button type="button" title="Search"><span class="material-symbols-outlined">search</span></button>
+        </div>
+      </div>
+      <div class="sds-split__pane-content" style="padding: 0;">
+        <div class="demo-db-row is-selected" data-table="users" onclick="selectTable(this, 'users')">
+          <span class="demo-db-row-icon"><span class="material-symbols-outlined">people</span> Team Members</span>
+          <span class="demo-db-row-count">48 items</span>
+        </div>
+        <div class="demo-db-row" data-table="transactions" onclick="selectTable(this, 'transactions')">
+          <span class="demo-db-row-icon"><span class="material-symbols-outlined">assignment</span> Projects</span>
+          <span class="demo-db-row-count">124 items</span>
+        </div>
+        <div class="demo-db-row" data-table="audit_log" onclick="selectTable(this, 'audit_log')">
+          <span class="demo-db-row-icon"><span class="material-symbols-outlined">description</span> Documents</span>
+          <span class="demo-db-row-count">2,340 items</span>
+        </div>
+        <div class="demo-db-row" data-table="sessions" onclick="selectTable(this, 'sessions')">
+          <span class="demo-db-row-icon"><span class="material-symbols-outlined">bar_chart</span> Reports</span>
+          <span class="demo-db-row-count">86 items</span>
+        </div>
+      </div>
+    </div>
+    <div class="sds-split__divider" data-split="split-browser" tabindex="0" role="separator" aria-orientation="vertical">
+      <div class="sds-split__divider-handle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <div class="sds-split__pane sds-split__pane--secondary sds-split__pane--has-header">
+      <div class="sds-split__pane-header">
+        <span class="sds-split__pane-header-title" id="browser-detail-title">
+          <span class="material-symbols-outlined" style="font-size: 18px;">view_column</span>
+          Team Members &mdash; Details
+        </span>
+      </div>
+      <div class="sds-split__pane-content" style="padding: 0;" id="browser-detail-content">
+        <!-- Default: users table -->
+        <table class="demo-col-table">
+          <thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>Jessica Chen</td><td>Engineering Lead</td><td><span class="sds-tag sds-tag--success">Active</span></td></tr>
+            <tr><td>Manoj Kumar</td><td>Product Manager</td><td><span class="sds-tag sds-tag--success">Active</span></td></tr>
+            <tr><td>Sarah O'Connor</td><td>Senior Designer</td><td><span class="sds-tag sds-tag--warning">On Leave</span></td></tr>
+            <tr><td>Riku Tanaka</td><td>Staff Engineer</td><td><span class="sds-tag sds-tag--success">Active</span></td></tr>
+            <tr><td>Luis Martinez</td><td>Marketing Director</td><td><span class="sds-tag sds-tag--success">Active</span></td></tr>
+            <tr><td>Aisha Williams</td><td>Data Analyst</td><td><span class="sds-tag sds-tag--error">Offboarded</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<hr class="section-divider">
+
+
+<!-- ============ THREE-PANE LAYOUT ============ -->
+<h2>Three-Pane Layout</h2>
+<p>A triple split with a narrow navigation sidebar, middle content area, and right detail panel. Common in project management and admin workflows.</p>
+
+<div class="demo-block">
+  <p class="demo-label">Navigation / Content / Detail</p>
+  <div class="sds-split" id="split-three" style="height: 450px;">
+    <!-- Left sidebar (tree/nav) -->
+    <div class="sds-split__pane sds-split__pane--has-header" style="flex: 0 0 180px; min-width: 140px;">
+      <div class="sds-split__pane-header">
+        <span class="sds-split__pane-header-title" style="font-size: var(--sds-type-caption);">
+          <span class="material-symbols-outlined" style="font-size: 16px;">folder</span>
+          Explorer
+        </span>
+      </div>
+      <div class="sds-split__pane-content" style="padding: 0;">
+        <div class="demo-tree-item"><span class="material-symbols-outlined">folder</span> Engineering</div>
+        <div class="demo-tree-item demo-tree-item--nested demo-tree-item--active"><span class="material-symbols-outlined">assignment</span> Roadmap</div>
+        <div class="demo-tree-item demo-tree-item--nested"><span class="material-symbols-outlined">assignment</span> Sprints</div>
+        <div class="demo-tree-item demo-tree-item--nested"><span class="material-symbols-outlined">assignment</span> Backlog</div>
+        <div class="demo-tree-item"><span class="material-symbols-outlined">folder</span> Design</div>
+        <div class="demo-tree-item demo-tree-item--nested"><span class="material-symbols-outlined">assignment</span> Components</div>
+        <div class="demo-tree-item"><span class="material-symbols-outlined">folder</span> Marketing</div>
+        <div class="demo-tree-item demo-tree-item--nested"><span class="material-symbols-outlined">assignment</span> Campaigns</div>
+        <div class="demo-tree-item demo-tree-item--nested"><span class="material-symbols-outlined">assignment</span> Content</div>
+      </div>
+    </div>
+    <div class="sds-split__divider" data-split="split-three" data-pane-index="0" tabindex="0" role="separator" aria-orientation="vertical">
+      <div class="sds-split__divider-handle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <!-- Middle content area (table) -->
+    <div class="sds-split__pane sds-split__pane--has-header" style="flex: 1 1 0%; min-width: 200px;">
+      <div class="sds-split__pane-header">
+        <span class="sds-split__pane-header-title">
+          <span class="material-symbols-outlined" style="font-size: 18px;">assignment</span>
+          Engineering — Roadmap
+        </span>
+        <div class="sds-split__pane-header-actions">
+          <button type="button" title="Export"><span class="material-symbols-outlined">download</span></button>
+          <button type="button" title="Refresh"><span class="material-symbols-outlined">refresh</span></button>
+        </div>
+      </div>
+      <div class="sds-split__pane-content" style="padding: 0;">
+        <table class="demo-mini-table">
+          <thead>
+            <tr><th>Task</th><th>Assignee</th><th>Priority</th><th>Status</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Auth service refactor</td><td>J. Chen</td><td>High</td><td>In Progress</td></tr>
+            <tr><td>API rate limiting</td><td>M. Kumar</td><td>High</td><td>In Review</td></tr>
+            <tr><td>Dashboard redesign</td><td>S. O'Connor</td><td>Medium</td><td>In Progress</td></tr>
+            <tr><td>Search indexing</td><td>R. Tanaka</td><td>Low</td><td>Backlog</td></tr>
+            <tr><td>Email templates</td><td>L. Martinez</td><td>Medium</td><td>Done</td></tr>
+            <tr><td>Webhook support</td><td>A. Williams</td><td>High</td><td>In Progress</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="sds-split__divider" data-split="split-three" data-pane-index="1" tabindex="0" role="separator" aria-orientation="vertical">
+      <div class="sds-split__divider-handle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+    <!-- Right detail panel -->
+    <div class="sds-split__pane sds-split__pane--has-header" style="flex: 0 0 240px; min-width: 180px;">
+      <div class="sds-split__pane-header">
+        <span class="sds-split__pane-header-title" style="font-size: var(--sds-type-caption);">
+          <span class="material-symbols-outlined" style="font-size: 16px;">info</span>
+          Task Detail
+        </span>
+      </div>
+      <div class="sds-split__pane-content">
+        <div class="demo-detail-section">
+          <div class="demo-detail-section-title">Properties</div>
+          <div class="demo-detail-kv"><span class="demo-detail-kv-label">Title</span><span class="demo-detail-kv-value">Auth service refactor</span></div>
+          <div class="demo-detail-kv"><span class="demo-detail-kv-label">Assignee</span><span class="demo-detail-kv-value">J. Chen</span></div>
+          <div class="demo-detail-kv"><span class="demo-detail-kv-label">Sprint</span><span class="demo-detail-kv-value">Sprint 24</span></div>
+          <div class="demo-detail-kv"><span class="demo-detail-kv-label">Due Date</span><span class="demo-detail-kv-value">Mar 28, 2026</span></div>
+        </div>
+        <div class="demo-detail-section">
+          <div class="demo-detail-section-title">Status</div>
+          <div class="demo-detail-kv"><span class="demo-detail-kv-label">Priority</span><span class="demo-detail-kv-value"><span class="sds-tag sds-tag--error">High</span></span></div>
+          <div class="demo-detail-kv"><span class="demo-detail-kv-label">Progress</span><span class="demo-detail-kv-value">In Progress</span></div>
+          <div class="demo-detail-kv"><span class="demo-detail-kv-label">Updated</span><span class="demo-detail-kv-value">2 hrs ago</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<hr class="section-divider">
+
+
+<!-- ============ SPECIFICATIONS ============ -->
+<h2>Specifications</h2>
+<p>Dimensions, spacing, and visual properties for split view components.</p>
+
+<h3>Layout</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token / Note</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Container display</td><td><code>flex</code></td><td>Row (horizontal) or column (vertical)</td></tr>
+    <tr><td>Container border</td><td>1px solid</td><td><code>var(--sds-color-warm-gray-150)</code></td></tr>
+    <tr><td>Container radius</td><td>8px</td><td>&mdash;</td></tr>
+    <tr><td>Container background</td><td>White</td><td><code>var(--sds-color-white)</code></td></tr>
+    <tr><td>Pane min-width (horizontal)</td><td>200px</td><td>&mdash;</td></tr>
+    <tr><td>Pane min-height (vertical)</td><td>150px</td><td>&mdash;</td></tr>
+    <tr><td>Pane overflow</td><td><code>auto</code></td><td>Scroll when content exceeds bounds</td></tr>
+  </tbody>
+</table>
+
+<h3>Divider</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Width (horizontal)</td><td>5px</td><td>&mdash;</td></tr>
+    <tr><td>Height (vertical)</td><td>5px</td><td>&mdash;</td></tr>
+    <tr><td>Background &mdash; default</td><td>Gray 100</td><td><code>var(--sds-color-warm-gray-100)</code></td></tr>
+    <tr><td>Background &mdash; hover</td><td>Gray 200</td><td><code>var(--sds-color-warm-gray-200)</code></td></tr>
+    <tr><td>Background &mdash; active</td><td>Blue 450</td><td><code>var(--sds-color-blue-450)</code></td></tr>
+    <tr><td>Cursor (horizontal)</td><td><code>col-resize</code></td><td>&mdash;</td></tr>
+    <tr><td>Cursor (vertical)</td><td><code>row-resize</code></td><td>&mdash;</td></tr>
+    <tr><td>Handle dot size</td><td>3px &times; 3px</td><td>3 dots, gap 3px</td></tr>
+    <tr><td>Handle dot color</td><td>Gray 350</td><td><code>var(--sds-color-warm-gray-350)</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Pane Header</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td>Space 300 / Space 400</td><td><code>var(--sds-space-300)</code> / <code>var(--sds-space-400)</code></td></tr>
+    <tr><td>Border bottom</td><td>1px solid</td><td><code>var(--sds-color-warm-gray-150)</code></td></tr>
+    <tr><td>Background</td><td>Gray 025</td><td><code>var(--sds-color-warm-gray-025)</code></td></tr>
+    <tr><td>Title font size</td><td>Label</td><td><code>var(--sds-type-label)</code></td></tr>
+    <tr><td>Title font weight</td><td>Semibold</td><td><code>var(--sds-weight-semibold)</code></td></tr>
+    <tr><td>Title color</td><td>Primary</td><td><code>var(--sds-text-primary)</code></td></tr>
+  </tbody>
+</table>
+
+<h3>CSS Class Reference</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Class</th><th>Description</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>.sds-split</code></td><td>Outer flex container (horizontal by default)</td></tr>
+    <tr><td><code>.sds-split__pane</code></td><td>Individual pane with overflow auto</td></tr>
+    <tr><td><code>.sds-split__pane--primary</code></td><td>Main/left pane (40% default flex-basis)</td></tr>
+    <tr><td><code>.sds-split__pane--secondary</code></td><td>Detail/right pane (fills remaining space)</td></tr>
+    <tr><td><code>.sds-split__divider</code></td><td>Draggable divider between panes</td></tr>
+    <tr><td><code>.sds-split__divider-handle</code></td><td>Visual grip dots on the divider</td></tr>
+    <tr><td><code>.sds-split__divider--active</code></td><td>Applied during active drag</td></tr>
+    <tr><td><code>.sds-split--vertical</code></td><td>Vertical (top/bottom) split variant</td></tr>
+    <tr><td><code>.sds-split--bordered</code></td><td>Adds visible borders to each pane</td></tr>
+    <tr><td><code>.sds-split__pane-header</code></td><td>Sticky header bar within a pane</td></tr>
+    <tr><td><code>.sds-split__pane-content</code></td><td>Scrollable content area within a pane</td></tr>
+    <tr><td><code>.sds-split__pane--has-header</code></td><td>Flex column layout for panes with header</td></tr>
+  </tbody>
+</table>
+
+
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+(function () {
+  /* ---- Draggable divider logic ---- */
+  var dividers = document.querySelectorAll('.sds-split__divider');
+
+  dividers.forEach(function (divider) {
+    /* Keyboard resizing: arrow keys move divider by 10px */
+    divider.addEventListener('keydown', function (e) {
+      var container = divider.parentElement;
+      var isVertical = container.classList.contains('sds-split--vertical');
+      var prevPane = divider.previousElementSibling;
+      var nextPane = divider.nextElementSibling;
+      if (!prevPane || !nextPane) return;
+
+      var minSize = isVertical ? 150 : 200;
+      var delta = 0;
+
+      if (isVertical) {
+        if (e.key === 'ArrowUp') delta = -10;
+        else if (e.key === 'ArrowDown') delta = 10;
+      } else {
+        if (e.key === 'ArrowLeft') delta = -10;
+        else if (e.key === 'ArrowRight') delta = 10;
+      }
+
+      if (delta === 0) return;
+      e.preventDefault();
+
+      var prevSize = isVertical ? prevPane.getBoundingClientRect().height : prevPane.getBoundingClientRect().width;
+      var nextSize = isVertical ? nextPane.getBoundingClientRect().height : nextPane.getBoundingClientRect().width;
+
+      var newPrev = prevSize + delta;
+      var newNext = nextSize - delta;
+
+      if (newPrev < minSize || newNext < minSize) return;
+
+      prevPane.style.flex = '0 0 ' + newPrev + 'px';
+      nextPane.style.flex = '0 0 ' + newNext + 'px';
+    });
+
+    divider.addEventListener('mousedown', function (e) {
+      e.preventDefault();
+
+      var container = divider.parentElement;
+      var isVertical = container.classList.contains('sds-split--vertical');
+      var prevPane = divider.previousElementSibling;
+      var nextPane = divider.nextElementSibling;
+
+      if (!prevPane || !nextPane) return;
+
+      var containerRect = container.getBoundingClientRect();
+      var minSize = isVertical ? 150 : 200;
+
+      divider.classList.add('sds-split__divider--active');
+      document.body.style.cursor = isVertical ? 'row-resize' : 'col-resize';
+      document.body.style.userSelect = 'none';
+
+      function onMouseMove(e) {
+        var offset, totalSize, prevSize, nextSize;
+
+        if (isVertical) {
+          offset = e.clientY - containerRect.top;
+          totalSize = containerRect.height;
+          /* Account for preceding panes and dividers */
+          var prevTop = prevPane.getBoundingClientRect().top - containerRect.top;
+          prevSize = offset - prevTop - 2.5;
+          nextSize = totalSize - offset - 2.5;
+          /* Subtract any panes before prevPane */
+          var allPanes = Array.from(container.querySelectorAll('.sds-split__pane'));
+          var allDividers = Array.from(container.querySelectorAll('.sds-split__divider'));
+          var usedSpace = 0;
+          for (var i = 0; i < allPanes.length; i++) {
+            if (allPanes[i] === prevPane) break;
+            usedSpace += allPanes[i].getBoundingClientRect().height + 5; /* divider width */
+          }
+          nextSize = totalSize - offset - 2.5;
+          /* Count dividers and panes after nextPane */
+          var afterSpace = 0;
+          var found = false;
+          for (var j = 0; j < allPanes.length; j++) {
+            if (found && allPanes[j] !== nextPane) {
+              afterSpace += allPanes[j].getBoundingClientRect().height + 5;
+            }
+            if (allPanes[j] === nextPane) found = true;
+          }
+          nextSize = nextSize - afterSpace;
+        } else {
+          offset = e.clientX - containerRect.left;
+          totalSize = containerRect.width;
+          var prevLeft = prevPane.getBoundingClientRect().left - containerRect.left;
+          prevSize = offset - prevLeft - 2.5;
+          /* Count space after nextPane */
+          var allPanes = Array.from(container.querySelectorAll('.sds-split__pane'));
+          var afterSpace = 0;
+          var found = false;
+          for (var k = 0; k < allPanes.length; k++) {
+            if (found && allPanes[k] !== nextPane) {
+              afterSpace += allPanes[k].getBoundingClientRect().width + 5;
+            }
+            if (allPanes[k] === nextPane) found = true;
+          }
+          nextSize = totalSize - offset - 2.5 - afterSpace;
+        }
+
+        if (prevSize < minSize || nextSize < minSize) return;
+
+        prevPane.style.flex = '0 0 ' + prevSize + 'px';
+        nextPane.style.flex = '0 0 ' + nextSize + 'px';
+      }
+
+      function onMouseUp() {
+        divider.classList.remove('sds-split__divider--active');
+        document.body.style.cursor = '';
+        document.body.style.userSelect = '';
+        document.removeEventListener('mousemove', onMouseMove);
+        document.removeEventListener('mouseup', onMouseUp);
+      }
+
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+    });
+  });
+})();
+
+
+/* ---- Data Browser interactivity ---- */
+var tableData = {
+  users: {
+    title: 'Team Members &mdash; Details',
+    columns: [
+      { name: 'Jessica Chen', type: 'Engineering Lead', tag: 'Active', tagClass: 'sds-tag--success' },
+      { name: 'Manoj Kumar', type: 'Product Manager', tag: 'Active', tagClass: 'sds-tag--success' },
+      { name: 'Sarah O\'Connor', type: 'Senior Designer', tag: 'On Leave', tagClass: 'sds-tag--warning' },
+      { name: 'Riku Tanaka', type: 'Staff Engineer', tag: 'Active', tagClass: 'sds-tag--success' },
+      { name: 'Luis Martinez', type: 'Marketing Director', tag: 'Active', tagClass: 'sds-tag--success' },
+      { name: 'Aisha Williams', type: 'Data Analyst', tag: 'Offboarded', tagClass: 'sds-tag--error' }
+    ]
+  },
+  transactions: {
+    title: 'Projects &mdash; Details',
+    columns: [
+      { name: 'Platform Redesign', type: 'Engineering', tag: 'Active', tagClass: 'sds-tag--success' },
+      { name: 'Mobile App v2', type: 'Engineering', tag: 'Active', tagClass: 'sds-tag--success' },
+      { name: 'Q1 Campaign', type: 'Marketing', tag: 'Completed', tagClass: 'sds-tag--success' },
+      { name: 'API Migration', type: 'Engineering', tag: 'At Risk', tagClass: 'sds-tag--error' },
+      { name: 'Brand Refresh', type: 'Design', tag: 'On Hold', tagClass: 'sds-tag--warning' },
+      { name: 'User Research', type: 'Product', tag: 'Active', tagClass: 'sds-tag--success' },
+      { name: 'Onboarding Flow', type: 'Product', tag: 'Active', tagClass: 'sds-tag--success' }
+    ]
+  },
+  audit_log: {
+    title: 'Documents &mdash; Details',
+    columns: [
+      { name: 'Q1 Strategy Deck', type: 'Presentation', tag: 'Published', tagClass: 'sds-tag--success' },
+      { name: 'API Reference', type: 'Documentation', tag: 'Published', tagClass: 'sds-tag--success' },
+      { name: 'Design System Guide', type: 'Documentation', tag: 'Draft', tagClass: 'sds-tag--warning' },
+      { name: 'Incident Postmortem', type: 'Report', tag: 'Internal', tagClass: 'sds-tag--warning' },
+      { name: 'SOW — Partner Co.', type: 'Contract', tag: 'Confidential', tagClass: 'sds-tag--error' },
+      { name: 'Release Notes v4.2', type: 'Changelog', tag: 'Published', tagClass: 'sds-tag--success' }
+    ]
+  },
+  sessions: {
+    title: 'Reports &mdash; Details',
+    columns: [
+      { name: 'Monthly Revenue', type: 'Finance', tag: 'Scheduled', tagClass: 'sds-tag--success' },
+      { name: 'User Growth', type: 'Product', tag: 'Scheduled', tagClass: 'sds-tag--success' },
+      { name: 'Churn Analysis', type: 'Product', tag: 'Manual', tagClass: 'sds-tag--warning' },
+      { name: 'Support Metrics', type: 'Operations', tag: 'Scheduled', tagClass: 'sds-tag--success' },
+      { name: 'Team Velocity', type: 'Engineering', tag: 'Manual', tagClass: 'sds-tag--warning' },
+      { name: 'NPS Summary', type: 'Product', tag: 'Scheduled', tagClass: 'sds-tag--success' }
+    ]
+  }
+};
+
+function selectTable(el, tableName) {
+  /* Deselect all rows */
+  var rows = el.parentElement.querySelectorAll('.demo-db-row');
+  rows.forEach(function (r) { r.classList.remove('is-selected'); });
+  el.classList.add('is-selected');
+
+  var data = tableData[tableName];
+  if (!data) return;
+
+  /* Update header */
+  var titleEl = document.getElementById('browser-detail-title');
+  titleEl.innerHTML = '<span class="material-symbols-outlined" style="font-size: 18px;">view_column</span> ' + data.title;
+
+  /* Build column table */
+  var html = '<table class="demo-col-table"><thead><tr><th>Name</th><th>Role</th><th>Status</th></tr></thead><tbody>';
+  data.columns.forEach(function (col) {
+    html += '<tr><td>' + col.name + '</td><td>' + col.type + '</td><td><span class="sds-tag ' + col.tagClass + '">' + col.tag + '</span></td></tr>';
+  });
+  html += '</tbody></table>';
+
+  document.getElementById('browser-detail-content').innerHTML = html;
+}
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

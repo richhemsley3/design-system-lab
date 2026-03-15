@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Bar Chart</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../shared/chart.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+</head>
+<body>
+
+  <h1>Bar Chart</h1>
+  <p class="page-subtitle">Vertical and horizontal bar charts for comparing categorical data. Supports grouped and stacked variants.</p>
+
+  <!-- ============================================================
+       CHART COLOR PALETTE
+       ============================================================ -->
+  <h2>Chart Color Palette</h2>
+  <p>Eight sequential colors used across all data visualization charts. Each color maintains a minimum 3:1 contrast ratio against white backgrounds.</p>
+
+  <div class="color-strip">
+    <div class="color-strip-item" style="background: var(--sds-chart-1);"><span class="color-strip-label">1</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-2);"><span class="color-strip-label">2</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-3);"><span class="color-strip-label">3</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-4);"><span class="color-strip-label">4</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-5);"><span class="color-strip-label">5</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-6);"><span class="color-strip-label">6</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-7);"><span class="color-strip-label">7</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-8);"><span class="color-strip-label">8</span></div>
+  </div>
+
+  <!-- ============================================================
+       VERTICAL BAR CHART
+       ============================================================ -->
+  <h2>Vertical Bar Chart</h2>
+  <p>Standard vertical bar chart with Y-axis labels, grid lines, and hover tooltips. Used for comparing categorical data.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Single series</div>
+    <div class="sds-chart" style="position:relative;">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Monthly Revenue</span>
+        <span class="sds-chart-subtitle">Last 6 months (in thousands)</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" id="chart-vertical" role="img" aria-label="Vertical bar chart showing monthly revenue for the last 6 months">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="60" x2="540" y2="60"/>
+        <line class="chart-grid-line" x1="40" y1="100" x2="540" y2="100"/>
+        <line class="chart-grid-line" x1="40" y1="140" x2="540" y2="140"/>
+        <line class="chart-grid-line" x1="40" y1="180" x2="540" y2="180"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">100</text>
+        <text class="chart-axis-label" x="32" y="64" text-anchor="end">80</text>
+        <text class="chart-axis-label" x="32" y="104" text-anchor="end">60</text>
+        <text class="chart-axis-label" x="32" y="144" text-anchor="end">40</text>
+        <text class="chart-axis-label" x="32" y="184" text-anchor="end">20</text>
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">0</text>
+        <!-- Bars -->
+        <rect class="chart-bar" x="65" y="56" width="50" height="144" rx="3" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="148" y="92" width="50" height="108" rx="3" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="231" y="38" width="50" height="162" rx="3" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="314" y="74" width="50" height="126" rx="3" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="397" y="20" width="50" height="180" rx="3" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="480" y="47" width="50" height="153" rx="3" fill="var(--sds-chart-1)"/>
+        <!-- Value labels -->
+        <text class="chart-value-label" x="90" y="50" text-anchor="middle">80</text>
+        <text class="chart-value-label" x="173" y="86" text-anchor="middle">60</text>
+        <text class="chart-value-label" x="256" y="32" text-anchor="middle">90</text>
+        <text class="chart-value-label" x="339" y="68" text-anchor="middle">70</text>
+        <text class="chart-value-label" x="422" y="14" text-anchor="middle">100</text>
+        <text class="chart-value-label" x="505" y="41" text-anchor="middle">85</text>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="90" y="220" text-anchor="middle">Jan</text>
+        <text class="chart-axis-label" x="173" y="220" text-anchor="middle">Feb</text>
+        <text class="chart-axis-label" x="256" y="220" text-anchor="middle">Mar</text>
+        <text class="chart-axis-label" x="339" y="220" text-anchor="middle">Apr</text>
+        <text class="chart-axis-label" x="422" y="220" text-anchor="middle">May</text>
+        <text class="chart-axis-label" x="505" y="220" text-anchor="middle">Jun</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       GROUPED BAR CHART
+       ============================================================ -->
+  <h3>Grouped Bar Chart</h3>
+  <p>Multiple data series displayed side by side for comparison. Uses chart palette colors 1–3.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Multi-series</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Quarterly Comparison</span>
+        <span class="sds-chart-subtitle">By product line</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Product A</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-2)"></span> Product B</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-3)"></span> Product C</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 220" role="img" aria-label="Grouped bar chart comparing quarterly data across three product lines">
+        <!-- Grid -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="60" x2="540" y2="60"/>
+        <line class="chart-grid-line" x1="40" y1="100" x2="540" y2="100"/>
+        <line class="chart-grid-line" x1="40" y1="140" x2="540" y2="140"/>
+        <line class="chart-axis-line" x1="40" y1="180" x2="540" y2="180"/>
+        <!-- Y labels -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">80</text>
+        <text class="chart-axis-label" x="32" y="64" text-anchor="end">60</text>
+        <text class="chart-axis-label" x="32" y="104" text-anchor="end">40</text>
+        <text class="chart-axis-label" x="32" y="144" text-anchor="end">20</text>
+        <text class="chart-axis-label" x="32" y="184" text-anchor="end">0</text>
+        <!-- Q1 group -->
+        <rect class="chart-bar" x="60" y="40" width="30" height="140" rx="2" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="94" y="80" width="30" height="100" rx="2" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="128" y="110" width="30" height="70" rx="2" fill="var(--sds-chart-3)"/>
+        <!-- Q2 group -->
+        <rect class="chart-bar" x="190" y="60" width="30" height="120" rx="2" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="224" y="50" width="30" height="130" rx="2" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="258" y="90" width="30" height="90" rx="2" fill="var(--sds-chart-3)"/>
+        <!-- Q3 group -->
+        <rect class="chart-bar" x="320" y="30" width="30" height="150" rx="2" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="354" y="70" width="30" height="110" rx="2" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="388" y="60" width="30" height="120" rx="2" fill="var(--sds-chart-3)"/>
+        <!-- Q4 group -->
+        <rect class="chart-bar" x="450" y="20" width="30" height="160" rx="2" fill="var(--sds-chart-1)"/>
+        <rect class="chart-bar" x="484" y="40" width="30" height="140" rx="2" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="518" y="50" width="30" height="130" rx="2" fill="var(--sds-chart-3)"/>
+        <!-- X labels -->
+        <text class="chart-axis-label" x="109" y="200" text-anchor="middle">Q1</text>
+        <text class="chart-axis-label" x="239" y="200" text-anchor="middle">Q2</text>
+        <text class="chart-axis-label" x="369" y="200" text-anchor="middle">Q3</text>
+        <text class="chart-axis-label" x="499" y="200" text-anchor="middle">Q4</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STACKED BAR CHART
+       ============================================================ -->
+  <h3>Stacked Bar Chart</h3>
+  <p>Data series stacked vertically to show part-to-whole relationships within each category.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Stacked</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Resource Allocation</span>
+        <span class="sds-chart-subtitle">By department</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Engineering</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-2)"></span> Design</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-4)"></span> Marketing</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 220" role="img" aria-label="Stacked bar chart showing resource allocation by department across quarters">
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="60" x2="540" y2="60"/>
+        <line class="chart-grid-line" x1="40" y1="100" x2="540" y2="100"/>
+        <line class="chart-grid-line" x1="40" y1="140" x2="540" y2="140"/>
+        <line class="chart-axis-line" x1="40" y1="180" x2="540" y2="180"/>
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">120</text>
+        <text class="chart-axis-label" x="32" y="64" text-anchor="end">90</text>
+        <text class="chart-axis-label" x="32" y="104" text-anchor="end">60</text>
+        <text class="chart-axis-label" x="32" y="144" text-anchor="end">30</text>
+        <text class="chart-axis-label" x="32" y="184" text-anchor="end">0</text>
+        <!-- Q1 stack -->
+        <rect class="chart-bar" x="65" y="34" width="55" height="50" rx="0" fill="var(--sds-chart-4)"/>
+        <rect class="chart-bar" x="65" y="84" width="55" height="36" rx="0" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="65" y="120" width="55" height="60" rx="0" fill="var(--sds-chart-1)"/>
+        <!-- Q2 stack -->
+        <rect class="chart-bar" x="175" y="24" width="55" height="40" rx="0" fill="var(--sds-chart-4)"/>
+        <rect class="chart-bar" x="175" y="64" width="55" height="46" rx="0" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="175" y="110" width="55" height="70" rx="0" fill="var(--sds-chart-1)"/>
+        <!-- Q3 stack -->
+        <rect class="chart-bar" x="285" y="40" width="55" height="30" rx="0" fill="var(--sds-chart-4)"/>
+        <rect class="chart-bar" x="285" y="70" width="55" height="50" rx="0" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="285" y="120" width="55" height="60" rx="0" fill="var(--sds-chart-1)"/>
+        <!-- Q4 stack -->
+        <rect class="chart-bar" x="395" y="20" width="55" height="46" rx="0" fill="var(--sds-chart-4)"/>
+        <rect class="chart-bar" x="395" y="66" width="55" height="54" rx="0" fill="var(--sds-chart-2)"/>
+        <rect class="chart-bar" x="395" y="120" width="55" height="60" rx="0" fill="var(--sds-chart-1)"/>
+        <!-- X labels -->
+        <text class="chart-axis-label" x="92" y="200" text-anchor="middle">Q1</text>
+        <text class="chart-axis-label" x="202" y="200" text-anchor="middle">Q2</text>
+        <text class="chart-axis-label" x="312" y="200" text-anchor="middle">Q3</text>
+        <text class="chart-axis-label" x="422" y="200" text-anchor="middle">Q4</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       HORIZONTAL BAR CHART
+       ============================================================ -->
+  <h2>Horizontal Bar Chart</h2>
+  <p>Bars run horizontally, useful for long category labels or ranked data. Supports single and multi-series.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Horizontal</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Top Products</span>
+        <span class="sds-chart-subtitle">By performance score</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 220" role="img" aria-label="Horizontal bar chart ranking top products by performance score">
+        <!-- Grid -->
+        <line class="chart-grid-line" x1="140" y1="16" x2="140" y2="200"/>
+        <line class="chart-grid-line" x1="240" y1="16" x2="240" y2="200"/>
+        <line class="chart-grid-line" x1="340" y1="16" x2="340" y2="200"/>
+        <line class="chart-grid-line" x1="440" y1="16" x2="440" y2="200"/>
+        <line class="chart-grid-line" x1="540" y1="16" x2="540" y2="200"/>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="140" y="215" text-anchor="middle">0</text>
+        <text class="chart-axis-label" x="240" y="215" text-anchor="middle">25</text>
+        <text class="chart-axis-label" x="340" y="215" text-anchor="middle">50</text>
+        <text class="chart-axis-label" x="440" y="215" text-anchor="middle">75</text>
+        <text class="chart-axis-label" x="540" y="215" text-anchor="middle">100</text>
+        <!-- Y labels + bars -->
+        <text class="chart-axis-label" x="132" y="36" text-anchor="end">Product Alpha</text>
+        <rect class="chart-bar" x="140" y="22" width="372" height="22" rx="3" fill="var(--sds-chart-1)"/>
+        <text class="chart-value-label" x="518" y="37" text-anchor="end" fill="white">93%</text>
+
+        <text class="chart-axis-label" x="132" y="72" text-anchor="end">Product Beta</text>
+        <rect class="chart-bar" x="140" y="58" width="340" height="22" rx="3" fill="var(--sds-chart-2)"/>
+        <text class="chart-value-label" x="486" y="73" text-anchor="end" fill="white">85%</text>
+
+        <text class="chart-axis-label" x="132" y="108" text-anchor="end">Product Gamma</text>
+        <rect class="chart-bar" x="140" y="94" width="296" height="22" rx="3" fill="var(--sds-chart-3)"/>
+
+        <text class="chart-axis-label" x="132" y="144" text-anchor="end">Product Delta</text>
+        <rect class="chart-bar" x="140" y="130" width="260" height="22" rx="3" fill="var(--sds-chart-4)"/>
+
+        <text class="chart-axis-label" x="132" y="180" text-anchor="end">Marketing Leads</text>
+        <rect class="chart-bar" x="140" y="166" width="200" height="22" rx="3" fill="var(--sds-chart-5)"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CHART ANATOMY
+       ============================================================ -->
+  <h2>Chart Anatomy</h2>
+  <p>Standard structural elements used across all chart types in the design system.</p>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Token</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>--sds-chart-bg</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White</td>
+      </tr>
+      <tr>
+        <td>Grid lines</td>
+        <td><code>--sds-chart-grid</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span> warm-gray-100</td>
+      </tr>
+      <tr>
+        <td>Axis line</td>
+        <td><code>--sds-chart-axis</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-300)"></span> warm-gray-300</td>
+      </tr>
+      <tr>
+        <td>Axis labels</td>
+        <td><code>--sds-chart-axis-label</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-550)"></span> warm-gray-550 · 12px</td>
+      </tr>
+      <tr>
+        <td>Tooltip background</td>
+        <td><code>--sds-chart-tooltip-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-900)"></span> warm-gray-900</td>
+      </tr>
+      <tr>
+        <td>Tooltip text</td>
+        <td><code>--sds-chart-tooltip-text</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White · 12px</td>
+      </tr>
+      <tr>
+        <td>Hover overlay</td>
+        <td><code>--sds-chart-hover</code></td>
+        <td>rgba(0,0,0,0.06)</td>
+      </tr>
+      <tr>
+        <td>Bar corner radius</td>
+        <td>—</td>
+        <td>3px (single), 2px (grouped), 0 (stacked)</td>
+      </tr>
+      <tr>
+        <td>Container radius</td>
+        <td>—</td>
+        <td>12px</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td>—</td>
+        <td>24px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       SERIES COLORS
+       ============================================================ -->
+  <h3>Series Color Tokens</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Token</th><th>Color</th><th>Hex</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--sds-chart-1</code></td><td><span class="swatch" style="background:var(--sds-chart-1)"></span></td><td>#013D5B</td><td>Primary series / single color charts</td></tr>
+      <tr><td><code>--sds-chart-2</code></td><td><span class="swatch" style="background:var(--sds-chart-2)"></span></td><td>#4F8AA0</td><td>Second series</td></tr>
+      <tr><td><code>--sds-chart-3</code></td><td><span class="swatch" style="background:var(--sds-chart-3)"></span></td><td>#A6CBD6</td><td>Third series</td></tr>
+      <tr><td><code>--sds-chart-4</code></td><td><span class="swatch" style="background:var(--sds-chart-4)"></span></td><td>#BF5547</td><td>Fourth series / accent</td></tr>
+      <tr><td><code>--sds-chart-5</code></td><td><span class="swatch" style="background:var(--sds-chart-5)"></span></td><td>#7A9A01</td><td>Fifth series</td></tr>
+      <tr><td><code>--sds-chart-6</code></td><td><span class="swatch" style="background:var(--sds-chart-6)"></span></td><td>#805AA1</td><td>Sixth series</td></tr>
+      <tr><td><code>--sds-chart-7</code></td><td><span class="swatch" style="background:var(--sds-chart-7)"></span></td><td>#B29B24</td><td>Seventh series</td></tr>
+      <tr><td><code>--sds-chart-8</code></td><td><span class="swatch" style="background:var(--sds-chart-8)"></span></td><td>#E57D6E</td><td>Eighth series</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       CSS CLASSES
+       ============================================================ -->
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-chart</code></td><td>Container — white bg, border, 12px radius, 24px padding</td></tr>
+      <tr><td><code>.sds-chart-header</code></td><td>Flex row with title and subtitle</td></tr>
+      <tr><td><code>.sds-chart-title</code></td><td>Chart heading — 16px/600</td></tr>
+      <tr><td><code>.sds-chart-subtitle</code></td><td>Secondary text — 13px</td></tr>
+      <tr><td><code>.sds-legend</code></td><td>Horizontal legend container</td></tr>
+      <tr><td><code>.sds-legend-item</code></td><td>Legend entry — swatch + label</td></tr>
+      <tr><td><code>.sds-legend-swatch</code></td><td>10×10px color indicator</td></tr>
+      <tr><td><code>.chart-bar</code></td><td>SVG bar with hover opacity transition</td></tr>
+      <tr><td><code>.chart-grid-line</code></td><td>Horizontal/vertical grid line</td></tr>
+      <tr><td><code>.chart-axis-line</code></td><td>Primary axis line</td></tr>
+      <tr><td><code>.chart-axis-label</code></td><td>Axis tick label — 12px</td></tr>
+      <tr><td><code>.chart-value-label</code></td><td>Value displayed above bars — 11px/500</td></tr>
+    </tbody>
+  </table>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

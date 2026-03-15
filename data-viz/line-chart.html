@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Line Chart</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../shared/chart.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+</head>
+<body>
+
+  <h1>Line Chart</h1>
+  <p class="page-subtitle">Continuous data plotted over time or sequential categories. Supports single-line, multi-line, and area-line variants.</p>
+
+  <!-- ============================================================
+       CHART COLOR PALETTE
+       ============================================================ -->
+  <h2>Chart Color Palette</h2>
+  <p>Eight sequential colors used across all data visualization charts. Each color maintains a minimum 3:1 contrast ratio against white backgrounds.</p>
+
+  <div class="color-strip">
+    <div class="color-strip-item" style="background: var(--sds-chart-1);"><span class="color-strip-label">1</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-2);"><span class="color-strip-label">2</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-3);"><span class="color-strip-label">3</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-4);"><span class="color-strip-label">4</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-5);"><span class="color-strip-label">5</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-6);"><span class="color-strip-label">6</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-7);"><span class="color-strip-label">7</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-8);"><span class="color-strip-label">8</span></div>
+  </div>
+
+  <!-- ============================================================
+       SINGLE LINE CHART
+       ============================================================ -->
+  <h2>Single Line Chart</h2>
+  <p>Standard line chart with data point markers, value labels, and grid lines. Used for showing trends over time.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Single series</div>
+    <div class="sds-chart" style="position:relative;">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Monthly Active Users</span>
+        <span class="sds-chart-subtitle">Last 6 months (in thousands)</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Line chart showing monthly active users trending upward over 6 months">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="60" x2="540" y2="60"/>
+        <line class="chart-grid-line" x1="40" y1="100" x2="540" y2="100"/>
+        <line class="chart-grid-line" x1="40" y1="140" x2="540" y2="140"/>
+        <line class="chart-grid-line" x1="40" y1="180" x2="540" y2="180"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">50</text>
+        <text class="chart-axis-label" x="32" y="64" text-anchor="end">40</text>
+        <text class="chart-axis-label" x="32" y="104" text-anchor="end">30</text>
+        <text class="chart-axis-label" x="32" y="144" text-anchor="end">20</text>
+        <text class="chart-axis-label" x="32" y="184" text-anchor="end">10</text>
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">0</text>
+        <!-- Line: Jan=24, Feb=28, Mar=35, Apr=32, May=42, Jun=48 -->
+        <!-- Y scale: 0 at y=200, 50 at y=20. Each unit = 3.6px. y = 200 - (val * 3.6) -->
+        <!-- Jan: 200-86.4=113.6, Feb: 200-100.8=99.2, Mar: 200-126=74, Apr: 200-115.2=84.8, May: 200-151.2=48.8, Jun: 200-172.8=27.2 -->
+        <polyline class="chart-line" stroke="var(--sds-chart-1)"
+          points="90,113.6 173,99.2 256,74 339,84.8 422,48.8 505,27.2"/>
+        <!-- Data point circles -->
+        <circle class="chart-data-point" cx="90" cy="113.6" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="173" cy="99.2" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="256" cy="74" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="339" cy="84.8" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="422" cy="48.8" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="505" cy="27.2" fill="var(--sds-chart-1)"/>
+        <!-- Value labels -->
+        <text class="chart-value-label" x="90" y="107" text-anchor="middle">24K</text>
+        <text class="chart-value-label" x="173" y="93" text-anchor="middle">28K</text>
+        <text class="chart-value-label" x="256" y="68" text-anchor="middle">35K</text>
+        <text class="chart-value-label" x="339" y="79" text-anchor="middle">32K</text>
+        <text class="chart-value-label" x="422" y="43" text-anchor="middle">42K</text>
+        <text class="chart-value-label" x="505" y="21" text-anchor="middle">48K</text>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="90" y="220" text-anchor="middle">Jan</text>
+        <text class="chart-axis-label" x="173" y="220" text-anchor="middle">Feb</text>
+        <text class="chart-axis-label" x="256" y="220" text-anchor="middle">Mar</text>
+        <text class="chart-axis-label" x="339" y="220" text-anchor="middle">Apr</text>
+        <text class="chart-axis-label" x="422" y="220" text-anchor="middle">May</text>
+        <text class="chart-axis-label" x="505" y="220" text-anchor="middle">Jun</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       MULTI-LINE CHART
+       ============================================================ -->
+  <h3>Multi-Line Chart</h3>
+  <p>Multiple data series displayed as separate lines for comparison. Uses chart palette colors 1, 2, and 4.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Multi-series</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Platform Comparison</span>
+        <span class="sds-chart-subtitle">Weekly sessions (in thousands)</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Desktop</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-2)"></span> Mobile</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-4)"></span> Tablet</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Multi-line chart comparing desktop, mobile, and tablet sessions over 6 months">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="60" x2="540" y2="60"/>
+        <line class="chart-grid-line" x1="40" y1="100" x2="540" y2="100"/>
+        <line class="chart-grid-line" x1="40" y1="140" x2="540" y2="140"/>
+        <line class="chart-grid-line" x1="40" y1="180" x2="540" y2="180"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels (0–100) -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">100</text>
+        <text class="chart-axis-label" x="32" y="64" text-anchor="end">80</text>
+        <text class="chart-axis-label" x="32" y="104" text-anchor="end">60</text>
+        <text class="chart-axis-label" x="32" y="144" text-anchor="end">40</text>
+        <text class="chart-axis-label" x="32" y="184" text-anchor="end">20</text>
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">0</text>
+        <!-- Y scale: 0 at y=200, 100 at y=20. Each unit = 1.8px. y = 200 - (val * 1.8) -->
+        <!-- Desktop: 65,70,75,68,82,90 => y: 83, 74, 65, 77.6, 52.4, 38 -->
+        <polyline class="chart-line" stroke="var(--sds-chart-1)"
+          points="90,83 173,74 256,65 339,77.6 422,52.4 505,38"/>
+        <circle class="chart-data-point" cx="90" cy="83" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="173" cy="74" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="256" cy="65" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="339" cy="77.6" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="422" cy="52.4" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="505" cy="38" fill="var(--sds-chart-1)"/>
+        <!-- Mobile: 40,48,55,62,58,72 => y: 128, 113.6, 101, 88.4, 95.6, 70.4 -->
+        <polyline class="chart-line" stroke="var(--sds-chart-2)"
+          points="90,128 173,113.6 256,101 339,88.4 422,95.6 505,70.4"/>
+        <circle class="chart-data-point" cx="90" cy="128" fill="var(--sds-chart-2)"/>
+        <circle class="chart-data-point" cx="173" cy="113.6" fill="var(--sds-chart-2)"/>
+        <circle class="chart-data-point" cx="256" cy="101" fill="var(--sds-chart-2)"/>
+        <circle class="chart-data-point" cx="339" cy="88.4" fill="var(--sds-chart-2)"/>
+        <circle class="chart-data-point" cx="422" cy="95.6" fill="var(--sds-chart-2)"/>
+        <circle class="chart-data-point" cx="505" cy="70.4" fill="var(--sds-chart-2)"/>
+        <!-- Tablet: 20,22,28,25,30,35 => y: 164, 160.4, 149.6, 155, 146, 137 -->
+        <polyline class="chart-line" stroke="var(--sds-chart-4)"
+          points="90,164 173,160.4 256,149.6 339,155 422,146 505,137"/>
+        <circle class="chart-data-point" cx="90" cy="164" fill="var(--sds-chart-4)"/>
+        <circle class="chart-data-point" cx="173" cy="160.4" fill="var(--sds-chart-4)"/>
+        <circle class="chart-data-point" cx="256" cy="149.6" fill="var(--sds-chart-4)"/>
+        <circle class="chart-data-point" cx="339" cy="155" fill="var(--sds-chart-4)"/>
+        <circle class="chart-data-point" cx="422" cy="146" fill="var(--sds-chart-4)"/>
+        <circle class="chart-data-point" cx="505" cy="137" fill="var(--sds-chart-4)"/>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="90" y="220" text-anchor="middle">Jan</text>
+        <text class="chart-axis-label" x="173" y="220" text-anchor="middle">Feb</text>
+        <text class="chart-axis-label" x="256" y="220" text-anchor="middle">Mar</text>
+        <text class="chart-axis-label" x="339" y="220" text-anchor="middle">Apr</text>
+        <text class="chart-axis-label" x="422" y="220" text-anchor="middle">May</text>
+        <text class="chart-axis-label" x="505" y="220" text-anchor="middle">Jun</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       AREA LINE CHART
+       ============================================================ -->
+  <h3>Area Line Chart</h3>
+  <p>Line chart with a filled gradient area beneath the line, emphasizing volume or magnitude over time.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Area fill</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Revenue Trend</span>
+        <span class="sds-chart-subtitle">Monthly revenue (in thousands)</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Area line chart showing revenue trend with gradient fill over 6 months">
+        <defs>
+          <linearGradient id="area-gradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--sds-chart-1)" stop-opacity="0.15"/>
+            <stop offset="100%" stop-color="var(--sds-chart-1)" stop-opacity="0.02"/>
+          </linearGradient>
+        </defs>
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="60" x2="540" y2="60"/>
+        <line class="chart-grid-line" x1="40" y1="100" x2="540" y2="100"/>
+        <line class="chart-grid-line" x1="40" y1="140" x2="540" y2="140"/>
+        <line class="chart-grid-line" x1="40" y1="180" x2="540" y2="180"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels (0–200) -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">200</text>
+        <text class="chart-axis-label" x="32" y="64" text-anchor="end">160</text>
+        <text class="chart-axis-label" x="32" y="104" text-anchor="end">120</text>
+        <text class="chart-axis-label" x="32" y="144" text-anchor="end">80</text>
+        <text class="chart-axis-label" x="32" y="184" text-anchor="end">40</text>
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">0</text>
+        <!-- Y scale: 0 at y=200, 200 at y=20. Each unit = 0.9px. y = 200 - (val * 0.9) -->
+        <!-- Data: 85,95,110,120,140,175 => y: 123.5, 114.5, 101, 92, 74, 42.5 -->
+        <!-- Area fill polygon: same points plus baseline -->
+        <polygon fill="url(#area-gradient)"
+          points="90,123.5 173,114.5 256,101 339,92 422,74 505,42.5 505,200 90,200"/>
+        <!-- Line -->
+        <polyline class="chart-line" stroke="var(--sds-chart-1)"
+          points="90,123.5 173,114.5 256,101 339,92 422,74 505,42.5"/>
+        <!-- Data point circles -->
+        <circle class="chart-data-point" cx="90" cy="123.5" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="173" cy="114.5" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="256" cy="101" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="339" cy="92" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="422" cy="74" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="505" cy="42.5" fill="var(--sds-chart-1)"/>
+        <!-- Value labels -->
+        <text class="chart-value-label" x="90" y="117" text-anchor="middle">$85K</text>
+        <text class="chart-value-label" x="173" y="108" text-anchor="middle">$95K</text>
+        <text class="chart-value-label" x="256" y="95" text-anchor="middle">$110K</text>
+        <text class="chart-value-label" x="339" y="86" text-anchor="middle">$120K</text>
+        <text class="chart-value-label" x="422" y="68" text-anchor="middle">$140K</text>
+        <text class="chart-value-label" x="505" y="36" text-anchor="middle">$175K</text>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="90" y="220" text-anchor="middle">Jan</text>
+        <text class="chart-axis-label" x="173" y="220" text-anchor="middle">Feb</text>
+        <text class="chart-axis-label" x="256" y="220" text-anchor="middle">Mar</text>
+        <text class="chart-axis-label" x="339" y="220" text-anchor="middle">Apr</text>
+        <text class="chart-axis-label" x="422" y="220" text-anchor="middle">May</text>
+        <text class="chart-axis-label" x="505" y="220" text-anchor="middle">Jun</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CHART ANATOMY
+       ============================================================ -->
+  <h2>Chart Anatomy</h2>
+  <p>Standard structural elements used across all chart types in the design system.</p>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Token</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>--sds-chart-bg</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White</td>
+      </tr>
+      <tr>
+        <td>Grid lines</td>
+        <td><code>--sds-chart-grid</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span> warm-gray-100</td>
+      </tr>
+      <tr>
+        <td>Axis line</td>
+        <td><code>--sds-chart-axis</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-300)"></span> warm-gray-300</td>
+      </tr>
+      <tr>
+        <td>Axis labels</td>
+        <td><code>--sds-chart-axis-label</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-550)"></span> warm-gray-550 · 12px</td>
+      </tr>
+      <tr>
+        <td>Tooltip background</td>
+        <td><code>--sds-chart-tooltip-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-900)"></span> warm-gray-900</td>
+      </tr>
+      <tr>
+        <td>Tooltip text</td>
+        <td><code>--sds-chart-tooltip-text</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White · 12px</td>
+      </tr>
+      <tr>
+        <td>Hover overlay</td>
+        <td><code>--sds-chart-hover</code></td>
+        <td>rgba(0,0,0,0.06)</td>
+      </tr>
+      <tr>
+        <td>Line stroke width</td>
+        <td>—</td>
+        <td>2px</td>
+      </tr>
+      <tr>
+        <td>Data point radius</td>
+        <td>—</td>
+        <td>4px (6px on hover)</td>
+      </tr>
+      <tr>
+        <td>Area fill opacity</td>
+        <td>—</td>
+        <td>15% of series color</td>
+      </tr>
+      <tr>
+        <td>Container radius</td>
+        <td>—</td>
+        <td>12px</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td>—</td>
+        <td>24px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       SERIES COLORS
+       ============================================================ -->
+  <h3>Series Color Tokens</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Token</th><th>Color</th><th>Hex</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--sds-chart-1</code></td><td><span class="swatch" style="background:var(--sds-chart-1)"></span></td><td>#013D5B</td><td>Primary series / single line charts</td></tr>
+      <tr><td><code>--sds-chart-2</code></td><td><span class="swatch" style="background:var(--sds-chart-2)"></span></td><td>#4F8AA0</td><td>Second series</td></tr>
+      <tr><td><code>--sds-chart-3</code></td><td><span class="swatch" style="background:var(--sds-chart-3)"></span></td><td>#A6CBD6</td><td>Third series</td></tr>
+      <tr><td><code>--sds-chart-4</code></td><td><span class="swatch" style="background:var(--sds-chart-4)"></span></td><td>#BF5547</td><td>Fourth series / accent</td></tr>
+      <tr><td><code>--sds-chart-5</code></td><td><span class="swatch" style="background:var(--sds-chart-5)"></span></td><td>#7A9A01</td><td>Fifth series</td></tr>
+      <tr><td><code>--sds-chart-6</code></td><td><span class="swatch" style="background:var(--sds-chart-6)"></span></td><td>#805AA1</td><td>Sixth series</td></tr>
+      <tr><td><code>--sds-chart-7</code></td><td><span class="swatch" style="background:var(--sds-chart-7)"></span></td><td>#B29B24</td><td>Seventh series</td></tr>
+      <tr><td><code>--sds-chart-8</code></td><td><span class="swatch" style="background:var(--sds-chart-8)"></span></td><td>#E57D6E</td><td>Eighth series</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       CSS CLASSES
+       ============================================================ -->
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-chart</code></td><td>Container — white bg, border, 12px radius, 24px padding</td></tr>
+      <tr><td><code>.sds-chart-header</code></td><td>Flex row with title and subtitle</td></tr>
+      <tr><td><code>.sds-chart-title</code></td><td>Chart heading — 16px/600</td></tr>
+      <tr><td><code>.sds-chart-subtitle</code></td><td>Secondary text — 13px</td></tr>
+      <tr><td><code>.sds-legend</code></td><td>Horizontal legend container</td></tr>
+      <tr><td><code>.sds-legend-item</code></td><td>Legend entry — swatch + label</td></tr>
+      <tr><td><code>.sds-legend-swatch</code></td><td>10x10px color indicator</td></tr>
+      <tr><td><code>.chart-line</code></td><td>SVG polyline/path — fill:none, stroke-width:2</td></tr>
+      <tr><td><code>.chart-data-point</code></td><td>SVG circle data point — r:4, hover r:6, cursor:pointer</td></tr>
+      <tr><td><code>.chart-area-fill</code></td><td>Filled area under line — 15% opacity</td></tr>
+      <tr><td><code>.chart-grid-line</code></td><td>Horizontal/vertical grid line</td></tr>
+      <tr><td><code>.chart-axis-line</code></td><td>Primary axis line</td></tr>
+      <tr><td><code>.chart-axis-label</code></td><td>Axis tick label — 12px</td></tr>
+      <tr><td><code>.chart-value-label</code></td><td>Value displayed above data points — 11px/500</td></tr>
+    </tbody>
+  </table>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

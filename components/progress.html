@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Progress</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .demo-row-items--full {
+      flex: 1;
+    }
+
+    /* ============================================================
+       PROGRESS BAR
+       ============================================================ */
+    .sds-progress {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      width: 100%;
+    }
+    .sds-progress__track {
+      flex: 1;
+      background: var(--sds-color-warm-gray-100);
+      border-radius: 3px;
+      height: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .sds-progress__fill {
+      height: 100%;
+      background: var(--sds-interactive-primary);
+      border-radius: 3px;
+      transition: width 0.3s ease;
+    }
+    .sds-progress__label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-secondary);
+      flex-shrink: 0;
+      min-width: 32px;
+      text-align: right;
+    }
+
+    /* Sizes */
+    .sds-progress--sm .sds-progress__track { height: 4px; border-radius: 2px; }
+    .sds-progress--sm .sds-progress__fill { border-radius: 2px; }
+    .sds-progress--lg .sds-progress__track { height: 8px; border-radius: 4px; }
+    .sds-progress--lg .sds-progress__fill { border-radius: 4px; }
+
+    /* Status colors */
+    .sds-progress--success .sds-progress__fill { background: var(--sds-color-green-400); }
+    .sds-progress--error .sds-progress__fill { background: var(--sds-color-red-450); }
+    .sds-progress--warning .sds-progress__fill { background: var(--sds-color-yellow-350); }
+
+    /* Indeterminate */
+    .sds-progress--indeterminate .sds-progress__fill {
+      width: 40% !important;
+      animation: sds-progress-indeterminate 1.4s ease-in-out infinite;
+    }
+    @keyframes sds-progress-indeterminate {
+      0%   { transform: translateX(-100%); }
+      50%  { transform: translateX(150%); }
+      100% { transform: translateX(-100%); }
+    }
+
+    /* ============================================================
+       SPINNER
+       ============================================================ */
+    .sds-spinner {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--sds-color-warm-gray-150);
+      border-top-color: var(--sds-interactive-primary);
+      border-radius: 50%;
+      animation: sds-spin 0.8s linear infinite;
+    }
+    @keyframes sds-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* Sizes */
+    .sds-spinner--sm  { width: 16px; height: 16px; }
+    .sds-spinner--lg  { width: 32px; height: 32px; border-width: 3px; }
+    .sds-spinner--xl  { width: 48px; height: 48px; border-width: 3px; }
+
+    /* Inline with text */
+    .sds-spinner-inline {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+    }
+
+    /* On dark */
+    .sds-spinner--on-dark {
+      border-color: rgba(255,255,255,0.2);
+      border-top-color: var(--sds-color-white);
+    }
+
+    /* ============================================================
+       STEPPER
+       ============================================================ */
+    .sds-stepper {
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+    }
+    .sds-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+    }
+    .sds-step__indicator {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      position: relative;
+      z-index: 1;
+      flex-shrink: 0;
+    }
+    .sds-step__label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-secondary);
+      margin-top: var(--sds-space-200);
+      text-align: center;
+      max-width: 120px;
+    }
+    .sds-step__desc {
+      font-size: var(--sds-type-overline);
+      color: var(--sds-text-tertiary);
+      margin-top: var(--sds-space-050);
+      text-align: center;
+      max-width: 120px;
+    }
+
+    /* Connector line */
+    .sds-step:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 14px;
+      left: calc(50% + 18px);
+      width: calc(100% - 36px);
+      height: 2px;
+      background: var(--sds-color-warm-gray-150);
+    }
+
+    /* Completed */
+    .sds-step--completed .sds-step__indicator {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+    }
+    .sds-step--completed .sds-step__label {
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-semibold);
+    }
+    .sds-step--completed:not(:last-child)::after {
+      background: var(--sds-interactive-primary);
+    }
+    .sds-step--completed .sds-step__indicator .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* Current */
+    .sds-step--current .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-interactive-primary);
+      color: var(--sds-interactive-primary);
+      animation: sds-step-pulse 2s ease-in-out infinite;
+    }
+    .sds-step--current .sds-step__label {
+      color: var(--sds-interactive-primary);
+      font-weight: var(--sds-weight-semibold);
+    }
+    @keyframes sds-step-pulse {
+      0%, 100% { box-shadow: 0 0 0 4px rgba(1, 61, 91, 0.25); /* matches --sds-interactive-primary (#013D5B) */ }
+      50%      { box-shadow: 0 0 0 8px rgba(1, 61, 91, 0); /* matches --sds-interactive-primary (#013D5B) */ }
+    }
+
+    /* Upcoming */
+    .sds-step--upcoming .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-color-warm-gray-200);
+      color: var(--sds-text-tertiary);
+    }
+    .sds-step--upcoming .sds-step__label {
+      color: var(--sds-text-tertiary);
+    }
+
+    /* Vertical stepper */
+    .sds-stepper--vertical {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .sds-stepper--vertical .sds-step {
+      flex-direction: row;
+      align-items: flex-start;
+      flex: none;
+      padding-bottom: var(--sds-space-600);
+    }
+    .sds-stepper--vertical .sds-step:last-child {
+      padding-bottom: 0;
+    }
+    .sds-stepper--vertical .sds-step__label {
+      margin-top: 0;
+      margin-left: var(--sds-space-300);
+      text-align: left;
+      max-width: none;
+      line-height: 28px;
+    }
+    .sds-stepper--vertical .sds-step__desc {
+      margin-top: var(--sds-space-050);
+      margin-left: var(--sds-space-300);
+      text-align: left;
+      max-width: none;
+    }
+    .sds-stepper--vertical .sds-step:not(:last-child)::after {
+      top: 32px;
+      left: 13px;
+      width: 2px;
+      height: calc(100% - 32px);
+    }
+    .sds-stepper--vertical .sds-step .sds-step__text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ============================================================
+       SKELETON LOADER
+       ============================================================ */
+    .sds-skeleton {
+      background: var(--sds-color-warm-gray-100);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sds-skeleton::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        var(--sds-color-warm-gray-050) 50%,
+        transparent 100%
+      );
+      animation: sds-shimmer 1.5s ease-in-out infinite;
+    }
+    @keyframes sds-shimmer {
+      0%   { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+
+    .sds-skeleton--text {
+      height: 14px;
+      width: 100%;
+      margin-bottom: var(--sds-space-200);
+      border-radius: 4px;
+    }
+    .sds-skeleton--text:last-child {
+      width: 65%;
+    }
+
+    .sds-skeleton--circle {
+      border-radius: 50%;
+    }
+
+    .sds-skeleton--rect {
+      border-radius: 8px;
+    }
+
+    .sds-skeleton--button {
+      height: 36px;
+      width: 100px;
+      border-radius: 6px;
+    }
+
+    /* Skeleton card composite */
+    .sds-skeleton-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-600);
+      width: 320px;
+    }
+
+    /* Skeleton table row */
+    .sds-skeleton-table-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-300) 0;
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    /* Avatar + text composite */
+    .sds-skeleton-avatar-text {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+    }
+    .sds-skeleton-avatar-text__lines {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-150);
+      flex: 1;
+    }
+
+    /* ============================================================
+       CANONICAL CARD (from cards.html)
+       ============================================================ */
+    .sds-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .sds-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      gap: var(--sds-space-300);
+    }
+    .sds-card-header--bordered {
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-900);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .sds-card-body {
+      padding: var(--sds-space-400) var(--sds-space-500);
+    }
+    .sds-card-header + .sds-card-body {
+      padding-top: var(--sds-space-0);
+    }
+    .sds-card-header--bordered + .sds-card-body {
+      padding-top: var(--sds-space-400);
+    }
+
+    /* Dark card for spinner on dark demo */
+    .dark-card {
+      background: var(--sds-color-warm-gray-900);
+      border-radius: 8px;
+      padding: var(--sds-space-600);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      color: var(--sds-color-white);
+      font-size: var(--sds-type-body);
+    }
+
+    /* ============================================================
+       SPEC TABLES
+       ============================================================ */
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+<h1>Progress Indicators</h1>
+<p class="page-subtitle">Visual feedback components for communicating loading state, task completion, multi-step workflows, and content placeholders in enterprise applications.</p>
+
+<!-- ============================================================
+     PROGRESS BARS
+     ============================================================ -->
+<h2>Progress Bars</h2>
+<p>Horizontal bars that communicate determinate or indeterminate progress. Use for file uploads, data imports, compliance scans, and any operation where completion can be measured.</p>
+
+<h3>Default at Various Percentages</h3>
+<div class="demo-block">
+  <div class="demo-label">Determinate Progress</div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">0%</span>
+    <div class="demo-row-items">
+      <div class="sds-progress">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 0%"></div></div>
+        <span class="sds-progress__label">0%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">25%</span>
+    <div class="demo-row-items">
+      <div class="sds-progress">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 25%"></div></div>
+        <span class="sds-progress__label">25%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">50%</span>
+    <div class="demo-row-items">
+      <div class="sds-progress">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 50%"></div></div>
+        <span class="sds-progress__label">50%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">75%</span>
+    <div class="demo-row-items">
+      <div class="sds-progress">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 75%"></div></div>
+        <span class="sds-progress__label">75%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">100%</span>
+    <div class="demo-row-items">
+      <div class="sds-progress">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 100%"></div></div>
+        <span class="sds-progress__label">100%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Sizes</h3>
+<div class="demo-block">
+  <div class="demo-label">Small, Default, Large</div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Small (4px)</span>
+    <div class="demo-row-items">
+      <div class="sds-progress sds-progress--sm">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 60%"></div></div>
+        <span class="sds-progress__label">60%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Default (6px)</span>
+    <div class="demo-row-items">
+      <div class="sds-progress">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 60%"></div></div>
+        <span class="sds-progress__label">60%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Large (8px)</span>
+    <div class="demo-row-items">
+      <div class="sds-progress sds-progress--lg">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 60%"></div></div>
+        <span class="sds-progress__label">60%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Status Colors</h3>
+<div class="demo-block">
+  <div class="demo-label">Default, Success, Error, Warning</div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Default</span>
+    <div class="demo-row-items">
+      <div class="sds-progress">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 65%"></div></div>
+        <span class="sds-progress__label">65%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Success</span>
+    <div class="demo-row-items">
+      <div class="sds-progress sds-progress--success">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 100%"></div></div>
+        <span class="sds-progress__label">100%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Error</span>
+    <div class="demo-row-items">
+      <div class="sds-progress sds-progress--error">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 42%"></div></div>
+        <span class="sds-progress__label">42%</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Warning</span>
+    <div class="demo-row-items">
+      <div class="sds-progress sds-progress--warning">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 78%"></div></div>
+        <span class="sds-progress__label">78%</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Indeterminate</h3>
+<div class="demo-block">
+  <div class="demo-label">Unknown Duration</div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Processing</span>
+    <div class="demo-row-items">
+      <div class="sds-progress sds-progress--indeterminate">
+        <div class="sds-progress__track"><div class="sds-progress__fill"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     SPINNERS
+     ============================================================ -->
+<h2>Spinners</h2>
+<p>Lightweight CSS-only spinning indicators for inline loading states. Use when content is loading or an action is being processed and a progress bar would be excessive.</p>
+
+<h3>Sizes</h3>
+<div class="demo-block">
+  <div class="demo-label">Small, Default, Large, Extra Large</div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Small (16px)</span>
+    <div class="demo-row-items">
+      <div class="sds-spinner sds-spinner--sm"></div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Default (24px)</span>
+    <div class="demo-row-items">
+      <div class="sds-spinner"></div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Large (32px)</span>
+    <div class="demo-row-items">
+      <div class="sds-spinner sds-spinner--lg"></div>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">XL (48px)</span>
+    <div class="demo-row-items">
+      <div class="sds-spinner sds-spinner--xl"></div>
+    </div>
+  </div>
+</div>
+
+<h3>Inline with Text</h3>
+<div class="demo-block">
+  <div class="demo-label">Spinner + Label</div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Loading</span>
+    <div class="demo-row-items">
+      <span class="sds-spinner-inline">
+        <span class="sds-spinner sds-spinner--sm"></span>
+        Loading...
+      </span>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Saving</span>
+    <div class="demo-row-items">
+      <span class="sds-spinner-inline">
+        <span class="sds-spinner sds-spinner--sm"></span>
+        Saving changes...
+      </span>
+    </div>
+  </div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Processing</span>
+    <div class="demo-row-items">
+      <span class="sds-spinner-inline">
+        <span class="sds-spinner"></span>
+        Processing compliance scan...
+      </span>
+    </div>
+  </div>
+</div>
+
+<h3>On Dark Background</h3>
+<div class="demo-block">
+  <div class="demo-label">Inverted Spinner</div>
+
+  <div class="demo-row">
+    <span class="demo-row-label">Dark card</span>
+    <div class="demo-row-items">
+      <div class="dark-card">
+        <span class="sds-spinner sds-spinner--on-dark"></span>
+        Deploying to production...
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     STEP INDICATOR
+     ============================================================ -->
+<h2>Step Indicator</h2>
+<p>Multi-step progress indicators for guiding users through sequential workflows such as onboarding, configuration wizards, and data import processes.</p>
+
+<h3>Horizontal Stepper</h3>
+<div class="demo-block">
+  <div class="demo-label">4-Step Workflow (Step 2 of 4)</div>
+
+  <div class="sds-stepper">
+    <div class="sds-step sds-step--completed">
+      <div class="sds-step__indicator">
+        <span class="material-symbols-outlined">check</span>
+      </div>
+      <span class="sds-step__label">Create Account</span>
+    </div>
+
+    <div class="sds-step sds-step--current">
+      <div class="sds-step__indicator">2</div>
+      <span class="sds-step__label">Configure Settings</span>
+    </div>
+
+    <div class="sds-step sds-step--upcoming">
+      <div class="sds-step__indicator">3</div>
+      <span class="sds-step__label">Import Data</span>
+    </div>
+
+    <div class="sds-step sds-step--upcoming">
+      <div class="sds-step__indicator">4</div>
+      <span class="sds-step__label">Review &amp; Launch</span>
+    </div>
+  </div>
+</div>
+
+<h3>Vertical Stepper</h3>
+<div class="demo-block">
+  <div class="demo-label">Deployment Pipeline (Step 3 of 4)</div>
+
+  <div class="sds-stepper sds-stepper--vertical">
+    <div class="sds-step sds-step--completed">
+      <div class="sds-step__indicator">
+        <span class="material-symbols-outlined">check</span>
+      </div>
+      <div class="sds-step__text">
+        <span class="sds-step__label">Configure</span>
+        <span class="sds-step__desc">Environment settings applied</span>
+      </div>
+    </div>
+
+    <div class="sds-step sds-step--completed">
+      <div class="sds-step__indicator">
+        <span class="material-symbols-outlined">check</span>
+      </div>
+      <div class="sds-step__text">
+        <span class="sds-step__label">Connect</span>
+        <span class="sds-step__desc">Data sources linked</span>
+      </div>
+    </div>
+
+    <div class="sds-step sds-step--current">
+      <div class="sds-step__indicator">3</div>
+      <div class="sds-step__text">
+        <span class="sds-step__label">Validate</span>
+        <span class="sds-step__desc">Running schema validation...</span>
+      </div>
+    </div>
+
+    <div class="sds-step sds-step--upcoming">
+      <div class="sds-step__indicator">4</div>
+      <div class="sds-step__text">
+        <span class="sds-step__label">Deploy</span>
+        <span class="sds-step__desc">Push to production environment</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     SKELETON LOADERS
+     ============================================================ -->
+<h2>Skeleton Loaders</h2>
+<p>Placeholder shapes with a shimmer animation that represent content being loaded. Use instead of spinners when the layout structure is known, so users can anticipate the content shape.</p>
+
+<h3>Text Skeleton</h3>
+<div class="demo-block">
+  <div class="demo-label">Paragraph Placeholder</div>
+  <div style="max-width: 480px;">
+    <div class="sds-skeleton sds-skeleton--text"></div>
+    <div class="sds-skeleton sds-skeleton--text"></div>
+    <div class="sds-skeleton sds-skeleton--text"></div>
+    <div class="sds-skeleton sds-skeleton--text" style="width: 65%"></div>
+  </div>
+</div>
+
+<h3>Card Skeleton</h3>
+<div class="demo-block">
+  <div class="demo-label">Loading Card</div>
+  <div class="sds-skeleton-card">
+    <div class="sds-skeleton sds-skeleton--rect" style="width: 100%; height: 140px; margin-bottom: var(--sds-space-400);"></div>
+    <div class="sds-skeleton sds-skeleton--text" style="width: 70%; height: 16px; margin-bottom: var(--sds-space-300);"></div>
+    <div class="sds-skeleton sds-skeleton--text" style="width: 100%; height: 12px;"></div>
+    <div class="sds-skeleton sds-skeleton--text" style="width: 100%; height: 12px;"></div>
+    <div class="sds-skeleton sds-skeleton--text" style="width: 50%; height: 12px; margin-bottom: var(--sds-space-400);"></div>
+    <div class="sds-skeleton sds-skeleton--button"></div>
+  </div>
+</div>
+
+<h3>Table Row Skeleton</h3>
+<div class="demo-block">
+  <div class="demo-label">Loading Table Rows</div>
+  <div style="max-width: 600px;">
+    <div class="sds-skeleton-table-row">
+      <div class="sds-skeleton" style="width: 32px; height: 32px; border-radius: 4px; flex-shrink: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 120px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 180px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 60px; height: 14px; margin: 0; margin-left: auto;"></div>
+    </div>
+    <div class="sds-skeleton-table-row">
+      <div class="sds-skeleton" style="width: 32px; height: 32px; border-radius: 4px; flex-shrink: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 140px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 160px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 80px; height: 14px; margin: 0; margin-left: auto;"></div>
+    </div>
+    <div class="sds-skeleton-table-row">
+      <div class="sds-skeleton" style="width: 32px; height: 32px; border-radius: 4px; flex-shrink: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 100px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 200px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 70px; height: 14px; margin: 0; margin-left: auto;"></div>
+    </div>
+  </div>
+</div>
+
+<h3>Avatar + Text Skeleton</h3>
+<div class="demo-block">
+  <div class="demo-label">User List Placeholder</div>
+  <div style="max-width: 320px; display: flex; flex-direction: column; gap: var(--sds-space-500);">
+    <div class="sds-skeleton-avatar-text">
+      <div class="sds-skeleton sds-skeleton--circle" style="width: 40px; height: 40px; flex-shrink: 0;"></div>
+      <div class="sds-skeleton-avatar-text__lines">
+        <div class="sds-skeleton sds-skeleton--text" style="width: 60%; height: 14px; margin: 0;"></div>
+        <div class="sds-skeleton sds-skeleton--text" style="width: 40%; height: 12px; margin: 0;"></div>
+      </div>
+    </div>
+    <div class="sds-skeleton-avatar-text">
+      <div class="sds-skeleton sds-skeleton--circle" style="width: 40px; height: 40px; flex-shrink: 0;"></div>
+      <div class="sds-skeleton-avatar-text__lines">
+        <div class="sds-skeleton sds-skeleton--text" style="width: 75%; height: 14px; margin: 0;"></div>
+        <div class="sds-skeleton sds-skeleton--text" style="width: 50%; height: 12px; margin: 0;"></div>
+      </div>
+    </div>
+    <div class="sds-skeleton-avatar-text">
+      <div class="sds-skeleton sds-skeleton--circle" style="width: 40px; height: 40px; flex-shrink: 0;"></div>
+      <div class="sds-skeleton-avatar-text__lines">
+        <div class="sds-skeleton sds-skeleton--text" style="width: 55%; height: 14px; margin: 0;"></div>
+        <div class="sds-skeleton sds-skeleton--text" style="width: 35%; height: 12px; margin: 0;"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     IN CONTEXT
+     ============================================================ -->
+<h2>In Context</h2>
+<p>Real-world usage patterns showing how progress indicators appear within enterprise application interfaces.</p>
+
+<h3>File Upload Progress</h3>
+<div class="demo-block">
+  <div class="demo-label">Upload Dialog</div>
+  <div class="sds-card" style="max-width: 480px;">
+    <div class="sds-card-header">
+      <h3 class="sds-card-title">
+        <span class="material-symbols-outlined" style="color: var(--sds-interactive-primary); font-size: 20px;">upload_file</span>
+        Uploading compliance_report_2026.csv
+      </h3>
+    </div>
+    <div class="sds-card-body">
+      <p style="font-size: var(--sds-type-caption); color: var(--sds-text-tertiary); margin: 0 0 var(--sds-space-400);">Importing 2,847 records...</p>
+      <div class="sds-progress sds-progress--lg">
+        <div class="sds-progress__track"><div class="sds-progress__fill" style="width: 68%"></div></div>
+        <span class="sds-progress__label">68%</span>
+      </div>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-top: var(--sds-space-300); font-size: var(--sds-type-caption); color: var(--sds-text-tertiary);">
+        <span>1,936 of 2,847 records</span>
+        <span>~12s remaining</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Data Import Stepper</h3>
+<div class="demo-block">
+  <div class="demo-label">Import Wizard</div>
+  <div class="sds-card" style="max-width: 560px;">
+    <div class="sds-card-header">
+      <h3 class="sds-card-title">Data Import</h3>
+    </div>
+    <div class="sds-card-body">
+      <div class="sds-stepper" style="margin-bottom: var(--sds-space-600);">
+        <div class="sds-step sds-step--completed">
+          <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+          <span class="sds-step__label">Select Source</span>
+        </div>
+        <div class="sds-step sds-step--completed">
+          <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
+          <span class="sds-step__label">Map Fields</span>
+        </div>
+        <div class="sds-step sds-step--current">
+          <div class="sds-step__indicator">3</div>
+          <span class="sds-step__label">Validate</span>
+        </div>
+        <div class="sds-step sds-step--upcoming">
+          <div class="sds-step__indicator">4</div>
+          <span class="sds-step__label">Import</span>
+        </div>
+      </div>
+      <div style="display: flex; align-items: center; gap: var(--sds-space-250);">
+        <span class="sds-spinner sds-spinner--sm"></span>
+        <span style="font-size: var(--sds-type-caption); color: var(--sds-text-secondary);">Validating 2,847 records against schema...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h3>Page Loading Skeleton</h3>
+<div class="demo-block">
+  <div class="demo-label">Dashboard Loading State</div>
+  <div style="background: var(--sds-color-white); border: 1px solid var(--sds-color-warm-gray-150); border-radius: 8px; padding: var(--sds-space-600); max-width: 560px;">
+    <!-- Header skeleton -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: var(--sds-space-600);">
+      <div class="sds-skeleton sds-skeleton--text" style="width: 200px; height: 20px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--button" style="width: 80px;"></div>
+    </div>
+    <!-- Stat cards skeleton -->
+    <div style="display: flex; gap: var(--sds-space-400); margin-bottom: var(--sds-space-600);">
+      <div style="flex: 1; background: var(--sds-bg-subtle); border-radius: 8px; padding: var(--sds-space-400);">
+        <div class="sds-skeleton sds-skeleton--text" style="width: 60%; height: 12px; margin-bottom: var(--sds-space-200);"></div>
+        <div class="sds-skeleton sds-skeleton--text" style="width: 40%; height: 24px; margin: 0;"></div>
+      </div>
+      <div style="flex: 1; background: var(--sds-bg-subtle); border-radius: 8px; padding: var(--sds-space-400);">
+        <div class="sds-skeleton sds-skeleton--text" style="width: 50%; height: 12px; margin-bottom: var(--sds-space-200);"></div>
+        <div class="sds-skeleton sds-skeleton--text" style="width: 35%; height: 24px; margin: 0;"></div>
+      </div>
+      <div style="flex: 1; background: var(--sds-bg-subtle); border-radius: 8px; padding: var(--sds-space-400);">
+        <div class="sds-skeleton sds-skeleton--text" style="width: 70%; height: 12px; margin-bottom: var(--sds-space-200);"></div>
+        <div class="sds-skeleton sds-skeleton--text" style="width: 45%; height: 24px; margin: 0;"></div>
+      </div>
+    </div>
+    <!-- Table skeleton -->
+    <div class="sds-skeleton-table-row">
+      <div class="sds-skeleton sds-skeleton--text" style="width: 100px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 150px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 80px; height: 14px; margin: 0; margin-left: auto;"></div>
+    </div>
+    <div class="sds-skeleton-table-row">
+      <div class="sds-skeleton sds-skeleton--text" style="width: 120px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 130px; height: 14px; margin: 0;"></div>
+      <div class="sds-skeleton sds-skeleton--text" style="width: 60px; height: 14px; margin: 0; margin-left: auto;"></div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============================================================
+     SPECIFICATIONS
+     ============================================================ -->
+<h2>Specifications</h2>
+<p>Technical specifications, sizing, and token references for implementing progress indicator components.</p>
+
+<h3>Progress Bar</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Small</th>
+      <th>Default</th>
+      <th>Large</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Track height</td>
+      <td>4px</td>
+      <td>6px</td>
+      <td>8px</td>
+    </tr>
+    <tr>
+      <td>Border radius</td>
+      <td>2px</td>
+      <td>3px</td>
+      <td>4px</td>
+    </tr>
+    <tr>
+      <td>Track background</td>
+      <td colspan="3"><code>var(--sds-color-warm-gray-100)</code></td>
+    </tr>
+    <tr>
+      <td>Fill background</td>
+      <td colspan="3"><code>var(--sds-interactive-primary)</code></td>
+    </tr>
+    <tr>
+      <td>Fill transition</td>
+      <td colspan="3"><code>width 0.3s ease</code></td>
+    </tr>
+    <tr>
+      <td>Label font</td>
+      <td colspan="3"><code>var(--sds-type-caption)</code>, <code>var(--sds-weight-medium)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Progress Bar Status Colors</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Status</th>
+      <th>Class</th>
+      <th>Fill Color Token</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Default</td>
+      <td><code>.sds-progress</code></td>
+      <td><code>var(--sds-interactive-primary)</code></td>
+    </tr>
+    <tr>
+      <td>Success</td>
+      <td><code>.sds-progress--success</code></td>
+      <td><code>var(--sds-color-green-400)</code></td>
+    </tr>
+    <tr>
+      <td>Error</td>
+      <td><code>.sds-progress--error</code></td>
+      <td><code>var(--sds-color-red-450)</code></td>
+    </tr>
+    <tr>
+      <td>Warning</td>
+      <td><code>.sds-progress--warning</code></td>
+      <td><code>var(--sds-color-yellow-350)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Spinner</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Small</th>
+      <th>Default</th>
+      <th>Large</th>
+      <th>XL</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Diameter</td>
+      <td>16px</td>
+      <td>24px</td>
+      <td>32px</td>
+      <td>48px</td>
+    </tr>
+    <tr>
+      <td>Border width</td>
+      <td>2px</td>
+      <td>2px</td>
+      <td>3px</td>
+      <td>3px</td>
+    </tr>
+    <tr>
+      <td>Animation</td>
+      <td colspan="4"><code>spin 0.8s linear infinite</code></td>
+    </tr>
+    <tr>
+      <td>Track color</td>
+      <td colspan="4"><code>var(--sds-color-warm-gray-150)</code></td>
+    </tr>
+    <tr>
+      <td>Active color</td>
+      <td colspan="4"><code>var(--sds-interactive-primary)</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Step Indicator</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Value</th>
+      <th>Token</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Circle diameter</td>
+      <td>28px</td>
+      <td>&mdash;</td>
+    </tr>
+    <tr>
+      <td>Connector height</td>
+      <td>2px</td>
+      <td>&mdash;</td>
+    </tr>
+    <tr>
+      <td>Connector color (inactive)</td>
+      <td>&mdash;</td>
+      <td><code>var(--sds-color-warm-gray-150)</code></td>
+    </tr>
+    <tr>
+      <td>Connector color (completed)</td>
+      <td>&mdash;</td>
+      <td><code>var(--sds-interactive-primary)</code></td>
+    </tr>
+    <tr>
+      <td>Completed fill</td>
+      <td>&mdash;</td>
+      <td><code>var(--sds-interactive-primary)</code></td>
+    </tr>
+    <tr>
+      <td>Current border</td>
+      <td>2px solid</td>
+      <td><code>var(--sds-interactive-primary)</code></td>
+    </tr>
+    <tr>
+      <td>Upcoming border</td>
+      <td>2px solid</td>
+      <td><code>var(--sds-color-warm-gray-200)</code></td>
+    </tr>
+    <tr>
+      <td>Label font</td>
+      <td>&mdash;</td>
+      <td><code>var(--sds-type-caption)</code>, <code>var(--sds-weight-medium)</code></td>
+    </tr>
+    <tr>
+      <td>Pulse animation</td>
+      <td>2s ease-in-out infinite</td>
+      <td>&mdash;</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Skeleton Loader</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Property</th>
+      <th>Value</th>
+      <th>Token</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Background</td>
+      <td>&mdash;</td>
+      <td><code>var(--sds-color-warm-gray-100)</code></td>
+    </tr>
+    <tr>
+      <td>Shimmer highlight</td>
+      <td>&mdash;</td>
+      <td><code>var(--sds-color-warm-gray-050)</code></td>
+    </tr>
+    <tr>
+      <td>Text height</td>
+      <td>14px</td>
+      <td>&mdash;</td>
+    </tr>
+    <tr>
+      <td>Text spacing</td>
+      <td>&mdash;</td>
+      <td><code>var(--sds-space-200)</code></td>
+    </tr>
+    <tr>
+      <td>Border radius (text)</td>
+      <td>4px</td>
+      <td>&mdash;</td>
+    </tr>
+    <tr>
+      <td>Border radius (rect)</td>
+      <td>8px</td>
+      <td>&mdash;</td>
+    </tr>
+    <tr>
+      <td>Shimmer animation</td>
+      <td>1.5s ease-in-out infinite</td>
+      <td>&mdash;</td>
+    </tr>
+    <tr>
+      <td>Button skeleton height</td>
+      <td>36px</td>
+      <td>&mdash;</td>
+    </tr>
+  </tbody>
+</table>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

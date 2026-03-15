@@ -1,0 +1,1645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Side Panel</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+
+    /* ============================================================
+       SIDE PANEL / DRAWER COMPONENT
+       ============================================================ */
+
+    /* Overlay backdrop */
+    .sds-side-panel-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0,0,0,0.5);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 250ms ease, visibility 250ms ease;
+    }
+    .sds-side-panel-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Panel container */
+    .sds-side-panel {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      z-index: 9001;
+      background: var(--sds-bg-elevated);
+      box-shadow: -4px 0 24px rgba(0,0,0,0.12);
+      display: flex;
+      flex-direction: column;
+      transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+      overflow: hidden;
+    }
+
+    /* Right-side (default) */
+    .sds-side-panel--right {
+      right: 0;
+      transform: translateX(100%);
+    }
+    .sds-side-panel--right.is-open {
+      transform: translateX(0);
+    }
+
+    /* Left-side drawer */
+    .sds-side-panel--left {
+      left: 0;
+      transform: translateX(-100%);
+      box-shadow: 4px 0 24px rgba(0,0,0,0.12);
+    }
+    .sds-side-panel--left.is-open {
+      transform: translateX(0);
+    }
+
+    /* Size variants */
+    .sds-side-panel--narrow  { width: 400px; }
+    .sds-side-panel--medium  { width: 560px; }
+    .sds-side-panel--wide    { width: 720px; }
+
+    /* Header */
+    .sds-side-panel-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-500) var(--sds-space-600);
+      border-bottom: 1px solid var(--sds-border-subtle);
+      flex-shrink: 0;
+    }
+    .sds-side-panel-header__title {
+      flex: 1;
+      font-size: var(--sds-type-subheading);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .sds-side-panel-header__close {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .sds-side-panel-header__close:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-side-panel-header__close:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-side-panel-header__close .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* Body */
+    .sds-side-panel-body {
+      padding: var(--sds-space-600);
+      overflow-y: auto;
+      flex: 1;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-secondary);
+    }
+    .sds-side-panel-body p {
+      margin: 0 0 var(--sds-space-400);
+    }
+    .sds-side-panel-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+    .sds-side-panel-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400) var(--sds-space-600);
+      border-top: 1px solid var(--sds-border-subtle);
+      flex-shrink: 0;
+    }
+
+    /* Push variant (no overlay) */
+    .sds-side-panel--push {
+      box-shadow: -1px 0 0 var(--sds-border-subtle);
+    }
+
+    /* ---- Tabs inside panel header ---- */
+    .sds-side-panel-tabs {
+      display: flex;
+      align-items: stretch;
+      gap: 0;
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      flex-shrink: 0;
+      padding: 0 var(--sds-space-600);
+    }
+    .sds-side-panel-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-regular);
+      line-height: 1.3;
+      color: var(--sds-color-warm-gray-550);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color 0.15s ease, border-color 0.15s ease;
+    }
+    .sds-side-panel-tab:hover {
+      color: var(--sds-color-warm-gray-900);
+    }
+    .sds-side-panel-tab:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -2px;
+      border-radius: 4px 4px 0 0;
+    }
+    .sds-side-panel-tab.is-active {
+      color: var(--sds-interactive-primary);
+      font-weight: var(--sds-weight-medium);
+      border-bottom-color: var(--sds-interactive-primary);
+    }
+    .sds-side-panel-tab .material-symbols-outlined {
+      font-size: 18px;
+    }
+    .sds-side-panel-tab-content {
+      display: none;
+    }
+    .sds-side-panel-tab-content.is-active {
+      display: block;
+    }
+
+    /* ---- Data list (key-value pairs) ---- */
+    .sds-data-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .sds-data-list__item {
+      display: flex;
+      align-items: flex-start;
+      padding: var(--sds-space-300) 0;
+      border-bottom: 1px solid var(--sds-color-warm-gray-075);
+    }
+    .sds-data-list__item:last-child {
+      border-bottom: none;
+    }
+    .sds-data-list__key {
+      width: 140px;
+      flex-shrink: 0;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-tertiary);
+    }
+    .sds-data-list__value {
+      flex: 1;
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+    }
+
+    /* ---- Status badges ---- */
+    .sds-status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      padding: var(--sds-space-050) var(--sds-space-250);
+      border-radius: 10px;
+      line-height: 1.4;
+    }
+    .sds-status-badge__dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .sds-status-badge--critical {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-600);
+    }
+    .sds-status-badge--critical .sds-status-badge__dot { background: var(--sds-color-red-500); }
+    .sds-status-badge--warning {
+      background: var(--sds-color-yellow-050, var(--sds-color-warm-gray-050));
+      color: var(--sds-color-yellow-700, var(--sds-color-warm-gray-700));
+    }
+    .sds-status-badge--warning .sds-status-badge__dot { background: var(--sds-color-yellow-500, var(--sds-color-warm-gray-500)); }
+    .sds-status-badge--success {
+      background: var(--sds-color-green-050, var(--sds-color-warm-gray-050));
+      color: var(--sds-color-green-700, var(--sds-color-warm-gray-700));
+    }
+    .sds-status-badge--success .sds-status-badge__dot { background: var(--sds-color-green-500, var(--sds-color-warm-gray-500)); }
+    .sds-status-badge--info {
+      background: var(--sds-color-blue-050, var(--sds-color-warm-gray-050));
+      color: var(--sds-color-blue-700, var(--sds-color-warm-gray-700));
+    }
+    .sds-status-badge--info .sds-status-badge__dot { background: var(--sds-color-blue-500, var(--sds-color-warm-gray-500)); }
+
+    /* ---- Activity timeline ---- */
+    .sds-activity-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-400);
+      padding: 0;
+    }
+    .sds-activity-item {
+      display: flex;
+      gap: var(--sds-space-300);
+      font-size: var(--sds-type-body);
+    }
+    .sds-activity-item__icon {
+      width: 28px;
+      height: 28px;
+      min-width: 28px;
+      border-radius: 50%;
+      background: var(--sds-color-warm-gray-075);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 1px;
+    }
+    .sds-activity-item__icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-warm-gray-500);
+    }
+    .sds-activity-item__content {
+      flex: 1;
+    }
+    .sds-activity-item__text {
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-activity-item__text strong {
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-medium);
+    }
+    .sds-activity-item__time {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      margin-top: var(--sds-space-050);
+    }
+
+    /* ---- Buttons (matching buttons component) ---- */
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn--md {
+      font-size: var(--sds-type-body);
+      padding: var(--sds-space-250) var(--sds-space-500);
+      border-radius: 6px;
+      height: 40px;
+    }
+    .sds-btn--sm {
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-150) var(--sds-space-400);
+      border-radius: 6px;
+      height: 32px;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-btn--primary {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-interactive-primary);
+    }
+    .sds-btn--primary:hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+    .sds-btn--secondary {
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-interactive-secondary-border);
+    }
+    .sds-btn--secondary:hover {
+      background: var(--sds-bg-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--danger {
+      background: var(--sds-color-red-500);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-color-red-500);
+    }
+    .sds-btn--danger:hover {
+      background: var(--sds-color-red-600);
+      border-color: var(--sds-color-red-600);
+    }
+    .sds-btn--ghost {
+      background: transparent;
+      color: var(--sds-text-secondary);
+      border: 1.5px solid transparent;
+    }
+    .sds-btn--ghost:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-btn--trigger {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-interactive-primary);
+      padding: var(--sds-space-250) var(--sds-space-500);
+      border-radius: 6px;
+      height: 40px;
+    }
+    .sds-btn--trigger:hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+
+    /* ---- Inline preview container ---- */
+    .static-preview {
+      background: var(--sds-color-warm-gray-200);
+      border-radius: 8px;
+      position: relative;
+      overflow: hidden;
+      height: 420px;
+    }
+    .static-preview--short {
+      height: 320px;
+    }
+    .static-preview__page {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--sds-type-body);
+      color: var(--sds-color-warm-gray-400);
+    }
+    .static-preview .sds-side-panel {
+      position: absolute;
+      transition: none;
+      transform: none;
+    }
+    .static-preview .sds-side-panel-overlay {
+      position: absolute;
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* ---- Filter list (for left drawer demo) ---- */
+    .sds-filter-group {
+      margin-bottom: var(--sds-space-600);
+    }
+    .sds-filter-group:last-child {
+      margin-bottom: 0;
+    }
+    .sds-filter-group__label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-300);
+    }
+    .sds-filter-option {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      padding: var(--sds-space-200) 0;
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+      cursor: pointer;
+      position: relative;
+    }
+    .sds-filter-option input[type="checkbox"] {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      opacity: 0;
+      cursor: pointer;
+      margin: 0;
+      z-index: 1;
+    }
+    .sds-filter-option .sds-checkbox-group-box {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      pointer-events: none;
+    }
+    .sds-filter-option .sds-checkbox-group-box svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+    .sds-filter-option input[type="checkbox"]:checked + .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+    .sds-filter-option input[type="checkbox"]:checked + .sds-checkbox-group-box svg {
+      opacity: 1;
+    }
+    .sds-filter-option:hover .sds-checkbox-group-box {
+      border-color: var(--sds-interactive-primary);
+    }
+    .sds-filter-option input[type="checkbox"]:focus-visible + .sds-checkbox-group-box {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    .sds-filter-count {
+      margin-left: auto;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+
+    /* ---- Spec tables ---- */
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+<h1>Side Panel</h1>
+<p class="page-subtitle">Slide-in panels and drawers for viewing details, editing properties, and secondary navigation. Side panels keep the user in context while revealing additional content alongside the main view.</p>
+
+<!-- ============ BASIC SIDE PANEL ============ -->
+<h2>Basic Side Panel</h2>
+<p>Slides in from the right edge with an overlay backdrop. Contains a header with title and close button, a scrollable body area, and an optional sticky footer with action buttons. Available in three width sizes.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive Demos — Sizes</div>
+  <div class="demo-row">
+    <button class="sds-btn sds-btn--trigger" onclick="openPanel('panel-narrow')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">width_narrow</span>
+      Narrow (400px)
+    </button>
+    <button class="sds-btn sds-btn--trigger" onclick="openPanel('panel-medium')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">width_normal</span>
+      Medium (560px)
+    </button>
+    <button class="sds-btn sds-btn--trigger" onclick="openPanel('panel-wide')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">width_wide</span>
+      Wide (720px)
+    </button>
+  </div>
+</div>
+
+<h3>Static Preview — Narrow</h3>
+<div class="demo-block">
+  <div class="demo-label">Narrow Panel (400px)</div>
+  <div class="static-preview">
+    <div class="static-preview__page">Page content behind panel</div>
+    <div class="sds-side-panel-overlay" style="position: absolute; opacity: 0.6; visibility: visible;"></div>
+    <div class="sds-side-panel sds-side-panel--right sds-side-panel--narrow" style="position: absolute; transform: none;">
+      <div class="sds-side-panel-header">
+        <h2 class="sds-side-panel-header__title">Resource Properties</h2>
+        <button class="sds-side-panel-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-side-panel-body">
+        <p>Use the narrow panel for simple property editors, quick previews, or notification lists that don't require much horizontal space.</p>
+        <p>The panel scrolls vertically when content exceeds the available height, keeping the header and footer fixed in place.</p>
+      </div>
+      <div class="sds-side-panel-footer">
+        <button class="sds-btn sds-btn--secondary sds-btn--md" tabindex="-1">Cancel</button>
+        <button class="sds-btn sds-btn--primary sds-btn--md" tabindex="-1">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ WITHOUT OVERLAY ============ -->
+<h2>Without Overlay</h2>
+<p>The push variant slides in without a backdrop overlay. Ideal for persistent detail views or inspector panels where the user should still interact with the main content area. No click-outside dismissal.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive Demo</div>
+  <div class="demo-row">
+    <button class="sds-btn sds-btn--trigger" onclick="openPanel('panel-push')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">side_navigation</span>
+      Open Push Panel
+    </button>
+  </div>
+</div>
+
+<h3>Static Preview</h3>
+<div class="demo-block">
+  <div class="demo-label">Push Panel — No Overlay</div>
+  <div class="static-preview">
+    <div class="static-preview__page">Main content remains accessible</div>
+    <div class="sds-side-panel sds-side-panel--right sds-side-panel--narrow sds-side-panel--push" style="position: absolute; transform: none;">
+      <div class="sds-side-panel-header">
+        <h2 class="sds-side-panel-header__title">Inspector</h2>
+        <button class="sds-side-panel-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-side-panel-body">
+        <div class="sds-data-list">
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Resource</span>
+            <span class="sds-data-list__value">customers_pii_table</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Type</span>
+            <span class="sds-data-list__value">Snowflake Table</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Owner</span>
+            <span class="sds-data-list__value">Data Engineering</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Classification</span>
+            <span class="sds-data-list__value">
+              <span class="sds-status-badge sds-status-badge--critical">
+                <span class="sds-status-badge__dot"></span>
+                Restricted
+              </span>
+            </span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Last scanned</span>
+            <span class="sds-data-list__value">2 hours ago</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ WITH TABS ============ -->
+<h2>With Tabs</h2>
+<p>The panel header can include tab navigation for switching between related content sections. Useful for detail views that group information by category, such as details, activity history, and settings.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive Demo</div>
+  <div class="demo-row">
+    <button class="sds-btn sds-btn--trigger" onclick="openPanel('panel-tabs')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">tab</span>
+      Open Tabbed Panel
+    </button>
+  </div>
+</div>
+
+<h3>Static Preview</h3>
+<div class="demo-block">
+  <div class="demo-label">Tabbed Panel — Details View</div>
+  <div class="static-preview">
+    <div class="static-preview__page">Page content behind panel</div>
+    <div class="sds-side-panel-overlay" style="position: absolute; opacity: 0.6; visibility: visible;"></div>
+    <div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" style="position: absolute; transform: none;">
+      <div class="sds-side-panel-header">
+        <h2 class="sds-side-panel-header__title">Column: email_address</h2>
+        <button class="sds-side-panel-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-side-panel-tabs">
+        <button class="sds-side-panel-tab is-active" tabindex="-1">
+          <span class="material-symbols-outlined">info</span>
+          Details
+        </button>
+        <button class="sds-side-panel-tab" tabindex="-1">
+          <span class="material-symbols-outlined">history</span>
+          Activity
+        </button>
+        <button class="sds-side-panel-tab" tabindex="-1">
+          <span class="material-symbols-outlined">settings</span>
+          Settings
+        </button>
+      </div>
+      <div class="sds-side-panel-body">
+        <div class="sds-data-list">
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Data type</span>
+            <span class="sds-data-list__value">VARCHAR(256)</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Classification</span>
+            <span class="sds-data-list__value">
+              <span class="sds-status-badge sds-status-badge--critical">
+                <span class="sds-status-badge__dot"></span>
+                PII — Email
+              </span>
+            </span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Null rate</span>
+            <span class="sds-data-list__value">0.3%</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Distinct values</span>
+            <span class="sds-data-list__value">248,391</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Policy</span>
+            <span class="sds-data-list__value">Mask for non-admin roles</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ DETAIL PANEL ============ -->
+<h2>Detail Panel</h2>
+<p>A pre-built pattern combining the side panel with structured data display. Used for security finding detail views with key-value pairs, severity badges, contextual actions, and activity timelines.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive Demo</div>
+  <div class="demo-row">
+    <button class="sds-btn sds-btn--trigger" onclick="openPanel('panel-detail')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">shield</span>
+      View Finding Details
+    </button>
+  </div>
+</div>
+
+<h3>Static Preview</h3>
+<div class="demo-block">
+  <div class="demo-label">Security Finding Detail</div>
+  <div class="static-preview" style="height: 540px;">
+    <div class="static-preview__page">Findings table behind panel</div>
+    <div class="sds-side-panel-overlay" style="position: absolute; opacity: 0.6; visibility: visible;"></div>
+    <div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" style="position: absolute; transform: none;">
+      <div class="sds-side-panel-header">
+        <span class="material-symbols-outlined" style="font-size: 20px; color: var(--sds-color-red-500);">error</span>
+        <h2 class="sds-side-panel-header__title">Unencrypted PII detected</h2>
+        <button class="sds-side-panel-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-side-panel-body" style="padding-bottom: 0;">
+        <div style="display: flex; gap: var(--sds-space-200); margin-bottom: var(--sds-space-500);">
+          <span class="sds-status-badge sds-status-badge--critical">
+            <span class="sds-status-badge__dot"></span>
+            Critical
+          </span>
+          <span class="sds-status-badge sds-status-badge--info">
+            <span class="sds-status-badge__dot"></span>
+            Open
+          </span>
+        </div>
+
+        <div class="sds-data-list">
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Resource</span>
+            <span class="sds-data-list__value">prod.analytics.user_profiles</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Column</span>
+            <span class="sds-data-list__value">ssn_number</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Data source</span>
+            <span class="sds-data-list__value">Snowflake — Production</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Detected</span>
+            <span class="sds-data-list__value">Mar 14, 2026 at 3:42 PM</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Policy violated</span>
+            <span class="sds-data-list__value">PII Encryption Required (SOC 2)</span>
+          </div>
+          <div class="sds-data-list__item">
+            <span class="sds-data-list__key">Assigned to</span>
+            <span class="sds-data-list__value">Sarah Chen</span>
+          </div>
+        </div>
+
+        <div style="margin-top: var(--sds-space-500); padding-top: var(--sds-space-500); border-top: 1px solid var(--sds-color-warm-gray-100);">
+          <div style="font-size: var(--sds-type-label); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin-bottom: var(--sds-space-400);">Recent Activity</div>
+          <div class="sds-activity-list">
+            <div class="sds-activity-item">
+              <div class="sds-activity-item__icon">
+                <span class="material-symbols-outlined">person_add</span>
+              </div>
+              <div class="sds-activity-item__content">
+                <div class="sds-activity-item__text"><strong>Alex Rivera</strong> assigned to <strong>Sarah Chen</strong></div>
+                <div class="sds-activity-item__time">2 hours ago</div>
+              </div>
+            </div>
+            <div class="sds-activity-item">
+              <div class="sds-activity-item__icon">
+                <span class="material-symbols-outlined">priority_high</span>
+              </div>
+              <div class="sds-activity-item__content">
+                <div class="sds-activity-item__text">Severity escalated from <strong>High</strong> to <strong>Critical</strong></div>
+                <div class="sds-activity-item__time">5 hours ago</div>
+              </div>
+            </div>
+            <div class="sds-activity-item">
+              <div class="sds-activity-item__icon">
+                <span class="material-symbols-outlined">search</span>
+              </div>
+              <div class="sds-activity-item__content">
+                <div class="sds-activity-item__text">Finding detected by <strong>automated scan</strong></div>
+                <div class="sds-activity-item__time">Yesterday at 3:42 PM</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="sds-side-panel-footer">
+        <button class="sds-btn sds-btn--ghost sds-btn--md" tabindex="-1">
+          <span class="material-symbols-outlined" style="font-size: 18px;">flag</span>
+          Snooze
+        </button>
+        <span style="flex: 1;"></span>
+        <button class="sds-btn sds-btn--secondary sds-btn--md" tabindex="-1">Dismiss</button>
+        <button class="sds-btn sds-btn--primary sds-btn--md" tabindex="-1">
+          <span class="material-symbols-outlined" style="font-size: 18px;">check_circle</span>
+          Resolve
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ LEFT-SIDE DRAWER ============ -->
+<h2>Left-side Drawer</h2>
+<p>Slides in from the left edge instead of the right. Use for filter panels, faceted search controls, or secondary navigation that complements the main content without replacing it.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive Demo</div>
+  <div class="demo-row">
+    <button class="sds-btn sds-btn--trigger" onclick="openPanel('panel-left')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">filter_list</span>
+      Open Filter Drawer
+    </button>
+  </div>
+</div>
+
+<h3>Static Preview</h3>
+<div class="demo-block">
+  <div class="demo-label">Left Drawer — Filters</div>
+  <div class="static-preview static-preview--short">
+    <div class="static-preview__page">Findings table content</div>
+    <div class="sds-side-panel-overlay" style="position: absolute; opacity: 0.6; visibility: visible;"></div>
+    <div class="sds-side-panel sds-side-panel--left sds-side-panel--narrow" style="position: absolute; transform: none;">
+      <div class="sds-side-panel-header">
+        <span class="material-symbols-outlined" style="font-size: 20px; color: var(--sds-text-tertiary);">filter_list</span>
+        <h2 class="sds-side-panel-header__title">Filters</h2>
+        <button class="sds-side-panel-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-side-panel-body">
+        <div class="sds-filter-group">
+          <div class="sds-filter-group__label">Severity</div>
+          <label class="sds-filter-option"><input type="checkbox" checked tabindex="-1" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Critical <span class="sds-filter-count">24</span></label>
+          <label class="sds-filter-option"><input type="checkbox" checked tabindex="-1" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> High <span class="sds-filter-count">89</span></label>
+          <label class="sds-filter-option"><input type="checkbox" tabindex="-1" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Medium <span class="sds-filter-count">156</span></label>
+          <label class="sds-filter-option"><input type="checkbox" tabindex="-1" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Low <span class="sds-filter-count">312</span></label>
+        </div>
+        <div class="sds-filter-group">
+          <div class="sds-filter-group__label">Status</div>
+          <label class="sds-filter-option"><input type="checkbox" checked tabindex="-1" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Open <span class="sds-filter-count">201</span></label>
+          <label class="sds-filter-option"><input type="checkbox" tabindex="-1" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> In Progress <span class="sds-filter-count">67</span></label>
+          <label class="sds-filter-option"><input type="checkbox" tabindex="-1" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Resolved <span class="sds-filter-count">314</span></label>
+        </div>
+      </div>
+      <div class="sds-side-panel-footer" style="justify-content: space-between;">
+        <button class="sds-btn sds-btn--ghost sds-btn--md" tabindex="-1">Reset All</button>
+        <button class="sds-btn sds-btn--primary sds-btn--md" tabindex="-1">Apply Filters</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ SPECIFICATIONS ============ -->
+<h2>Specifications</h2>
+<p>Dimensions, spacing, and visual properties for side panel components.</p>
+
+<h3>Size Variants</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Variant</th>
+      <th>Width</th>
+      <th>Class</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Narrow</td>
+      <td>400px</td>
+      <td><code>.sds-side-panel--narrow</code></td>
+      <td>Property editors, quick previews, notifications</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>560px</td>
+      <td><code>.sds-side-panel--medium</code></td>
+      <td>Detail views, tabbed content, forms (default)</td>
+    </tr>
+    <tr>
+      <td>Wide</td>
+      <td>720px</td>
+      <td><code>.sds-side-panel--wide</code></td>
+      <td>Complex detail views, comparison panels</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Anatomy</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Class</th>
+      <th>Padding</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Overlay</td>
+      <td><code>.sds-side-panel-overlay</code></td>
+      <td>-</td>
+      <td>Fixed fullscreen, rgba(0,0,0,0.5), z-index 9000</td>
+    </tr>
+    <tr>
+      <td>Panel</td>
+      <td><code>.sds-side-panel</code></td>
+      <td>-</td>
+      <td>Fixed top/bottom, z-index 9001, elevated shadow, flex column</td>
+    </tr>
+    <tr>
+      <td>Header</td>
+      <td><code>.sds-side-panel-header</code></td>
+      <td><code>--sds-space-500</code> / <code>--sds-space-600</code></td>
+      <td>Bottom border, flex row with title + close button</td>
+    </tr>
+    <tr>
+      <td>Tabs</td>
+      <td><code>.sds-side-panel-tabs</code></td>
+      <td><code>0</code> / <code>--sds-space-600</code></td>
+      <td>Optional tab bar below header, underline style</td>
+    </tr>
+    <tr>
+      <td>Body</td>
+      <td><code>.sds-side-panel-body</code></td>
+      <td><code>--sds-space-600</code> (24px)</td>
+      <td>Scrollable content area, flex: 1</td>
+    </tr>
+    <tr>
+      <td>Footer</td>
+      <td><code>.sds-side-panel-footer</code></td>
+      <td><code>--sds-space-400</code> / <code>--sds-space-600</code></td>
+      <td>Top border, right-aligned actions, sticky at bottom</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Direction Variants</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Variant</th>
+      <th>Class</th>
+      <th>Slide Direction</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Right (default)</td>
+      <td><code>.sds-side-panel--right</code></td>
+      <td>Slides from right edge</td>
+      <td>Detail views, property editors, forms</td>
+    </tr>
+    <tr>
+      <td>Left</td>
+      <td><code>.sds-side-panel--left</code></td>
+      <td>Slides from left edge</td>
+      <td>Filter panels, secondary navigation</td>
+    </tr>
+    <tr>
+      <td>Push (no overlay)</td>
+      <td><code>.sds-side-panel--push</code></td>
+      <td>No backdrop, subtle border shadow</td>
+      <td>Inspector panels, persistent side views</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Interaction</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Behavior</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Slide animation</td>
+      <td>CSS transform translateX, 300ms cubic-bezier(0.4, 0, 0.2, 1)</td>
+    </tr>
+    <tr>
+      <td>Overlay fade</td>
+      <td>opacity 250ms ease</td>
+    </tr>
+    <tr>
+      <td>Overlay click</td>
+      <td>Closes panel (overlay variants only)</td>
+    </tr>
+    <tr>
+      <td>Escape key</td>
+      <td>Closes panel</td>
+    </tr>
+    <tr>
+      <td>Focus trap</td>
+      <td>Tab key cycles within panel content</td>
+    </tr>
+    <tr>
+      <td>Scroll lock</td>
+      <td>Body scroll disabled while panel is open</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>ARIA Attributes</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Attribute</th>
+      <th>Element</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>role</code></td>
+      <td>Panel container</td>
+      <td><code>"dialog"</code></td>
+    </tr>
+    <tr>
+      <td><code>aria-modal</code></td>
+      <td>Panel container</td>
+      <td><code>"true"</code> (overlay variants)</td>
+    </tr>
+    <tr>
+      <td><code>aria-labelledby</code></td>
+      <td>Panel container</td>
+      <td>References header title element ID</td>
+    </tr>
+    <tr>
+      <td><code>aria-label</code></td>
+      <td>Close button</td>
+      <td><code>"Close"</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- ============ LIVE PANEL INSTANCES ============ -->
+
+<!-- Narrow Panel -->
+<div class="sds-side-panel-overlay" id="panel-narrow-overlay" onclick="closePanelOverlay(event, 'panel-narrow')"></div>
+<div class="sds-side-panel sds-side-panel--right sds-side-panel--narrow" id="panel-narrow" role="dialog" aria-modal="true" aria-labelledby="panel-narrow-title">
+  <div class="sds-side-panel-header">
+    <h2 class="sds-side-panel-header__title" id="panel-narrow-title">Resource Properties</h2>
+    <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-narrow')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="sds-side-panel-body">
+    <p>This is the narrow side panel at 400px width. Use it for simple property editors, quick previews, or compact lists.</p>
+    <p>The panel slides in from the right with a smooth CSS transform animation. Click the overlay backdrop, press Escape, or use the close button to dismiss.</p>
+    <div class="sds-data-list" style="margin-top: var(--sds-space-400);">
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Name</span>
+        <span class="sds-data-list__value">customers_pii_table</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Type</span>
+        <span class="sds-data-list__value">Snowflake Table</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Owner</span>
+        <span class="sds-data-list__value">Data Engineering</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Sensitivity</span>
+        <span class="sds-data-list__value">
+          <span class="sds-status-badge sds-status-badge--critical">
+            <span class="sds-status-badge__dot"></span>
+            Restricted
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="sds-side-panel-footer">
+    <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closePanel('panel-narrow')">Cancel</button>
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closePanel('panel-narrow')">Save Changes</button>
+  </div>
+</div>
+
+<!-- Medium Panel -->
+<div class="sds-side-panel-overlay" id="panel-medium-overlay" onclick="closePanelOverlay(event, 'panel-medium')"></div>
+<div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" id="panel-medium" role="dialog" aria-modal="true" aria-labelledby="panel-medium-title">
+  <div class="sds-side-panel-header">
+    <h2 class="sds-side-panel-header__title" id="panel-medium-title">Data Source Details</h2>
+    <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-medium')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="sds-side-panel-body">
+    <p>The medium panel at 560px is the default choice for most detail views. It provides enough space for structured data, forms, and multi-section content.</p>
+    <div class="sds-data-list" style="margin-top: var(--sds-space-400);">
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Data source</span>
+        <span class="sds-data-list__value">Snowflake — Production</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Database</span>
+        <span class="sds-data-list__value">ANALYTICS_PROD</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Tables scanned</span>
+        <span class="sds-data-list__value">1,247</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">PII columns</span>
+        <span class="sds-data-list__value">83</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Last scan</span>
+        <span class="sds-data-list__value">Mar 15, 2026 at 9:14 AM</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Status</span>
+        <span class="sds-data-list__value">
+          <span class="sds-status-badge sds-status-badge--success">
+            <span class="sds-status-badge__dot"></span>
+            Connected
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div class="sds-side-panel-footer">
+    <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closePanel('panel-medium')">Close</button>
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closePanel('panel-medium')">Edit Source</button>
+  </div>
+</div>
+
+<!-- Wide Panel -->
+<div class="sds-side-panel-overlay" id="panel-wide-overlay" onclick="closePanelOverlay(event, 'panel-wide')"></div>
+<div class="sds-side-panel sds-side-panel--right sds-side-panel--wide" id="panel-wide" role="dialog" aria-modal="true" aria-labelledby="panel-wide-title">
+  <div class="sds-side-panel-header">
+    <h2 class="sds-side-panel-header__title" id="panel-wide-title">Policy Configuration</h2>
+    <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-wide')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="sds-side-panel-body">
+    <p>The wide panel at 720px is for complex content that benefits from additional horizontal space. Use for multi-column layouts, detailed configuration forms, or comparison views.</p>
+    <p>Reserve this size for content that genuinely needs the extra width. Most detail views work well at the medium size.</p>
+    <div class="sds-data-list" style="margin-top: var(--sds-space-400);">
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Policy name</span>
+        <span class="sds-data-list__value">PII Encryption Required</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Framework</span>
+        <span class="sds-data-list__value">SOC 2 Type II</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Scope</span>
+        <span class="sds-data-list__value">All production databases</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Active findings</span>
+        <span class="sds-data-list__value">14 critical, 38 high</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Last evaluated</span>
+        <span class="sds-data-list__value">Mar 15, 2026 at 8:00 AM</span>
+      </div>
+    </div>
+  </div>
+  <div class="sds-side-panel-footer">
+    <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closePanel('panel-wide')">Cancel</button>
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closePanel('panel-wide')">Save Policy</button>
+  </div>
+</div>
+
+<!-- Push Panel (no overlay) -->
+<div class="sds-side-panel sds-side-panel--right sds-side-panel--narrow sds-side-panel--push" id="panel-push" role="dialog" aria-labelledby="panel-push-title">
+  <div class="sds-side-panel-header">
+    <h2 class="sds-side-panel-header__title" id="panel-push-title">Inspector</h2>
+    <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-push')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="sds-side-panel-body">
+    <p>This push panel has no overlay backdrop. The main page content remains interactive while the panel is open.</p>
+    <div class="sds-data-list" style="margin-top: var(--sds-space-400);">
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Resource</span>
+        <span class="sds-data-list__value">customers_pii_table</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Type</span>
+        <span class="sds-data-list__value">Snowflake Table</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Owner</span>
+        <span class="sds-data-list__value">Data Engineering</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Classification</span>
+        <span class="sds-data-list__value">
+          <span class="sds-status-badge sds-status-badge--critical">
+            <span class="sds-status-badge__dot"></span>
+            Restricted
+          </span>
+        </span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Last scanned</span>
+        <span class="sds-data-list__value">2 hours ago</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tabbed Panel -->
+<div class="sds-side-panel-overlay" id="panel-tabs-overlay" onclick="closePanelOverlay(event, 'panel-tabs')"></div>
+<div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" id="panel-tabs" role="dialog" aria-modal="true" aria-labelledby="panel-tabs-title">
+  <div class="sds-side-panel-header">
+    <h2 class="sds-side-panel-header__title" id="panel-tabs-title">Column: email_address</h2>
+    <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-tabs')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="sds-side-panel-tabs" role="tablist">
+    <button class="sds-side-panel-tab is-active" role="tab" aria-selected="true" data-panel-tab="panel-tabs" data-tab-target="tab-details" onclick="switchPanelTab(this)">
+      <span class="material-symbols-outlined">info</span>
+      Details
+    </button>
+    <button class="sds-side-panel-tab" role="tab" aria-selected="false" data-panel-tab="panel-tabs" data-tab-target="tab-activity" onclick="switchPanelTab(this)">
+      <span class="material-symbols-outlined">history</span>
+      Activity
+    </button>
+    <button class="sds-side-panel-tab" role="tab" aria-selected="false" data-panel-tab="panel-tabs" data-tab-target="tab-settings" onclick="switchPanelTab(this)">
+      <span class="material-symbols-outlined">settings</span>
+      Settings
+    </button>
+  </div>
+
+  <!-- Tab: Details -->
+  <div class="sds-side-panel-body sds-side-panel-tab-content is-active" id="tab-details" role="tabpanel">
+    <div class="sds-data-list">
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Data type</span>
+        <span class="sds-data-list__value">VARCHAR(256)</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Classification</span>
+        <span class="sds-data-list__value">
+          <span class="sds-status-badge sds-status-badge--critical">
+            <span class="sds-status-badge__dot"></span>
+            PII — Email
+          </span>
+        </span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Null rate</span>
+        <span class="sds-data-list__value">0.3%</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Distinct values</span>
+        <span class="sds-data-list__value">248,391</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Table</span>
+        <span class="sds-data-list__value">prod.analytics.user_profiles</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Policy</span>
+        <span class="sds-data-list__value">Mask for non-admin roles</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Activity -->
+  <div class="sds-side-panel-body sds-side-panel-tab-content" id="tab-activity" role="tabpanel">
+    <div class="sds-activity-list">
+      <div class="sds-activity-item">
+        <div class="sds-activity-item__icon">
+          <span class="material-symbols-outlined">edit</span>
+        </div>
+        <div class="sds-activity-item__content">
+          <div class="sds-activity-item__text"><strong>Sarah Chen</strong> updated masking policy to dynamic</div>
+          <div class="sds-activity-item__time">1 hour ago</div>
+        </div>
+      </div>
+      <div class="sds-activity-item">
+        <div class="sds-activity-item__icon">
+          <span class="material-symbols-outlined">label</span>
+        </div>
+        <div class="sds-activity-item__content">
+          <div class="sds-activity-item__text">Classification changed from <strong>Internal</strong> to <strong>PII — Email</strong></div>
+          <div class="sds-activity-item__time">3 hours ago</div>
+        </div>
+      </div>
+      <div class="sds-activity-item">
+        <div class="sds-activity-item__icon">
+          <span class="material-symbols-outlined">search</span>
+        </div>
+        <div class="sds-activity-item__content">
+          <div class="sds-activity-item__text">Column scanned by <strong>automated classifier</strong></div>
+          <div class="sds-activity-item__time">Yesterday at 2:15 PM</div>
+        </div>
+      </div>
+      <div class="sds-activity-item">
+        <div class="sds-activity-item__icon">
+          <span class="material-symbols-outlined">add_circle</span>
+        </div>
+        <div class="sds-activity-item__content">
+          <div class="sds-activity-item__text">Column discovered during initial <strong>schema scan</strong></div>
+          <div class="sds-activity-item__time">Mar 10, 2026</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab: Settings -->
+  <div class="sds-side-panel-body sds-side-panel-tab-content" id="tab-settings" role="tabpanel">
+    <div class="sds-data-list">
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Masking type</span>
+        <span class="sds-data-list__value">Dynamic — SHA-256 hash</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Exempt roles</span>
+        <span class="sds-data-list__value">ADMIN, DATA_STEWARD</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Auto-classify</span>
+        <span class="sds-data-list__value">
+          <span class="sds-status-badge sds-status-badge--success">
+            <span class="sds-status-badge__dot"></span>
+            Enabled
+          </span>
+        </span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Scan frequency</span>
+        <span class="sds-data-list__value">Daily at 2:00 AM UTC</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Alert on change</span>
+        <span class="sds-data-list__value">
+          <span class="sds-status-badge sds-status-badge--success">
+            <span class="sds-status-badge__dot"></span>
+            Enabled
+          </span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="sds-side-panel-footer">
+    <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closePanel('panel-tabs')">Close</button>
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closePanel('panel-tabs')">Save Changes</button>
+  </div>
+</div>
+
+<!-- Detail Panel -->
+<div class="sds-side-panel-overlay" id="panel-detail-overlay" onclick="closePanelOverlay(event, 'panel-detail')"></div>
+<div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" id="panel-detail" role="dialog" aria-modal="true" aria-labelledby="panel-detail-title">
+  <div class="sds-side-panel-header">
+    <span class="material-symbols-outlined" style="font-size: 20px; color: var(--sds-color-red-500);">error</span>
+    <h2 class="sds-side-panel-header__title" id="panel-detail-title">Unencrypted PII detected</h2>
+    <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-detail')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="sds-side-panel-body">
+    <div style="display: flex; gap: var(--sds-space-200); margin-bottom: var(--sds-space-500);">
+      <span class="sds-status-badge sds-status-badge--critical">
+        <span class="sds-status-badge__dot"></span>
+        Critical
+      </span>
+      <span class="sds-status-badge sds-status-badge--info">
+        <span class="sds-status-badge__dot"></span>
+        Open
+      </span>
+    </div>
+
+    <div class="sds-data-list">
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Resource</span>
+        <span class="sds-data-list__value">prod.analytics.user_profiles</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Column</span>
+        <span class="sds-data-list__value">ssn_number</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Data source</span>
+        <span class="sds-data-list__value">Snowflake — Production</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Detected</span>
+        <span class="sds-data-list__value">Mar 14, 2026 at 3:42 PM</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Policy violated</span>
+        <span class="sds-data-list__value">PII Encryption Required (SOC 2)</span>
+      </div>
+      <div class="sds-data-list__item">
+        <span class="sds-data-list__key">Assigned to</span>
+        <span class="sds-data-list__value">Sarah Chen</span>
+      </div>
+    </div>
+
+    <div style="margin-top: var(--sds-space-500); padding-top: var(--sds-space-500); border-top: 1px solid var(--sds-color-warm-gray-100);">
+      <div style="font-size: var(--sds-type-label); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin-bottom: var(--sds-space-400);">Recent Activity</div>
+      <div class="sds-activity-list">
+        <div class="sds-activity-item">
+          <div class="sds-activity-item__icon">
+            <span class="material-symbols-outlined">person_add</span>
+          </div>
+          <div class="sds-activity-item__content">
+            <div class="sds-activity-item__text"><strong>Alex Rivera</strong> assigned to <strong>Sarah Chen</strong></div>
+            <div class="sds-activity-item__time">2 hours ago</div>
+          </div>
+        </div>
+        <div class="sds-activity-item">
+          <div class="sds-activity-item__icon">
+            <span class="material-symbols-outlined">priority_high</span>
+          </div>
+          <div class="sds-activity-item__content">
+            <div class="sds-activity-item__text">Severity escalated from <strong>High</strong> to <strong>Critical</strong></div>
+            <div class="sds-activity-item__time">5 hours ago</div>
+          </div>
+        </div>
+        <div class="sds-activity-item">
+          <div class="sds-activity-item__icon">
+            <span class="material-symbols-outlined">search</span>
+          </div>
+          <div class="sds-activity-item__content">
+            <div class="sds-activity-item__text">Finding detected by <strong>automated scan</strong></div>
+            <div class="sds-activity-item__time">Yesterday at 3:42 PM</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="sds-side-panel-footer">
+    <button class="sds-btn sds-btn--ghost sds-btn--md" onclick="closePanel('panel-detail')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">flag</span>
+      Snooze
+    </button>
+    <span style="flex: 1;"></span>
+    <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closePanel('panel-detail')">Dismiss</button>
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closePanel('panel-detail')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">check_circle</span>
+      Resolve
+    </button>
+  </div>
+</div>
+
+<!-- Left Drawer -->
+<div class="sds-side-panel-overlay" id="panel-left-overlay" onclick="closePanelOverlay(event, 'panel-left')"></div>
+<div class="sds-side-panel sds-side-panel--left sds-side-panel--narrow" id="panel-left" role="dialog" aria-modal="true" aria-labelledby="panel-left-title">
+  <div class="sds-side-panel-header">
+    <span class="material-symbols-outlined" style="font-size: 20px; color: var(--sds-text-tertiary);">filter_list</span>
+    <h2 class="sds-side-panel-header__title" id="panel-left-title">Filters</h2>
+    <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-left')">
+      <span class="material-symbols-outlined">close</span>
+    </button>
+  </div>
+  <div class="sds-side-panel-body">
+    <div class="sds-filter-group">
+      <div class="sds-filter-group__label">Severity</div>
+      <label class="sds-filter-option"><input type="checkbox" checked /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Critical <span class="sds-filter-count">24</span></label>
+      <label class="sds-filter-option"><input type="checkbox" checked /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> High <span class="sds-filter-count">89</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Medium <span class="sds-filter-count">156</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Low <span class="sds-filter-count">312</span></label>
+    </div>
+    <div class="sds-filter-group">
+      <div class="sds-filter-group__label">Status</div>
+      <label class="sds-filter-option"><input type="checkbox" checked /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Open <span class="sds-filter-count">201</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> In Progress <span class="sds-filter-count">67</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Resolved <span class="sds-filter-count">314</span></label>
+    </div>
+    <div class="sds-filter-group">
+      <div class="sds-filter-group__label">Data Source</div>
+      <label class="sds-filter-option"><input type="checkbox" checked /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Snowflake Production <span class="sds-filter-count">142</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> BigQuery Analytics <span class="sds-filter-count">98</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> PostgreSQL Staging <span class="sds-filter-count">41</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> S3 Data Lake <span class="sds-filter-count">300</span></label>
+    </div>
+  </div>
+  <div class="sds-side-panel-footer" style="justify-content: space-between;">
+    <button class="sds-btn sds-btn--ghost sds-btn--md" onclick="closePanel('panel-left')">Reset All</button>
+    <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closePanel('panel-left')">Apply Filters</button>
+  </div>
+</div>
+
+
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+  /* ---- Open / close helpers ---- */
+  function openPanel(id) {
+    var panel = document.getElementById(id);
+    if (!panel) return;
+
+    var overlay = document.getElementById(id + '-overlay');
+    if (overlay) {
+      overlay.classList.add('is-open');
+    }
+    panel.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+
+    // Focus the close button
+    var closeBtn = panel.querySelector('.sds-side-panel-header__close');
+    if (closeBtn) {
+      setTimeout(function() { closeBtn.focus(); }, 310);
+    }
+  }
+
+  function closePanel(id) {
+    var panel = document.getElementById(id);
+    if (!panel) return;
+
+    var overlay = document.getElementById(id + '-overlay');
+    if (overlay) {
+      overlay.classList.remove('is-open');
+    }
+    panel.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  function closePanelOverlay(event, panelId) {
+    if (event.target === event.currentTarget) {
+      closePanel(panelId);
+    }
+  }
+
+  /* ---- Escape key ---- */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      var openPanels = document.querySelectorAll('.sds-side-panel.is-open');
+      openPanels.forEach(function(panel) {
+        closePanel(panel.id);
+      });
+    }
+  });
+
+  /* ---- Focus trap ---- */
+  document.addEventListener('keydown', function(e) {
+    if (e.key !== 'Tab') return;
+    var openPanel = document.querySelector('.sds-side-panel.is-open');
+    if (!openPanel) return;
+
+    var focusable = openPanel.querySelectorAll(
+      'button:not([tabindex="-1"]), [href], input:not([tabindex="-1"]), select:not([tabindex="-1"]), textarea:not([tabindex="-1"]), [tabindex]:not([tabindex="-1"])'
+    );
+    if (focusable.length === 0) return;
+
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+
+    if (e.shiftKey) {
+      if (document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      }
+    } else {
+      if (document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    }
+  });
+
+  /* ---- Tab switching inside panels ---- */
+  function switchPanelTab(tabBtn) {
+    var panelId = tabBtn.getAttribute('data-panel-tab');
+    var targetId = tabBtn.getAttribute('data-tab-target');
+    var panel = document.getElementById(panelId);
+    if (!panel) return;
+
+    // Deactivate all tabs in this panel
+    panel.querySelectorAll('.sds-side-panel-tab').forEach(function(t) {
+      t.classList.remove('is-active');
+      t.setAttribute('aria-selected', 'false');
+    });
+
+    // Hide all tab content
+    panel.querySelectorAll('.sds-side-panel-tab-content').forEach(function(c) {
+      c.classList.remove('is-active');
+    });
+
+    // Activate clicked tab
+    tabBtn.classList.add('is-active');
+    tabBtn.setAttribute('aria-selected', 'true');
+
+    // Show target content
+    var target = document.getElementById(targetId);
+    if (target) {
+      target.classList.add('is-active');
+    }
+  }
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

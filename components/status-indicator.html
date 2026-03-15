@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Status Indicator</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* Demo row */
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* ============================================================
+       STATUS INDICATOR
+       Live connection/health status indicators showing system
+       state. Different from tags/badges because these represent
+       live, real-time state (connected/disconnected, syncing/idle,
+       healthy/degraded).
+       ============================================================ */
+
+    /* ---- Pulse animation ---- */
+    @keyframes sds-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    /* ---- Base ---- */
+    .sds-status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    .sds-status__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .sds-status__label {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+      white-space: nowrap;
+    }
+
+    /* ---- State variants ---- */
+
+    /* Online / Connected — green, pulsing */
+    .sds-status--online .sds-status__dot,
+    .sds-status--connected .sds-status__dot {
+      background: var(--sds-color-green-400);
+      animation: sds-pulse 2s ease-in-out infinite;
+    }
+
+    /* Offline / Disconnected — gray, static */
+    .sds-status--offline .sds-status__dot,
+    .sds-status--disconnected .sds-status__dot {
+      background: var(--sds-color-warm-gray-300);
+    }
+
+    /* Warning / Degraded — yellow, static */
+    .sds-status--warning .sds-status__dot,
+    .sds-status--degraded .sds-status__dot {
+      background: var(--sds-color-yellow-350);
+    }
+
+    /* Error / Critical — red, pulsing */
+    .sds-status--error .sds-status__dot,
+    .sds-status--critical .sds-status__dot {
+      background: var(--sds-color-red-450);
+      animation: sds-pulse 2s ease-in-out infinite;
+    }
+
+    /* Scanning / Syncing — blue, pulsing */
+    .sds-status--scanning .sds-status__dot,
+    .sds-status--syncing .sds-status__dot {
+      background: var(--sds-color-blue-450);
+      animation: sds-pulse 2s ease-in-out infinite;
+    }
+
+    /* ---- Size variants ---- */
+
+    /* Small */
+    .sds-status--sm .sds-status__dot {
+      width: 6px;
+      height: 6px;
+    }
+    .sds-status--sm .sds-status__label {
+      font-size: var(--sds-type-caption);
+    }
+
+    /* Large */
+    .sds-status--lg .sds-status__dot {
+      width: 10px;
+      height: 10px;
+    }
+    .sds-status--lg .sds-status__label {
+      font-size: var(--sds-type-body);
+    }
+
+    /* ============================================================
+       CONTEXT DEMOS
+       ============================================================ */
+
+    /* Agent status card */
+    .agent-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 480px;
+    }
+    .agent-card__header {
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .agent-card__row {
+      display: flex;
+      align-items: center;
+      padding: var(--sds-space-300) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .agent-card__row:last-child {
+      border-bottom: none;
+    }
+    .agent-card__icon {
+      font-size: 18px;
+      color: var(--sds-color-warm-gray-400);
+      margin-right: var(--sds-space-300);
+      flex-shrink: 0;
+    }
+    .agent-card__name {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+      flex: 1;
+    }
+
+    /* System health bar */
+    .health-bar {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-800);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-400) var(--sds-space-600);
+    }
+    .health-bar__item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .health-bar__label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Status Indicator</h1>
+  <p class="page-subtitle">Live connection and health status indicators showing real-time system state. Different from tags and badges because these represent live, dynamic state such as connected/disconnected, syncing/idle, and healthy/degraded.</p>
+
+  <!-- ============================================================
+       ALL STATES
+       ============================================================ -->
+  <h2>All States</h2>
+  <p>Each state maps to a specific dot color. Active states pulse to convey live activity.</p>
+  <p>Always pair the status dot with a text label. Color alone should not be the sole indicator of state.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">State variants</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Online</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+        <span class="sds-status sds-status--connected">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Connected</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Offline</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--offline">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Offline</span>
+        </span>
+        <span class="sds-status sds-status--disconnected">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Disconnected</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Warning</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--warning">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Warning</span>
+        </span>
+        <span class="sds-status sds-status--degraded">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Degraded</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Error</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--error">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Error</span>
+        </span>
+        <span class="sds-status sds-status--critical">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Critical</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Scanning</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--scanning">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Scanning</span>
+        </span>
+        <span class="sds-status sds-status--syncing">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Syncing</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SIZES
+       ============================================================ -->
+  <h2>Sizes</h2>
+  <p>Three sizes: small (<code>.sds-status--sm</code>), default, and large (<code>.sds-status--lg</code>). Dot and label scale together.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Size comparison</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Small</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--sm sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+        <span class="sds-status sds-status--sm sds-status--error">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Error</span>
+        </span>
+        <span class="sds-status sds-status--sm sds-status--offline">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Offline</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Default</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+        <span class="sds-status sds-status--error">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Error</span>
+        </span>
+        <span class="sds-status sds-status--offline">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Offline</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Large</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--lg sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+        <span class="sds-status sds-status--lg sds-status--error">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Error</span>
+        </span>
+        <span class="sds-status sds-status--lg sds-status--offline">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Offline</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PULSE ANIMATION
+       ============================================================ -->
+  <h2>Pulse Animation</h2>
+  <p>Active states pulse to signal live activity. Static states remain solid to indicate idle or inactive connections.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Animated vs static</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Pulsing</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+        <span class="sds-status sds-status--scanning">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Scanning</span>
+        </span>
+        <span class="sds-status sds-status--error">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Error</span>
+        </span>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Static</span>
+      <div class="demo-row-items">
+        <span class="sds-status sds-status--offline">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Offline</span>
+        </span>
+        <span class="sds-status sds-status--warning">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Warning</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT: AGENT STATUS
+       ============================================================ -->
+  <h2>In Context</h2>
+
+  <h3>Service Status</h3>
+  <p>Integration connectivity displayed in a list card. Status indicators right-aligned to show real-time connection state.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Connected services</div>
+    <div class="agent-card">
+      <div class="agent-card__header">Connected Services</div>
+      <div class="agent-card__row">
+        <span class="material-symbols-outlined agent-card__icon">mail</span>
+        <span class="agent-card__name">Email Service</span>
+        <span class="sds-status sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+      </div>
+      <div class="agent-card__row">
+        <span class="material-symbols-outlined agent-card__icon">cloud</span>
+        <span class="agent-card__name">Cloud Storage</span>
+        <span class="sds-status sds-status--scanning">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Syncing</span>
+        </span>
+      </div>
+      <div class="agent-card__row">
+        <span class="material-symbols-outlined agent-card__icon">payments</span>
+        <span class="agent-card__name">Payment Gateway</span>
+        <span class="sds-status sds-status--degraded">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Degraded</span>
+        </span>
+      </div>
+      <div class="agent-card__row">
+        <span class="material-symbols-outlined agent-card__icon">chat</span>
+        <span class="agent-card__name">Chat Integration</span>
+        <span class="sds-status sds-status--offline">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Offline</span>
+        </span>
+      </div>
+      <div class="agent-card__row">
+        <span class="material-symbols-outlined agent-card__icon">analytics</span>
+        <span class="agent-card__name">Analytics Platform</span>
+        <span class="sds-status sds-status--error">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Error</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT: SYSTEM HEALTH
+       ============================================================ -->
+  <h3>System Health Bar</h3>
+  <p>Horizontal bar showing overall system health with multiple indicators at a glance.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">System overview</div>
+    <div class="health-bar">
+      <div class="health-bar__item">
+        <span class="health-bar__label">API</span>
+        <span class="sds-status sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+      </div>
+      <div class="health-bar__item">
+        <span class="health-bar__label">Workers</span>
+        <span class="sds-status sds-status--syncing">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Syncing</span>
+        </span>
+      </div>
+      <div class="health-bar__item">
+        <span class="health-bar__label">Database</span>
+        <span class="sds-status sds-status--online">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Online</span>
+        </span>
+      </div>
+      <div class="health-bar__item">
+        <span class="health-bar__label">Cache</span>
+        <span class="sds-status sds-status--degraded">
+          <span class="sds-status__dot"></span>
+          <span class="sds-status__label">Degraded</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>State</th><th>Dot Color</th><th>Alias Classes</th><th>Animated</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Online / Connected</td>
+        <td><span class="swatch" style="background:var(--sds-color-green-400)"></span><code>--sds-color-green-400</code></td>
+        <td><code>.sds-status--online</code> <code>.sds-status--connected</code></td>
+        <td>Yes (pulse)</td>
+      </tr>
+      <tr>
+        <td>Offline / Disconnected</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-300)"></span><code>--sds-color-warm-gray-300</code></td>
+        <td><code>.sds-status--offline</code> <code>.sds-status--disconnected</code></td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td>Warning / Degraded</td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-350)"></span><code>--sds-color-yellow-350</code></td>
+        <td><code>.sds-status--warning</code> <code>.sds-status--degraded</code></td>
+        <td>No</td>
+      </tr>
+      <tr>
+        <td>Error / Critical</td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>--sds-color-red-450</code></td>
+        <td><code>.sds-status--error</code> <code>.sds-status--critical</code></td>
+        <td>Yes (pulse)</td>
+      </tr>
+      <tr>
+        <td>Scanning / Syncing</td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-450)"></span><code>--sds-color-blue-450</code></td>
+        <td><code>.sds-status--scanning</code> <code>.sds-status--syncing</code></td>
+        <td>Yes (pulse)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Size</th><th>Dot Diameter</th><th>Label Font</th><th>Class</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small</td>
+        <td><code>6 px</code></td>
+        <td><code>--sds-type-caption</code></td>
+        <td><code>.sds-status--sm</code></td>
+      </tr>
+      <tr>
+        <td>Default</td>
+        <td><code>8 px</code></td>
+        <td><code>--sds-type-label</code></td>
+        <td>Base class only</td>
+      </tr>
+      <tr>
+        <td>Large</td>
+        <td><code>10 px</code></td>
+        <td><code>--sds-type-body</code></td>
+        <td><code>.sds-status--lg</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Animation</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Keyframes</td>
+        <td><code>sds-pulse</code> — opacity 1 to 0.5 and back</td>
+      </tr>
+      <tr>
+        <td>Duration</td>
+        <td><code>2s</code></td>
+      </tr>
+      <tr>
+        <td>Easing</td>
+        <td><code>ease-in-out</code></td>
+      </tr>
+      <tr>
+        <td>Iteration</td>
+        <td><code>infinite</code></td>
+      </tr>
+      <tr>
+        <td>Applied to</td>
+        <td>Online, Connected, Error, Critical, Scanning, Syncing</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-status</code></td><td>Base container — inline-flex with dot + label</td></tr>
+      <tr><td><code>.sds-status__dot</code></td><td>Child element: the colored status dot</td></tr>
+      <tr><td><code>.sds-status__label</code></td><td>Child element: text label next to the dot</td></tr>
+      <tr><td><code>.sds-status--online</code></td><td>Green dot, pulsing — active connection</td></tr>
+      <tr><td><code>.sds-status--connected</code></td><td>Alias for online</td></tr>
+      <tr><td><code>.sds-status--offline</code></td><td>Gray dot, static — no connection</td></tr>
+      <tr><td><code>.sds-status--disconnected</code></td><td>Alias for offline</td></tr>
+      <tr><td><code>.sds-status--warning</code></td><td>Yellow dot, static — degraded performance</td></tr>
+      <tr><td><code>.sds-status--degraded</code></td><td>Alias for warning</td></tr>
+      <tr><td><code>.sds-status--error</code></td><td>Red dot, pulsing — failure state</td></tr>
+      <tr><td><code>.sds-status--critical</code></td><td>Alias for error</td></tr>
+      <tr><td><code>.sds-status--scanning</code></td><td>Blue dot, pulsing — active scan in progress</td></tr>
+      <tr><td><code>.sds-status--syncing</code></td><td>Alias for scanning</td></tr>
+      <tr><td><code>.sds-status--sm</code></td><td>Modifier: small size (6 px dot)</td></tr>
+      <tr><td><code>.sds-status--lg</code></td><td>Modifier: large size (10 px dot)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

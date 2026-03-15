@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Modals</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* ============================================================
+       MODAL / DIALOG COMPONENT
+       ============================================================ */
+
+    /* Overlay */
+    .sds-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9000;
+      background: rgba(0,0,0,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--sds-space-800);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 200ms ease, visibility 200ms ease;
+    }
+    .sds-modal-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    /* Modal container */
+    .sds-modal {
+      background: var(--sds-bg-elevated);
+      border-radius: 12px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.16);
+      width: 100%;
+      max-height: calc(100vh - 64px);
+      display: flex;
+      flex-direction: column;
+      transform: scale(0.96);
+      transition: transform 200ms ease;
+    }
+    .sds-modal-overlay.is-open .sds-modal {
+      transform: scale(1);
+    }
+
+    /* Size variants */
+    .sds-modal--sm { max-width: 400px; }
+    .sds-modal--md { max-width: 560px; }
+    .sds-modal--lg { max-width: 720px; }
+
+    /* Header */
+    .sds-modal-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-500) var(--sds-space-600);
+      border-bottom: 1px solid var(--sds-border-subtle);
+      flex-shrink: 0;
+    }
+    .sds-modal-header__icon {
+      width: 36px;
+      height: 36px;
+      min-width: 36px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sds-modal-header__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+    .sds-modal-header__icon--info {
+      background: var(--sds-color-blue-050, var(--sds-color-warm-gray-050));
+      color: var(--sds-interactive-primary);
+    }
+    .sds-modal-header__icon--danger {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-500);
+    }
+    .sds-modal-header__icon--warning {
+      background: var(--sds-color-yellow-050, var(--sds-color-warm-gray-050));
+      color: var(--sds-color-yellow-600, var(--sds-color-warm-gray-600));
+    }
+    .sds-modal-header__title {
+      flex: 1;
+      font-size: var(--sds-type-subheading);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      line-height: 1.3;
+    }
+    .sds-modal-header__close {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+    .sds-modal-header__close:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-modal-header__close .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* Body */
+    .sds-modal-body {
+      padding: var(--sds-space-600);
+      overflow-y: auto;
+      flex: 1;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-secondary);
+    }
+    .sds-modal-body p {
+      margin: 0 0 var(--sds-space-400);
+    }
+    .sds-modal-body p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Footer */
+    .sds-modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400) var(--sds-space-600);
+      border-top: 1px solid var(--sds-border-subtle);
+      flex-shrink: 0;
+    }
+
+    /* ---- Buttons (matching buttons component) ---- */
+    .sds-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+      line-height: 1;
+    }
+    .sds-btn--md {
+      font-size: var(--sds-type-body);
+      padding: var(--sds-space-250) var(--sds-space-500);
+      border-radius: 6px;
+      height: 40px;
+    }
+    .sds-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-btn--primary {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-interactive-primary);
+    }
+    .sds-btn--primary:hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+    .sds-btn--primary:active {
+      background: var(--sds-interactive-primary-active);
+      border-color: var(--sds-interactive-primary-active);
+    }
+    .sds-btn--secondary {
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      border: 1.5px solid var(--sds-interactive-secondary-border);
+    }
+    .sds-btn--secondary:hover {
+      background: var(--sds-bg-subtle);
+      border-color: var(--sds-color-warm-gray-900);
+    }
+    .sds-btn--danger {
+      background: var(--sds-color-red-500);
+      color: var(--sds-text-on-primary);
+      border: 1.5px solid var(--sds-color-red-500);
+    }
+    .sds-btn--danger:hover {
+      background: var(--sds-color-red-600);
+      border-color: var(--sds-color-red-600);
+    }
+    .sds-btn--trigger {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      padding: var(--sds-space-250) var(--sds-space-500);
+      height: 40px;
+    }
+    .sds-btn--trigger:hover {
+      background: var(--sds-interactive-primary-hover);
+    }
+
+    /* ---- Form elements inside modals ---- */
+    .sds-field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+      margin-bottom: var(--sds-space-500);
+    }
+    .sds-field:last-child {
+      margin-bottom: 0;
+    }
+    .sds-field-label {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-snug);
+    }
+    .sds-field-label .required {
+      color: var(--sds-color-red-450);
+      margin-left: var(--sds-space-050);
+    }
+    .sds-input,
+    .sds-select,
+    .sds-textarea {
+      width: 100%;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-primary);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .sds-input {
+      height: 36px;
+      padding: 0 var(--sds-space-300);
+    }
+    .sds-textarea {
+      min-height: 84px;
+      padding: var(--sds-space-250) var(--sds-space-300);
+      resize: vertical;
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-select {
+      height: 36px;
+      padding: 0 var(--sds-space-800) 0 var(--sds-space-300);
+      cursor: pointer;
+    }
+    .sds-input:focus {
+      border: 2px solid var(--sds-border-focus);
+      padding: 0 calc(var(--sds-space-300) - 1px);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+    }
+    .sds-select:focus {
+      border: 2px solid var(--sds-border-focus);
+      padding: 0 calc(var(--sds-space-800) - 1px) 0 calc(var(--sds-space-300) - 1px);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+    }
+    .sds-textarea:focus {
+      border: 2px solid var(--sds-border-focus);
+      padding: calc(var(--sds-space-250) - 1px) calc(var(--sds-space-300) - 1px);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+    }
+    .sds-input::placeholder,
+    .sds-textarea::placeholder {
+      color: var(--sds-text-tertiary);
+    }
+    .sds-select {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1.5l5 5 5-5' stroke='%23787069' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--sds-space-300) center;
+    }
+    .sds-field-helper {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      line-height: var(--sds-leading-normal);
+      margin-top: var(--sds-space-050);
+    }
+
+    /* ---- Static preview styling ---- */
+    .static-preview {
+      background: var(--sds-color-warm-gray-200);
+      border-radius: 8px;
+      padding: var(--sds-space-800);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .static-preview .sds-modal {
+      transform: none;
+      position: relative;
+    }
+
+    /* ---- Spec tables ---- */
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+<h1>Modals</h1>
+<p class="page-subtitle">Dialogs and modal windows for focused tasks, confirmations, and form entry. Modals interrupt the user's workflow to capture attention for important actions.</p>
+
+<!-- ============ BASIC MODALS ============ -->
+<h2>Basic Modals</h2>
+<p>Click the buttons below to open interactive modal demos. Each modal can be dismissed via the close button, cancel action, or clicking the overlay backdrop.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Interactive Demos</div>
+  <div class="demo-row">
+    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-info')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">info</span>
+      Information
+    </button>
+    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-confirm')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">warning</span>
+      Confirmation
+    </button>
+    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-form')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">person_add</span>
+      Form Dialog
+    </button>
+    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-danger')">
+      <span class="material-symbols-outlined" style="font-size: 18px;">delete_forever</span>
+      Danger Action
+    </button>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ SIZES ============ -->
+<h2>Sizes</h2>
+<p>Modals are available in three sizes. Choose based on content complexity: small for simple confirmations, medium for standard dialogs, and large for content-heavy forms or detail views.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Size Variants</div>
+  <div class="demo-row">
+    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-sm')">
+      Small (400px)
+    </button>
+    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-md')">
+      Medium (560px)
+    </button>
+    <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-lg')">
+      Large (720px)
+    </button>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ CONFIRMATION DIALOG ============ -->
+<h3>Confirmation Dialog</h3>
+<p>Use confirmation modals before irreversible or high-impact actions. The destructive variant uses red-accented iconography and a danger-styled primary action button to communicate risk.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Destructive Confirmation</div>
+  <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-delete-resource')">
+    <span class="material-symbols-outlined" style="font-size: 18px;">delete</span>
+    Delete Resource
+  </button>
+</div>
+
+<!-- ============ FORM DIALOG ============ -->
+<h3>Form Dialog</h3>
+<p>Form modals contain input fields for data entry tasks like inviting team members, editing settings, or creating new resources. Keep form modals focused on a single task.</p>
+
+<div class="demo-block">
+  <div class="demo-label">Invite Team Member</div>
+  <button class="sds-btn sds-btn--trigger" onclick="openModal('modal-invite')">
+    <span class="material-symbols-outlined" style="font-size: 18px;">group_add</span>
+    Invite Team Member
+  </button>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ STATIC PREVIEWS ============ -->
+<h2>Static Previews</h2>
+<p>Inline static renderings of each modal variant for visual reference. These are not interactive overlays; they display the modal UI directly within the page.</p>
+
+<!-- Static: Information -->
+<h3>Information Modal</h3>
+<div class="demo-block">
+  <div class="demo-label">Information</div>
+  <div class="static-preview">
+    <div class="sds-modal sds-modal--md">
+      <div class="sds-modal-header">
+        <div class="sds-modal-header__icon sds-modal-header__icon--info">
+          <span class="material-symbols-outlined">new_releases</span>
+        </div>
+        <h2 class="sds-modal-header__title">What's New in v4.2</h2>
+        <button class="sds-modal-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-modal-body">
+        <p>We've shipped several improvements to help your team manage data classification policies more efficiently.</p>
+        <p><strong>Enhanced policy engine</strong> — Policies now support conditional logic with nested rule groups, allowing more granular access controls across data domains.</p>
+        <p><strong>Bulk operations</strong> — Select multiple resources from the catalog to apply tags, assign owners, or update sensitivity levels in a single action.</p>
+        <p><strong>Audit trail export</strong> — Download compliance audit logs as CSV for integration with your existing reporting workflows.</p>
+      </div>
+      <div class="sds-modal-footer">
+        <button class="sds-btn sds-btn--primary sds-btn--md" tabindex="-1">Got It</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Static: Confirmation / Danger -->
+<h3>Confirmation Modal (Destructive)</h3>
+<div class="demo-block">
+  <div class="demo-label">Danger</div>
+  <div class="static-preview">
+    <div class="sds-modal sds-modal--sm">
+      <div class="sds-modal-header">
+        <div class="sds-modal-header__icon sds-modal-header__icon--danger">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <h2 class="sds-modal-header__title">Delete Data Source</h2>
+        <button class="sds-modal-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-modal-body">
+        <p>Are you sure you want to delete <strong>Snowflake Production</strong>? This will permanently remove the data source and all associated metadata, lineage records, and classification tags. This action cannot be undone.</p>
+      </div>
+      <div class="sds-modal-footer">
+        <button class="sds-btn sds-btn--secondary sds-btn--md" tabindex="-1">Cancel</button>
+        <button class="sds-btn sds-btn--danger sds-btn--md" tabindex="-1">Delete Data Source</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Static: Form -->
+<h3>Form Modal</h3>
+<div class="demo-block">
+  <div class="demo-label">Form Input</div>
+  <div class="static-preview">
+    <div class="sds-modal sds-modal--md">
+      <div class="sds-modal-header">
+        <div class="sds-modal-header__icon sds-modal-header__icon--info">
+          <span class="material-symbols-outlined">person_add</span>
+        </div>
+        <h2 class="sds-modal-header__title">Invite Team Member</h2>
+        <button class="sds-modal-header__close" aria-label="Close" tabindex="-1">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="sds-modal-body">
+        <div class="sds-field">
+          <label class="sds-field-label">Email address <span class="required">*</span></label>
+          <input type="email" class="sds-input" placeholder="colleague@company.com" tabindex="-1" />
+        </div>
+        <div class="sds-field">
+          <label class="sds-field-label">Role</label>
+          <select class="sds-select" tabindex="-1">
+            <option>Viewer</option>
+            <option>Editor</option>
+            <option>Admin</option>
+            <option>Data Steward</option>
+          </select>
+        </div>
+        <div class="sds-field">
+          <label class="sds-field-label">Personal message</label>
+          <textarea class="sds-textarea" placeholder="Add an optional message to the invitation..." tabindex="-1"></textarea>
+          <div class="sds-field-helper">The recipient will see this message in their invitation email.</div>
+        </div>
+      </div>
+      <div class="sds-modal-footer">
+        <button class="sds-btn sds-btn--secondary sds-btn--md" tabindex="-1">Cancel</button>
+        <button class="sds-btn sds-btn--primary sds-btn--md" tabindex="-1">Send Invitation</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider" />
+
+<!-- ============ SPECIFICATIONS ============ -->
+<h2>Specifications</h2>
+<p>Dimensions, spacing, and visual properties for modal components.</p>
+
+<h3>Size Variants</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Variant</th>
+      <th>Max Width</th>
+      <th>Class</th>
+      <th>Usage</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Small</td>
+      <td>400px</td>
+      <td><code>.sds-modal--sm</code></td>
+      <td>Simple confirmations, alerts</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>560px</td>
+      <td><code>.sds-modal--md</code></td>
+      <td>Standard dialogs, forms (default)</td>
+    </tr>
+    <tr>
+      <td>Large</td>
+      <td>720px</td>
+      <td><code>.sds-modal--lg</code></td>
+      <td>Complex forms, detail views, content-heavy</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Anatomy</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Element</th>
+      <th>Class</th>
+      <th>Padding</th>
+      <th>Notes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Overlay</td>
+      <td><code>.sds-modal-overlay</code></td>
+      <td><code>--sds-space-800</code> (32px)</td>
+      <td>Fixed fullscreen, rgba(0,0,0,0.5), z-index 9000</td>
+    </tr>
+    <tr>
+      <td>Modal</td>
+      <td><code>.sds-modal</code></td>
+      <td>-</td>
+      <td>12px radius, elevated shadow, flex column</td>
+    </tr>
+    <tr>
+      <td>Header</td>
+      <td><code>.sds-modal-header</code></td>
+      <td><code>--sds-space-500</code> / <code>--sds-space-600</code></td>
+      <td>Bottom border, flex row with icon + title + close</td>
+    </tr>
+    <tr>
+      <td>Body</td>
+      <td><code>.sds-modal-body</code></td>
+      <td><code>--sds-space-600</code> (24px)</td>
+      <td>Scrollable content area</td>
+    </tr>
+    <tr>
+      <td>Footer</td>
+      <td><code>.sds-modal-footer</code></td>
+      <td><code>--sds-space-400</code> / <code>--sds-space-600</code></td>
+      <td>Top border, right-aligned buttons</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Interaction</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Behavior</th>
+      <th>Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Open animation</td>
+      <td>Fade in + scale from 0.96 to 1, 200ms ease</td>
+    </tr>
+    <tr>
+      <td>Close animation</td>
+      <td>Fade out + scale to 0.96, 200ms ease</td>
+    </tr>
+    <tr>
+      <td>Overlay click</td>
+      <td>Closes modal</td>
+    </tr>
+    <tr>
+      <td>Escape key</td>
+      <td>Closes modal</td>
+    </tr>
+    <tr>
+      <td>Scroll lock</td>
+      <td>Body scroll disabled while modal is open</td>
+    </tr>
+    <tr>
+      <td>Focus trap</td>
+      <td>Tab key cycles within modal content</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3>Icon Variants</h3>
+<table class="spec-table">
+  <thead>
+    <tr>
+      <th>Variant</th>
+      <th>Icon Background</th>
+      <th>Icon Color</th>
+      <th>Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Info</td>
+      <td><code>--sds-color-blue-050</code></td>
+      <td><code>--sds-interactive-primary</code></td>
+      <td><code>.sds-modal-header__icon--info</code></td>
+    </tr>
+    <tr>
+      <td>Danger</td>
+      <td><code>--sds-color-red-050</code></td>
+      <td><code>--sds-color-red-500</code></td>
+      <td><code>.sds-modal-header__icon--danger</code></td>
+    </tr>
+    <tr>
+      <td>Warning</td>
+      <td><code>--sds-color-yellow-050</code></td>
+      <td><code>--sds-color-yellow-600</code></td>
+      <td><code>.sds-modal-header__icon--warning</code></td>
+    </tr>
+  </tbody>
+</table>
+
+
+<!-- ============ LIVE MODAL INSTANCES ============ -->
+
+<!-- Information Modal -->
+<div class="sds-modal-overlay" id="modal-info" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--md">
+    <div class="sds-modal-header">
+      <div class="sds-modal-header__icon sds-modal-header__icon--info">
+        <span class="material-symbols-outlined">new_releases</span>
+      </div>
+      <h2 class="sds-modal-header__title">What's New in v4.2</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-info')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <p>We've shipped several improvements to help your team manage data classification policies more efficiently.</p>
+      <p><strong>Enhanced policy engine</strong> — Policies now support conditional logic with nested rule groups, allowing more granular access controls across data domains.</p>
+      <p><strong>Bulk operations</strong> — Select multiple resources from the catalog to apply tags, assign owners, or update sensitivity levels in a single action.</p>
+      <p><strong>Audit trail export</strong> — Download compliance audit logs as CSV for integration with your existing reporting workflows.</p>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closeModal('modal-info')">Got It</button>
+    </div>
+  </div>
+</div>
+
+<!-- Confirmation Modal -->
+<div class="sds-modal-overlay" id="modal-confirm" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--sm">
+    <div class="sds-modal-header">
+      <div class="sds-modal-header__icon sds-modal-header__icon--warning">
+        <span class="material-symbols-outlined">warning</span>
+      </div>
+      <h2 class="sds-modal-header__title">Revoke API Key</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-confirm')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <p>Are you sure you want to revoke API key <strong>sk-prod-*****a3f9</strong>? Any integrations using this key will immediately lose access. You can generate a new key afterward, but existing connections will need to be reconfigured.</p>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-confirm')">Cancel</button>
+      <button class="sds-btn sds-btn--danger sds-btn--md" onclick="closeModal('modal-confirm')">Revoke Key</button>
+    </div>
+  </div>
+</div>
+
+<!-- Form Modal -->
+<div class="sds-modal-overlay" id="modal-form" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--md">
+    <div class="sds-modal-header">
+      <div class="sds-modal-header__icon sds-modal-header__icon--info">
+        <span class="material-symbols-outlined">person_add</span>
+      </div>
+      <h2 class="sds-modal-header__title">Invite Team Member</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-form')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <div class="sds-field">
+        <label class="sds-field-label">Email address <span class="required">*</span></label>
+        <input type="email" class="sds-input" placeholder="colleague@company.com" />
+      </div>
+      <div class="sds-field">
+        <label class="sds-field-label">Role</label>
+        <select class="sds-select">
+          <option>Viewer</option>
+          <option>Editor</option>
+          <option>Admin</option>
+          <option>Data Steward</option>
+        </select>
+      </div>
+      <div class="sds-field">
+        <label class="sds-field-label">Personal message</label>
+        <textarea class="sds-textarea" placeholder="Add an optional message to the invitation..."></textarea>
+        <div class="sds-field-helper">The recipient will see this message in their invitation email.</div>
+      </div>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-form')">Cancel</button>
+      <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closeModal('modal-form')">Send Invitation</button>
+    </div>
+  </div>
+</div>
+
+<!-- Danger Modal -->
+<div class="sds-modal-overlay" id="modal-danger" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--sm">
+    <div class="sds-modal-header">
+      <div class="sds-modal-header__icon sds-modal-header__icon--danger">
+        <span class="material-symbols-outlined">delete_forever</span>
+      </div>
+      <h2 class="sds-modal-header__title">Delete Workspace</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-danger')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <p>You are about to permanently delete the workspace <strong>Production Analytics</strong> and all of its contents, including 47 data sources, 312 policies, and 8 team members' access configurations.</p>
+      <p>This action is <strong>irreversible</strong>. All data lineage records, classification history, and audit logs within this workspace will be permanently removed.</p>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-danger')">Cancel</button>
+      <button class="sds-btn sds-btn--danger sds-btn--md" onclick="closeModal('modal-danger')">Delete Workspace</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Resource Modal (Confirmation section) -->
+<div class="sds-modal-overlay" id="modal-delete-resource" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--sm">
+    <div class="sds-modal-header">
+      <div class="sds-modal-header__icon sds-modal-header__icon--danger">
+        <span class="material-symbols-outlined">warning</span>
+      </div>
+      <h2 class="sds-modal-header__title">Delete Data Source</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-delete-resource')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <p>Are you sure you want to delete <strong>Snowflake Production</strong>? This will permanently remove the data source and all associated metadata, lineage records, and classification tags. This action cannot be undone.</p>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-delete-resource')">Cancel</button>
+      <button class="sds-btn sds-btn--danger sds-btn--md" onclick="closeModal('modal-delete-resource')">Delete Data Source</button>
+    </div>
+  </div>
+</div>
+
+<!-- Invite Modal (Form section) -->
+<div class="sds-modal-overlay" id="modal-invite" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--md">
+    <div class="sds-modal-header">
+      <div class="sds-modal-header__icon sds-modal-header__icon--info">
+        <span class="material-symbols-outlined">group_add</span>
+      </div>
+      <h2 class="sds-modal-header__title">Invite Team Member</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-invite')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <div class="sds-field">
+        <label class="sds-field-label">Email address <span class="required">*</span></label>
+        <input type="email" class="sds-input" placeholder="colleague@company.com" />
+      </div>
+      <div class="sds-field">
+        <label class="sds-field-label">Role</label>
+        <select class="sds-select">
+          <option>Viewer</option>
+          <option>Editor</option>
+          <option>Admin</option>
+          <option>Data Steward</option>
+        </select>
+      </div>
+      <div class="sds-field">
+        <label class="sds-field-label">Personal message</label>
+        <textarea class="sds-textarea" placeholder="Add an optional message to the invitation..."></textarea>
+        <div class="sds-field-helper">The recipient will see this message in their invitation email.</div>
+      </div>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-invite')">Cancel</button>
+      <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closeModal('modal-invite')">Send Invitation</button>
+    </div>
+  </div>
+</div>
+
+<!-- Size: Small -->
+<div class="sds-modal-overlay" id="modal-sm" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--sm">
+    <div class="sds-modal-header">
+      <h2 class="sds-modal-header__title">Small Modal</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-sm')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <p>This is a small modal (400px max-width). Best suited for simple confirmations, brief alerts, or single-action prompts that don't require much content space.</p>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-sm')">Cancel</button>
+      <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closeModal('modal-sm')">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Size: Medium -->
+<div class="sds-modal-overlay" id="modal-md" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--md">
+    <div class="sds-modal-header">
+      <h2 class="sds-modal-header__title">Medium Modal</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-md')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <p>This is the default medium modal (560px max-width). It provides enough room for standard forms, informational content, or multi-step confirmations without overwhelming the viewport.</p>
+      <p>Use this size for most dialog interactions in the application, including settings changes, resource creation, and team management tasks.</p>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-md')">Cancel</button>
+      <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closeModal('modal-md')">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- Size: Large -->
+<div class="sds-modal-overlay" id="modal-lg" onclick="closeOverlay(event)">
+  <div class="sds-modal sds-modal--lg">
+    <div class="sds-modal-header">
+      <h2 class="sds-modal-header__title">Large Modal</h2>
+      <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-lg')">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-modal-body">
+      <p>This is the large modal (720px max-width). Reserved for complex forms with multiple fields, data-heavy detail views, or content that benefits from additional horizontal space.</p>
+      <p>Common use cases include multi-step wizards, resource configuration panels, detailed comparison views, and bulk operation confirmations with expandable resource lists.</p>
+      <p>Avoid using the large size when a medium modal would suffice. Overly spacious modals can feel empty and reduce the sense of focus that dialogs are meant to provide.</p>
+    </div>
+    <div class="sds-modal-footer">
+      <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-lg')">Cancel</button>
+      <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closeModal('modal-lg')">Confirm</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ============ JAVASCRIPT ============ -->
+<script>
+  function openModal(id) {
+    var overlay = document.getElementById(id);
+    if (!overlay) return;
+    overlay.classList.add('is-open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(id) {
+    var overlay = document.getElementById(id);
+    if (!overlay) return;
+    overlay.classList.remove('is-open');
+    document.body.style.overflow = '';
+  }
+
+  function closeOverlay(event) {
+    /* Only close if the click target is the overlay itself, not the modal */
+    if (event.target === event.currentTarget) {
+      event.currentTarget.classList.remove('is-open');
+      document.body.style.overflow = '';
+    }
+  }
+
+  /* Close on Escape key */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') {
+      var openOverlays = document.querySelectorAll('.sds-modal-overlay.is-open');
+      openOverlays.forEach(function (overlay) {
+        overlay.classList.remove('is-open');
+      });
+      document.body.style.overflow = '';
+    }
+  });
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

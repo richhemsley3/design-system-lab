@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Tree View</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1400) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       TREE VIEW
+       Hierarchical tree for navigating file systems, nested
+       structures, and organizational hierarchies. Key for
+       enterprise products.
+       ============================================================ */
+
+    .sds-tree {
+      width: 100%;
+      font-size: var(--sds-type-label);
+      font-family: inherit;
+      user-select: none;
+    }
+
+    .sds-tree-item {
+      position: relative;
+    }
+
+    .sds-tree-item__row {
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding-left: var(--sds-space-300);
+      padding-right: var(--sds-space-300);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.12s ease;
+      gap: var(--sds-space-100);
+    }
+
+    .sds-tree-item__row:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    /* Selected state */
+    .sds-tree-item--selected > .sds-tree-item__row {
+      background: var(--sds-color-blue-050);
+    }
+    .sds-tree-item--selected > .sds-tree-item__row .sds-tree-item__label {
+      color: var(--sds-color-blue-750);
+    }
+    .sds-tree-item--selected > .sds-tree-item__row .sds-tree-item__icon {
+      color: var(--sds-color-blue-750);
+    }
+
+    /* Disabled state */
+    .sds-tree-item--disabled > .sds-tree-item__row {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: default;
+    }
+
+    /* Toggle chevron */
+    .sds-tree-item__toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--sds-color-warm-gray-400);
+      border-radius: 4px;
+      transition: color 0.12s ease;
+    }
+    .sds-tree-item__toggle:hover {
+      color: var(--sds-text-primary);
+    }
+    .sds-tree-item__toggle .material-symbols-outlined {
+      font-size: 18px;
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+    .sds-tree-item[data-expanded="true"] > .sds-tree-item__row .sds-tree-item__toggle .material-symbols-outlined {
+      transform: rotate(90deg);
+    }
+
+    /* Invisible toggle placeholder for leaf nodes */
+    .sds-tree-item__toggle--hidden {
+      visibility: hidden;
+    }
+
+    /* Icon */
+    .sds-tree-item__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--sds-color-warm-gray-450);
+      line-height: 1;
+    }
+    .sds-tree-item__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* Label */
+    .sds-tree-item__label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sds-text-primary);
+      font-size: var(--sds-type-label);
+      line-height: 1;
+    }
+
+    /* Meta / right-aligned info */
+    .sds-tree-item__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      flex-shrink: 0;
+      margin-left: auto;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    /* Status tag inside meta */
+    .sds-tree-item__tag {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--sds-space-050) var(--sds-space-200);
+      border-radius: 10px;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-medium);
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .sds-tree-item__tag--pii {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-700);
+    }
+    .sds-tree-item__tag--confidential {
+      background: var(--sds-color-orange-050);
+      color: var(--sds-color-orange-700);
+    }
+    .sds-tree-item__tag--public {
+      background: var(--sds-color-green-050);
+      color: var(--sds-color-green-700);
+    }
+    .sds-tree-item__tag--internal {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+
+    /* Nested children container */
+    .sds-tree-group {
+      display: none;
+      position: relative;
+      padding-left: var(--sds-space-400);
+    }
+    .sds-tree-item[data-expanded="true"] > .sds-tree-group {
+      display: block;
+    }
+
+    /* Indentation lines */
+    .sds-tree-group::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 22px;
+      bottom: 12px;
+      width: 1px;
+      background: var(--sds-color-warm-gray-150);
+    }
+
+    /* Depth indentation — each nested level adds 8px via padding-left on .sds-tree-group */
+
+    /* Focus visible */
+    .sds-tree-item__row:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--sds-border-focus), 0 0 0 5px rgba(1, 61, 91, 0.15);
+    }
+
+    /* ---- Checkbox (canonical, from selection-controls) ---- */
+    .sds-tree-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+    .sds-tree-checkbox input[type="checkbox"] {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      opacity: 0;
+      cursor: pointer;
+      margin: 0;
+      z-index: 1;
+    }
+    .sds-tree-checkbox .sds-checkbox-group-box {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      pointer-events: none;
+    }
+    .sds-tree-checkbox .sds-checkbox-group-box svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+    .sds-tree-checkbox input[type="checkbox"]:checked ~ .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+    .sds-tree-checkbox input[type="checkbox"]:checked ~ .sds-checkbox-group-box svg {
+      opacity: 1;
+    }
+    .sds-tree-checkbox:hover .sds-checkbox-group-box {
+      border-color: var(--sds-interactive-primary);
+    }
+    .sds-tree-checkbox input[type="checkbox"]:focus-visible ~ .sds-checkbox-group-box {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+    /* Indeterminate state */
+    .sds-tree-checkbox .sds-checkbox-group-dash {
+      display: none;
+      width: 8px;
+      height: 2px;
+      background: var(--sds-color-white);
+      border-radius: 1px;
+    }
+    .sds-tree-checkbox--indeterminate .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+    .sds-tree-checkbox--indeterminate .sds-checkbox-group-box svg {
+      display: none;
+    }
+    .sds-tree-checkbox--indeterminate .sds-checkbox-group-dash {
+      display: block;
+    }
+
+    /* ---- In-context file browser panel ---- */
+    .context-panel {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      max-width: 480px;
+    }
+    .context-panel__header {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+    }
+    .context-panel__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .context-panel__icon {
+      font-size: 18px;
+      color: var(--sds-color-warm-gray-450);
+      line-height: 1;
+    }
+    .context-panel__body {
+      padding: var(--sds-space-300) var(--sds-space-200);
+    }
+    .context-panel__count {
+      margin-left: auto;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+  <h1>Tree View</h1>
+  <p class="page-subtitle">Hierarchical tree for navigating file systems, nested structures, and organizational hierarchies. Essential for browsing projects, managing documents, and organizing team resources.</p>
+
+  <!-- ============================================================
+       BASIC TREE
+       ============================================================ -->
+  <h2>Basic Tree</h2>
+  <p>Simple expandable file hierarchy with folders and files. Click the chevron or row to expand and collapse branches.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Expandable file hierarchy</div>
+    <div class="sds-tree" role="tree" id="basic-tree" aria-label="File hierarchy">
+
+      <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+        <div class="sds-tree-item__row" tabindex="0">
+          <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+          <span class="sds-tree-item__label">Project Resources</span>
+        </div>
+        <div class="sds-tree-group" role="group">
+
+          <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Configuration</span>
+            </div>
+            <div class="sds-tree-group" role="group">
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">app-settings.yaml</span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">team-members.json</span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">integrations.json</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Templates</span>
+            </div>
+            <div class="sds-tree-group" role="group">
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">email-template.conf</span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">report-layout.pem</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sds-tree-item" role="treeitem">
+            <div class="sds-tree-item__row" tabindex="0">
+              <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+              <span class="sds-tree-item__label">project-plan.csv</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+        <div class="sds-tree-item__row" tabindex="0">
+          <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+          <span class="sds-tree-item__label">Reports</span>
+        </div>
+        <div class="sds-tree-group" role="group">
+          <div class="sds-tree-item" role="treeitem">
+            <div class="sds-tree-item__row" tabindex="0">
+              <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+              <span class="sds-tree-item__label">2024-q4-summary.log</span>
+            </div>
+          </div>
+          <div class="sds-tree-item" role="treeitem">
+            <div class="sds-tree-item__row" tabindex="0">
+              <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+              <span class="sds-tree-item__label">2025-q1-summary.log</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sds-tree-item" role="treeitem">
+        <div class="sds-tree-item__row" tabindex="0">
+          <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+          <span class="sds-tree-item__label">README.md</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH ICONS & METADATA
+       ============================================================ -->
+  <h2>With Icons &amp; Metadata</h2>
+  <p>Organizational hierarchy with right-aligned metadata. Nodes display item counts, status tags, and type indicators using the <code>.sds-tree-item__meta</code> slot.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Project workspace tree</div>
+    <div class="sds-tree" role="tree" id="meta-tree" aria-label="Project workspace">
+
+      <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+        <div class="sds-tree-item__row" tabindex="0">
+          <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">storage</span></span>
+          <span class="sds-tree-item__label">Marketing Team</span>
+          <span class="sds-tree-item__meta">
+            <span class="sds-tree-item__tag sds-tree-item__tag--pii">Active</span>
+            <span>1,247 documents</span>
+          </span>
+        </div>
+        <div class="sds-tree-group" role="group">
+
+          <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Campaigns</span>
+              <span class="sds-tree-item__meta">
+                <span class="sds-tree-item__tag sds-tree-item__tag--pii">Active</span>
+                <span>12 items</span>
+              </span>
+            </div>
+            <div class="sds-tree-group" role="group">
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">campaign_brief.pdf</span>
+                  <span class="sds-tree-item__meta"><span>PDF</span></span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">mail</span></span>
+                  <span class="sds-tree-item__label">email_templates.html</span>
+                  <span class="sds-tree-item__meta">
+                    <span class="sds-tree-item__tag sds-tree-item__tag--pii">Active</span>
+                    <span>HTML</span>
+                  </span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">badge</span></span>
+                  <span class="sds-tree-item__label">budget_forecast.xlsx</span>
+                  <span class="sds-tree-item__meta">
+                    <span class="sds-tree-item__tag sds-tree-item__tag--confidential">Confidential</span>
+                    <span>XLSX</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Financials</span>
+              <span class="sds-tree-item__meta">
+                <span class="sds-tree-item__tag sds-tree-item__tag--confidential">Confidential</span>
+                <span>8 items</span>
+              </span>
+            </div>
+            <div class="sds-tree-group" role="group">
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">invoice_log.csv</span>
+                  <span class="sds-tree-item__meta"><span>CSV</span></span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">attach_money</span></span>
+                  <span class="sds-tree-item__label">quarterly_spend.xlsx</span>
+                  <span class="sds-tree-item__meta">
+                    <span class="sds-tree-item__tag sds-tree-item__tag--confidential">Confidential</span>
+                    <span>XLSX</span>
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+        <div class="sds-tree-item__row" tabindex="0">
+          <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">storage</span></span>
+          <span class="sds-tree-item__label">Design Team</span>
+          <span class="sds-tree-item__meta">
+            <span class="sds-tree-item__tag sds-tree-item__tag--public">Public</span>
+            <span>340 documents</span>
+          </span>
+        </div>
+        <div class="sds-tree-group" role="group">
+          <div class="sds-tree-item" role="treeitem">
+            <div class="sds-tree-item__row" tabindex="0">
+              <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Brand Guidelines</span>
+              <span class="sds-tree-item__meta">
+                <span class="sds-tree-item__tag sds-tree-item__tag--public">Public</span>
+                <span>6 items</span>
+              </span>
+            </div>
+          </div>
+          <div class="sds-tree-item" role="treeitem">
+            <div class="sds-tree-item__row" tabindex="0">
+              <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Wireframes</span>
+              <span class="sds-tree-item__meta">
+                <span class="sds-tree-item__tag sds-tree-item__tag--internal">Internal</span>
+                <span>14 items</span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SELECTABLE TREE
+       ============================================================ -->
+  <h2>Selectable Tree</h2>
+  <p>Tree with checkbox selection. Selecting a parent node selects all of its children. Partial child selection shows an indeterminate state on the parent. Uses the canonical <code>.sds-tree-checkbox</code> pattern.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Checkbox selection with parent propagation</div>
+    <div class="sds-tree" role="tree" id="selectable-tree" aria-label="Selectable files">
+
+      <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+        <div class="sds-tree-item__row" tabindex="0">
+          <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+          <div class="sds-tree-checkbox">
+            <input type="checkbox" aria-label="Select Q1 Deliverables">
+            <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+          </div>
+          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+          <span class="sds-tree-item__label">Q1 Deliverables</span>
+        </div>
+        <div class="sds-tree-group" role="group">
+
+          <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <div class="sds-tree-checkbox">
+                <input type="checkbox" aria-label="Select Presentations">
+                <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+              </div>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Presentations</span>
+            </div>
+            <div class="sds-tree-group" role="group">
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <div class="sds-tree-checkbox">
+                    <input type="checkbox" aria-label="Select kickoff-deck.pptx">
+                    <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+                  </div>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">kickoff-deck.pptx</span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <div class="sds-tree-checkbox">
+                    <input type="checkbox" aria-label="Select stakeholder-review.pptx">
+                    <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+                  </div>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">stakeholder-review.pptx</span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <div class="sds-tree-checkbox">
+                    <input type="checkbox" aria-label="Select meeting-notes.docx">
+                    <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+                  </div>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">meeting-notes.docx</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <div class="sds-tree-checkbox">
+                <input type="checkbox" aria-label="Select Spreadsheets">
+                <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+              </div>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Spreadsheets</span>
+            </div>
+            <div class="sds-tree-group" role="group">
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <div class="sds-tree-checkbox">
+                    <input type="checkbox" aria-label="Select budget-tracker.xlsx">
+                    <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+                  </div>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">budget-tracker.xlsx</span>
+                </div>
+              </div>
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <div class="sds-tree-checkbox">
+                    <input type="checkbox" aria-label="Select timeline-milestones.xlsx">
+                    <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+                  </div>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                  <span class="sds-tree-item__label">timeline-milestones.xlsx</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+        <div class="sds-tree-item__row" tabindex="0">
+          <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+          <div class="sds-tree-checkbox">
+            <input type="checkbox" aria-label="Select Q2 Planning">
+            <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+          </div>
+          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+          <span class="sds-tree-item__label">Q2 Planning</span>
+        </div>
+        <div class="sds-tree-group" role="group">
+          <div class="sds-tree-item" role="treeitem">
+            <div class="sds-tree-item__row" tabindex="0">
+              <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+              <div class="sds-tree-checkbox">
+                <input type="checkbox" aria-label="Select roadmap-draft.docx">
+                <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+              </div>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+              <span class="sds-tree-item__label">roadmap-draft.docx</span>
+            </div>
+          </div>
+          <div class="sds-tree-item" role="treeitem">
+            <div class="sds-tree-item__row" tabindex="0">
+              <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+              <div class="sds-tree-checkbox">
+                <input type="checkbox" aria-label="Select resource-plan.json">
+                <span class="sds-checkbox-group-box">
+              <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <span class="sds-checkbox-group-dash"></span>
+            </span>
+              </div>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+              <span class="sds-tree-item__label">resource-plan.json</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT — DATA SOURCE BROWSER
+       ============================================================ -->
+  <h2>In Context</h2>
+  <p>A file browser panel showing a realistic project workspace tree: teams, folders, documents, and metadata. Demonstrates Tree View in a production layout with contextual panel chrome.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Project workspace browser panel</div>
+    <div class="context-panel">
+      <div class="context-panel__header">
+        <span class="material-symbols-outlined context-panel__icon">account_tree</span>
+        <span class="context-panel__title">Workspaces</span>
+        <span class="context-panel__count">3 projects</span>
+      </div>
+      <div class="context-panel__body">
+        <div class="sds-tree" role="tree" id="context-tree" aria-label="Workspaces">
+
+          <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Product Launch 2026</span>
+              <span class="sds-tree-item__meta"><span class="sds-tree-item__tag sds-tree-item__tag--pii">Active</span></span>
+            </div>
+            <div class="sds-tree-group" role="group">
+
+              <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+                  <span class="sds-tree-item__label">Planning</span>
+                </div>
+                <div class="sds-tree-group" role="group">
+
+                  <div class="sds-tree-item" role="treeitem" data-expanded="true" aria-expanded="true">
+                    <div class="sds-tree-item__row" tabindex="0">
+                      <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+                      <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+                      <span class="sds-tree-item__label">Strategy Documents</span>
+                      <span class="sds-tree-item__meta"><span>8 files</span></span>
+                    </div>
+                    <div class="sds-tree-group" role="group">
+                      <div class="sds-tree-item sds-tree-item--selected" role="treeitem">
+                        <div class="sds-tree-item__row" tabindex="0">
+                          <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                          <span class="sds-tree-item__label">executive-summary.docx</span>
+                          <span class="sds-tree-item__meta"><span>Owner</span></span>
+                        </div>
+                      </div>
+                      <div class="sds-tree-item" role="treeitem">
+                        <div class="sds-tree-item__row" tabindex="0">
+                          <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">text_fields</span></span>
+                          <span class="sds-tree-item__label">go-to-market-plan.docx</span>
+                          <span class="sds-tree-item__meta">
+                            <span class="sds-tree-item__tag sds-tree-item__tag--pii">Active</span>
+                            <span>DOCX</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="sds-tree-item" role="treeitem">
+                        <div class="sds-tree-item__row" tabindex="0">
+                          <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">mail</span></span>
+                          <span class="sds-tree-item__label">stakeholder-contacts.csv</span>
+                          <span class="sds-tree-item__meta">
+                            <span class="sds-tree-item__tag sds-tree-item__tag--confidential">Confidential</span>
+                            <span>CSV</span>
+                          </span>
+                        </div>
+                      </div>
+                      <div class="sds-tree-item" role="treeitem">
+                        <div class="sds-tree-item__row" tabindex="0">
+                          <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">calendar_today</span></span>
+                          <span class="sds-tree-item__label">launch-timeline.pdf</span>
+                          <span class="sds-tree-item__meta"><span>PDF</span></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+                    <div class="sds-tree-item__row" tabindex="0">
+                      <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+                      <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+                      <span class="sds-tree-item__label">Budget & Finance</span>
+                      <span class="sds-tree-item__meta"><span>12 files</span></span>
+                    </div>
+                    <div class="sds-tree-group" role="group">
+                      <div class="sds-tree-item" role="treeitem">
+                        <div class="sds-tree-item__row" tabindex="0">
+                          <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                          <span class="sds-tree-item__label">cost-breakdown.xlsx</span>
+                          <span class="sds-tree-item__meta"><span>XLSX</span></span>
+                        </div>
+                      </div>
+                      <div class="sds-tree-item" role="treeitem">
+                        <div class="sds-tree-item__row" tabindex="0">
+                          <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                          <span class="sds-tree-item__icon"><span class="material-symbols-outlined">attach_money</span></span>
+                          <span class="sds-tree-item__label">vendor-contracts.pdf</span>
+                          <span class="sds-tree-item__meta">
+                            <span class="sds-tree-item__tag sds-tree-item__tag--confidential">Confidential</span>
+                            <span>PDF</span>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+                  <span class="sds-tree-item__label">Reviews</span>
+                </div>
+                <div class="sds-tree-group" role="group">
+                  <div class="sds-tree-item" role="treeitem">
+                    <div class="sds-tree-item__row" tabindex="0">
+                      <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                      <span class="sds-tree-item__icon"><span class="material-symbols-outlined">description</span></span>
+                      <span class="sds-tree-item__label">feedback-log.csv</span>
+                      <span class="sds-tree-item__meta"><span>6 entries</span></span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <div class="sds-tree-item" role="treeitem" aria-expanded="false">
+            <div class="sds-tree-item__row" tabindex="0">
+              <button class="sds-tree-item__toggle" aria-label="Toggle"><span class="material-symbols-outlined">chevron_right</span></button>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Internal Operations</span>
+              <span class="sds-tree-item__meta"><span class="sds-tree-item__tag sds-tree-item__tag--internal">Internal</span></span>
+            </div>
+            <div class="sds-tree-group" role="group">
+              <div class="sds-tree-item" role="treeitem">
+                <div class="sds-tree-item__row" tabindex="0">
+                  <span class="sds-tree-item__toggle sds-tree-item__toggle--hidden"><span class="material-symbols-outlined">chevron_right</span></span>
+                  <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+                  <span class="sds-tree-item__label">Monthly Reports</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="sds-tree-item sds-tree-item--disabled" role="treeitem" aria-disabled="true">
+            <div class="sds-tree-item__row" tabindex="-1">
+              <button class="sds-tree-item__toggle" aria-label="Toggle" disabled><span class="material-symbols-outlined">chevron_right</span></button>
+              <span class="sds-tree-item__icon"><span class="material-symbols-outlined">folder</span></span>
+              <span class="sds-tree-item__label">Archived Project (read-only)</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Tree View — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Font family</td>
+        <td><code>--sds-font-sans</code> (inherited)</td>
+      </tr>
+      <tr>
+        <td>Font size</td>
+        <td><code>--sds-type-label</code></td>
+      </tr>
+      <tr>
+        <td>Row height</td>
+        <td><code>36px</code></td>
+      </tr>
+      <tr>
+        <td>Row padding (left)</td>
+        <td><code>--sds-space-300</code> (12px)</td>
+      </tr>
+      <tr>
+        <td>Depth indentation</td>
+        <td><code>--sds-space-400</code> (16px) per level via nested <code>.sds-tree-group</code> padding</td>
+      </tr>
+      <tr>
+        <td>Hover background</td>
+        <td><code>--sds-color-warm-gray-050</code></td>
+      </tr>
+      <tr>
+        <td>Selected background</td>
+        <td><code>--sds-color-blue-050</code></td>
+      </tr>
+      <tr>
+        <td>Selected text color</td>
+        <td><code>--sds-color-blue-750</code></td>
+      </tr>
+      <tr>
+        <td>Indentation line</td>
+        <td><code>1px solid --sds-color-warm-gray-150</code></td>
+      </tr>
+      <tr>
+        <td>Toggle icon</td>
+        <td>Material Symbols <code>chevron_right</code>, 18px</td>
+      </tr>
+      <tr>
+        <td>Toggle rotation</td>
+        <td><code>90deg</code> when expanded, <code>0.2s ease</code></td>
+      </tr>
+      <tr>
+        <td>Toggle color</td>
+        <td><code>--sds-color-warm-gray-400</code></td>
+      </tr>
+      <tr>
+        <td>Node icon size</td>
+        <td><code>18px</code></td>
+      </tr>
+      <tr>
+        <td>Node icon color</td>
+        <td><code>--sds-color-warm-gray-450</code></td>
+      </tr>
+      <tr>
+        <td>Meta text color</td>
+        <td><code>--sds-color-warm-gray-400</code></td>
+      </tr>
+      <tr>
+        <td>Meta font size</td>
+        <td><code>--sds-type-caption</code></td>
+      </tr>
+      <tr>
+        <td>Disabled opacity</td>
+        <td><code>0.4</code></td>
+      </tr>
+      <tr>
+        <td>Focus ring</td>
+        <td><code>border: 2px solid var(--sds-border-focus); box-shadow: 0 0 0 3px rgba(1,61,91,0.15)</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Dimension</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Row height</td>
+        <td>36px</td>
+      </tr>
+      <tr>
+        <td>Toggle button</td>
+        <td>20 x 20px</td>
+      </tr>
+      <tr>
+        <td>Node icon</td>
+        <td>18 x 18px</td>
+      </tr>
+      <tr>
+        <td>Checkbox</td>
+        <td>16 x 16px</td>
+      </tr>
+      <tr>
+        <td>Tag border radius</td>
+        <td>10px</td>
+      </tr>
+      <tr>
+        <td>Row border radius</td>
+        <td>6px</td>
+      </tr>
+      <tr>
+        <td>Indentation per depth</td>
+        <td>16px (via <code>.sds-tree-group</code> padding-left)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-tree</code></td><td>Root container for the tree</td></tr>
+      <tr><td><code>.sds-tree-item</code></td><td>Individual tree node (branch or leaf)</td></tr>
+      <tr><td><code>.sds-tree-item__row</code></td><td>Clickable row content wrapper</td></tr>
+      <tr><td><code>.sds-tree-item__toggle</code></td><td>Expand/collapse chevron button</td></tr>
+      <tr><td><code>.sds-tree-item__toggle--hidden</code></td><td>Invisible placeholder toggle for leaf nodes (preserves alignment)</td></tr>
+      <tr><td><code>.sds-tree-item__icon</code></td><td>File or folder icon area</td></tr>
+      <tr><td><code>.sds-tree-item__label</code></td><td>Text label for the node</td></tr>
+      <tr><td><code>.sds-tree-item__meta</code></td><td>Right-aligned metadata slot (counts, tags, types)</td></tr>
+      <tr><td><code>.sds-tree-item__tag</code></td><td>Inline status tag within meta</td></tr>
+      <tr><td><code>.sds-tree-group</code></td><td>Container for nested children, provides depth indentation</td></tr>
+      <tr><td><code>.sds-tree-item--selected</code></td><td>Modifier: highlighted selected state</td></tr>
+      <tr><td><code>.sds-tree-item--disabled</code></td><td>Modifier: non-interactive disabled state</td></tr>
+      <tr><td><code>.sds-tree-checkbox</code></td><td>Checkbox wrapper for selectable tree variant; uses canonical <code>.sds-checkbox-group-box</code> from selection-controls</td></tr>
+    </tbody>
+  </table>
+
+  <h3>ARIA &amp; Keyboard</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Attribute / Key</th><th>Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>role="tree"</code></td><td>Applied to the root <code>.sds-tree</code> container</td></tr>
+      <tr><td><code>role="treeitem"</code></td><td>Applied to each <code>.sds-tree-item</code></td></tr>
+      <tr><td><code>role="group"</code></td><td>Applied to each <code>.sds-tree-group</code> containing children</td></tr>
+      <tr><td><code>aria-expanded</code></td><td>Set on expandable tree items; <code>true</code> when open</td></tr>
+      <tr><td><code>aria-disabled</code></td><td>Set on disabled tree items</td></tr>
+      <tr><td><code>Enter</code> / <code>Space</code></td><td>Toggle expand/collapse on focused node; toggle checkbox in selectable mode</td></tr>
+      <tr><td><code>ArrowDown</code></td><td>Move focus to next visible node</td></tr>
+      <tr><td><code>ArrowUp</code></td><td>Move focus to previous visible node</td></tr>
+      <tr><td><code>ArrowRight</code></td><td>Expand collapsed node or move to first child</td></tr>
+      <tr><td><code>ArrowLeft</code></td><td>Collapse expanded node or move to parent</td></tr>
+      <tr><td><code>Home</code></td><td>Move focus to first node</td></tr>
+      <tr><td><code>End</code></td><td>Move focus to last visible node</td></tr>
+      <tr><td><code>data-expanded</code></td><td>Data attribute controlling visual expand state</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       JAVASCRIPT — TREE BEHAVIOR
+       ============================================================ -->
+  <script>
+    (function () {
+      /* ---- Expand / Collapse ---- */
+      function toggleExpand(item) {
+        var isExpanded = item.getAttribute('data-expanded') === 'true';
+        if (isExpanded) {
+          item.removeAttribute('data-expanded');
+          item.setAttribute('aria-expanded', 'false');
+        } else {
+          item.setAttribute('data-expanded', 'true');
+          item.setAttribute('aria-expanded', 'true');
+        }
+      }
+
+      function hasChildren(item) {
+        return !!item.querySelector(':scope > .sds-tree-group');
+      }
+
+      /* ---- Click handler for toggle buttons ---- */
+      document.addEventListener('click', function (e) {
+        var toggle = e.target.closest('.sds-tree-item__toggle');
+        if (toggle && !toggle.classList.contains('sds-tree-item__toggle--hidden')) {
+          e.stopPropagation();
+          var item = toggle.closest('.sds-tree-item');
+          if (item && hasChildren(item)) {
+            toggleExpand(item);
+          }
+          return;
+        }
+
+        /* ---- Checkbox click ---- */
+        var checkbox = e.target.closest('.sds-tree-checkbox');
+        if (checkbox) {
+          e.stopPropagation();
+          var input = checkbox.querySelector('input[type="checkbox"]');
+          // The native click already toggled the input
+          var isChecked = input.checked;
+          var item = checkbox.closest('.sds-tree-item');
+          propagateDown(item, isChecked);
+          propagateUp(item);
+          return;
+        }
+
+        /* ---- Row click (expand/collapse for branch nodes) ---- */
+        var row = e.target.closest('.sds-tree-item__row');
+        if (row) {
+          var item = row.closest('.sds-tree-item');
+          if (item && hasChildren(item)) {
+            toggleExpand(item);
+          }
+        }
+      });
+
+      /* ---- Keyboard support ---- */
+      document.addEventListener('keydown', function (e) {
+        var row = e.target.closest('.sds-tree-item__row');
+        if (!row) return;
+
+        /* Enter / Space: toggle expand or checkbox */
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          var item = row.closest('.sds-tree-item');
+          if (!item) return;
+
+          var checkbox = row.querySelector('.sds-tree-checkbox input[type="checkbox"]');
+          if (checkbox) {
+            checkbox.checked = !checkbox.checked;
+            propagateDown(item, checkbox.checked);
+            propagateUp(item);
+            return;
+          }
+
+          if (hasChildren(item)) {
+            toggleExpand(item);
+          }
+          return;
+        }
+
+        /* Arrow key navigation */
+        var arrowKeys = ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft', 'Home', 'End'];
+        if (arrowKeys.indexOf(e.key) === -1) return;
+        e.preventDefault();
+
+        var tree = row.closest('.sds-tree');
+        if (!tree) return;
+        var item = row.closest('.sds-tree-item');
+
+        function getVisibleRows(treeRoot) {
+          var allRows = Array.from(treeRoot.querySelectorAll('.sds-tree-item__row'));
+          return allRows.filter(function (r) {
+            var parent = r.closest('.sds-tree-group');
+            while (parent && treeRoot.contains(parent)) {
+              var parentItem = parent.parentElement;
+              if (parentItem && parentItem.getAttribute('data-expanded') !== 'true') {
+                return false;
+              }
+              parent = parentItem ? parentItem.parentElement : null;
+              if (parent && !parent.classList.contains('sds-tree-group')) parent = null;
+            }
+            return true;
+          });
+        }
+
+        var visibleRows = getVisibleRows(tree);
+        var currentIndex = visibleRows.indexOf(row);
+
+        if (e.key === 'ArrowDown') {
+          if (currentIndex < visibleRows.length - 1) {
+            visibleRows[currentIndex + 1].focus();
+          }
+        } else if (e.key === 'ArrowUp') {
+          if (currentIndex > 0) {
+            visibleRows[currentIndex - 1].focus();
+          }
+        } else if (e.key === 'ArrowRight') {
+          if (item && hasChildren(item)) {
+            var isExpanded = item.getAttribute('data-expanded') === 'true';
+            if (!isExpanded) {
+              toggleExpand(item);
+            } else {
+              var group = item.querySelector(':scope > .sds-tree-group');
+              if (group) {
+                var firstChildRow = group.querySelector('.sds-tree-item__row');
+                if (firstChildRow) firstChildRow.focus();
+              }
+            }
+          }
+        } else if (e.key === 'ArrowLeft') {
+          if (item && hasChildren(item) && item.getAttribute('data-expanded') === 'true') {
+            toggleExpand(item);
+          } else {
+            var parentGroup = item ? item.parentElement : null;
+            if (parentGroup && parentGroup.classList.contains('sds-tree-group')) {
+              var parentItem = parentGroup.closest('.sds-tree-item');
+              if (parentItem) {
+                var parentRow = parentItem.querySelector(':scope > .sds-tree-item__row');
+                if (parentRow) parentRow.focus();
+              }
+            }
+          }
+        } else if (e.key === 'Home') {
+          if (visibleRows.length > 0) {
+            visibleRows[0].focus();
+          }
+        } else if (e.key === 'End') {
+          if (visibleRows.length > 0) {
+            visibleRows[visibleRows.length - 1].focus();
+          }
+        }
+      });
+
+      /* ---- Checkbox propagation ---- */
+      function propagateDown(item, checked) {
+        var children = item.querySelectorAll('.sds-tree-group .sds-tree-item');
+        children.forEach(function (child) {
+          var cb = child.querySelector(':scope > .sds-tree-item__row .sds-tree-checkbox input[type="checkbox"]');
+          if (cb) {
+            cb.checked = checked;
+            var wrapper = cb.closest('.sds-tree-checkbox');
+            wrapper.classList.remove('sds-tree-checkbox--indeterminate');
+          }
+        });
+        // Also clear indeterminate on the item itself
+        var selfWrapper = item.querySelector(':scope > .sds-tree-item__row .sds-tree-checkbox');
+        if (selfWrapper) {
+          selfWrapper.classList.remove('sds-tree-checkbox--indeterminate');
+        }
+      }
+
+      function propagateUp(item) {
+        var parent = item.parentElement;
+        if (!parent || !parent.classList.contains('sds-tree-group')) return;
+        var parentItem = parent.closest('.sds-tree-item');
+        if (!parentItem) return;
+
+        var parentCb = parentItem.querySelector(':scope > .sds-tree-item__row .sds-tree-checkbox input[type="checkbox"]');
+        if (!parentCb) return;
+
+        var siblings = parent.querySelectorAll(':scope > .sds-tree-item');
+        var total = 0;
+        var checked = 0;
+        siblings.forEach(function (sib) {
+          var cb = sib.querySelector(':scope > .sds-tree-item__row .sds-tree-checkbox input[type="checkbox"]');
+          if (cb) {
+            total++;
+            if (cb.checked) checked++;
+          }
+        });
+
+        var wrapper = parentCb.closest('.sds-tree-checkbox');
+
+        if (checked === 0) {
+          parentCb.checked = false;
+          wrapper.classList.remove('sds-tree-checkbox--indeterminate');
+        } else if (checked === total) {
+          parentCb.checked = true;
+          wrapper.classList.remove('sds-tree-checkbox--indeterminate');
+        } else {
+          parentCb.checked = false;
+          wrapper.classList.add('sds-tree-checkbox--indeterminate');
+        }
+
+        // Continue propagating up
+        propagateUp(parentItem);
+      }
+      /* ---- Dynamic toggle aria-labels ---- */
+      document.querySelectorAll('.sds-tree-item__toggle').forEach(function (btn) {
+        if (btn.classList.contains('sds-tree-item__toggle--hidden')) return;
+        var row = btn.closest('.sds-tree-item__row');
+        if (!row) return;
+        var label = row.querySelector('.sds-tree-item__label');
+        if (label) {
+          btn.setAttribute('aria-label', 'Toggle ' + label.textContent.trim());
+        }
+      });
+    })();
+  </script>
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

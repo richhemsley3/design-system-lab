@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Data Lists</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       DATA LIST — VERTICAL KEY-VALUE
+       Stacked rows with label left, value right. Uses semantic
+       dl/dt/dd markup for accessible key-value display.
+       ============================================================ */
+
+    .sds-data-list {
+      margin: 0;
+      padding: 0;
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .sds-kv {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-kv:last-child {
+      border-bottom: none;
+    }
+
+    .sds-kv__label {
+      margin: 0;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-color-warm-gray-450);
+      flex-shrink: 0;
+      min-width: 140px;
+    }
+
+    .sds-kv__value {
+      margin: 0;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+      text-align: right;
+    }
+    .sds-kv__value code {
+      font-size: var(--sds-type-caption);
+    }
+
+    /* ============================================================
+       HORIZONTAL KEY-VALUE — GRID LAYOUT
+       Label above value, arranged in a responsive grid.
+       ============================================================ */
+
+    .sds-kv-grid {
+      display: grid;
+      gap: var(--sds-space-600);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-500) var(--sds-space-500);
+    }
+    .sds-kv-grid--2col { grid-template-columns: 1fr 1fr; }
+    .sds-kv-grid--3col { grid-template-columns: 1fr 1fr 1fr; }
+
+    .sds-kv-grid__item { display: flex; flex-direction: column; gap: var(--sds-space-050); }
+    .sds-kv-grid__label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+    }
+    .sds-kv-grid__value {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+    /* ============================================================
+       WITH ICONS & TAGS
+       Values that include inline status tags, icons, or badges.
+       ============================================================ */
+
+    .sds-kv__value--with-icon {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+    }
+    .sds-kv__value--with-icon .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* Tags (canonical — matches tags.html) */
+    .sds-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .sds-tag--success {
+      background: var(--sds-color-green-025);
+      color: var(--sds-color-green-500);
+    }
+    .sds-tag--error {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+    .sds-tag--warning {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+    .sds-tag--info {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+    .sds-tag--neutral {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+    .sds-tag--purple {
+      background: var(--sds-status-purple-bg);
+      color: var(--sds-color-purple-550);
+    }
+    .sds-tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       GROUPED DATA LIST
+       Sections with group headers and dividers, like a detail
+       panel sidebar.
+       ============================================================ */
+
+    .sds-data-list--grouped {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .sds-data-list__group {
+      padding: 0;
+    }
+    .sds-data-list__group + .sds-data-list__group {
+      border-top: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+    .sds-data-list__group-header {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      padding: var(--sds-space-300) var(--sds-space-400) var(--sds-space-100);
+      margin: 0;
+      background: var(--sds-color-warm-gray-025);
+    }
+
+    .sds-data-list--grouped .sds-kv {
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-data-list--grouped .sds-kv:last-child {
+      border-bottom: none;
+    }
+
+    /* ============================================================
+       INLINE EDITABLE
+       Key-value where clicking the value reveals an input field.
+       ============================================================ */
+
+    .sds-kv--editable .sds-kv__value {
+      cursor: pointer;
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .sds-kv--editable .sds-kv__value:hover {
+      border-color: var(--sds-color-warm-gray-200);
+      background: var(--sds-color-warm-gray-025);
+    }
+    .sds-kv--editable .sds-kv__value::after {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-left: var(--sds-space-150);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%239a938e'%3E%3Cpath d='M14.85 3.15a1.5 1.5 0 0 1 2.12 2.12l-.7.7-2.12-2.12.7-.7ZM12.73 5.27 4.5 13.5V15.62h2.12l8.23-8.23-2.12-2.12Z'/%3E%3C/svg%3E");
+      background-size: contain;
+      vertical-align: middle;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+    .sds-kv--editable .sds-kv__value:hover::after {
+      opacity: 1;
+    }
+
+    .sds-kv__edit-form {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      text-align: right;
+    }
+    .sds-kv__edit-input {
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+      border: 2px solid var(--sds-border-focus);
+      border-radius: 4px;
+      padding: var(--sds-space-050) calc(var(--sds-space-200) - 1px);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+      min-width: 180px;
+    }
+    .sds-kv__edit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: 1px solid var(--sds-color-warm-gray-200);
+      background: var(--sds-color-white);
+      cursor: pointer;
+      color: var(--sds-color-warm-gray-500);
+      transition: background 0.12s ease;
+    }
+    .sds-kv__edit-btn:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+    .sds-kv__edit-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-kv__edit-btn--save {
+      border-color: var(--sds-color-blue-300);
+      color: var(--sds-color-blue-500);
+    }
+    .sds-kv__edit-btn--save:hover {
+      background: var(--sds-color-blue-050);
+    }
+    .sds-kv__edit-btn .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* ============================================================
+       CARD-STYLE DETAIL PANEL
+       A complete detail card combining header and data lists.
+       ============================================================ */
+
+    .sds-detail-panel {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .sds-detail-panel__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+    }
+    .sds-detail-panel__title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+    }
+    .sds-detail-panel__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-500);
+    }
+    .sds-detail-panel__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+    .sds-detail-panel__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-700);
+      margin: 0;
+    }
+    .sds-detail-panel__subtitle {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin: 0;
+    }
+    .sds-detail-panel__body {
+      padding: 0;
+    }
+    .sds-detail-panel__body .sds-kv {
+      border-left: none;
+      border-right: none;
+    }
+    .sds-detail-panel__body .sds-kv:last-child {
+      border-bottom: none;
+    }
+    .sds-detail-panel__footer {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-300) var(--sds-space-500);
+      border-top: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+    }
+    .sds-detail-panel__footer-note {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+    }
+    .sds-detail-panel__footer-note .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+  <h1>Data Lists</h1>
+  <p class="page-subtitle">Key-value pair layouts for displaying resource metadata, configuration details, and policy summaries. Built on semantic <code>&lt;dl&gt;</code> markup.</p>
+
+  <!-- ============================================================
+       VERTICAL KEY-VALUE LIST
+       ============================================================ -->
+  <h2>Vertical Key-Value List</h2>
+  <p>Stacked rows with label on the left and value on the right. Uses <code>&lt;dl&gt;</code>, <code>&lt;dt&gt;</code>, <code>&lt;dd&gt;</code> for accessible semantics. Rows are separated by 1 px dividers.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Resource details</div>
+    <dl class="sds-data-list">
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Resource Name</dt>
+        <dd class="sds-kv__value">prod-analytics-db</dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Type</dt>
+        <dd class="sds-kv__value">PostgreSQL 15.4</dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Host</dt>
+        <dd class="sds-kv__value"><code>db-prod-01.internal.acme.io</code></dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Port</dt>
+        <dd class="sds-kv__value">5432</dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Owner</dt>
+        <dd class="sds-kv__value">Platform Engineering</dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Created</dt>
+        <dd class="sds-kv__value">Jan 12, 2026</dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Last Scanned</dt>
+        <dd class="sds-kv__value">Mar 14, 2026 — 3:42 PM</dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- ============================================================
+       HORIZONTAL KEY-VALUE
+       ============================================================ -->
+  <h2>Horizontal Key-Value</h2>
+  <p>Labels sit above values in a responsive grid. Use <code>.sds-kv-grid--2col</code> or <code>.sds-kv-grid--3col</code> modifiers for column count.</p>
+
+  <h3>2-Column Layout</h3>
+  <div class="demo-block">
+    <div class="demo-label">Policy summary</div>
+    <div class="sds-kv-grid sds-kv-grid--2col">
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Policy Name</span>
+        <span class="sds-kv-grid__value">PCI-DSS Compliance</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Enforcement</span>
+        <span class="sds-kv-grid__value">Active — Block &amp; Alert</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Applied To</span>
+        <span class="sds-kv-grid__value">12 data stores</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Last Updated</span>
+        <span class="sds-kv-grid__value">Mar 10, 2026</span>
+      </div>
+    </div>
+  </div>
+
+  <h3>3-Column Layout</h3>
+  <div class="demo-block">
+    <div class="demo-label">Scan results overview</div>
+    <div class="sds-kv-grid sds-kv-grid--3col">
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Total Findings</span>
+        <span class="sds-kv-grid__value">1,247</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Critical</span>
+        <span class="sds-kv-grid__value">18</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">High</span>
+        <span class="sds-kv-grid__value">63</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Scan Duration</span>
+        <span class="sds-kv-grid__value">4m 32s</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Tables Scanned</span>
+        <span class="sds-kv-grid__value">342</span>
+      </div>
+      <div class="sds-kv-grid__item">
+        <span class="sds-kv-grid__label">Columns Analyzed</span>
+        <span class="sds-kv-grid__value">2,891</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH ICONS & TAGS
+       ============================================================ -->
+  <h2>With Icons &amp; Tags</h2>
+  <p>Values can include inline status tags, Material Symbols icons, or badges to communicate state alongside data.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Connection details with status indicators</div>
+    <dl class="sds-data-list">
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Connection Status</dt>
+        <dd class="sds-kv__value">
+          <span class="sds-kv__value--with-icon">
+            <span class="sds-tag sds-tag--success"><span class="sds-tag-dot"></span>Connected</span>
+          </span>
+        </dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Encryption</dt>
+        <dd class="sds-kv__value">
+          <span class="sds-kv__value--with-icon">
+            <span class="material-symbols-outlined" style="color: var(--sds-color-green-500);">lock</span>
+            TLS 1.3
+          </span>
+        </dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Compliance</dt>
+        <dd class="sds-kv__value">
+          <span class="sds-kv__value--with-icon">
+            <span class="sds-tag sds-tag--info">SOC 2</span>
+            <span class="sds-tag sds-tag--info">HIPAA</span>
+            <span class="sds-tag sds-tag--purple">PCI-DSS</span>
+          </span>
+        </dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Sensitivity Level</dt>
+        <dd class="sds-kv__value">
+          <span class="sds-kv__value--with-icon">
+            <span class="sds-tag sds-tag--error"><span class="sds-tag-dot"></span>Critical</span>
+          </span>
+        </dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Access Pattern</dt>
+        <dd class="sds-kv__value">
+          <span class="sds-kv__value--with-icon">
+            <span class="material-symbols-outlined" style="color: var(--sds-color-warm-gray-400);">group</span>
+            42 users, 7 service accounts
+          </span>
+        </dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Last Activity</dt>
+        <dd class="sds-kv__value">
+          <span class="sds-kv__value--with-icon">
+            <span class="material-symbols-outlined" style="color: var(--sds-color-warm-gray-400);">schedule</span>
+            2 minutes ago
+          </span>
+        </dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- ============================================================
+       GROUPED DATA LIST
+       ============================================================ -->
+  <h2>Grouped Data List</h2>
+  <p>Organize related key-value pairs under section headers with visual dividers. Ideal for detail panel sidebars that display multiple categories of metadata.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Database resource — grouped metadata</div>
+    <div class="sds-data-list--grouped">
+      <div class="sds-data-list__group">
+        <div class="sds-data-list__group-header">Connection</div>
+        <dl style="margin:0; padding:0;">
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Host</dt>
+            <dd class="sds-kv__value"><code>rds-prod-west.amazonaws.com</code></dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Port</dt>
+            <dd class="sds-kv__value">5432</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Database</dt>
+            <dd class="sds-kv__value">customer_analytics</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">SSL Mode</dt>
+            <dd class="sds-kv__value">verify-full</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="sds-data-list__group">
+        <div class="sds-data-list__group-header">Classification</div>
+        <dl style="margin:0; padding:0;">
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Data Categories</dt>
+            <dd class="sds-kv__value">PII, Financial, PHI</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Sensitivity</dt>
+            <dd class="sds-kv__value">
+              <span class="sds-tag sds-tag--error"><span class="sds-tag-dot"></span>Critical</span>
+            </dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Retention Policy</dt>
+            <dd class="sds-kv__value">7 years</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="sds-data-list__group">
+        <div class="sds-data-list__group-header">Audit</div>
+        <dl style="margin:0; padding:0;">
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Last Scanned</dt>
+            <dd class="sds-kv__value">Mar 14, 2026 — 3:42 PM</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Findings</dt>
+            <dd class="sds-kv__value">18 critical, 63 high</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Next Scheduled</dt>
+            <dd class="sds-kv__value">Mar 21, 2026</dd>
+          </div>
+        </dl>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       INLINE EDITABLE
+       ============================================================ -->
+  <h2>Inline Editable</h2>
+  <p>Click any value to edit it in place. A pencil icon appears on hover. Saving commits the change; cancel reverts to the original value.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Editable resource properties</div>
+    <dl class="sds-data-list" id="editable-list">
+      <div class="sds-kv sds-kv--editable">
+        <dt class="sds-kv__label">Display Name</dt>
+        <dd class="sds-kv__value" data-field="display-name">Production Analytics DB</dd>
+      </div>
+      <div class="sds-kv sds-kv--editable">
+        <dt class="sds-kv__label">Description</dt>
+        <dd class="sds-kv__value" data-field="description">Primary analytics data store for customer metrics</dd>
+      </div>
+      <div class="sds-kv sds-kv--editable">
+        <dt class="sds-kv__label">Owner</dt>
+        <dd class="sds-kv__value" data-field="owner">Platform Engineering</dd>
+      </div>
+      <div class="sds-kv sds-kv--editable">
+        <dt class="sds-kv__label">Tags</dt>
+        <dd class="sds-kv__value" data-field="tags">production, analytics, pii</dd>
+      </div>
+      <div class="sds-kv">
+        <dt class="sds-kv__label">Resource ID</dt>
+        <dd class="sds-kv__value" style="color: var(--sds-color-warm-gray-400);"><code>res-4f8a2c1e-9b3d</code></dd>
+      </div>
+    </dl>
+  </div>
+
+  <!-- ============================================================
+       CARD-STYLE DETAIL PANEL
+       ============================================================ -->
+  <h2>Card-style Detail Panel</h2>
+  <p>A complete detail panel combining a header area with icon, title, and subtitle alongside a full data list body. Suitable for resource summaries, connection profiles, and policy overviews.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Database connection detail panel</div>
+    <div class="sds-detail-panel">
+      <div class="sds-detail-panel__header">
+        <div class="sds-detail-panel__title-row">
+          <div class="sds-detail-panel__icon">
+            <span class="material-symbols-outlined">database</span>
+          </div>
+          <div>
+            <div class="sds-detail-panel__title">prod-analytics-db</div>
+            <div class="sds-detail-panel__subtitle">PostgreSQL 15.4 &middot; us-west-2</div>
+          </div>
+        </div>
+        <span class="sds-tag sds-tag--success"><span class="sds-tag-dot"></span>Connected</span>
+      </div>
+      <div class="sds-detail-panel__body">
+        <dl style="margin:0; padding:0;">
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Host</dt>
+            <dd class="sds-kv__value"><code>rds-prod-west.amazonaws.com</code></dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Port</dt>
+            <dd class="sds-kv__value">5432</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Database</dt>
+            <dd class="sds-kv__value">customer_analytics</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Schema</dt>
+            <dd class="sds-kv__value">public</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Encryption</dt>
+            <dd class="sds-kv__value">
+              <span class="sds-kv__value--with-icon">
+                <span class="material-symbols-outlined" style="color: var(--sds-color-green-500);">lock</span>
+                TLS 1.3
+              </span>
+            </dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Auth Method</dt>
+            <dd class="sds-kv__value">IAM Role</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Sensitivity</dt>
+            <dd class="sds-kv__value">
+              <span class="sds-tag sds-tag--error"><span class="sds-tag-dot"></span>Critical</span>
+            </dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Compliance</dt>
+            <dd class="sds-kv__value">
+              <span class="sds-kv__value--with-icon">
+                <span class="sds-tag sds-tag--info">SOC 2</span>
+                <span class="sds-tag sds-tag--info">HIPAA</span>
+              </span>
+            </dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Owner</dt>
+            <dd class="sds-kv__value">Platform Engineering</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Last Scanned</dt>
+            <dd class="sds-kv__value">Mar 14, 2026 — 3:42 PM</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="sds-detail-panel__footer">
+        <span class="sds-detail-panel__footer-note">
+          <span class="material-symbols-outlined">info</span>
+          Created Jan 12, 2026 &middot; 42 users with access
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-block" style="margin-top: var(--sds-space-400);">
+    <div class="demo-label">Policy summary detail panel</div>
+    <div class="sds-detail-panel">
+      <div class="sds-detail-panel__header">
+        <div class="sds-detail-panel__title-row">
+          <div class="sds-detail-panel__icon" style="background: var(--sds-color-purple-050); color: var(--sds-color-purple-550);">
+            <span class="material-symbols-outlined">shield</span>
+          </div>
+          <div>
+            <div class="sds-detail-panel__title">PCI-DSS Data Protection</div>
+            <div class="sds-detail-panel__subtitle">Masking &amp; Access Control Policy</div>
+          </div>
+        </div>
+        <span class="sds-tag sds-tag--purple"><span class="sds-tag-dot"></span>Active</span>
+      </div>
+      <div class="sds-detail-panel__body">
+        <dl style="margin:0; padding:0;">
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Enforcement</dt>
+            <dd class="sds-kv__value">Block &amp; Alert</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Applied To</dt>
+            <dd class="sds-kv__value">12 data stores</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Rules</dt>
+            <dd class="sds-kv__value">24 active rules</dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Masking</dt>
+            <dd class="sds-kv__value">
+              <span class="sds-kv__value--with-icon">
+                <span class="sds-tag sds-tag--success">Enabled</span>
+              </span>
+            </dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Violations (30d)</dt>
+            <dd class="sds-kv__value">
+              <span class="sds-kv__value--with-icon">
+                <span class="sds-tag sds-tag--warning"><span class="sds-tag-dot"></span>7 pending</span>
+              </span>
+            </dd>
+          </div>
+          <div class="sds-kv">
+            <dt class="sds-kv__label">Last Updated</dt>
+            <dd class="sds-kv__value">Mar 10, 2026</dd>
+          </div>
+        </dl>
+      </div>
+      <div class="sds-detail-panel__footer">
+        <span class="sds-detail-panel__footer-note">
+          <span class="material-symbols-outlined">info</span>
+          Created Nov 3, 2025 &middot; Managed by Security Team
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Vertical Data List — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Container background</td>
+        <td><code>--sds-color-white</code></td>
+        <td>Card surface color</td>
+      </tr>
+      <tr>
+        <td>Container border</td>
+        <td><code>--sds-color-warm-gray-150</code></td>
+        <td>Subtle boundary</td>
+      </tr>
+      <tr>
+        <td>Container radius</td>
+        <td><code>8px</code></td>
+        <td>Rounded corners</td>
+      </tr>
+      <tr>
+        <td>Row padding</td>
+        <td><code>--sds-space-300</code> / <code>--sds-space-400</code></td>
+        <td>Vertical / horizontal</td>
+      </tr>
+      <tr>
+        <td>Row divider</td>
+        <td><code>--sds-color-warm-gray-100</code></td>
+        <td>1 px bottom border</td>
+      </tr>
+      <tr>
+        <td>Label font size</td>
+        <td><code>--sds-type-label</code></td>
+        <td>Key text</td>
+      </tr>
+      <tr>
+        <td>Label color</td>
+        <td><code>--sds-color-warm-gray-450</code></td>
+        <td>Secondary tone</td>
+      </tr>
+      <tr>
+        <td>Value font size</td>
+        <td><code>--sds-type-label</code></td>
+        <td>Value text</td>
+      </tr>
+      <tr>
+        <td>Value color</td>
+        <td><code>--sds-color-warm-gray-700</code></td>
+        <td>Primary tone</td>
+      </tr>
+      <tr>
+        <td>Value font weight</td>
+        <td><code>--sds-weight-medium</code></td>
+        <td>Slightly bolder than label</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Horizontal Grid — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Grid gap</td>
+        <td><code>--sds-space-600</code></td>
+        <td>Between grid items</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td><code>--sds-space-500</code></td>
+        <td>Inner padding</td>
+      </tr>
+      <tr>
+        <td>Label font size</td>
+        <td><code>--sds-type-caption</code></td>
+        <td>Overline-style label</td>
+      </tr>
+      <tr>
+        <td>Label transform</td>
+        <td>Uppercase + <code>--sds-tracking-wide</code></td>
+        <td>Overline convention</td>
+      </tr>
+      <tr>
+        <td>Value font size</td>
+        <td><code>--sds-type-label</code></td>
+        <td>Standard value text</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Detail Panel — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Token / Value</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Header background</td>
+        <td><code>--sds-color-warm-gray-025</code></td>
+        <td>Subtle header band</td>
+      </tr>
+      <tr>
+        <td>Header padding</td>
+        <td><code>--sds-space-400</code> / <code>--sds-space-500</code></td>
+        <td>Vertical / horizontal</td>
+      </tr>
+      <tr>
+        <td>Icon container</td>
+        <td><code>36 &times; 36 px</code>, <code>8px</code> radius</td>
+        <td>Rounded square icon holder</td>
+      </tr>
+      <tr>
+        <td>Title font size</td>
+        <td><code>--sds-type-body</code></td>
+        <td>Panel title</td>
+      </tr>
+      <tr>
+        <td>Subtitle color</td>
+        <td><code>--sds-color-warm-gray-450</code></td>
+        <td>Secondary metadata</td>
+      </tr>
+      <tr>
+        <td>Footer background</td>
+        <td><code>--sds-color-warm-gray-025</code></td>
+        <td>Matches header</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-data-list</code></td><td>Base container for vertical key-value list (apply to <code>&lt;dl&gt;</code>)</td></tr>
+      <tr><td><code>.sds-kv</code></td><td>Single key-value row (wrapping <code>&lt;dt&gt;</code> + <code>&lt;dd&gt;</code>)</td></tr>
+      <tr><td><code>.sds-kv__label</code></td><td>Key / label element (apply to <code>&lt;dt&gt;</code>)</td></tr>
+      <tr><td><code>.sds-kv__value</code></td><td>Value element (apply to <code>&lt;dd&gt;</code>)</td></tr>
+      <tr><td><code>.sds-kv--editable</code></td><td>Modifier: makes value clickable for inline editing</td></tr>
+      <tr><td><code>.sds-kv-grid</code></td><td>Horizontal grid container</td></tr>
+      <tr><td><code>.sds-kv-grid--2col</code></td><td>Modifier: 2-column grid</td></tr>
+      <tr><td><code>.sds-kv-grid--3col</code></td><td>Modifier: 3-column grid</td></tr>
+      <tr><td><code>.sds-kv-grid__item</code></td><td>Single item in horizontal grid</td></tr>
+      <tr><td><code>.sds-kv-grid__label</code></td><td>Overline label in grid item</td></tr>
+      <tr><td><code>.sds-kv-grid__value</code></td><td>Value in grid item</td></tr>
+      <tr><td><code>.sds-data-list--grouped</code></td><td>Grouped container with section headers</td></tr>
+      <tr><td><code>.sds-data-list__group</code></td><td>Individual group section</td></tr>
+      <tr><td><code>.sds-data-list__group-header</code></td><td>Group section heading</td></tr>
+      <tr><td><code>.sds-detail-panel</code></td><td>Card-style detail panel container</td></tr>
+      <tr><td><code>.sds-detail-panel__header</code></td><td>Panel header with icon and title</td></tr>
+      <tr><td><code>.sds-detail-panel__body</code></td><td>Panel body containing data list rows</td></tr>
+      <tr><td><code>.sds-detail-panel__footer</code></td><td>Panel footer with supplementary info</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Inline editable interaction -->
+  <script>
+    document.querySelectorAll('.sds-kv--editable .sds-kv__value').forEach(function(valueEl) {
+      valueEl.addEventListener('click', function() {
+        if (valueEl.querySelector('.sds-kv__edit-form')) return;
+
+        var currentText = valueEl.textContent.trim();
+        var originalHTML = valueEl.innerHTML;
+        valueEl.style.cursor = 'default';
+
+        var form = document.createElement('div');
+        form.className = 'sds-kv__edit-form';
+
+        var input = document.createElement('input');
+        input.className = 'sds-kv__edit-input';
+        input.type = 'text';
+        input.value = currentText;
+
+        var saveBtn = document.createElement('button');
+        saveBtn.className = 'sds-kv__edit-btn sds-kv__edit-btn--save';
+        saveBtn.innerHTML = '<span class="material-symbols-outlined">check</span>';
+        saveBtn.title = 'Save';
+
+        var cancelBtn = document.createElement('button');
+        cancelBtn.className = 'sds-kv__edit-btn';
+        cancelBtn.innerHTML = '<span class="material-symbols-outlined">close</span>';
+        cancelBtn.title = 'Cancel';
+
+        form.appendChild(input);
+        form.appendChild(saveBtn);
+        form.appendChild(cancelBtn);
+
+        valueEl.innerHTML = '';
+        valueEl.appendChild(form);
+        input.focus();
+        input.select();
+
+        function save() {
+          valueEl.textContent = input.value;
+          valueEl.style.cursor = '';
+        }
+        function cancel() {
+          valueEl.innerHTML = originalHTML;
+          valueEl.style.cursor = '';
+        }
+
+        saveBtn.addEventListener('click', function(e) { e.stopPropagation(); save(); });
+        cancelBtn.addEventListener('click', function(e) { e.stopPropagation(); cancel(); });
+        input.addEventListener('keydown', function(e) {
+          if (e.key === 'Enter') save();
+          if (e.key === 'Escape') cancel();
+        });
+        input.addEventListener('click', function(e) { e.stopPropagation(); });
+      });
+    });
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

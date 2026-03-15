@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Search</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; font-family: var(--sds-font-sans); background: var(--sds-bg-page); color: var(--sds-text-primary); -webkit-font-smoothing: antialiased; }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .demo-block { background: var(--sds-color-warm-gray-025); border: 1px solid var(--sds-color-warm-gray-150); border-radius: 12px; padding: var(--sds-space-800); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .demo-label { font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold); text-transform: uppercase; letter-spacing: var(--sds-tracking-wide); color: var(--sds-color-warm-gray-400); margin: 0 0 var(--sds-space-400); }
+
+    /* Demo layout helpers */
+    .demo-row {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+      padding-top: var(--sds-space-200);
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      gap: var(--sds-space-400);
+      flex: 1;
+    }
+
+    /* Spec table */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+
+    /* ============================================================
+       SEARCH COMPONENT
+       Full-featured search input with icon, clear button,
+       suggestion dropdown, filter chips, and multiple sizes.
+       ============================================================ */
+
+    .sds-search {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      width: 100%;
+      max-width: 480px;
+    }
+
+    .sds-search__input {
+      width: 100%;
+      height: 36px;
+      padding: 0 var(--sds-space-300);
+      padding-left: 36px;
+      padding-right: 36px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-primary);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 6px;
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .sds-search__input::placeholder {
+      color: var(--sds-text-tertiary);
+    }
+
+    .sds-search__input:hover:not(:disabled):not(:focus) {
+      border-color: var(--sds-border-strong);
+    }
+
+    .sds-search__input:focus {
+      border: 2px solid var(--sds-border-focus);
+      padding-left: 35px;
+      padding-right: 35px;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+    }
+
+    .sds-search__input:disabled {
+      background: var(--sds-bg-subtle);
+      color: var(--sds-text-disabled);
+      cursor: not-allowed;
+      border-color: var(--sds-border-subtle);
+    }
+
+    .sds-search__icon {
+      position: absolute;
+      left: 10px;
+      color: var(--sds-text-tertiary);
+      pointer-events: none;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sds-search__icon .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-search__clear {
+      position: absolute;
+      right: 8px;
+      width: 20px;
+      height: 20px;
+      border: none;
+      background: transparent;
+      color: var(--sds-text-tertiary);
+      cursor: pointer;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      border-radius: 50%;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .sds-search__clear:hover {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-text-primary);
+    }
+    .sds-search__clear:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-search__clear .material-symbols-outlined {
+      font-size: 16px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-search--has-value .sds-search__clear {
+      display: flex;
+    }
+
+    /* ---- Sizes ---- */
+    .sds-search--sm .sds-search__input {
+      height: 32px;
+      font-size: var(--sds-type-label);
+      padding-left: 32px;
+      padding-right: 32px;
+    }
+    .sds-search--sm .sds-search__input:focus {
+      padding-left: 31px;
+      padding-right: 31px;
+    }
+    .sds-search--sm .sds-search__icon {
+      left: 8px;
+    }
+    .sds-search--sm .sds-search__icon .material-symbols-outlined {
+      font-size: 16px;
+    }
+    .sds-search--sm .sds-search__clear {
+      right: 6px;
+      width: 18px;
+      height: 18px;
+    }
+    .sds-search--sm .sds-search__clear .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    .sds-search--lg .sds-search__input {
+      height: 40px;
+      font-size: var(--sds-type-body);
+      padding-left: 40px;
+      padding-right: 40px;
+    }
+    .sds-search--lg .sds-search__input:focus {
+      padding-left: 39px;
+      padding-right: 39px;
+    }
+    .sds-search--lg .sds-search__icon {
+      left: 12px;
+    }
+    .sds-search--lg .sds-search__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+    .sds-search--lg .sds-search__clear {
+      right: 10px;
+      width: 22px;
+      height: 22px;
+    }
+    .sds-search--lg .sds-search__clear .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* ============================================================
+       SUGGESTIONS DROPDOWN
+       ============================================================ */
+
+    .sds-search__dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      margin-top: var(--sds-space-100);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1), 0 1px 4px rgba(0, 0, 0, 0.06);
+      z-index: 100;
+      max-height: 360px;
+      overflow-y: auto;
+      display: none;
+    }
+
+    .sds-search__dropdown--open {
+      display: block;
+    }
+
+    .sds-search__dropdown-group {
+      padding: var(--sds-space-200) 0;
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    .sds-search__dropdown-group:last-child {
+      border-bottom: none;
+    }
+
+    .sds-search__dropdown-heading {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      padding: var(--sds-space-100) var(--sds-space-400);
+      margin: 0;
+    }
+
+    .sds-search__dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      padding: var(--sds-space-200) var(--sds-space-400);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      cursor: pointer;
+      transition: background 0.1s ease;
+    }
+
+    .sds-search__dropdown-item:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -2px;
+    }
+    .sds-search__dropdown-item:hover,
+    .sds-search__dropdown-item--active {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    .sds-search__dropdown-item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-tertiary);
+      flex-shrink: 0;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-search__dropdown-item-text {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .sds-search__dropdown-item-meta {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      flex-shrink: 0;
+    }
+
+    .sds-search__highlight {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+
+    /* ---- Empty & loading states ---- */
+    .sds-search__empty {
+      padding: var(--sds-space-800) var(--sds-space-400);
+      text-align: center;
+    }
+    .sds-search__empty-icon {
+      color: var(--sds-color-warm-gray-300);
+      margin-bottom: var(--sds-space-200);
+    }
+    .sds-search__empty-icon .material-symbols-outlined {
+      font-size: 32px;
+      font-variation-settings: 'FILL' 0, 'wght' 200, 'GRAD' 0, 'opsz' 48;
+    }
+    .sds-search__empty-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-100);
+    }
+    .sds-search__empty-desc {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+
+    .sds-search__loading {
+      padding: var(--sds-space-600) var(--sds-space-400);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--sds-space-250);
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-body);
+    }
+
+    @keyframes sds-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .sds-search__spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--sds-color-warm-gray-200);
+      border-top-color: var(--sds-interactive-primary);
+      border-radius: 50%;
+      animation: sds-spin 0.6s linear infinite;
+    }
+
+    /* ============================================================
+       FILTER CHIPS
+       ============================================================ */
+
+    .sds-search-filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-300);
+    }
+
+    .sds-search-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-100) var(--sds-space-250);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      background: var(--sds-color-blue-050);
+      border: 1px solid transparent;
+      border-radius: 4px;
+      cursor: default;
+      white-space: nowrap;
+      line-height: var(--sds-leading-snug);
+    }
+
+    .sds-search-chip__label {
+      color: var(--sds-color-warm-gray-500);
+      font-weight: var(--sds-weight-regular);
+    }
+
+    .sds-search-chip__remove {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      border: none;
+      background: transparent;
+      color: var(--sds-interactive-primary);
+      cursor: pointer;
+      padding: 0;
+      border-radius: 50%;
+      transition: background 0.15s ease;
+    }
+
+    .sds-search-chip__remove:hover {
+      background: rgba(1, 61, 91, 0.12);
+    }
+    .sds-search-chip__remove:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-search-chip__remove .material-symbols-outlined {
+      font-size: 12px;
+      font-variation-settings: 'FILL' 0, 'wght' 500, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-search-chip--add {
+      background: transparent;
+      border: 1px dashed var(--sds-border-default);
+      color: var(--sds-text-tertiary);
+      cursor: pointer;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .sds-search-chip--add:hover {
+      border-color: var(--sds-border-strong);
+      color: var(--sds-text-secondary);
+    }
+    .sds-search-chip--add:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-search-chip--add .material-symbols-outlined {
+      font-size: 14px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+    /* ============================================================
+       HEADER SEARCH (compact)
+       ============================================================ */
+
+    .sds-header-bar {
+      display: flex;
+      align-items: center;
+      height: 56px;
+      padding: 0 var(--sds-space-500);
+      background: var(--sds-bg-page);
+      border-bottom: 1px solid var(--sds-border-subtle);
+      gap: var(--sds-space-400);
+    }
+
+    .sds-header-bar__logo {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      flex-shrink: 0;
+    }
+
+    .sds-header-bar__logo-mark {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--sds-interactive-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .sds-header-bar__logo-mark svg {
+      width: 16px;
+      height: 16px;
+      fill: var(--sds-color-white);
+    }
+
+    .sds-header-bar__logo-text {
+      font-size: var(--sds-type-title);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      letter-spacing: -0.2px;
+    }
+
+    .sds-header-bar__search {
+      flex: 1;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+
+    .sds-header-bar__search .sds-search {
+      max-width: 100%;
+    }
+
+    .sds-header-bar__search .sds-search__input {
+      background: var(--sds-color-warm-gray-025);
+      border-color: var(--sds-color-warm-gray-100);
+    }
+
+    .sds-header-bar__search .sds-search__input:focus {
+      background: var(--sds-color-white);
+    }
+
+    .sds-header-bar__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      flex-shrink: 0;
+    }
+
+    .sds-header-bar__icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: none;
+      background: transparent;
+      color: var(--sds-text-tertiary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .sds-header-bar__icon-btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+    .sds-header-bar__icon-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+    .sds-header-bar__icon-btn .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+    .sds-header-bar__avatar {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+    }
+
+    /* Keyboard shortcut hint */
+    .sds-search__shortcut {
+      position: absolute;
+      right: 10px;
+      font-size: var(--sds-type-overline);
+      font-family: var(--sds-font-sans);
+      color: var(--sds-color-warm-gray-350);
+      background: var(--sds-color-warm-gray-050);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 3px;
+      padding: 1px 5px;
+      pointer-events: none;
+      line-height: 1.4;
+    }
+
+    .sds-search--has-value .sds-search__shortcut {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Search</h1>
+  <p class="page-subtitle">Search input for finding data sources, policies, audit logs, and other resources. Supports suggestions, filter chips, and keyboard navigation.</p>
+
+  <!-- ============================================================
+       BASIC SEARCH
+       ============================================================ -->
+  <h2>Basic Search</h2>
+  <p>Input with a leading search icon and clear button. Focus ring uses a 2px <code>border-focus</code> border with a 3px <code>rgba(1,61,91,0.15)</code> box-shadow.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Default</div>
+    <div class="sds-search" id="search-basic" role="search">
+      <span class="sds-search__icon" aria-hidden="true">
+        <span class="material-symbols-outlined">search</span>
+      </span>
+      <input
+        class="sds-search__input"
+        type="text"
+        placeholder="Search data sources..."
+        aria-label="Search data sources"
+      />
+      <button class="sds-search__clear" aria-label="Clear search" type="button">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SEARCH WITH SUGGESTIONS
+       ============================================================ -->
+  <h2>Search with Suggestions</h2>
+  <p>Dropdown panel with recent searches and categorized results. Matching text is highlighted with <code>.sds-search__highlight</code>. Use arrow keys to navigate, Enter to select, Escape to close.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Type to see suggestions</div>
+    <div class="sds-search sds-search--has-value" id="search-suggestions" role="search">
+      <span class="sds-search__icon" aria-hidden="true">
+        <span class="material-symbols-outlined">search</span>
+      </span>
+      <input
+        class="sds-search__input"
+        type="text"
+        value="data"
+        placeholder="Search policies, sources, logs..."
+        role="combobox"
+        aria-expanded="true"
+        aria-controls="suggestions-list"
+        aria-autocomplete="list"
+        aria-activedescendant=""
+        id="search-suggestions-input"
+      />
+      <button class="sds-search__clear" aria-label="Clear search" type="button">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <div class="sds-search__dropdown sds-search__dropdown--open" id="suggestions-list" role="listbox">
+        <div class="sds-search__dropdown-group">
+          <div class="sds-search__dropdown-heading">Recent searches</div>
+          <div class="sds-search__dropdown-item" role="option" id="suggestion-0">
+            <span class="material-symbols-outlined">history</span>
+            <span class="sds-search__dropdown-item-text"><span class="sds-search__highlight">data</span> classification rules</span>
+          </div>
+          <div class="sds-search__dropdown-item" role="option" id="suggestion-1">
+            <span class="material-symbols-outlined">history</span>
+            <span class="sds-search__dropdown-item-text"><span class="sds-search__highlight">data</span> source connections</span>
+          </div>
+        </div>
+        <div class="sds-search__dropdown-group">
+          <div class="sds-search__dropdown-heading">Data Sources</div>
+          <div class="sds-search__dropdown-item" role="option" id="suggestion-2">
+            <span class="material-symbols-outlined">database</span>
+            <span class="sds-search__dropdown-item-text">Production <span class="sds-search__highlight">Data</span>base — PostgreSQL</span>
+            <span class="sds-search__dropdown-item-meta">Connected</span>
+          </div>
+          <div class="sds-search__dropdown-item" role="option" id="suggestion-3">
+            <span class="material-symbols-outlined">database</span>
+            <span class="sds-search__dropdown-item-text">Staging <span class="sds-search__highlight">Data</span>base — MySQL</span>
+            <span class="sds-search__dropdown-item-meta">Connected</span>
+          </div>
+        </div>
+        <div class="sds-search__dropdown-group">
+          <div class="sds-search__dropdown-heading">Policies</div>
+          <div class="sds-search__dropdown-item" role="option" id="suggestion-4">
+            <span class="material-symbols-outlined">shield</span>
+            <span class="sds-search__dropdown-item-text"><span class="sds-search__highlight">Data</span> Retention Policy</span>
+            <span class="sds-search__dropdown-item-meta">Active</span>
+          </div>
+          <div class="sds-search__dropdown-item" role="option" id="suggestion-5">
+            <span class="material-symbols-outlined">shield</span>
+            <span class="sds-search__dropdown-item-text">Sensitive <span class="sds-search__highlight">Data</span> Masking</span>
+            <span class="sds-search__dropdown-item-meta">Active</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SEARCH WITH FILTERS
+       ============================================================ -->
+  <h2>Search with Filters</h2>
+  <p>Combine search with filter chips to narrow results by category, status, or other criteria. Chips are removable and a dashed add button allows adding new filters.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Search + active filters</div>
+    <div class="sds-search" id="search-filters" role="search">
+      <span class="sds-search__icon" aria-hidden="true">
+        <span class="material-symbols-outlined">search</span>
+      </span>
+      <input
+        class="sds-search__input"
+        type="text"
+        placeholder="Search audit logs..."
+        aria-label="Search audit logs"
+      />
+      <button class="sds-search__clear" aria-label="Clear search" type="button">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <div class="sds-search-filters" id="filter-chips">
+      <span class="sds-search-chip">
+        <span class="sds-search-chip__label">Type:</span> Policy Changes
+        <button class="sds-search-chip__remove" aria-label="Remove filter: Type Policy Changes" type="button">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </span>
+      <span class="sds-search-chip">
+        <span class="sds-search-chip__label">Date:</span> Last 7 days
+        <button class="sds-search-chip__remove" aria-label="Remove filter: Date Last 7 days" type="button">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </span>
+      <span class="sds-search-chip">
+        <span class="sds-search-chip__label">User:</span> Jane Smith
+        <button class="sds-search-chip__remove" aria-label="Remove filter: User Jane Smith" type="button">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </span>
+      <button class="sds-search-chip sds-search-chip--add" type="button" id="add-filter-btn">
+        <span class="material-symbols-outlined">add</span> Add filter
+      </button>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SIZES
+       ============================================================ -->
+  <h2>Sizes</h2>
+  <p>Three sizes matching the form-inputs scale: small (32px), medium (36px, default), and large (40px).</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Size comparison</div>
+    <div class="demo-row">
+      <span class="demo-row-label">Small</span>
+      <div class="demo-row-items">
+        <div class="sds-search sds-search--sm" role="search" style="max-width: 320px;">
+          <span class="sds-search__icon" aria-hidden="true">
+            <span class="material-symbols-outlined">search</span>
+          </span>
+          <input class="sds-search__input" type="text" placeholder="Search..." aria-label="Search small" />
+          <button class="sds-search__clear" aria-label="Clear" type="button">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Medium</span>
+      <div class="demo-row-items">
+        <div class="sds-search" role="search" style="max-width: 320px;">
+          <span class="sds-search__icon" aria-hidden="true">
+            <span class="material-symbols-outlined">search</span>
+          </span>
+          <input class="sds-search__input" type="text" placeholder="Search..." aria-label="Search medium" />
+          <button class="sds-search__clear" aria-label="Clear" type="button">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="demo-row">
+      <span class="demo-row-label">Large</span>
+      <div class="demo-row-items">
+        <div class="sds-search sds-search--lg" role="search" style="max-width: 320px;">
+          <span class="sds-search__icon" aria-hidden="true">
+            <span class="material-symbols-outlined">search</span>
+          </span>
+          <input class="sds-search__input" type="text" placeholder="Search..." aria-label="Search large" />
+          <button class="sds-search__clear" aria-label="Clear" type="button">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SEARCH IN HEADER
+       ============================================================ -->
+  <h2>Search in Header</h2>
+  <p>Compact search integrated into a header bar, centered between the logo and utility actions.</p>
+
+  <div class="demo-block" style="padding: 0; overflow: hidden;">
+    <div class="sds-header-bar">
+      <div class="sds-header-bar__logo">
+        <div class="sds-header-bar__logo-mark">
+          <svg viewBox="0 0 16 16"><path d="M8 1L2 4.5v7L8 15l6-3.5v-7L8 1z"/></svg>
+        </div>
+        <span class="sds-header-bar__logo-text">Acme</span>
+      </div>
+      <div class="sds-header-bar__search">
+        <div class="sds-search sds-search--sm" role="search">
+          <span class="sds-search__icon" aria-hidden="true">
+            <span class="material-symbols-outlined">search</span>
+          </span>
+          <input class="sds-search__input" type="text" placeholder="Search everything..." aria-label="Global search" />
+          <span class="sds-search__shortcut">/</span>
+          <button class="sds-search__clear" aria-label="Clear" type="button">
+            <span class="material-symbols-outlined">close</span>
+          </button>
+        </div>
+      </div>
+      <div class="sds-header-bar__actions">
+        <button class="sds-header-bar__icon-btn" aria-label="Notifications">
+          <span class="material-symbols-outlined">notifications</span>
+        </button>
+        <button class="sds-header-bar__icon-btn" aria-label="Help">
+          <span class="material-symbols-outlined">help_outline</span>
+        </button>
+        <span class="sds-header-bar__avatar">JS</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       LOADING & EMPTY STATES
+       ============================================================ -->
+  <h2>Loading &amp; Empty States</h2>
+  <p>Feedback states while results are being fetched or when no matches are found.</p>
+
+  <h3>Loading</h3>
+  <div class="demo-block">
+    <div class="demo-label">Searching...</div>
+    <div class="sds-search sds-search--has-value" role="search" style="max-width: 480px;">
+      <span class="sds-search__icon" aria-hidden="true">
+        <span class="material-symbols-outlined">search</span>
+      </span>
+      <input class="sds-search__input" type="text" value="encryption key" aria-label="Search loading" readonly />
+      <button class="sds-search__clear" aria-label="Clear" type="button">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <div class="sds-search__dropdown sds-search__dropdown--open">
+        <div class="sds-search__loading">
+          <div class="sds-search__spinner"></div>
+          Searching...
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <h3>No Results</h3>
+  <div class="demo-block">
+    <div class="demo-label">Empty state</div>
+    <div class="sds-search sds-search--has-value" role="search" style="max-width: 480px;">
+      <span class="sds-search__icon" aria-hidden="true">
+        <span class="material-symbols-outlined">search</span>
+      </span>
+      <input class="sds-search__input" type="text" value="xyznonexistent" aria-label="Search empty" readonly />
+      <button class="sds-search__clear" aria-label="Clear" type="button">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <div class="sds-search__dropdown sds-search__dropdown--open">
+        <div class="sds-search__empty">
+          <div class="sds-search__empty-icon">
+            <span class="material-symbols-outlined">search_off</span>
+          </div>
+          <div class="sds-search__empty-title">No results found</div>
+          <div class="sds-search__empty-desc">Try adjusting your search terms or removing filters.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Search Input — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td>#FFFFFF</td>
+        <td><code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Border</td>
+        <td>1px solid</td>
+        <td><code>--sds-border-default</code></td>
+      </tr>
+      <tr>
+        <td>Border (hover)</td>
+        <td>1px solid</td>
+        <td><code>--sds-border-strong</code></td>
+      </tr>
+      <tr>
+        <td>Border (focus)</td>
+        <td>2px solid</td>
+        <td><code>--sds-border-focus</code></td>
+      </tr>
+      <tr>
+        <td>Focus shadow</td>
+        <td>0 0 0 3px</td>
+        <td><code>rgba(1, 61, 91, 0.15)</code></td>
+      </tr>
+      <tr>
+        <td>Border radius</td>
+        <td>6px</td>
+        <td>--</td>
+      </tr>
+      <tr>
+        <td>Placeholder color</td>
+        <td>Tertiary text</td>
+        <td><code>--sds-text-tertiary</code></td>
+      </tr>
+      <tr>
+        <td>Icon color</td>
+        <td>Tertiary text</td>
+        <td><code>--sds-text-tertiary</code></td>
+      </tr>
+      <tr>
+        <td>Font</td>
+        <td>14px / 400</td>
+        <td><code>--sds-type-body</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Size Scale</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Size</th><th>Height</th><th>Font Size</th><th>Icon Size</th><th>Class</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Small</td>
+        <td>32px</td>
+        <td>13px</td>
+        <td>16px</td>
+        <td><code>.sds-search--sm</code></td>
+      </tr>
+      <tr>
+        <td>Medium (default)</td>
+        <td>36px</td>
+        <td>14px</td>
+        <td>18px</td>
+        <td>--</td>
+      </tr>
+      <tr>
+        <td>Large</td>
+        <td>40px</td>
+        <td>14px</td>
+        <td>20px</td>
+        <td><code>.sds-search--lg</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Dropdown Panel</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td>#FFFFFF</td>
+        <td><code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Border</td>
+        <td>1px solid</td>
+        <td><code>--sds-border-default</code></td>
+      </tr>
+      <tr>
+        <td>Border radius</td>
+        <td>8px</td>
+        <td>--</td>
+      </tr>
+      <tr>
+        <td>Shadow</td>
+        <td>0 4px 16px rgba(0,0,0,0.1)</td>
+        <td>--</td>
+      </tr>
+      <tr>
+        <td>Max height</td>
+        <td>360px</td>
+        <td>--</td>
+      </tr>
+      <tr>
+        <td>Item hover bg</td>
+        <td>warm-gray-050</td>
+        <td><code>--sds-color-warm-gray-050</code></td>
+      </tr>
+      <tr>
+        <td>Group heading</td>
+        <td>Overline / uppercase</td>
+        <td><code>--sds-type-overline</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Filter Chips</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td>Light blue</td>
+        <td><code>--sds-color-blue-050</code></td>
+      </tr>
+      <tr>
+        <td>Text color</td>
+        <td>Primary interactive</td>
+        <td><code>--sds-interactive-primary</code></td>
+      </tr>
+      <tr>
+        <td>Font size</td>
+        <td>12px / 500</td>
+        <td><code>--sds-type-caption</code></td>
+      </tr>
+      <tr>
+        <td>Padding</td>
+        <td>4px 10px</td>
+        <td>--</td>
+      </tr>
+      <tr>
+        <td>Border radius</td>
+        <td>4px</td>
+        <td>--</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-search</code></td><td>Root search container</td></tr>
+      <tr><td><code>.sds-search--sm</code></td><td>Small size (32px height)</td></tr>
+      <tr><td><code>.sds-search--lg</code></td><td>Large size (40px height)</td></tr>
+      <tr><td><code>.sds-search--has-value</code></td><td>Shows the clear button when input has a value</td></tr>
+      <tr><td><code>.sds-search__input</code></td><td>The text input element</td></tr>
+      <tr><td><code>.sds-search__icon</code></td><td>Leading search icon</td></tr>
+      <tr><td><code>.sds-search__clear</code></td><td>Clear/close button</td></tr>
+      <tr><td><code>.sds-search__dropdown</code></td><td>Suggestions dropdown container</td></tr>
+      <tr><td><code>.sds-search__dropdown--open</code></td><td>Shows the dropdown</td></tr>
+      <tr><td><code>.sds-search__dropdown-group</code></td><td>Group within the dropdown</td></tr>
+      <tr><td><code>.sds-search__dropdown-heading</code></td><td>Group heading label</td></tr>
+      <tr><td><code>.sds-search__dropdown-item</code></td><td>Individual suggestion item</td></tr>
+      <tr><td><code>.sds-search__dropdown-item--active</code></td><td>Keyboard-active suggestion</td></tr>
+      <tr><td><code>.sds-search__highlight</code></td><td>Highlighted matching text in results</td></tr>
+      <tr><td><code>.sds-search__empty</code></td><td>No results empty state</td></tr>
+      <tr><td><code>.sds-search__loading</code></td><td>Loading spinner state</td></tr>
+      <tr><td><code>.sds-search-chip</code></td><td>Filter chip</td></tr>
+      <tr><td><code>.sds-search-chip--add</code></td><td>Dashed add-filter chip button</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Keyboard Interaction</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Key</th><th>Behavior</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>Arrow Down</code></td><td>Move focus to next suggestion</td></tr>
+      <tr><td><code>Arrow Up</code></td><td>Move focus to previous suggestion</td></tr>
+      <tr><td><code>Enter</code></td><td>Select the active suggestion</td></tr>
+      <tr><td><code>Escape</code></td><td>Close the suggestions dropdown</td></tr>
+      <tr><td><code>/</code></td><td>Focus the search input (header context)</td></tr>
+    </tbody>
+  </table>
+
+  <h3>ARIA Attributes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Attribute</th><th>Element</th><th>Purpose</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>role="combobox"</code></td><td>Input</td><td>Identifies the search input as a combobox</td></tr>
+      <tr><td><code>role="listbox"</code></td><td>Dropdown</td><td>Identifies the suggestions list</td></tr>
+      <tr><td><code>role="option"</code></td><td>Suggestion item</td><td>Identifies each selectable suggestion</td></tr>
+      <tr><td><code>aria-expanded</code></td><td>Input</td><td>Reflects dropdown open/closed state</td></tr>
+      <tr><td><code>aria-controls</code></td><td>Input</td><td>References the listbox element ID</td></tr>
+      <tr><td><code>aria-activedescendant</code></td><td>Input</td><td>References the currently active option ID</td></tr>
+      <tr><td><code>aria-autocomplete="list"</code></td><td>Input</td><td>Indicates suggestions appear as a list</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       INTERACTIVE JS
+       ============================================================ -->
+  <script>
+    (function() {
+      // ---- Basic search: clear button & has-value class ----
+      document.querySelectorAll('.sds-search').forEach(function(searchEl) {
+        var input = searchEl.querySelector('.sds-search__input');
+        var clearBtn = searchEl.querySelector('.sds-search__clear');
+        if (!input || !clearBtn) return;
+
+        function updateHasValue() {
+          if (input.value.length > 0) {
+            searchEl.classList.add('sds-search--has-value');
+          } else {
+            searchEl.classList.remove('sds-search--has-value');
+          }
+        }
+
+        input.addEventListener('input', updateHasValue);
+        updateHasValue();
+
+        clearBtn.addEventListener('click', function() {
+          input.value = '';
+          updateHasValue();
+          input.focus();
+          // Close dropdown if present
+          var dropdown = searchEl.querySelector('.sds-search__dropdown');
+          if (dropdown) {
+            dropdown.classList.remove('sds-search__dropdown--open');
+            input.setAttribute('aria-expanded', 'false');
+          }
+        });
+      });
+
+      // ---- Suggestions demo: real-time filtering + keyboard nav ----
+      var suggestionsData = [
+        { group: 'Data Sources', icon: 'database', items: [
+          { text: 'Production Database — PostgreSQL', meta: 'Connected' },
+          { text: 'Staging Database — MySQL', meta: 'Connected' },
+          { text: 'Data Warehouse — Snowflake', meta: 'Connected' },
+          { text: 'Data Lake — S3 Bucket', meta: 'Pending' }
+        ]},
+        { group: 'Policies', icon: 'shield', items: [
+          { text: 'Data Retention Policy', meta: 'Active' },
+          { text: 'Sensitive Data Masking', meta: 'Active' },
+          { text: 'Data Classification Rules', meta: 'Draft' },
+          { text: 'Data Access Controls', meta: 'Active' }
+        ]},
+        { group: 'Audit Logs', icon: 'receipt_long', items: [
+          { text: 'Data export by admin@acme.com', meta: 'Today' },
+          { text: 'Database connection added', meta: 'Yesterday' },
+          { text: 'Data policy updated', meta: 'Mar 12' }
+        ]}
+      ];
+
+      var recentSearches = [
+        'data classification rules',
+        'data source connections',
+        'database permissions audit'
+      ];
+
+      var suggestionsContainer = document.getElementById('search-suggestions');
+      if (suggestionsContainer) {
+        var sInput = suggestionsContainer.querySelector('.sds-search__input');
+        var sDropdown = suggestionsContainer.querySelector('.sds-search__dropdown');
+        var activeIndex = -1;
+        var currentItems = [];
+
+        function highlightMatch(text, query) {
+          if (!query) return text;
+          var escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+          return text.replace(new RegExp('(' + escaped + ')', 'gi'), '<span class="sds-search__highlight">$1</span>');
+        }
+
+        function renderSuggestions(query) {
+          var html = '';
+          currentItems = [];
+          var q = query.toLowerCase().trim();
+
+          if (!q) {
+            // Show recent searches only
+            html += '<div class="sds-search__dropdown-group">';
+            html += '<div class="sds-search__dropdown-heading">Recent searches</div>';
+            recentSearches.forEach(function(s, i) {
+              html += '<div class="sds-search__dropdown-item" role="option" id="sg-' + currentItems.length + '">';
+              html += '<span class="material-symbols-outlined">history</span>';
+              html += '<span class="sds-search__dropdown-item-text">' + s + '</span>';
+              html += '</div>';
+              currentItems.push(s);
+            });
+            html += '</div>';
+          } else {
+            // Filter recent
+            var matchedRecent = recentSearches.filter(function(s) {
+              return s.toLowerCase().indexOf(q) !== -1;
+            });
+            if (matchedRecent.length) {
+              html += '<div class="sds-search__dropdown-group">';
+              html += '<div class="sds-search__dropdown-heading">Recent searches</div>';
+              matchedRecent.forEach(function(s) {
+                html += '<div class="sds-search__dropdown-item" role="option" id="sg-' + currentItems.length + '">';
+                html += '<span class="material-symbols-outlined">history</span>';
+                html += '<span class="sds-search__dropdown-item-text">' + highlightMatch(s, q) + '</span>';
+                html += '</div>';
+                currentItems.push(s);
+              });
+              html += '</div>';
+            }
+
+            // Filter groups
+            suggestionsData.forEach(function(group) {
+              var matched = group.items.filter(function(item) {
+                return item.text.toLowerCase().indexOf(q) !== -1;
+              });
+              if (matched.length) {
+                html += '<div class="sds-search__dropdown-group">';
+                html += '<div class="sds-search__dropdown-heading">' + group.group + '</div>';
+                matched.forEach(function(item) {
+                  html += '<div class="sds-search__dropdown-item" role="option" id="sg-' + currentItems.length + '">';
+                  html += '<span class="material-symbols-outlined">' + group.icon + '</span>';
+                  html += '<span class="sds-search__dropdown-item-text">' + highlightMatch(item.text, q) + '</span>';
+                  html += '<span class="sds-search__dropdown-item-meta">' + item.meta + '</span>';
+                  html += '</div>';
+                  currentItems.push(item.text);
+                });
+                html += '</div>';
+              }
+            });
+          }
+
+          if (!html) {
+            html = '<div class="sds-search__empty">';
+            html += '<div class="sds-search__empty-icon"><span class="material-symbols-outlined">search_off</span></div>';
+            html += '<div class="sds-search__empty-title">No results found</div>';
+            html += '<div class="sds-search__empty-desc">Try adjusting your search terms or removing filters.</div>';
+            html += '</div>';
+          }
+
+          sDropdown.innerHTML = html;
+          activeIndex = -1;
+          updateActiveDescendant();
+        }
+
+        function updateActiveDescendant() {
+          sDropdown.querySelectorAll('.sds-search__dropdown-item').forEach(function(el, i) {
+            el.classList.toggle('sds-search__dropdown-item--active', i === activeIndex);
+          });
+          sInput.setAttribute('aria-activedescendant', activeIndex >= 0 ? 'sg-' + activeIndex : '');
+        }
+
+        function openDropdown() {
+          sDropdown.classList.add('sds-search__dropdown--open');
+          sInput.setAttribute('aria-expanded', 'true');
+        }
+
+        function closeDropdown() {
+          sDropdown.classList.remove('sds-search__dropdown--open');
+          sInput.setAttribute('aria-expanded', 'false');
+          activeIndex = -1;
+        }
+
+        sInput.addEventListener('input', function() {
+          renderSuggestions(sInput.value);
+          openDropdown();
+          // Update has-value
+          suggestionsContainer.classList.toggle('sds-search--has-value', sInput.value.length > 0);
+        });
+
+        sInput.addEventListener('focus', function() {
+          renderSuggestions(sInput.value);
+          openDropdown();
+        });
+
+        sInput.addEventListener('keydown', function(e) {
+          var items = sDropdown.querySelectorAll('.sds-search__dropdown-item');
+          if (!items.length) return;
+
+          if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            activeIndex = Math.min(activeIndex + 1, items.length - 1);
+            updateActiveDescendant();
+            if (items[activeIndex]) items[activeIndex].scrollIntoView({ block: 'nearest' });
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            activeIndex = Math.max(activeIndex - 1, 0);
+            updateActiveDescendant();
+            if (items[activeIndex]) items[activeIndex].scrollIntoView({ block: 'nearest' });
+          } else if (e.key === 'Enter' && activeIndex >= 0) {
+            e.preventDefault();
+            sInput.value = currentItems[activeIndex] || '';
+            suggestionsContainer.classList.toggle('sds-search--has-value', sInput.value.length > 0);
+            closeDropdown();
+          } else if (e.key === 'Escape') {
+            closeDropdown();
+          }
+        });
+
+        // Click on suggestion
+        sDropdown.addEventListener('click', function(e) {
+          var item = e.target.closest('.sds-search__dropdown-item');
+          if (item) {
+            var idx = Array.from(sDropdown.querySelectorAll('.sds-search__dropdown-item')).indexOf(item);
+            if (idx >= 0 && currentItems[idx]) {
+              sInput.value = currentItems[idx];
+              suggestionsContainer.classList.toggle('sds-search--has-value', sInput.value.length > 0);
+              closeDropdown();
+              sInput.focus();
+            }
+          }
+        });
+
+        // Close on click outside
+        document.addEventListener('click', function(e) {
+          if (!suggestionsContainer.contains(e.target)) {
+            closeDropdown();
+          }
+        });
+      }
+
+      // ---- Filter chips: remove ----
+      var filterContainer = document.getElementById('filter-chips');
+      if (filterContainer) {
+        filterContainer.addEventListener('click', function(e) {
+          var removeBtn = e.target.closest('.sds-search-chip__remove');
+          if (removeBtn) {
+            var chip = removeBtn.closest('.sds-search-chip');
+            if (chip) {
+              chip.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+              chip.style.opacity = '0';
+              chip.style.transform = 'scale(0.9)';
+              setTimeout(function() { chip.remove(); }, 150);
+            }
+          }
+        });
+
+        // Add filter button demo
+        var addBtn = document.getElementById('add-filter-btn');
+        if (addBtn) {
+          var filterOptions = [
+            { label: 'Status', value: 'Active' },
+            { label: 'Source', value: 'PostgreSQL' },
+            { label: 'Severity', value: 'High' },
+            { label: 'Region', value: 'US-East' }
+          ];
+          var filterIndex = 0;
+
+          addBtn.addEventListener('click', function() {
+            if (filterIndex >= filterOptions.length) filterIndex = 0;
+            var opt = filterOptions[filterIndex++];
+            var chip = document.createElement('span');
+            chip.className = 'sds-search-chip';
+            chip.innerHTML = '<span class="sds-search-chip__label">' + opt.label + ':</span> ' + opt.value +
+              ' <button class="sds-search-chip__remove" aria-label="Remove filter: ' + opt.label + ' ' + opt.value + '" type="button">' +
+              '<span class="material-symbols-outlined">close</span></button>';
+            filterContainer.insertBefore(chip, addBtn);
+          });
+        }
+      }
+    })();
+  </script>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

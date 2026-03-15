@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Stat Card / KPI</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       STAT CARD / KPI
+       Dedicated metric display cards for dashboard KPIs.
+       Shows a large number with label, trend indicator,
+       and optional icon.
+       ============================================================ */
+
+    .sds-stat-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-500) var(--sds-space-600);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-050);
+    }
+
+    .sds-stat-card__label {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-500);
+      font-weight: var(--sds-weight-medium);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      margin: 0;
+      line-height: 1;
+    }
+
+    .sds-stat-card__value {
+      font-size: var(--sds-type-display);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-top: var(--sds-space-150);
+      line-height: 1.1;
+    }
+
+    .sds-stat-card__trend {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-size: var(--sds-type-caption);
+      margin-top: var(--sds-space-150);
+      line-height: 1;
+    }
+    .sds-stat-card__trend .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* Directional trends (arrow direction) */
+    .sds-stat-card__trend--up {
+      color: var(--sds-color-green-500);
+    }
+    .sds-stat-card__trend--down {
+      color: var(--sds-color-red-550);
+    }
+    .sds-stat-card__trend--neutral {
+      color: var(--sds-color-warm-gray-400);
+    }
+
+    /* Semantic trends (good/bad regardless of direction) */
+    .sds-stat-card__trend--positive {
+      color: var(--sds-color-green-500);
+    }
+    .sds-stat-card__trend--negative {
+      color: var(--sds-color-red-550);
+    }
+
+    .sds-stat-card__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      margin-bottom: var(--sds-space-100);
+    }
+    .sds-stat-card__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    .sds-stat-card__footer {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin-top: var(--sds-space-200);
+      padding-top: var(--sds-space-300);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    /* ---- Compact variant ---- */
+    .sds-stat-card--compact {
+      padding: var(--sds-space-400);
+    }
+    .sds-stat-card--compact .sds-stat-card__value {
+      font-size: var(--sds-type-heading);
+    }
+
+    /* ---- Highlighted variant ---- */
+    .sds-stat-card--highlighted {
+      border-left: 3px solid var(--sds-color-blue-550);
+    }
+    .sds-stat-card--highlighted-info {
+      border-left-color: var(--sds-color-blue-550);
+    }
+    .sds-stat-card--highlighted-critical {
+      border-left-color: var(--sds-color-red-450);
+    }
+    .sds-stat-card--highlighted-health {
+      border-left-color: var(--sds-color-green-400);
+    }
+
+    /* ---- Dashboard grid ---- */
+    .sds-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sds-space-400);
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Stat Card / KPI</h1>
+  <p class="page-subtitle">Dedicated metric display cards for dashboard KPIs. Shows a large number with label, trend indicator, and optional icon.</p>
+
+  <!-- ============================================================
+       1. BASIC STAT CARDS
+       ============================================================ -->
+  <h2>Basic Stat Cards</h2>
+  <p>A row of metric cards showing key business KPIs. Each card displays a label, large value, and trend indicator comparing to the previous period.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Dashboard overview metrics</div>
+    <div class="sds-stat-grid">
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Active Users</span>
+        <span class="sds-stat-card__value">3,842</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          12% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Projects Created</span>
+        <span class="sds-stat-card__value">284</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--up">
+          <span class="material-symbols-outlined">trending_up</span>
+          8% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Open Issues</span>
+        <span class="sds-stat-card__value">23</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_down</span>
+          31% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Team Satisfaction</span>
+        <span class="sds-stat-card__value">94%</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          2% vs last month
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       2. WITH ICONS
+       ============================================================ -->
+  <h2>With Icons</h2>
+  <p>Stat cards with a leading colored icon to provide additional visual context for each metric category.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Icon variants</div>
+    <div class="sds-stat-grid">
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-blue-050); color: var(--sds-color-blue-550);">
+          <span class="material-symbols-outlined">people</span>
+        </span>
+        <span class="sds-stat-card__label">Active Users</span>
+        <span class="sds-stat-card__value">3,842</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          12% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-red-050); color: var(--sds-color-red-550);">
+          <span class="material-symbols-outlined">bug_report</span>
+        </span>
+        <span class="sds-stat-card__label">Open Issues</span>
+        <span class="sds-stat-card__value">23</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_down</span>
+          31% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-green-025); color: var(--sds-color-green-500);">
+          <span class="material-symbols-outlined">assignment</span>
+        </span>
+        <span class="sds-stat-card__label">Projects</span>
+        <span class="sds-stat-card__value">284</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          8% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-yellow-050); color: var(--sds-color-yellow-650);">
+          <span class="material-symbols-outlined">description</span>
+        </span>
+        <span class="sds-stat-card__label">Documents</span>
+        <span class="sds-stat-card__value">1,206</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--up">
+          <span class="material-symbols-outlined">trending_up</span>
+          15% vs last month
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       3. TREND VARIANTS
+       ============================================================ -->
+  <h2>Trend Variants</h2>
+  <p>Trend indicators come in directional (<code>--up</code>, <code>--down</code>, <code>--neutral</code>) and semantic (<code>--positive</code>, <code>--negative</code>) variants. Context matters: a downward trend in violations is positive, while a downward trend in compliance is negative.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Directional trends</div>
+    <div class="sds-stat-grid">
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Up Trend (default)</span>
+        <span class="sds-stat-card__value">1,204</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--up">
+          <span class="material-symbols-outlined">trending_up</span>
+          15% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Down Trend (default)</span>
+        <span class="sds-stat-card__value">342</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--down">
+          <span class="material-symbols-outlined">trending_down</span>
+          8% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Neutral Trend</span>
+        <span class="sds-stat-card__value">500</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--neutral">
+          <span class="material-symbols-outlined">trending_flat</span>
+          0% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">No Trend Data</span>
+        <span class="sds-stat-card__value">89</span>
+        <span class="sds-stat-card__footer">Last updated 2 hours ago</span>
+      </div>
+
+    </div>
+  </div>
+
+  <h3>Semantic Trends</h3>
+  <p>Use <code>--positive</code> and <code>--negative</code> to convey whether a trend is good or bad regardless of direction. "Open Issues down 31%" is positive (green), while "Customer Satisfaction down 5%" is negative (red).</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Semantic trend meaning</div>
+    <div class="sds-stat-grid">
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Open Issues</span>
+        <span class="sds-stat-card__value">23</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_down</span>
+          31% &mdash; down is good
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Customer Satisfaction</span>
+        <span class="sds-stat-card__value">87%</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--negative">
+          <span class="material-symbols-outlined">trending_down</span>
+          5% &mdash; down is bad
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Active Users</span>
+        <span class="sds-stat-card__value">3,842</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          12% &mdash; up is good
+        </span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__label">Support Tickets</span>
+        <span class="sds-stat-card__value">14</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--negative">
+          <span class="material-symbols-outlined">trending_up</span>
+          22% &mdash; up is bad
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       4. COMPACT VARIANT
+       ============================================================ -->
+  <h2>Compact Variant</h2>
+  <p>Smaller stat cards for dense dashboard layouts. Uses reduced padding and a smaller value font size.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Compact cards in a tight grid</div>
+    <div class="sds-stat-grid">
+
+      <div class="sds-stat-card sds-stat-card--compact">
+        <span class="sds-stat-card__label">Users</span>
+        <span class="sds-stat-card__value">3,842</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          12%
+        </span>
+      </div>
+
+      <div class="sds-stat-card sds-stat-card--compact">
+        <span class="sds-stat-card__label">Projects</span>
+        <span class="sds-stat-card__value">284</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--up">
+          <span class="material-symbols-outlined">trending_up</span>
+          8%
+        </span>
+      </div>
+
+      <div class="sds-stat-card sds-stat-card--compact">
+        <span class="sds-stat-card__label">Issues</span>
+        <span class="sds-stat-card__value">23</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_down</span>
+          31%
+        </span>
+      </div>
+
+      <div class="sds-stat-card sds-stat-card--compact">
+        <span class="sds-stat-card__label">NPS</span>
+        <span class="sds-stat-card__value">72</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          4%
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       5. HIGHLIGHTED VARIANT
+       ============================================================ -->
+  <h2>Highlighted Variant</h2>
+  <p>Cards with a colored left border accent to categorize metrics by type. Blue for informational, red for critical alerts, and green for health metrics.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Highlighted border accents</div>
+    <div class="sds-stat-grid">
+
+      <div class="sds-stat-card sds-stat-card--highlighted sds-stat-card--highlighted-info">
+        <span class="sds-stat-card__label">Total Deployments</span>
+        <span class="sds-stat-card__value">1,847</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          18% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card sds-stat-card--highlighted sds-stat-card--highlighted-critical">
+        <span class="sds-stat-card__label">Failed Builds</span>
+        <span class="sds-stat-card__value">7</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--negative">
+          <span class="material-symbols-outlined">trending_up</span>
+          40% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card sds-stat-card--highlighted sds-stat-card--highlighted-health">
+        <span class="sds-stat-card__label">Uptime</span>
+        <span class="sds-stat-card__value">99.8%</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          0.2% vs last month
+        </span>
+      </div>
+
+      <div class="sds-stat-card sds-stat-card--highlighted sds-stat-card--highlighted-info">
+        <span class="sds-stat-card__label">Active Workflows</span>
+        <span class="sds-stat-card__value">42</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--neutral">
+          <span class="material-symbols-outlined">trending_flat</span>
+          No change
+        </span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       6. IN CONTEXT: DASHBOARD ROW
+       ============================================================ -->
+  <h2>In Context: Dashboard Row</h2>
+  <p>A full-width dashboard header strip showing how stat cards appear as the top-level KPI row in a SaaS product.</p>
+
+  <div class="demo-block" style="background: var(--sds-color-warm-gray-050);">
+    <div class="demo-label">Platform Overview</div>
+    <div class="sds-stat-grid">
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-blue-050); color: var(--sds-color-blue-550);">
+          <span class="material-symbols-outlined">people</span>
+        </span>
+        <span class="sds-stat-card__label">Active Users</span>
+        <span class="sds-stat-card__value">3,842</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          12% vs last month
+        </span>
+        <span class="sds-stat-card__footer">892 new this month</span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-yellow-050); color: var(--sds-color-yellow-650);">
+          <span class="material-symbols-outlined">assignment</span>
+        </span>
+        <span class="sds-stat-card__label">Projects Created</span>
+        <span class="sds-stat-card__value">284</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--up">
+          <span class="material-symbols-outlined">trending_up</span>
+          8% vs last month
+        </span>
+        <span class="sds-stat-card__footer">Across 18 teams</span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-red-050); color: var(--sds-color-red-550);">
+          <span class="material-symbols-outlined">bug_report</span>
+        </span>
+        <span class="sds-stat-card__label">Open Issues</span>
+        <span class="sds-stat-card__value">23</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_down</span>
+          31% vs last month
+        </span>
+        <span class="sds-stat-card__footer">5 critical, 18 minor</span>
+      </div>
+
+      <div class="sds-stat-card">
+        <span class="sds-stat-card__icon" style="background: var(--sds-color-green-025); color: var(--sds-color-green-500);">
+          <span class="material-symbols-outlined">speed</span>
+        </span>
+        <span class="sds-stat-card__label">Team Satisfaction</span>
+        <span class="sds-stat-card__value">94%</span>
+        <span class="sds-stat-card__trend sds-stat-card__trend--positive">
+          <span class="material-symbols-outlined">trending_up</span>
+          2% vs last month
+        </span>
+        <span class="sds-stat-card__footer">Based on 312 responses</span>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       7. SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Card surface</td>
+        <td>background</td>
+        <td><span class="swatch" style="background:var(--sds-color-white)"></span><code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Card border</td>
+        <td>border</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-150)"></span><code>--sds-color-warm-gray-150</code> &nbsp;1 px</td>
+      </tr>
+      <tr>
+        <td>Card radius</td>
+        <td>border-radius</td>
+        <td><code>8 px</code></td>
+      </tr>
+      <tr>
+        <td>Card padding</td>
+        <td>padding</td>
+        <td><code>--sds-space-500</code> <code>--sds-space-600</code></td>
+      </tr>
+      <tr>
+        <td>Label</td>
+        <td>font-size / weight / color</td>
+        <td><code>--sds-type-caption</code> / <code>--sds-weight-medium</code> / <span class="swatch" style="background:var(--sds-color-warm-gray-500)"></span><code>warm-gray-500</code></td>
+      </tr>
+      <tr>
+        <td>Label</td>
+        <td>text-transform / letter-spacing</td>
+        <td><code>uppercase</code> / <code>--sds-tracking-wide</code></td>
+      </tr>
+      <tr>
+        <td>Value</td>
+        <td>font-size / weight</td>
+        <td><code>28 px</code> / <code>--sds-weight-semibold</code></td>
+      </tr>
+      <tr>
+        <td>Value (compact)</td>
+        <td>font-size</td>
+        <td><code>22 px</code></td>
+      </tr>
+      <tr>
+        <td>Trend text</td>
+        <td>font-size</td>
+        <td><code>--sds-type-caption</code></td>
+      </tr>
+      <tr>
+        <td>Trend icon</td>
+        <td>font-size</td>
+        <td><code>16 px</code></td>
+      </tr>
+      <tr>
+        <td>Trend positive</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-green-500)"></span><code>green-500</code></td>
+      </tr>
+      <tr>
+        <td>Trend negative</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>red-550</code></td>
+      </tr>
+      <tr>
+        <td>Trend neutral</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-400)"></span><code>warm-gray-400</code></td>
+      </tr>
+      <tr>
+        <td>Icon container</td>
+        <td>size / radius</td>
+        <td><code>36 px</code> / <code>8 px</code></td>
+      </tr>
+      <tr>
+        <td>Footer</td>
+        <td>font-size / color</td>
+        <td><code>--sds-type-caption</code> / <span class="swatch" style="background:var(--sds-color-warm-gray-450)"></span><code>warm-gray-450</code></td>
+      </tr>
+      <tr>
+        <td>Highlighted border</td>
+        <td>border-left</td>
+        <td><code>3 px solid</code> (color varies by type)</td>
+      </tr>
+      <tr>
+        <td>Dashboard grid</td>
+        <td>columns / gap</td>
+        <td><code>repeat(4, 1fr)</code> / <code>--sds-space-400</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Sizing</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Variant</th><th>Class</th><th>Padding</th><th>Value Font Size</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Default</td>
+        <td><code>.sds-stat-card</code></td>
+        <td><code>--sds-space-500</code> <code>--sds-space-600</code></td>
+        <td><code>28 px</code></td>
+      </tr>
+      <tr>
+        <td>Compact</td>
+        <td><code>.sds-stat-card--compact</code></td>
+        <td><code>--sds-space-400</code></td>
+        <td><code>22 px</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Highlighted Border Colors</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Type</th><th>Class</th><th>Border Color</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Info</td>
+        <td><code>.sds-stat-card--highlighted-info</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-550)"></span><code>blue-550</code></td>
+      </tr>
+      <tr>
+        <td>Critical</td>
+        <td><code>.sds-stat-card--highlighted-critical</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-red-450)"></span><code>red-450</code></td>
+      </tr>
+      <tr>
+        <td>Health</td>
+        <td><code>.sds-stat-card--highlighted-health</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-green-400)"></span><code>green-400</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes Reference</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-stat-card</code></td><td>Base card container -- white background, border, 8 px radius</td></tr>
+      <tr><td><code>.sds-stat-card__label</code></td><td>Metric label text (uppercase, caption size, warm-gray-500)</td></tr>
+      <tr><td><code>.sds-stat-card__value</code></td><td>Large metric number (28 px, semibold)</td></tr>
+      <tr><td><code>.sds-stat-card__trend</code></td><td>Trend indicator wrapper (inline-flex, caption size)</td></tr>
+      <tr><td><code>.sds-stat-card__trend--up</code></td><td>Directional: upward trend (green)</td></tr>
+      <tr><td><code>.sds-stat-card__trend--down</code></td><td>Directional: downward trend (red)</td></tr>
+      <tr><td><code>.sds-stat-card__trend--neutral</code></td><td>Directional: no change (gray)</td></tr>
+      <tr><td><code>.sds-stat-card__trend--positive</code></td><td>Semantic: good outcome regardless of direction (green)</td></tr>
+      <tr><td><code>.sds-stat-card__trend--negative</code></td><td>Semantic: bad outcome regardless of direction (red)</td></tr>
+      <tr><td><code>.sds-stat-card__icon</code></td><td>Optional leading icon container (36 px, 8 px radius)</td></tr>
+      <tr><td><code>.sds-stat-card__footer</code></td><td>Bottom secondary info area with top border</td></tr>
+      <tr><td><code>.sds-stat-card--compact</code></td><td>Smaller variant: reduced padding, 22 px value</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted</code></td><td>Base highlighted variant with 3 px left border</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted-info</code></td><td>Blue left border for informational metrics</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted-critical</code></td><td>Red left border for critical alerts</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted-health</code></td><td>Green left border for health metrics</td></tr>
+      <tr><td><code>.sds-stat-grid</code></td><td>4-column CSS grid layout for stat card rows</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

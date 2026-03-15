@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Dropdown Menus</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+    .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+    /* ===== Demo blocks ===== */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-600);
+      margin-bottom: var(--sds-space-500);
+    }
+    .demo-row:last-child { margin-bottom: 0; }
+    .demo-row-label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      width: 100px;
+      flex-shrink: 0;
+    }
+    .demo-row-items {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+    /* ===== Dropdown Menu Component ===== */
+    .sds-dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .sds-dropdown-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 6px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease;
+      line-height: 1;
+      white-space: nowrap;
+    }
+    .sds-dropdown-trigger:hover {
+      background: var(--sds-bg-subtle);
+      border-color: var(--sds-border-strong);
+    }
+    .sds-dropdown-trigger:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+    .sds-dropdown-trigger .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* Icon-only trigger (more_vert) */
+    .sds-dropdown-trigger--icon {
+      padding: var(--sds-space-150);
+      border: none;
+      background: transparent;
+      border-radius: 4px;
+      color: var(--sds-text-secondary);
+    }
+    .sds-dropdown-trigger--icon:hover {
+      background: var(--sds-bg-subtle);
+      color: var(--sds-text-primary);
+      border: none;
+    }
+
+    /* Menu panel */
+    .sds-dropdown-menu {
+      background: var(--sds-bg-elevated);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      border: 1px solid var(--sds-border-subtle);
+      padding: var(--sds-space-100) 0;
+      min-width: 200px;
+      z-index: 100;
+    }
+
+    /* For static demos, render inline */
+    .sds-dropdown-menu--static {
+      position: relative;
+      display: block;
+    }
+
+    /* For interactive demos, position absolutely */
+    .sds-dropdown-menu--positioned {
+      position: absolute;
+      top: calc(100% + var(--sds-space-100));
+      left: 0;
+      display: none;
+    }
+    .sds-dropdown.is-open .sds-dropdown-menu--positioned {
+      display: block;
+    }
+
+    /* Menu items */
+    .sds-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      margin: 0 var(--sds-space-100);
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-primary);
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.1s ease;
+      text-decoration: none;
+      border: none;
+      background: none;
+      width: calc(100% - var(--sds-space-200));
+      font-family: inherit;
+      line-height: var(--sds-leading-normal);
+    }
+    .sds-dropdown-item:hover {
+      background: var(--sds-bg-subtle);
+    }
+    .sds-dropdown-item .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'wght' 300;
+      color: var(--sds-text-secondary);
+      flex-shrink: 0;
+    }
+
+    /* Danger variant */
+    .sds-dropdown-item--danger {
+      color: var(--sds-text-primary);
+    }
+    .sds-dropdown-item--danger:hover {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-500);
+    }
+    .sds-dropdown-item--danger:hover .material-symbols-outlined {
+      color: var(--sds-color-red-500);
+    }
+
+    /* Disabled variant */
+    .sds-dropdown-item--disabled {
+      color: var(--sds-text-disabled);
+      pointer-events: none;
+      cursor: default;
+    }
+    .sds-dropdown-item--disabled .material-symbols-outlined {
+      color: var(--sds-text-disabled);
+    }
+
+    /* Active / selected (checkmark) variant */
+    .sds-dropdown-item--active {
+      color: var(--sds-interactive-primary);
+      font-weight: var(--sds-weight-medium);
+    }
+    .sds-dropdown-item--active .material-symbols-outlined {
+      color: var(--sds-interactive-primary);
+    }
+
+    /* Divider */
+    .sds-dropdown-divider {
+      height: 1px;
+      background: var(--sds-border-subtle);
+      margin: var(--sds-space-100) 0;
+      border: none;
+    }
+
+    /* Section header */
+    .sds-dropdown-header {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-text-tertiary);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      margin: var(--sds-space-100) var(--sds-space-100) 0;
+      line-height: 1;
+    }
+
+    /* Item with shortcut hint */
+    .sds-dropdown-item .sds-dropdown-shortcut {
+      margin-left: auto;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      font-weight: var(--sds-weight-regular);
+    }
+
+    /* Two-line item with description */
+    .sds-dropdown-item--descriptive {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--sds-space-050);
+    }
+    .sds-dropdown-item--descriptive .sds-dropdown-item-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      width: 100%;
+    }
+    .sds-dropdown-item-description {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      line-height: var(--sds-leading-normal);
+      padding-left: calc(20px + var(--sds-space-250)); /* aligns with icon width + gap */
+    }
+
+    /* ===== In-context table demo (canonical sds-table) ===== */
+    .sds-table-container {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      overflow-x: auto;
+    }
+    .sds-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+    }
+    .sds-table th {
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      padding: var(--sds-space-250) var(--sds-space-400);
+      text-align: left;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-550);
+      white-space: nowrap;
+    }
+    .sds-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      color: var(--sds-color-warm-gray-700);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+    .sds-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    .sds-table--hoverable tbody tr {
+      transition: background 0.15s ease;
+    }
+    .sds-table--hoverable tbody tr:hover td {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    /* Canonical sds-tag */
+    .sds-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+    .sds-tag--success {
+      background: var(--sds-color-green-025);
+      color: var(--sds-color-green-500);
+    }
+    .sds-tag--warning {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+
+    /* Table-specific helpers */
+    .sds-table .name-cell {
+      font-weight: var(--sds-weight-medium);
+    }
+    .sds-table .actions-cell {
+      text-align: right;
+      width: 48px;
+    }
+
+    /* ===== Spec tables ===== */
+    .spec-table { width: 100%; border-collapse: collapse; font-size: var(--sds-type-label); margin: var(--sds-space-400) 0 var(--sds-space-800); }
+    .spec-table th { text-align: left; padding: var(--sds-space-250) var(--sds-space-400); font-weight: var(--sds-weight-semibold); color: var(--sds-color-warm-gray-650); background: var(--sds-color-warm-gray-025); border-bottom: 1px solid var(--sds-color-warm-gray-150); }
+    .spec-table td { padding: var(--sds-space-250) var(--sds-space-400); border-bottom: 1px solid var(--sds-color-warm-gray-100); color: var(--sds-color-warm-gray-700); }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+  </style>
+</head>
+<body>
+
+  <h1>Dropdown Menus</h1>
+  <p class="page-subtitle">Contextual action menus triggered by buttons or icon controls. Used throughout the application for row-level actions, bulk operations, and configuration options.</p>
+
+  <!-- ============================================================
+       BASIC MENU
+       ============================================================ -->
+  <h2>Basic Menu</h2>
+  <p>A simple dropdown menu with a list of text-only action items. The menu panel uses an elevated surface with a subtle shadow to float above surrounding content.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Simple action list</div>
+    <div class="demo-row">
+      <div class="sds-dropdown-menu sds-dropdown-menu--static">
+        <button class="sds-dropdown-item">Edit</button>
+        <button class="sds-dropdown-item">Duplicate</button>
+        <button class="sds-dropdown-item">Archive</button>
+        <div class="sds-dropdown-divider"></div>
+        <button class="sds-dropdown-item sds-dropdown-item--danger">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH ICONS
+       ============================================================ -->
+  <h3>With Icons</h3>
+  <p>Menu items paired with leading Material Symbols icons for faster visual scanning. Icons use 20px size and weight 300 for a clean, lightweight appearance.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Icon menu</div>
+    <div class="demo-row">
+      <div class="sds-dropdown-menu sds-dropdown-menu--static">
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">edit</span>
+          Edit Resource
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">content_copy</span>
+          Duplicate
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">download</span>
+          Export CSV
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">share</span>
+          Share Link
+        </button>
+        <div class="sds-dropdown-divider"></div>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">archive</span>
+          Archive
+        </button>
+        <button class="sds-dropdown-item sds-dropdown-item--danger">
+          <span class="material-symbols-outlined">delete</span>
+          Delete Resource
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       WITH SECTIONS
+       ============================================================ -->
+  <h3>With Sections</h3>
+  <p>Grouped menu items using section headers and dividers to organize related actions. This is useful for complex menus that combine different action categories.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Sectioned menu</div>
+    <div class="demo-row">
+      <div class="sds-dropdown-menu sds-dropdown-menu--static" style="min-width: 240px;">
+        <div class="sds-dropdown-header">Actions</div>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">edit</span>
+          Edit Details
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">content_copy</span>
+          Duplicate
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">download</span>
+          Export CSV
+        </button>
+        <div class="sds-dropdown-divider"></div>
+        <div class="sds-dropdown-header">Administration</div>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">admin_panel_settings</span>
+          Manage Permissions
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">history</span>
+          View Audit Log
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">swap_horiz</span>
+          Transfer Ownership
+        </button>
+        <div class="sds-dropdown-divider"></div>
+        <div class="sds-dropdown-header">Danger Zone</div>
+        <button class="sds-dropdown-item sds-dropdown-item--danger">
+          <span class="material-symbols-outlined">delete</span>
+          Delete Resource
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       MENU ITEM VARIANTS
+       ============================================================ -->
+  <h2>Menu Item Variants</h2>
+  <p>Individual item states and patterns including danger actions, disabled items, descriptive two-line entries, and keyboard shortcut hints.</p>
+
+  <h3>Danger and Disabled</h3>
+  <p>Danger items highlight in red on hover to signal destructive actions. Disabled items are grayed out and non-interactive.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Item states</div>
+    <div class="demo-row">
+      <div class="sds-dropdown-menu sds-dropdown-menu--static">
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">edit</span>
+          Edit Details
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">content_copy</span>
+          Duplicate
+        </button>
+        <button class="sds-dropdown-item sds-dropdown-item--disabled">
+          <span class="material-symbols-outlined">lock</span>
+          Manage Permissions
+        </button>
+        <div class="sds-dropdown-divider"></div>
+        <button class="sds-dropdown-item sds-dropdown-item--danger">
+          <span class="material-symbols-outlined">delete</span>
+          Delete Resource
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h3>With Descriptions</h3>
+  <p>Two-line menu items with a title and a secondary description. Useful for actions that need additional context or clarification.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Descriptive items</div>
+    <div class="demo-row">
+      <div class="sds-dropdown-menu sds-dropdown-menu--static" style="min-width: 280px;">
+        <button class="sds-dropdown-item sds-dropdown-item--descriptive">
+          <div class="sds-dropdown-item-row">
+            <span class="material-symbols-outlined">download</span>
+            Export CSV
+          </div>
+          <span class="sds-dropdown-item-description">Download all rows as a comma-separated file</span>
+        </button>
+        <button class="sds-dropdown-item sds-dropdown-item--descriptive">
+          <div class="sds-dropdown-item-row">
+            <span class="material-symbols-outlined">picture_as_pdf</span>
+            Export PDF
+          </div>
+          <span class="sds-dropdown-item-description">Generate a formatted report document</span>
+        </button>
+        <button class="sds-dropdown-item sds-dropdown-item--descriptive">
+          <div class="sds-dropdown-item-row">
+            <span class="material-symbols-outlined">integration_instructions</span>
+            Export via API
+          </div>
+          <span class="sds-dropdown-item-description">Use the REST endpoint for programmatic access</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h3>With Checkmarks</h3>
+  <p>Selectable items with a check icon to indicate the currently active selection. Used for toggling views, filters, or sort orders.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Selectable items</div>
+    <div class="demo-row">
+      <div class="sds-dropdown-menu sds-dropdown-menu--static">
+        <div class="sds-dropdown-header">Sort by</div>
+        <button class="sds-dropdown-item sds-dropdown-item--active">
+          <span class="material-symbols-outlined">check</span>
+          Name (A-Z)
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined" style="visibility: hidden;">check</span>
+          Date Created
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined" style="visibility: hidden;">check</span>
+          Last Modified
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined" style="visibility: hidden;">check</span>
+          Status
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <h3>With Keyboard Shortcuts</h3>
+  <p>Menu items with right-aligned shortcut hints showing keyboard accelerators. Helps power users learn key bindings.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Shortcut hints</div>
+    <div class="demo-row">
+      <div class="sds-dropdown-menu sds-dropdown-menu--static" style="min-width: 240px;">
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">edit</span>
+          Edit
+          <span class="sds-dropdown-shortcut">&#8984;E</span>
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">content_copy</span>
+          Duplicate
+          <span class="sds-dropdown-shortcut">&#8984;D</span>
+        </button>
+        <button class="sds-dropdown-item">
+          <span class="material-symbols-outlined">download</span>
+          Export
+          <span class="sds-dropdown-shortcut">&#8984;&#8679;E</span>
+        </button>
+        <div class="sds-dropdown-divider"></div>
+        <button class="sds-dropdown-item sds-dropdown-item--danger">
+          <span class="material-symbols-outlined">delete</span>
+          Delete
+          <span class="sds-dropdown-shortcut">&#8984;&#9003;</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       INTERACTIVE DEMO
+       ============================================================ -->
+  <h2>Interactive Demo</h2>
+  <p>Working dropdown triggers that open and close menus on click. Click outside or press Escape to dismiss. Demonstrates both button and icon trigger styles.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Click to open</div>
+    <div class="demo-row" style="min-height: 280px; align-items: flex-start;">
+
+      <!-- Button trigger -->
+      <div class="sds-dropdown" data-dropdown>
+        <button class="sds-dropdown-trigger" data-dropdown-trigger>
+          Actions
+          <span class="material-symbols-outlined" style="font-size: 18px;">expand_more</span>
+        </button>
+        <div class="sds-dropdown-menu sds-dropdown-menu--positioned">
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">edit</span>
+            Edit Resource
+          </button>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">content_copy</span>
+            Duplicate
+          </button>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">download</span>
+            Export CSV
+          </button>
+          <div class="sds-dropdown-divider"></div>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">admin_panel_settings</span>
+            Manage Permissions
+          </button>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">history</span>
+            View Audit Log
+          </button>
+          <div class="sds-dropdown-divider"></div>
+          <button class="sds-dropdown-item sds-dropdown-item--danger">
+            <span class="material-symbols-outlined">delete</span>
+            Delete Resource
+          </button>
+        </div>
+      </div>
+
+      <!-- Icon trigger -->
+      <div class="sds-dropdown" data-dropdown>
+        <button class="sds-dropdown-trigger sds-dropdown-trigger--icon" data-dropdown-trigger aria-label="More actions">
+          <span class="material-symbols-outlined">more_vert</span>
+        </button>
+        <div class="sds-dropdown-menu sds-dropdown-menu--positioned">
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">edit</span>
+            Edit
+          </button>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">content_copy</span>
+            Duplicate
+          </button>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">archive</span>
+            Archive
+          </button>
+          <div class="sds-dropdown-divider"></div>
+          <button class="sds-dropdown-item sds-dropdown-item--danger">
+            <span class="material-symbols-outlined">delete</span>
+            Delete
+          </button>
+        </div>
+      </div>
+
+      <!-- More vert with horizontal dots -->
+      <div class="sds-dropdown" data-dropdown>
+        <button class="sds-dropdown-trigger sds-dropdown-trigger--icon" data-dropdown-trigger aria-label="More actions">
+          <span class="material-symbols-outlined">more_horiz</span>
+        </button>
+        <div class="sds-dropdown-menu sds-dropdown-menu--positioned">
+          <div class="sds-dropdown-header">Actions</div>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">download</span>
+            Export CSV
+            <span class="sds-dropdown-shortcut">&#8984;&#8679;E</span>
+          </button>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">share</span>
+            Share Link
+          </button>
+          <div class="sds-dropdown-divider"></div>
+          <div class="sds-dropdown-header">Administration</div>
+          <button class="sds-dropdown-item">
+            <span class="material-symbols-outlined">swap_horiz</span>
+            Transfer Ownership
+          </button>
+          <button class="sds-dropdown-item sds-dropdown-item--danger">
+            <span class="material-symbols-outlined">delete</span>
+            Delete Resource
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       IN CONTEXT
+       ============================================================ -->
+  <h2>In Context</h2>
+  <p>A realistic table showing row-level dropdown menus, typical of enterprise data management interfaces. Each row has a "more actions" trigger to access contextual operations.</p>
+
+  <div class="demo-block" style="padding: 0; overflow: hidden;">
+    <div class="sds-table-container">
+    <table class="sds-table sds-table--hoverable">
+      <thead>
+        <tr>
+          <th>Resource Name</th>
+          <th>Type</th>
+          <th>Status</th>
+          <th>Last Modified</th>
+          <th style="width: 48px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="name-cell">Customer PII Dataset</td>
+          <td>Data Source</td>
+          <td><span class="sds-tag sds-tag--success">Active</span></td>
+          <td>Mar 12, 2026</td>
+          <td class="actions-cell">
+            <div class="sds-dropdown" data-dropdown>
+              <button class="sds-dropdown-trigger sds-dropdown-trigger--icon" data-dropdown-trigger aria-label="More actions">
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+              <div class="sds-dropdown-menu sds-dropdown-menu--positioned" style="right: 0; left: auto;">
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">edit</span>
+                  Edit Details
+                </button>
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">download</span>
+                  Export CSV
+                </button>
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">admin_panel_settings</span>
+                  Manage Permissions
+                </button>
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">history</span>
+                  View Audit Log
+                </button>
+                <div class="sds-dropdown-divider"></div>
+                <button class="sds-dropdown-item sds-dropdown-item--danger">
+                  <span class="material-symbols-outlined">delete</span>
+                  Delete Resource
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="name-cell">Payment Transactions</td>
+          <td>Data Source</td>
+          <td><span class="sds-tag sds-tag--success">Active</span></td>
+          <td>Mar 10, 2026</td>
+          <td class="actions-cell">
+            <div class="sds-dropdown" data-dropdown>
+              <button class="sds-dropdown-trigger sds-dropdown-trigger--icon" data-dropdown-trigger aria-label="More actions">
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+              <div class="sds-dropdown-menu sds-dropdown-menu--positioned" style="right: 0; left: auto;">
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">edit</span>
+                  Edit Details
+                </button>
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">download</span>
+                  Export CSV
+                </button>
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">admin_panel_settings</span>
+                  Manage Permissions
+                </button>
+                <div class="sds-dropdown-divider"></div>
+                <button class="sds-dropdown-item sds-dropdown-item--danger">
+                  <span class="material-symbols-outlined">delete</span>
+                  Delete Resource
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td class="name-cell">Employee Access Policy</td>
+          <td>Policy</td>
+          <td><span class="sds-tag sds-tag--warning">Pending Review</span></td>
+          <td>Mar 8, 2026</td>
+          <td class="actions-cell">
+            <div class="sds-dropdown" data-dropdown>
+              <button class="sds-dropdown-trigger sds-dropdown-trigger--icon" data-dropdown-trigger aria-label="More actions">
+                <span class="material-symbols-outlined">more_vert</span>
+              </button>
+              <div class="sds-dropdown-menu sds-dropdown-menu--positioned" style="right: 0; left: auto;">
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">edit</span>
+                  Edit Details
+                </button>
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">swap_horiz</span>
+                  Transfer Ownership
+                </button>
+                <button class="sds-dropdown-item">
+                  <span class="material-symbols-outlined">history</span>
+                  View Audit Log
+                </button>
+                <div class="sds-dropdown-divider"></div>
+                <button class="sds-dropdown-item sds-dropdown-item--danger">
+                  <span class="material-symbols-outlined">delete</span>
+                  Delete Resource
+                </button>
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <hr class="section-divider" />
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Menu Panel</h3>
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+        <th>Token</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td>White (elevated surface)</td>
+        <td><code>var(--sds-bg-elevated)</code></td>
+      </tr>
+      <tr>
+        <td>Border</td>
+        <td>1px solid subtle border</td>
+        <td><code>var(--sds-border-subtle)</code></td>
+      </tr>
+      <tr>
+        <td>Border radius</td>
+        <td>8px</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Box shadow</td>
+        <td>0 4px 16px rgba(0,0,0,0.12)</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Padding</td>
+        <td>4px 0</td>
+        <td><code>var(--sds-space-100) 0</code></td>
+      </tr>
+      <tr>
+        <td>Min width</td>
+        <td>200px</td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Menu Item</h3>
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Property</th>
+        <th>Value</th>
+        <th>Token</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Padding</td>
+        <td>8px 12px</td>
+        <td><code>var(--sds-space-200) var(--sds-space-300)</code></td>
+      </tr>
+      <tr>
+        <td>Horizontal margin</td>
+        <td>4px</td>
+        <td><code>var(--sds-space-100)</code></td>
+      </tr>
+      <tr>
+        <td>Font size</td>
+        <td>14px</td>
+        <td><code>var(--sds-type-body)</code></td>
+      </tr>
+      <tr>
+        <td>Font weight</td>
+        <td>400</td>
+        <td><code>var(--sds-weight-regular)</code></td>
+      </tr>
+      <tr>
+        <td>Text color</td>
+        <td>Primary text</td>
+        <td><code>var(--sds-text-primary)</code></td>
+      </tr>
+      <tr>
+        <td>Hover background</td>
+        <td>Subtle background</td>
+        <td><code>var(--sds-bg-subtle)</code></td>
+      </tr>
+      <tr>
+        <td>Border radius</td>
+        <td>4px</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Icon size</td>
+        <td>20px, weight 300</td>
+        <td>-</td>
+      </tr>
+      <tr>
+        <td>Icon gap</td>
+        <td>10px</td>
+        <td><code>var(--sds-space-250)</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Item Variants</h3>
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Variant</th>
+        <th>Behavior</th>
+        <th>Key Token</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Default</td>
+        <td>Primary text, subtle bg on hover</td>
+        <td><code>var(--sds-text-primary)</code></td>
+      </tr>
+      <tr>
+        <td>Danger</td>
+        <td>Red text + red bg on hover</td>
+        <td><code>var(--sds-color-red-500)</code></td>
+      </tr>
+      <tr>
+        <td>Disabled</td>
+        <td>Grayed out, no pointer events</td>
+        <td><code>var(--sds-text-disabled)</code></td>
+      </tr>
+      <tr>
+        <td>Active (checkmark)</td>
+        <td>Primary blue text + check icon</td>
+        <td><code>var(--sds-interactive-primary)</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Anatomy</h3>
+  <table class="spec-table">
+    <thead>
+      <tr>
+        <th>Element</th>
+        <th>CSS Class</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Wrapper</td>
+        <td><code>.sds-dropdown</code></td>
+        <td>Positioning context for trigger + menu</td>
+      </tr>
+      <tr>
+        <td>Trigger</td>
+        <td><code>.sds-dropdown-trigger</code></td>
+        <td>Button that opens the menu</td>
+      </tr>
+      <tr>
+        <td>Menu panel</td>
+        <td><code>.sds-dropdown-menu</code></td>
+        <td>Elevated container for items</td>
+      </tr>
+      <tr>
+        <td>Item</td>
+        <td><code>.sds-dropdown-item</code></td>
+        <td>Clickable row action</td>
+      </tr>
+      <tr>
+        <td>Divider</td>
+        <td><code>.sds-dropdown-divider</code></td>
+        <td>Horizontal separator between groups</td>
+      </tr>
+      <tr>
+        <td>Section header</td>
+        <td><code>.sds-dropdown-header</code></td>
+        <td>Uppercase label for a group of items</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ===== Dropdown interaction script ===== -->
+  <script>
+    document.addEventListener('click', function(e) {
+      var trigger = e.target.closest('[data-dropdown-trigger]');
+
+      // Close all other open dropdowns
+      document.querySelectorAll('[data-dropdown].is-open').forEach(function(dd) {
+        if (trigger && dd === trigger.closest('[data-dropdown]')) return;
+        dd.classList.remove('is-open');
+      });
+
+      // Toggle clicked trigger
+      if (trigger) {
+        var dropdown = trigger.closest('[data-dropdown]');
+        dropdown.classList.toggle('is-open');
+        e.stopPropagation();
+        return;
+      }
+
+      // Click on a menu item closes the menu
+      var item = e.target.closest('.sds-dropdown-item');
+      if (item) {
+        var dropdown = item.closest('[data-dropdown]');
+        if (dropdown) dropdown.classList.remove('is-open');
+      }
+    });
+
+    // Escape key closes all dropdowns
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('[data-dropdown].is-open').forEach(function(dd) {
+          dd.classList.remove('is-open');
+        });
+      }
+    });
+  </script>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

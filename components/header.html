@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software DS — Header</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    margin: 0;
+    font-family: var(--sds-font-sans);
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+  .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+  h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-150); color: var(--sds-text-primary); }
+  p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+  code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+  .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+  /* ===== DEMO SHELLS ===== */
+  .demo-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400);
+    text-transform: uppercase;
+    letter-spacing: var(--sds-tracking-wide);
+    margin: 0 0 var(--sds-space-400);
+  }
+  .demo-block {
+    background: var(--sds-color-warm-gray-025);
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .demo-block--full {
+    background: var(--sds-color-warm-gray-025);
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 420px;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .below-header {
+    display: flex;
+    flex: 1;
+  }
+
+  /* ===== HEADER COMPONENT ===== */
+  .sds-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 56px;
+    padding: 0 var(--sds-space-500);
+    background: var(--sds-bg-page);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    flex-shrink: 0;
+  }
+
+  /* Logo placeholder */
+  .sds-header-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-250);
+    height: 28px;
+  }
+  .sds-header-logo-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--sds-interactive-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sds-header-logo-mark svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--sds-color-white);
+  }
+  .sds-header-logo-text {
+    font-size: var(--sds-type-title);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+  }
+
+  .sds-header-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-200);
+  }
+
+  /* Help button */
+  .sds-header-help {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sds-color-warm-gray-300);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    color: var(--sds-text-tertiary);
+    font-size: var(--sds-type-body);
+    font-weight: var(--sds-weight-semibold);
+    font-family: var(--sds-font-sans);
+    line-height: 1;
+  }
+  .sds-header-help:hover {
+    border-color: var(--sds-color-warm-gray-700);
+    background: var(--sds-bg-subtle);
+    color: var(--sds-color-warm-gray-700);
+  }
+
+  /* User profile dropdown trigger */
+  .sds-header-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-200);
+    padding: var(--sds-space-100) var(--sds-space-200) var(--sds-space-100) var(--sds-space-100);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+  }
+  .sds-header-profile:hover {
+    background: var(--sds-bg-subtle);
+  }
+
+  .sds-header-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--sds-interactive-primary);
+    color: var(--sds-text-on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--sds-type-caption);
+    font-weight: var(--sds-weight-semibold);
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+
+  .sds-header-username {
+    font-size: var(--sds-type-label);
+    font-weight: var(--sds-weight-medium);
+    color: var(--sds-text-primary);
+    white-space: nowrap;
+  }
+
+  .sds-header-chevron {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .sds-header-chevron .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--sds-text-tertiary);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+  }
+
+  /* Divider between help and profile */
+  .sds-header-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--sds-border-default);
+    margin: 0 var(--sds-space-100);
+  }
+
+  /* ===== SIDEBAR (reused for context demo) ===== */
+  .sds-sidenav-mini {
+    width: 220px;
+    min-width: 220px;
+    background: var(--sds-nav-sidebar-bg);
+    border-right: 1px solid var(--sds-border-default);
+    display: flex;
+    flex-direction: column;
+    padding: var(--sds-space-400) var(--sds-space-300);
+    user-select: none;
+  }
+  .sds-sidenav-mini .sds-nav-item {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-250);
+    padding: var(--sds-space-200) var(--sds-space-300);
+    border-radius: 8px;
+    font-size: var(--sds-type-body);
+    color: var(--sds-color-warm-gray-700);
+    margin: var(--sds-space-050) 0;
+  }
+  .sds-sidenav-mini .sds-nav-item.active {
+    background: var(--sds-nav-item-active-bg);
+    color: var(--sds-nav-item-active-text);
+    font-weight: var(--sds-weight-medium);
+  }
+  .sds-sidenav-mini .sds-nav-item .material-symbols-outlined {
+    font-size: 20px;
+    color: currentColor;
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    flex-shrink: 0;
+  }
+  .sds-sidenav-mini .sds-group-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: var(--sds-space-500) var(--sds-space-300) var(--sds-space-150);
+  }
+
+  /* Mock content area */
+  .mock-main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  .mock-body {
+    flex: 1;
+    padding: var(--sds-space-600);
+    background: var(--sds-bg-page);
+  }
+  .mock-body .breadcrumb {
+    font-size: var(--sds-type-label);
+    color: var(--sds-interactive-primary);
+    margin-bottom: var(--sds-space-100);
+  }
+  .mock-body .breadcrumb .dot { color: var(--sds-color-warm-gray-300); margin: 0 var(--sds-space-100); }
+  .mock-body .page-title {
+    font-size: 24px;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+    margin-bottom: var(--sds-space-400);
+  }
+  .sds-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    position: relative;
+  }
+  .sds-tab {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sds-space-200);
+    padding: var(--sds-space-300) var(--sds-space-400);
+    font-family: inherit;
+    font-size: var(--sds-type-body);
+    font-weight: var(--sds-weight-regular);
+    line-height: 1.3;
+    color: var(--sds-color-warm-gray-550);
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .sds-tab:hover {
+    color: var(--sds-color-warm-gray-900);
+  }
+  .sds-tab.is-active {
+    color: var(--sds-color-warm-gray-900);
+    font-weight: var(--sds-weight-medium);
+    border-bottom-color: var(--sds-color-blue-750);
+  }
+
+  /* ===== SPEC TABLE ===== */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sds-type-label);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .spec-table th {
+    text-align: left;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-650);
+    padding: var(--sds-space-250) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-025);
+    border-bottom: 1px solid var(--sds-color-warm-gray-150);
+  }
+  .spec-table td {
+    padding: var(--sds-space-250) var(--sds-space-400);
+    border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    color: var(--sds-color-warm-gray-700);
+    vertical-align: top;
+  }
+  .spec-table td:first-child { font-weight: var(--sds-weight-medium); color: var(--sds-text-primary); }
+  .spec-table code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    background: var(--sds-color-warm-gray-050);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+    color: var(--sds-interactive-primary);
+  }
+
+  /* ===== STATE CARDS ===== */
+  .states-row {
+    display: flex;
+    gap: var(--sds-space-300);
+    flex-wrap: wrap;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .state-card {
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 8px;
+    background: var(--sds-bg-page);
+    overflow: hidden;
+    min-width: 180px;
+  }
+  .state-card-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: var(--sds-space-200) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-050);
+    color: var(--sds-color-warm-gray-550);
+  }
+  .state-card-body {
+    padding: var(--sds-space-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--sds-space-300);
+  }
+</style>
+</head>
+<body>
+
+<h1>Header</h1>
+<p class="page-subtitle">Full-width utility header bar with right-aligned help and user profile controls. Spans the entire top of the page above the sidebar and content area.</p>
+
+<!-- =========== LIVE DEMO (Full Context) =========== -->
+
+<div class="demo-label">Live component — Full layout context</div>
+<div class="demo-block--full">
+  <!-- Full-width header across the top -->
+  <header class="sds-header">
+    <div class="sds-header-logo">
+      <div class="sds-header-logo-mark">
+        <svg viewBox="0 0 16 16"><path d="M8 1L2 4.5v7L8 15l6-3.5v-7L8 1z"/></svg>
+      </div>
+      <span class="sds-header-logo-text">Acme</span>
+    </div>
+    <div class="sds-header-actions">
+      <button class="sds-header-help" title="Help" aria-label="Help">?</button>
+      <div class="sds-header-divider"></div>
+      <button class="sds-header-profile" aria-label="User menu">
+        <span class="sds-header-avatar">JS</span>
+        <span class="sds-header-username">Jane Smith</span>
+        <span class="sds-header-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Sidebar + content below the header -->
+  <div class="below-header">
+    <nav class="sds-sidenav-mini" aria-label="Sidebar context">
+      <div class="sds-nav-item">
+        <span class="material-symbols-outlined">dashboard</span>
+        Dashboard
+      </div>
+      <div class="sds-group-label">Workspace</div>
+      <div class="sds-nav-item">
+        <span class="material-symbols-outlined">folder_open</span>
+        Projects
+      </div>
+      <div class="sds-nav-item active">
+        <span class="material-symbols-outlined">settings</span>
+        Settings
+      </div>
+    </nav>
+
+    <div class="mock-body">
+      <div class="breadcrumb">Settings <span class="dot">·</span></div>
+      <div class="page-title">Project Details</div>
+      <div class="sds-tabs">
+        <button class="sds-tab">Overview</button>
+        <button class="sds-tab">Details</button>
+        <button class="sds-tab is-active">Activity</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ISOLATED HEADER =========== -->
+<h2>Header — Isolated</h2>
+<p>The header component shown without surrounding layout context.</p>
+
+<div class="demo-label">Default state</div>
+<div class="demo-block" style="min-height: auto;">
+  <header class="sds-header" style="width: 100%;">
+    <div class="sds-header-logo">
+      <div class="sds-header-logo-mark">
+        <svg viewBox="0 0 16 16"><path d="M8 1L2 4.5v7L8 15l6-3.5v-7L8 1z"/></svg>
+      </div>
+      <span class="sds-header-logo-text">Acme</span>
+    </div>
+    <div class="sds-header-actions">
+      <button class="sds-header-help" title="Help" aria-label="Help">?</button>
+      <div class="sds-header-divider"></div>
+      <button class="sds-header-profile" aria-label="User menu">
+        <span class="sds-header-avatar">JS</span>
+        <span class="sds-header-username">Jane Smith</span>
+        <span class="sds-header-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </header>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== COMPONENT STATES =========== -->
+<h2>Component States</h2>
+<p>Interactive states for the header utility items.</p>
+
+<h3>Help Button</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-header-help" style="cursor: default;">?</button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-header-help" style="cursor: default; border-color: var(--sds-color-warm-gray-700); background: var(--sds-color-warm-gray-050); color: var(--sds-color-warm-gray-700);">?</button>
+    </div>
+  </div>
+</div>
+
+<h3>User Profile Trigger</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-header-profile" style="cursor: default;">
+        <span class="sds-header-avatar">JS</span>
+        <span class="sds-header-username">Jane Smith</span>
+        <span class="sds-header-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-header-profile" style="cursor: default; background: var(--sds-color-warm-gray-050);">
+        <span class="sds-header-avatar">JS</span>
+        <span class="sds-header-username">Jane Smith</span>
+        <span class="sds-header-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<h3>Avatar Variants</h3>
+<p>Avatars use initials derived from the user's name, displayed on a dark navy background.</p>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Two initials</div>
+    <div class="state-card-body">
+      <span class="sds-header-avatar">AH</span>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Single initial</div>
+    <div class="state-card-body">
+      <span class="sds-header-avatar">A</span>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ANATOMY & SPECS =========== -->
+<h2>Anatomy &amp; Specs</h2>
+<p>Dimensions, spacing, and token mappings for the header component.</p>
+
+<h3>Header Bar</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Height</td><td>56px</td><td>—</td></tr>
+    <tr><td>Background</td><td>#FFFFFF</td><td><code>--sds-bg-page</code> (white)</td></tr>
+    <tr><td>Border bottom</td><td>1px solid #EBE6DD</td><td><code>warm-gray-100</code></td></tr>
+    <tr><td>Padding</td><td>0 20px</td><td>—</td></tr>
+    <tr><td>Layout</td><td>Full width, above sidebar + content</td><td>—</td></tr>
+    <tr><td>Alignment</td><td>flex-end (right-aligned)</td><td>—</td></tr>
+    <tr><td>Actions gap</td><td>8px</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h3>Help Button</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Size</td><td>32 × 32px</td><td>—</td></tr>
+    <tr><td>Shape</td><td>Circle</td><td>—</td></tr>
+    <tr><td>Border</td><td>1.5px solid #B0ABA2</td><td><code>warm-gray-300</code></td></tr>
+    <tr><td>Border (hover)</td><td>#47443F</td><td><code>warm-gray-700</code></td></tr>
+    <tr><td>Background</td><td>transparent</td><td>—</td></tr>
+    <tr><td>Background (hover)</td><td>var(--sds-color-warm-gray-050)</td><td><code>warm-gray-050</code></td></tr>
+    <tr><td>Text color</td><td>#6B6760</td><td><code>warm-gray-550</code></td></tr>
+    <tr><td>Font</td><td>14px / 600</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h3>User Profile Trigger</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Padding</td><td>4px 8px 4px 4px</td><td>—</td></tr>
+    <tr><td>Border-radius</td><td>8px</td><td>—</td></tr>
+    <tr><td>Background (hover)</td><td>var(--sds-color-warm-gray-050)</td><td><code>warm-gray-050</code></td></tr>
+    <tr><td>Items gap</td><td>8px</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h3>Avatar</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Size</td><td>28 × 28px</td><td>—</td></tr>
+    <tr><td>Shape</td><td>Circle</td><td>—</td></tr>
+    <tr><td>Background</td><td>#013D5B</td><td><code>--sds-interactive-primary</code> (blue-750)</td></tr>
+    <tr><td>Text color</td><td>#FFFFFF</td><td><code>--sds-text-on-primary</code> (white)</td></tr>
+    <tr><td>Font</td><td>12px / 600</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h3>Username</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Font</td><td>13px / 500</td><td>—</td></tr>
+    <tr><td>Color</td><td>#1C1A17</td><td><code>--sds-text-primary</code> (warm-gray-900)</td></tr>
+  </tbody>
+</table>
+
+<h3>Dropdown Chevron</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Size</td><td>14 × 14px</td><td>—</td></tr>
+    <tr><td>Stroke</td><td>#6B6760</td><td><code>warm-gray-550</code></td></tr>
+    <tr><td>Stroke width</td><td>1.5px</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

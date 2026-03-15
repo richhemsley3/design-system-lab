@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Lab — Type Scale</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sds-font-sans);
+    background: #FFFFFF;
+    color: var(--sds-text-primary);
+    padding: var(--sds-space-1200) var(--sds-space-1000);
+    line-height: 1.5;
+  }
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin-bottom: var(--sds-space-200); letter-spacing: var(--sds-tracking-tight); }
+  .subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin-bottom: var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+  .desc { font-size: var(--sds-type-body); color: var(--sds-text-secondary); margin-bottom: var(--sds-space-400); }
+  code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    background: var(--sds-bg-subtle);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+  }
+
+  /* ── Type specimens ────────────────────────────────────── */
+  .type-scale-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-600);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .type-specimen {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sds-space-600);
+    padding: var(--sds-space-400) 0;
+    border-bottom: 1px solid var(--sds-border-subtle);
+  }
+  .type-specimen:last-child {
+    border-bottom: none;
+  }
+  .type-meta {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-100);
+  }
+  .type-token {
+    font-family: var(--sds-font-mono);
+    font-size: 12px;
+    color: var(--sds-text-secondary);
+  }
+  .type-size {
+    font-size: 12px;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+  }
+  .type-sample {
+    flex: 1;
+    color: var(--sds-text-primary);
+    line-height: var(--sds-leading-tight);
+  }
+
+  /* ── Weight specimens ──────────────────────────────────── */
+  .weight-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-400);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .weight-specimen {
+    display: flex;
+    align-items: baseline;
+    gap: var(--sds-space-600);
+    padding: var(--sds-space-300) 0;
+    border-bottom: 1px solid var(--sds-border-subtle);
+  }
+  .weight-specimen:last-child {
+    border-bottom: none;
+  }
+  .weight-meta {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sds-space-100);
+  }
+  .weight-token {
+    font-family: var(--sds-font-mono);
+    font-size: 12px;
+    color: var(--sds-text-secondary);
+  }
+  .weight-value {
+    font-size: 12px;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+  }
+  .weight-sample {
+    flex: 1;
+    font-size: var(--sds-type-heading);
+    color: var(--sds-text-primary);
+    line-height: var(--sds-leading-snug);
+  }
+
+  /* ── Usage guidelines ──────────────────────────────────── */
+  .usage-note {
+    background: var(--sds-status-info-bg);
+    border: 1px solid var(--sds-color-blue-150);
+    border-radius: 8px;
+    padding: var(--sds-space-400) var(--sds-space-500);
+    margin: var(--sds-space-400) 0 var(--sds-space-600);
+    font-size: var(--sds-type-label);
+    color: var(--sds-text-primary);
+    line-height: 1.6;
+  }
+  .usage-note strong { color: var(--sds-text-primary); }
+  .usage-note ul {
+    margin: var(--sds-space-200) 0 0 var(--sds-space-500);
+    padding: 0;
+  }
+  .usage-note li { margin-bottom: var(--sds-space-100); }
+
+  /* ── Spec table ────────────────────────────────────────── */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sds-type-label);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .spec-table th {
+    text-align: left;
+    padding: var(--sds-space-250) var(--sds-space-400);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-secondary);
+    background: var(--sds-bg-subtle);
+    border-bottom: 1px solid var(--sds-border-default);
+  }
+  .spec-table td {
+    padding: var(--sds-space-250) var(--sds-space-400);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    color: var(--sds-text-primary);
+  }
+  .spec-table code {
+    font-size: 12px;
+  }
+
+  .section-divider { border: none; border-top: 1px solid var(--sds-border-default); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+  /* ── Font family showcase ──────────────────────────────── */
+  .font-family-card {
+    background: var(--sds-bg-subtle);
+    border: 1px solid var(--sds-border-subtle);
+    border-radius: 8px;
+    padding: var(--sds-space-600);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .font-family-name {
+    font-size: var(--sds-type-heading);
+    font-weight: var(--sds-weight-bold);
+    margin-bottom: var(--sds-space-100);
+  }
+  .font-family-stack {
+    font-family: var(--sds-font-mono);
+    font-size: 12px;
+    color: var(--sds-text-secondary);
+    margin-bottom: var(--sds-space-400);
+  }
+  .font-family-alphabet {
+    font-size: var(--sds-type-subheading);
+    color: var(--sds-text-primary);
+    line-height: var(--sds-leading-normal);
+    letter-spacing: 0.5px;
+  }
+</style>
+</head>
+<body>
+
+<h1>Type Scale</h1>
+<p class="subtitle">Proxima Nova type scale with semantic size, weight, line height, and tracking tokens.</p>
+
+<!-- ============ FONT FAMILY ============ -->
+<h2>Font Family</h2>
+<p class="desc">Proxima Nova is the primary typeface. The system font stack provides fallbacks.</p>
+
+<div class="font-family-card">
+  <div class="font-family-name">Proxima Nova</div>
+  <div class="font-family-stack">--sds-font-sans: 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif</div>
+  <div class="font-family-alphabet">
+    ABCDEFGHIJKLMNOPQRSTUVWXYZ<br>
+    abcdefghijklmnopqrstuvwxyz<br>
+    0123456789 &amp; @ # $ % !?
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ TYPE SIZE SCALE ============ -->
+<h2>Size Scale</h2>
+<p class="desc">Eight semantic sizes covering display headings down to small UI labels. Each specimen is rendered at its actual size.</p>
+
+<div class="type-scale-list">
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-display</span>
+      <span class="type-size">28px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); letter-spacing: var(--sds-tracking-tight);">
+      Page Title Display
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-heading</span>
+      <span class="type-size">22px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light);">
+      Section Heading
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-subheading</span>
+      <span class="type-size">16px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);">
+      Subsection Heading
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-title</span>
+      <span class="type-size">15px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-title); font-weight: var(--sds-weight-semibold);">
+      Card titles and large UI labels
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-body</span>
+      <span class="type-size">14px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-body); font-weight: var(--sds-weight-regular); line-height: var(--sds-leading-normal);">
+      Primary body text used for paragraphs, descriptions, and button labels at medium size.
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-label</span>
+      <span class="type-size">13px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-label); font-weight: var(--sds-weight-regular); line-height: var(--sds-leading-normal);">
+      Secondary text, navigation links, table cells, and small button labels.
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-caption</span>
+      <span class="type-size">12px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-caption); font-weight: var(--sds-weight-regular); line-height: var(--sds-leading-normal);">
+      Chart axis labels, legend text, code blocks, and supporting metadata.
+    </div>
+  </div>
+
+  <div class="type-specimen">
+    <div class="type-meta">
+      <span class="type-token">--sds-type-overline</span>
+      <span class="type-size">11px</span>
+    </div>
+    <div class="type-sample" style="font-size: var(--sds-type-overline); font-weight: var(--sds-weight-semibold); text-transform: uppercase; letter-spacing: var(--sds-tracking-wide);">
+      Demo labels and overline captions
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ FONT WEIGHTS ============ -->
+<h2>Font Weights</h2>
+<p class="desc">Five weights available, each shown at the heading size.</p>
+
+<div class="weight-list">
+  <div class="weight-specimen">
+    <div class="weight-meta">
+      <span class="weight-token">--sds-weight-light</span>
+      <span class="weight-value">300</span>
+    </div>
+    <div class="weight-sample" style="font-weight: var(--sds-weight-light);">
+      Proxima Nova Light
+    </div>
+  </div>
+
+  <div class="weight-specimen">
+    <div class="weight-meta">
+      <span class="weight-token">--sds-weight-regular</span>
+      <span class="weight-value">400</span>
+    </div>
+    <div class="weight-sample" style="font-weight: var(--sds-weight-regular);">
+      Proxima Nova Regular
+    </div>
+  </div>
+
+  <div class="weight-specimen">
+    <div class="weight-meta">
+      <span class="weight-token">--sds-weight-semibold</span>
+      <span class="weight-value">600</span>
+    </div>
+    <div class="weight-sample" style="font-weight: var(--sds-weight-semibold);">
+      Proxima Nova Semibold
+    </div>
+  </div>
+
+  <div class="weight-specimen">
+    <div class="weight-meta">
+      <span class="weight-token">--sds-weight-bold</span>
+      <span class="weight-value">700</span>
+    </div>
+    <div class="weight-sample" style="font-weight: var(--sds-weight-bold);">
+      Proxima Nova Bold
+    </div>
+  </div>
+
+  <div class="weight-specimen">
+    <div class="weight-meta">
+      <span class="weight-token">--sds-weight-extrabold</span>
+      <span class="weight-value">800</span>
+    </div>
+    <div class="weight-sample" style="font-weight: var(--sds-weight-extrabold);">
+      Proxima Nova Extrabold
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- ============ USAGE GUIDELINES ============ -->
+<h2>Usage Guidelines</h2>
+<div class="usage-note">
+  <strong>Semantic sizing</strong> — Use the semantic token name that matches the content's role, not its visual size:
+  <ul>
+    <li><strong>Page titles</strong>: <code>--sds-type-display</code> with <code>--sds-weight-semibold</code></li>
+    <li><strong>Section headings</strong>: <code>--sds-type-heading</code> with <code>--sds-weight-light</code></li>
+    <li><strong>Subsections &amp; subtitles</strong>: <code>--sds-type-subheading</code> with <code>--sds-weight-semibold</code></li>
+    <li><strong>Card titles, large labels</strong>: <code>--sds-type-title</code> with <code>--sds-weight-semibold</code></li>
+    <li><strong>Body copy, button labels</strong>: <code>--sds-type-body</code> with <code>--sds-weight-regular</code></li>
+    <li><strong>Nav links, table cells</strong>: <code>--sds-type-label</code> with <code>--sds-weight-regular</code></li>
+    <li><strong>Chart labels, metadata</strong>: <code>--sds-type-caption</code> with <code>--sds-weight-regular</code></li>
+    <li><strong>Demo labels, overlines</strong>: <code>--sds-type-overline</code> with <code>--sds-weight-semibold</code> + uppercase</li>
+  </ul>
+</div>
+<p class="desc">Pair <code>--sds-leading-tight</code> (1.2) with headings, <code>--sds-leading-normal</code> (1.5) with body text, and <code>--sds-leading-relaxed</code> (1.6) with long-form content. Use <code>--sds-tracking-tight</code> for display sizes and <code>--sds-tracking-wide</code> for uppercase overlines.</p>
+
+<hr class="section-divider">
+
+<!-- ============ TOKEN REFERENCE ============ -->
+<h2>Token Reference</h2>
+
+<h3 style="font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-200);">Size Tokens</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Token</th><th>Value</th><th>Typical Usage</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--sds-type-display</code></td><td>28px</td><td>Page titles, hero headings</td></tr>
+    <tr><td><code>--sds-type-heading</code></td><td>22px</td><td>Section headings (h2)</td></tr>
+    <tr><td><code>--sds-type-subheading</code></td><td>16px</td><td>Subsection headings (h3), subtitles</td></tr>
+    <tr><td><code>--sds-type-title</code></td><td>15px</td><td>Card titles, large UI labels, button-lg</td></tr>
+    <tr><td><code>--sds-type-body</code></td><td>14px</td><td>Body text, descriptions, button-md</td></tr>
+    <tr><td><code>--sds-type-label</code></td><td>13px</td><td>Secondary text, nav links, table cells, button-sm</td></tr>
+    <tr><td><code>--sds-type-caption</code></td><td>12px</td><td>Code blocks, chart labels, legend text</td></tr>
+    <tr><td><code>--sds-type-overline</code></td><td>11px</td><td>Demo labels, overline captions, uppercase tags</td></tr>
+  </tbody>
+</table>
+
+<h3 style="font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-200);">Weight Tokens</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Token</th><th>Value</th><th>Typeface</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--sds-weight-light</code></td><td>300</td><td>Proxima Nova Light</td></tr>
+    <tr><td><code>--sds-weight-regular</code></td><td>400</td><td>Proxima Nova Regular</td></tr>
+    <tr><td><code>--sds-weight-semibold</code></td><td>600</td><td>Proxima Nova Semibold</td></tr>
+    <tr><td><code>--sds-weight-bold</code></td><td>700</td><td>Proxima Nova Bold</td></tr>
+    <tr><td><code>--sds-weight-extrabold</code></td><td>800</td><td>Proxima Nova Extrabold</td></tr>
+  </tbody>
+</table>
+
+<h3 style="font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-200);">Line Height Tokens</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Token</th><th>Value</th><th>Typical Usage</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--sds-leading-tight</code></td><td>1.2</td><td>Display headings, page titles</td></tr>
+    <tr><td><code>--sds-leading-snug</code></td><td>1.35</td><td>Subheadings, UI labels, buttons</td></tr>
+    <tr><td><code>--sds-leading-normal</code></td><td>1.5</td><td>Body text, descriptions</td></tr>
+    <tr><td><code>--sds-leading-relaxed</code></td><td>1.6</td><td>Long-form content, guidelines</td></tr>
+  </tbody>
+</table>
+
+<h3 style="font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-200);">Letter Spacing Tokens</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Token</th><th>Value</th><th>Typical Usage</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--sds-tracking-tight</code></td><td>-0.01em</td><td>Display sizes, large headings</td></tr>
+    <tr><td><code>--sds-tracking-normal</code></td><td>0em</td><td>Body text, default</td></tr>
+    <tr><td><code>--sds-tracking-wide</code></td><td>0.5px</td><td>Uppercase labels, overlines</td></tr>
+  </tbody>
+</table>
+
+<h3 style="font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-200);">Font Family Tokens</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Token</th><th>Value</th></tr>
+  </thead>
+  <tbody>
+    <tr><td><code>--sds-font-sans</code></td><td>'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif</td></tr>
+    <tr><td><code>--sds-font-mono</code></td><td>'SF Mono', SFMono-Regular, Consolas, monospace</td></tr>
+  </tbody>
+</table>
+
+<script src="/shared/nav.js"></script>
+</body>
+</html>

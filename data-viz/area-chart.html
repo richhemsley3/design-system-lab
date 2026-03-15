@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Area Chart</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../shared/chart.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+</head>
+<body>
+
+  <h1>Area Chart</h1>
+  <p class="page-subtitle">Filled regions beneath line charts to emphasize volume and cumulative trends. Supports single, stacked, and gradient variants.</p>
+
+  <!-- ============================================================
+       CHART COLOR PALETTE
+       ============================================================ -->
+  <h2>Chart Color Palette</h2>
+  <p>Eight sequential colors used across all data visualization charts. Each color maintains a minimum 3:1 contrast ratio against white backgrounds.</p>
+
+  <div class="color-strip">
+    <div class="color-strip-item" style="background: var(--sds-chart-1);"><span class="color-strip-label">1</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-2);"><span class="color-strip-label">2</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-3);"><span class="color-strip-label">3</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-4);"><span class="color-strip-label">4</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-5);"><span class="color-strip-label">5</span></div>
+    <div class="color-strip-item" style="background: var(--sds-chart-6);"><span class="color-strip-label">6</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-7);"><span class="color-strip-label">7</span></div>
+    <div class="color-strip-item light-text" style="background: var(--sds-chart-8);"><span class="color-strip-label">8</span></div>
+  </div>
+
+  <!-- ============================================================
+       SINGLE AREA CHART
+       ============================================================ -->
+  <h2>Single Area Chart</h2>
+  <p>Basic area chart with a filled region beneath the line. The fill uses reduced opacity to maintain readability of grid lines and axis labels.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Single series</div>
+    <div class="sds-chart" style="position:relative;">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Network Traffic</span>
+        <span class="sds-chart-subtitle">Requests per second (thousands) — 12 months</span>
+      </div>
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Area chart showing network traffic over 12 months">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="56" x2="540" y2="56"/>
+        <line class="chart-grid-line" x1="40" y1="92" x2="540" y2="92"/>
+        <line class="chart-grid-line" x1="40" y1="128" x2="540" y2="128"/>
+        <line class="chart-grid-line" x1="40" y1="164" x2="540" y2="164"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">50</text>
+        <text class="chart-axis-label" x="32" y="60" text-anchor="end">40</text>
+        <text class="chart-axis-label" x="32" y="96" text-anchor="end">30</text>
+        <text class="chart-axis-label" x="32" y="132" text-anchor="end">20</text>
+        <text class="chart-axis-label" x="32" y="168" text-anchor="end">10</text>
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">0</text>
+        <!-- Area fill (15% opacity) -->
+        <!--
+          Data points (x positions evenly spaced from 55 to 525, 12 months):
+          Jan=55  Feb=97.7  Mar=140.5  Apr=183.2  May=225.9  Jun=268.6
+          Jul=311.4  Aug=354.1  Sep=396.8  Oct=439.5  Nov=482.3  Dec=525
+
+          Values (thousands): 12, 18, 15, 24, 32, 28, 35, 42, 38, 45, 40, 48
+          Y scale: 0=200, 50=20 => y = 200 - (value/50)*180
+          12->156.8, 18->135.2, 15->146, 24->113.6, 32->84.8, 28->99.2
+          35->74, 42->48.8, 38->63.2, 45->38, 40->56, 48->27.2
+        -->
+        <path class="chart-area-fill"
+              d="M55,156.8 L97.7,135.2 L140.5,146 L183.2,113.6 L225.9,84.8 L268.6,99.2 L311.4,74 L354.1,48.8 L396.8,63.2 L439.5,38 L482.3,56 L525,27.2 L525,200 L55,200 Z"
+              fill="var(--sds-chart-1)" opacity="0.15"/>
+        <!-- Area line (stroke on top) -->
+        <polyline class="chart-area-line"
+                  points="55,156.8 97.7,135.2 140.5,146 183.2,113.6 225.9,84.8 268.6,99.2 311.4,74 354.1,48.8 396.8,63.2 439.5,38 482.3,56 525,27.2"
+                  stroke="var(--sds-chart-1)" stroke-width="2"/>
+        <!-- Data points -->
+        <circle class="chart-data-point" cx="55" cy="156.8" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="97.7" cy="135.2" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="140.5" cy="146" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="183.2" cy="113.6" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="225.9" cy="84.8" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="268.6" cy="99.2" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="311.4" cy="74" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="354.1" cy="48.8" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="396.8" cy="63.2" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="439.5" cy="38" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="482.3" cy="56" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="525" cy="27.2" r="3" fill="var(--sds-chart-1)"/>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="55" y="220" text-anchor="middle">Jan</text>
+        <text class="chart-axis-label" x="97.7" y="220" text-anchor="middle">Feb</text>
+        <text class="chart-axis-label" x="140.5" y="220" text-anchor="middle">Mar</text>
+        <text class="chart-axis-label" x="183.2" y="220" text-anchor="middle">Apr</text>
+        <text class="chart-axis-label" x="225.9" y="220" text-anchor="middle">May</text>
+        <text class="chart-axis-label" x="268.6" y="220" text-anchor="middle">Jun</text>
+        <text class="chart-axis-label" x="311.4" y="220" text-anchor="middle">Jul</text>
+        <text class="chart-axis-label" x="354.1" y="220" text-anchor="middle">Aug</text>
+        <text class="chart-axis-label" x="396.8" y="220" text-anchor="middle">Sep</text>
+        <text class="chart-axis-label" x="439.5" y="220" text-anchor="middle">Oct</text>
+        <text class="chart-axis-label" x="482.3" y="220" text-anchor="middle">Nov</text>
+        <text class="chart-axis-label" x="525" y="220" text-anchor="middle">Dec</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       STACKED AREA CHART
+       ============================================================ -->
+  <h3>Stacked Area Chart</h3>
+  <p>Multiple data series stacked to show cumulative totals and part-to-whole relationships over time. Each area builds on the previous series. Uses 60% opacity fills for layering.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Multi-series stacked</div>
+    <div class="sds-chart">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Traffic by Source</span>
+        <span class="sds-chart-subtitle">Sessions (thousands) — 12 months</span>
+      </div>
+      <div class="sds-legend">
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-1)"></span> Direct</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-2)"></span> Organic Search</span>
+        <span class="sds-legend-item"><span class="sds-legend-swatch" style="background:var(--sds-chart-3)"></span> Referral</span>
+      </div>
+      <!--
+        X positions (12 months): 55, 97.7, 140.5, 183.2, 225.9, 268.6, 311.4, 354.1, 396.8, 439.5, 482.3, 525
+        Y scale: 0=200, 90=20 => y = 200 - (value/90)*180
+
+        Series 1 (Direct):       10, 12, 14, 13, 16, 18, 20, 22, 19, 24, 22, 26
+        Series 2 (Organic):      15, 18, 16, 20, 22, 25, 28, 30, 26, 32, 30, 35
+        Series 3 (Referral):      8, 10,  9, 12, 10, 14, 12, 15, 14, 16, 15, 18
+
+        Stacked:
+        S1 top:                  10, 12, 14, 13, 16, 18, 20, 22, 19, 24, 22, 26
+        S1+S2 top:               25, 30, 30, 33, 38, 43, 48, 52, 45, 56, 52, 61
+        S1+S2+S3 top:            33, 40, 39, 45, 48, 57, 60, 67, 59, 72, 67, 79
+
+        Y coords (y = 200 - (val/90)*180):
+        S1:   180, 176, 172, 174, 168, 164, 160, 156, 162, 152, 156, 148.2
+        S1+S2: 150, 140, 140, 134, 124, 114, 104, 96, 110, 88, 96, 78
+        S1+S2+S3: 134, 120, 122, 110, 104, 86, 80, 66, 82, 56, 66, 42.2
+      -->
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Stacked area chart showing traffic by source across 12 months">
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="56" x2="540" y2="56"/>
+        <line class="chart-grid-line" x1="40" y1="92" x2="540" y2="92"/>
+        <line class="chart-grid-line" x1="40" y1="128" x2="540" y2="128"/>
+        <line class="chart-grid-line" x1="40" y1="164" x2="540" y2="164"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">90</text>
+        <text class="chart-axis-label" x="32" y="60" text-anchor="end">72</text>
+        <text class="chart-axis-label" x="32" y="96" text-anchor="end">54</text>
+        <text class="chart-axis-label" x="32" y="132" text-anchor="end">36</text>
+        <text class="chart-axis-label" x="32" y="168" text-anchor="end">18</text>
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">0</text>
+
+        <!-- Stacked areas — rendered back to front (top series first) -->
+
+        <!-- Series 3: Referral (top stack, chart-3, 60% opacity) -->
+        <path class="chart-area-fill"
+              d="M55,134 L97.7,120 L140.5,122 L183.2,110 L225.9,104 L268.6,86 L311.4,80 L354.1,66 L396.8,82 L439.5,56 L482.3,66 L525,42.2 L525,78 L482.3,96 L439.5,88 L396.8,110 L354.1,96 L311.4,104 L268.6,114 L225.9,124 L183.2,134 L140.5,140 L97.7,140 L55,150 Z"
+              fill="var(--sds-chart-3)" opacity="0.6"/>
+
+        <!-- Series 2: Organic Search (middle stack, chart-2, 60% opacity) -->
+        <path class="chart-area-fill"
+              d="M55,150 L97.7,140 L140.5,140 L183.2,134 L225.9,124 L268.6,114 L311.4,104 L354.1,96 L396.8,110 L439.5,88 L482.3,96 L525,78 L525,148.2 L482.3,156 L439.5,152 L396.8,162 L354.1,156 L311.4,160 L268.6,164 L225.9,168 L183.2,174 L140.5,172 L97.7,176 L55,180 Z"
+              fill="var(--sds-chart-2)" opacity="0.6"/>
+
+        <!-- Series 1: Direct (bottom stack, chart-1, 60% opacity) -->
+        <path class="chart-area-fill"
+              d="M55,180 L97.7,176 L140.5,172 L183.2,174 L225.9,168 L268.6,164 L311.4,160 L354.1,156 L396.8,162 L439.5,152 L482.3,156 L525,148.2 L525,200 L55,200 Z"
+              fill="var(--sds-chart-1)" opacity="0.6"/>
+
+        <!-- Lines on top of areas -->
+        <polyline class="chart-area-line" points="55,134 97.7,120 140.5,122 183.2,110 225.9,104 268.6,86 311.4,80 354.1,66 396.8,82 439.5,56 482.3,66 525,42.2" stroke="var(--sds-chart-3)" stroke-width="2"/>
+        <polyline class="chart-area-line" points="55,150 97.7,140 140.5,140 183.2,134 225.9,124 268.6,114 311.4,104 354.1,96 396.8,110 439.5,88 482.3,96 525,78" stroke="var(--sds-chart-2)" stroke-width="2"/>
+        <polyline class="chart-area-line" points="55,180 97.7,176 140.5,172 183.2,174 225.9,168 268.6,164 311.4,160 354.1,156 396.8,162 439.5,152 482.3,156 525,148.2" stroke="var(--sds-chart-1)" stroke-width="2"/>
+
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="55" y="220" text-anchor="middle">Jan</text>
+        <text class="chart-axis-label" x="97.7" y="220" text-anchor="middle">Feb</text>
+        <text class="chart-axis-label" x="140.5" y="220" text-anchor="middle">Mar</text>
+        <text class="chart-axis-label" x="183.2" y="220" text-anchor="middle">Apr</text>
+        <text class="chart-axis-label" x="225.9" y="220" text-anchor="middle">May</text>
+        <text class="chart-axis-label" x="268.6" y="220" text-anchor="middle">Jun</text>
+        <text class="chart-axis-label" x="311.4" y="220" text-anchor="middle">Jul</text>
+        <text class="chart-axis-label" x="354.1" y="220" text-anchor="middle">Aug</text>
+        <text class="chart-axis-label" x="396.8" y="220" text-anchor="middle">Sep</text>
+        <text class="chart-axis-label" x="439.5" y="220" text-anchor="middle">Oct</text>
+        <text class="chart-axis-label" x="482.3" y="220" text-anchor="middle">Nov</text>
+        <text class="chart-axis-label" x="525" y="220" text-anchor="middle">Dec</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       GRADIENT AREA CHART
+       ============================================================ -->
+  <h3>Gradient Area Chart</h3>
+  <p>Area chart with a vertical gradient fill that fades from the series color at the top to transparent at the baseline. Creates a softer visual effect for single-series trend data.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Gradient fill</div>
+    <div class="sds-chart" style="position:relative;">
+      <div class="sds-chart-header">
+        <span class="sds-chart-title">Revenue Growth</span>
+        <span class="sds-chart-subtitle">Monthly revenue ($M) — 12 months</span>
+      </div>
+      <!--
+        Data: 2.1, 2.4, 2.8, 3.0, 3.5, 3.2, 3.8, 4.2, 4.5, 4.1, 4.8, 5.2
+        Y scale: 0=200, 6=20 => y = 200 - (value/6)*180
+        2.1->137, 2.4->128, 2.8->116, 3.0->110, 3.5->95, 3.2->104
+        3.8->86, 4.2->74, 4.5->65, 4.1->77, 4.8->56, 5.2->44
+      -->
+      <svg class="chart-area" viewBox="0 0 560 240" role="img" aria-label="Gradient area chart showing revenue growth over 12 months">
+        <defs>
+          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="var(--sds-chart-1)" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="var(--sds-chart-1)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Grid lines -->
+        <line class="chart-grid-line" x1="40" y1="20" x2="540" y2="20"/>
+        <line class="chart-grid-line" x1="40" y1="56" x2="540" y2="56"/>
+        <line class="chart-grid-line" x1="40" y1="92" x2="540" y2="92"/>
+        <line class="chart-grid-line" x1="40" y1="128" x2="540" y2="128"/>
+        <line class="chart-grid-line" x1="40" y1="164" x2="540" y2="164"/>
+        <!-- X axis -->
+        <line class="chart-axis-line" x1="40" y1="200" x2="540" y2="200"/>
+        <!-- Y axis labels -->
+        <text class="chart-axis-label" x="32" y="24" text-anchor="end">$6M</text>
+        <text class="chart-axis-label" x="32" y="60" text-anchor="end">$5M</text>
+        <text class="chart-axis-label" x="32" y="96" text-anchor="end">$4M</text>
+        <text class="chart-axis-label" x="32" y="132" text-anchor="end">$3M</text>
+        <text class="chart-axis-label" x="32" y="168" text-anchor="end">$2M</text>
+        <text class="chart-axis-label" x="32" y="204" text-anchor="end">$0</text>
+
+        <!-- Gradient area fill -->
+        <path class="chart-area-fill"
+              d="M55,137 L97.7,128 L140.5,116 L183.2,110 L225.9,95 L268.6,104 L311.4,86 L354.1,74 L396.8,65 L439.5,77 L482.3,56 L525,44 L525,200 L55,200 Z"
+              fill="url(#areaGradient)"/>
+        <!-- Line on top -->
+        <polyline class="chart-area-line"
+                  points="55,137 97.7,128 140.5,116 183.2,110 225.9,95 268.6,104 311.4,86 354.1,74 396.8,65 439.5,77 482.3,56 525,44"
+                  stroke="var(--sds-chart-1)" stroke-width="2"/>
+        <!-- Data points -->
+        <circle class="chart-data-point" cx="55" cy="137" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="97.7" cy="128" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="140.5" cy="116" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="183.2" cy="110" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="225.9" cy="95" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="268.6" cy="104" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="311.4" cy="86" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="354.1" cy="74" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="396.8" cy="65" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="439.5" cy="77" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="482.3" cy="56" r="3" fill="var(--sds-chart-1)"/>
+        <circle class="chart-data-point" cx="525" cy="44" r="3" fill="var(--sds-chart-1)"/>
+        <!-- X axis labels -->
+        <text class="chart-axis-label" x="55" y="220" text-anchor="middle">Jan</text>
+        <text class="chart-axis-label" x="97.7" y="220" text-anchor="middle">Feb</text>
+        <text class="chart-axis-label" x="140.5" y="220" text-anchor="middle">Mar</text>
+        <text class="chart-axis-label" x="183.2" y="220" text-anchor="middle">Apr</text>
+        <text class="chart-axis-label" x="225.9" y="220" text-anchor="middle">May</text>
+        <text class="chart-axis-label" x="268.6" y="220" text-anchor="middle">Jun</text>
+        <text class="chart-axis-label" x="311.4" y="220" text-anchor="middle">Jul</text>
+        <text class="chart-axis-label" x="354.1" y="220" text-anchor="middle">Aug</text>
+        <text class="chart-axis-label" x="396.8" y="220" text-anchor="middle">Sep</text>
+        <text class="chart-axis-label" x="439.5" y="220" text-anchor="middle">Oct</text>
+        <text class="chart-axis-label" x="482.3" y="220" text-anchor="middle">Nov</text>
+        <text class="chart-axis-label" x="525" y="220" text-anchor="middle">Dec</text>
+      </svg>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CHART ANATOMY
+       ============================================================ -->
+  <h2>Chart Anatomy</h2>
+  <p>Standard structural elements used across all chart types in the design system.</p>
+
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Token</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Background</td>
+        <td><code>--sds-chart-bg</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White</td>
+      </tr>
+      <tr>
+        <td>Grid lines</td>
+        <td><code>--sds-chart-grid</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span> warm-gray-100</td>
+      </tr>
+      <tr>
+        <td>Axis line</td>
+        <td><code>--sds-chart-axis</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-300)"></span> warm-gray-300</td>
+      </tr>
+      <tr>
+        <td>Axis labels</td>
+        <td><code>--sds-chart-axis-label</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-550)"></span> warm-gray-550 · 12px</td>
+      </tr>
+      <tr>
+        <td>Tooltip background</td>
+        <td><code>--sds-chart-tooltip-bg</code></td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-900)"></span> warm-gray-900</td>
+      </tr>
+      <tr>
+        <td>Tooltip text</td>
+        <td><code>--sds-chart-tooltip-text</code></td>
+        <td><span class="swatch" style="background:#fff"></span> White · 12px</td>
+      </tr>
+      <tr>
+        <td>Area fill opacity (single)</td>
+        <td>—</td>
+        <td>15%</td>
+      </tr>
+      <tr>
+        <td>Area fill opacity (stacked)</td>
+        <td>—</td>
+        <td>60%</td>
+      </tr>
+      <tr>
+        <td>Gradient fill (top)</td>
+        <td>—</td>
+        <td>Series color at 30% opacity</td>
+      </tr>
+      <tr>
+        <td>Gradient fill (bottom)</td>
+        <td>—</td>
+        <td>Series color at 0% opacity</td>
+      </tr>
+      <tr>
+        <td>Line stroke width</td>
+        <td>—</td>
+        <td>2px</td>
+      </tr>
+      <tr>
+        <td>Data point radius</td>
+        <td>—</td>
+        <td>3px (hover: 5px)</td>
+      </tr>
+      <tr>
+        <td>Container radius</td>
+        <td>—</td>
+        <td>12px</td>
+      </tr>
+      <tr>
+        <td>Container padding</td>
+        <td>—</td>
+        <td>24px</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       SERIES COLORS
+       ============================================================ -->
+  <h3>Series Color Tokens</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Token</th><th>Color</th><th>Hex</th><th>Usage</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>--sds-chart-1</code></td><td><span class="swatch" style="background:var(--sds-chart-1)"></span></td><td>#013D5B</td><td>Primary series / single color charts</td></tr>
+      <tr><td><code>--sds-chart-2</code></td><td><span class="swatch" style="background:var(--sds-chart-2)"></span></td><td>#4F8AA0</td><td>Second series</td></tr>
+      <tr><td><code>--sds-chart-3</code></td><td><span class="swatch" style="background:var(--sds-chart-3)"></span></td><td>#A6CBD6</td><td>Third series</td></tr>
+      <tr><td><code>--sds-chart-4</code></td><td><span class="swatch" style="background:var(--sds-chart-4)"></span></td><td>#BF5547</td><td>Fourth series / accent</td></tr>
+      <tr><td><code>--sds-chart-5</code></td><td><span class="swatch" style="background:var(--sds-chart-5)"></span></td><td>#7A9A01</td><td>Fifth series</td></tr>
+      <tr><td><code>--sds-chart-6</code></td><td><span class="swatch" style="background:var(--sds-chart-6)"></span></td><td>#805AA1</td><td>Sixth series</td></tr>
+      <tr><td><code>--sds-chart-7</code></td><td><span class="swatch" style="background:var(--sds-chart-7)"></span></td><td>#B29B24</td><td>Seventh series</td></tr>
+      <tr><td><code>--sds-chart-8</code></td><td><span class="swatch" style="background:var(--sds-chart-8)"></span></td><td>#E57D6E</td><td>Eighth series</td></tr>
+    </tbody>
+  </table>
+
+  <!-- ============================================================
+       CSS CLASSES
+       ============================================================ -->
+  <h3>CSS Classes</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-chart</code></td><td>Container — white bg, border, 12px radius, 24px padding</td></tr>
+      <tr><td><code>.sds-chart-header</code></td><td>Flex row with title and subtitle</td></tr>
+      <tr><td><code>.sds-chart-title</code></td><td>Chart heading — 16px/600</td></tr>
+      <tr><td><code>.sds-chart-subtitle</code></td><td>Secondary text — 13px</td></tr>
+      <tr><td><code>.sds-legend</code></td><td>Horizontal legend container</td></tr>
+      <tr><td><code>.sds-legend-item</code></td><td>Legend entry — swatch + label</td></tr>
+      <tr><td><code>.sds-legend-swatch</code></td><td>10x10px color indicator</td></tr>
+      <tr><td><code>.chart-area-fill</code></td><td>SVG path for the filled area region</td></tr>
+      <tr><td><code>.chart-area-line</code></td><td>SVG polyline for the stroke on top of the area</td></tr>
+      <tr><td><code>.chart-data-point</code></td><td>SVG circle at each data point — 3px radius, hover: 5px</td></tr>
+      <tr><td><code>.chart-grid-line</code></td><td>Horizontal/vertical grid line</td></tr>
+      <tr><td><code>.chart-axis-line</code></td><td>Primary axis line</td></tr>
+      <tr><td><code>.chart-axis-label</code></td><td>Axis tick label — 12px</td></tr>
+      <tr><td><code>.chart-value-label</code></td><td>Value displayed near data points — 11px/500</td></tr>
+    </tbody>
+  </table>
+
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Timeline</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" />
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+
+    /* ============================================================
+       TIMELINE — Vertical Activity Log
+       ============================================================ */
+    .sds-timeline {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      position: relative;
+    }
+
+    .sds-timeline-item {
+      position: relative;
+      padding-left: 40px;
+      padding-bottom: var(--sds-space-600);
+    }
+    .sds-timeline-item:last-child {
+      padding-bottom: 0;
+    }
+
+    /* Connector — vertical line between markers */
+    .sds-timeline-item__connector {
+      position: absolute;
+      left: 14px;
+      top: 10px;
+      bottom: 0;
+      width: 2px;
+      background: var(--sds-color-warm-gray-150);
+    }
+    .sds-timeline-item:last-child .sds-timeline-item__connector {
+      display: none;
+    }
+
+    /* Marker — dot */
+    .sds-timeline-item__marker {
+      position: absolute;
+      left: 10px;
+      top: 2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--sds-color-warm-gray-300);
+      background: var(--sds-color-white);
+      z-index: 1;
+    }
+
+    /* Marker — icon variant */
+    .sds-timeline-item__marker--icon {
+      width: 28px;
+      height: 28px;
+      left: 1px;
+      top: -3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: var(--sds-color-warm-gray-500);
+    }
+    .sds-timeline-item__marker--icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-white);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+    /* Content area */
+    .sds-timeline-item__content {
+      /* positioned by item padding-left */
+    }
+
+    .sds-timeline-item__time {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin-bottom: var(--sds-space-050);
+    }
+
+    .sds-timeline-item__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-normal);
+    }
+
+    .sds-timeline-item__description {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      margin-top: var(--sds-space-100);
+      line-height: var(--sds-leading-normal);
+    }
+
+    .sds-timeline-item__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-150);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+    }
+    .sds-timeline-item__meta-avatar {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: var(--sds-color-warm-gray-200);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .sds-timeline-item__meta-avatar .material-symbols-outlined {
+      font-size: 14px;
+      color: var(--sds-color-warm-gray-450);
+      font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .sds-timeline-item__meta-tag {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-medium);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 4px;
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-color-warm-gray-500);
+    }
+
+    /* ---- Semantic marker colors (dot) ---- */
+    .sds-timeline-item--error .sds-timeline-item__marker {
+      background: var(--sds-color-red-050);
+      border-color: var(--sds-color-red-450);
+    }
+    .sds-timeline-item--warning .sds-timeline-item__marker {
+      background: var(--sds-color-yellow-025);
+      border-color: var(--sds-color-yellow-350);
+    }
+    .sds-timeline-item--success .sds-timeline-item__marker {
+      background: var(--sds-color-green-025);
+      border-color: var(--sds-color-green-400);
+    }
+    .sds-timeline-item--info .sds-timeline-item__marker {
+      background: var(--sds-color-blue-050);
+      border-color: var(--sds-color-blue-450);
+    }
+
+    /* ---- Semantic marker colors (icon variant) ---- */
+    .sds-timeline-item--error .sds-timeline-item__marker--icon {
+      background: var(--sds-color-red-050);
+      border: none;
+    }
+    .sds-timeline-item--error .sds-timeline-item__marker--icon .material-symbols-outlined {
+      color: var(--sds-color-red-550);
+    }
+    .sds-timeline-item--warning .sds-timeline-item__marker--icon {
+      background: var(--sds-color-yellow-025);
+      border: none;
+    }
+    .sds-timeline-item--warning .sds-timeline-item__marker--icon .material-symbols-outlined {
+      color: var(--sds-color-yellow-550);
+    }
+    .sds-timeline-item--success .sds-timeline-item__marker--icon {
+      background: var(--sds-color-green-025);
+      border: none;
+    }
+    .sds-timeline-item--success .sds-timeline-item__marker--icon .material-symbols-outlined {
+      color: var(--sds-color-green-500);
+    }
+    .sds-timeline-item--info .sds-timeline-item__marker--icon {
+      background: var(--sds-color-blue-050);
+      border: none;
+    }
+    .sds-timeline-item--info .sds-timeline-item__marker--icon .material-symbols-outlined {
+      color: var(--sds-color-blue-700);
+    }
+
+    /* Semantic title colors */
+    .sds-timeline-item--error .sds-timeline-item__title {
+      color: var(--sds-color-red-550);
+    }
+    .sds-timeline-item--warning .sds-timeline-item__title {
+      color: var(--sds-color-yellow-550);
+    }
+
+    /* ---- Date group header ---- */
+    .sds-timeline-group {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-450);
+      padding: var(--sds-space-200) 0;
+      margin-left: 40px;
+      margin-bottom: var(--sds-space-200);
+    }
+    .sds-timeline-group:not(:first-child) {
+      margin-top: var(--sds-space-600);
+    }
+
+    /* ---- Icon marker connector adjustment ---- */
+    .sds-timeline-item--has-icon .sds-timeline-item__connector {
+      left: 14px;
+      top: 25px;
+    }
+
+    /* ============================================================
+       IN CONTEXT — Audit Log Panel
+       ============================================================ */
+    .audit-panel {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 10px;
+      overflow: hidden;
+      max-width: 640px;
+    }
+    .audit-panel__header {
+      padding: var(--sds-space-500) var(--sds-space-600);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .audit-panel__title {
+      font-size: var(--sds-type-title);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+    .audit-panel__title .material-symbols-outlined {
+      font-size: 20px;
+      color: var(--sds-color-warm-gray-400);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .audit-panel__count {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      font-weight: var(--sds-weight-regular);
+    }
+    .audit-panel__filters {
+      padding: var(--sds-space-300) var(--sds-space-600);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      gap: var(--sds-space-200);
+      flex-wrap: wrap;
+    }
+    .demo-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-100) var(--sds-space-300);
+      border-radius: 100px;
+      border: 1px solid var(--sds-color-warm-gray-200);
+      background: var(--sds-color-white);
+      font-size: var(--sds-type-caption);
+      font-family: inherit;
+      color: var(--sds-text-secondary);
+      cursor: pointer;
+      transition: background 0.12s ease, border-color 0.12s ease;
+    }
+    .demo-chip:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+    .demo-chip--active {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+    }
+    .demo-chip--active:hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+    .audit-panel__body {
+      padding: var(--sds-space-600);
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code {
+      font-size: var(--sds-type-caption);
+    }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Timeline / Activity Log</h1>
+  <p class="page-subtitle">Vertical timeline for activity feeds, change history, and event logs. Essential for enterprise products that need to show chronological event sequences.</p>
+
+  <!-- ============================================================
+       BASIC TIMELINE
+       ============================================================ -->
+  <h2>Basic Timeline</h2>
+  <p>Simple vertical timeline with dot markers connected by a line. Events are listed in reverse-chronological order with timestamps.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Default dot markers</div>
+    <ol class="sds-timeline" role="list">
+      <li class="sds-timeline-item">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">2:45 PM</div>
+          <div class="sds-timeline-item__title">Project settings updated: Notifications v2.1 activated</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">1:30 PM</div>
+          <div class="sds-timeline-item__title">Report generated: 1,247 records exported</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">11:15 AM</div>
+          <div class="sds-timeline-item__title">New integration connected: Salesforce Production</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">10:02 AM</div>
+          <div class="sds-timeline-item__title">Issue resolved: Support ticket #4021 closed</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">9:30 AM</div>
+          <div class="sds-timeline-item__title">Workflow rule modified by admin@company.com</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ============================================================
+       WITH SEMANTIC COLORS
+       ============================================================ -->
+  <h2>With Semantic Colors</h2>
+  <p>Timeline events with colored markers indicating severity or type. Use semantic variants to draw attention to critical events in activity logs.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Error, Warning, Success, Info</div>
+    <ol class="sds-timeline" role="list">
+      <li class="sds-timeline-item sds-timeline-item--error">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">3:12 PM</div>
+          <div class="sds-timeline-item__title">Critical: 3 failed payment transactions in billing module</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--warning">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">2:48 PM</div>
+          <div class="sds-timeline-item__title">Usage warning: Team "Engineering" approaching storage limit</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--success">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">1:15 PM</div>
+          <div class="sds-timeline-item__title">Migration complete: All user accounts transferred successfully</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--info">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">9:00 AM</div>
+          <div class="sds-timeline-item__title">Scheduled backup initiated for Q1 data archive</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ============================================================
+       WITH ICONS
+       ============================================================ -->
+  <h2>With Icons</h2>
+  <p>Icon markers replace dots for richer visual context. Each icon communicates the event category at a glance, using Material Symbols within a colored circle.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Icon markers by event type</div>
+    <ol class="sds-timeline" role="list">
+      <li class="sds-timeline-item sds-timeline-item--info sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">shield</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">4:30 PM</div>
+          <div class="sds-timeline-item__title">Permission updated: Team Lead role v3.0 activated</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--warning sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">security</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">3:15 PM</div>
+          <div class="sds-timeline-item__title">Login attempt blocked: Unrecognized device on staging account</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--success sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">database</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">1:00 PM</div>
+          <div class="sds-timeline-item__title">New integration connected: Jira Project Tracker</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--info sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">search</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">11:00 AM</div>
+          <div class="sds-timeline-item__title">Export completed: 42,318 records across 12 reports</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--error sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">9:45 AM</div>
+          <div class="sds-timeline-item__title">Alert: API rate limit exceeded on production endpoint</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ============================================================
+       GROUPED BY DATE
+       ============================================================ -->
+  <h2>Grouped by Date</h2>
+  <p>Events organized under date group headers for long activity logs. Helps users scan through historical data by day.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Date-grouped timeline</div>
+
+    <div class="sds-timeline-group">Today</div>
+    <ol class="sds-timeline" role="list">
+      <li class="sds-timeline-item sds-timeline-item--error">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">2:45 PM</div>
+          <div class="sds-timeline-item__title">Critical: Deployment pipeline failed on production release v4.2</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--success">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">11:30 AM</div>
+          <div class="sds-timeline-item__title">Automated fix applied: Database index rebuilt successfully</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">9:00 AM</div>
+          <div class="sds-timeline-item__title">Daily sync initiated across all connected services</div>
+        </div>
+      </li>
+    </ol>
+
+    <div class="sds-timeline-group">Yesterday</div>
+    <ol class="sds-timeline" role="list">
+      <li class="sds-timeline-item sds-timeline-item--warning">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">5:12 PM</div>
+          <div class="sds-timeline-item__title">Unusual traffic pattern detected from API client mobile-app-v3</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--info">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">2:00 PM</div>
+          <div class="sds-timeline-item__title">New automation rule added: Weekly Report Distribution</div>
+        </div>
+      </li>
+    </ol>
+
+    <div class="sds-timeline-group">March 13, 2026</div>
+    <ol class="sds-timeline" role="list">
+      <li class="sds-timeline-item sds-timeline-item--success">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">4:45 PM</div>
+          <div class="sds-timeline-item__title">Health check passed for all production services</div>
+        </div>
+      </li>
+      <li class="sds-timeline-item">
+        <div class="sds-timeline-item__marker"></div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">10:15 AM</div>
+          <div class="sds-timeline-item__title">Team member sarah.chen@company.com granted Viewer role</div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ============================================================
+       DETAILED EVENTS
+       ============================================================ -->
+  <h2>Detailed Events</h2>
+  <p>Expanded entries with description text and metadata for richer context. Shows the acting user, system tags, and additional detail.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Title + description + metadata</div>
+    <ol class="sds-timeline" role="list">
+      <li class="sds-timeline-item sds-timeline-item--error sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">warning</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">3:22 PM</div>
+          <div class="sds-timeline-item__title">Critical: Build pipeline failed for project "Atlas"</div>
+          <div class="sds-timeline-item__description">Automated checks found 847 test failures across 12 modules. The "checkout-service" package has unresolved dependency conflicts. Immediate attention recommended.</div>
+          <div class="sds-timeline-item__meta">
+            <span class="sds-timeline-item__meta-tag">System</span>
+            <span>CI/CD Runner v4.2</span>
+          </div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--success sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">shield</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">2:10 PM</div>
+          <div class="sds-timeline-item__title">Workflow deployed: Onboarding Template v2.0</div>
+          <div class="sds-timeline-item__description">Applied to 3 teams covering new hire setup. All required steps mapped and approval chains configured.</div>
+          <div class="sds-timeline-item__meta">
+            <div class="sds-timeline-item__meta-avatar">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <span>James Morton</span>
+            <span class="sds-timeline-item__meta-tag">Admin</span>
+          </div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--info sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">database</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">11:05 AM</div>
+          <div class="sds-timeline-item__title">Integration added: Slack Workspace (Engineering)</div>
+          <div class="sds-timeline-item__description">Connection established via OAuth authentication. Initial sync queued for 247 channels across 5 workspaces.</div>
+          <div class="sds-timeline-item__meta">
+            <div class="sds-timeline-item__meta-avatar">
+              <span class="material-symbols-outlined">person</span>
+            </div>
+            <span>Elena Rodriguez</span>
+            <span class="sds-timeline-item__meta-tag">Engineer</span>
+          </div>
+        </div>
+      </li>
+      <li class="sds-timeline-item sds-timeline-item--warning sds-timeline-item--has-icon">
+        <div class="sds-timeline-item__marker sds-timeline-item__marker--icon">
+          <span class="material-symbols-outlined">security</span>
+        </div>
+        <div class="sds-timeline-item__connector"></div>
+        <div class="sds-timeline-item__content">
+          <div class="sds-timeline-item__time">9:38 AM</div>
+          <div class="sds-timeline-item__title">Usage spike: Bulk download from Reports workspace</div>
+          <div class="sds-timeline-item__description">Service account "scheduled-export-03" downloaded 1.2M rows in a single request, exceeding the 500K row threshold. Review recommended.</div>
+          <div class="sds-timeline-item__meta">
+            <span class="sds-timeline-item__meta-tag">System</span>
+            <span>Usage Monitor</span>
+          </div>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <!-- ============================================================
+       IN CONTEXT — AUDIT LOG PANEL
+       ============================================================ -->
+  <h2>In Context</h2>
+  <p>A realistic activity log panel as it might appear in a product dashboard. Includes a header, filter chips, and a scrollable timeline of events.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Audit log panel</div>
+    <div class="audit-panel">
+      <div class="audit-panel__header">
+        <div class="audit-panel__title">
+          <span class="material-symbols-outlined">history</span>
+          Activity Log
+        </div>
+        <span class="audit-panel__count">128 events</span>
+      </div>
+      <div class="audit-panel__filters">
+        <button class="demo-chip demo-chip--active">All Events</button>
+        <button class="demo-chip">Alerts</button>
+        <button class="demo-chip">Settings</button>
+        <button class="demo-chip">Deployments</button>
+        <button class="demo-chip">Users</button>
+        <button class="demo-chip">Integrations</button>
+      </div>
+      <div class="audit-panel__body">
+        <div class="sds-timeline-group">Today</div>
+        <ol class="sds-timeline" role="list">
+          <li class="sds-timeline-item sds-timeline-item--error">
+            <div class="sds-timeline-item__marker"></div>
+            <div class="sds-timeline-item__connector"></div>
+            <div class="sds-timeline-item__content">
+              <div class="sds-timeline-item__time">3:12 PM</div>
+              <div class="sds-timeline-item__title">Critical: 3 deployment checks failed on release v4.8</div>
+              <div class="sds-timeline-item__meta">
+                <span class="sds-timeline-item__meta-tag">System</span>
+                <span>CI/CD Runner</span>
+              </div>
+            </div>
+          </li>
+          <li class="sds-timeline-item sds-timeline-item--success">
+            <div class="sds-timeline-item__marker"></div>
+            <div class="sds-timeline-item__connector"></div>
+            <div class="sds-timeline-item__content">
+              <div class="sds-timeline-item__time">2:00 PM</div>
+              <div class="sds-timeline-item__title">Deployment completed: 5,421 assets published</div>
+              <div class="sds-timeline-item__meta">
+                <span class="sds-timeline-item__meta-tag">System</span>
+                <span>Release Manager</span>
+              </div>
+            </div>
+          </li>
+          <li class="sds-timeline-item sds-timeline-item--info">
+            <div class="sds-timeline-item__marker"></div>
+            <div class="sds-timeline-item__connector"></div>
+            <div class="sds-timeline-item__content">
+              <div class="sds-timeline-item__time">11:45 AM</div>
+              <div class="sds-timeline-item__title">Settings updated: Notification Preferences v2.1</div>
+              <div class="sds-timeline-item__meta">
+                <div class="sds-timeline-item__meta-avatar">
+                  <span class="material-symbols-outlined">person</span>
+                </div>
+                <span>James Morton</span>
+              </div>
+            </div>
+          </li>
+          <li class="sds-timeline-item sds-timeline-item--warning">
+            <div class="sds-timeline-item__marker"></div>
+            <div class="sds-timeline-item__connector"></div>
+            <div class="sds-timeline-item__content">
+              <div class="sds-timeline-item__time">10:30 AM</div>
+              <div class="sds-timeline-item__title">Usage spike: Bulk download by scheduled-export-03</div>
+              <div class="sds-timeline-item__meta">
+                <span class="sds-timeline-item__meta-tag">System</span>
+                <span>Usage Monitor</span>
+              </div>
+            </div>
+          </li>
+          <li class="sds-timeline-item">
+            <div class="sds-timeline-item__marker"></div>
+            <div class="sds-timeline-item__connector"></div>
+            <div class="sds-timeline-item__content">
+              <div class="sds-timeline-item__time">9:00 AM</div>
+              <div class="sds-timeline-item__title">Daily health check initiated</div>
+              <div class="sds-timeline-item__meta">
+                <span class="sds-timeline-item__meta-tag">System</span>
+                <span>Scheduler</span>
+              </div>
+            </div>
+          </li>
+        </ol>
+
+        <div class="sds-timeline-group">Yesterday</div>
+        <ol class="sds-timeline" role="list">
+          <li class="sds-timeline-item sds-timeline-item--success">
+            <div class="sds-timeline-item__marker"></div>
+            <div class="sds-timeline-item__connector"></div>
+            <div class="sds-timeline-item__content">
+              <div class="sds-timeline-item__time">6:00 PM</div>
+              <div class="sds-timeline-item__title">Migration verified: All user accounts transferred</div>
+              <div class="sds-timeline-item__meta">
+                <span class="sds-timeline-item__meta-tag">System</span>
+                <span>Migration Engine</span>
+              </div>
+            </div>
+          </li>
+          <li class="sds-timeline-item sds-timeline-item--info">
+            <div class="sds-timeline-item__marker"></div>
+            <div class="sds-timeline-item__connector"></div>
+            <div class="sds-timeline-item__content">
+              <div class="sds-timeline-item__time">2:15 PM</div>
+              <div class="sds-timeline-item__title">New integration: Google Workspace connected</div>
+              <div class="sds-timeline-item__meta">
+                <div class="sds-timeline-item__meta-avatar">
+                  <span class="material-symbols-outlined">person</span>
+                </div>
+                <span>Elena Rodriguez</span>
+              </div>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Timeline — Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Rail (connector line)</td>
+        <td>width / color</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-150)"></span><code>--sds-color-warm-gray-150</code> &nbsp;2 px</td>
+      </tr>
+      <tr>
+        <td>Marker (dot)</td>
+        <td>size / border / bg</td>
+        <td><code>10 px</code> circle &nbsp;/ 2 px <code>--sds-color-warm-gray-300</code> &nbsp;/ <code>--sds-color-white</code></td>
+      </tr>
+      <tr>
+        <td>Marker (icon)</td>
+        <td>size / icon size</td>
+        <td><code>28 px</code> circle &nbsp;/ <code>16 px</code> Material Symbol</td>
+      </tr>
+      <tr>
+        <td>Marker — Error</td>
+        <td>background / border</td>
+        <td><span class="swatch" style="background:var(--sds-color-red-050)"></span><code>--sds-color-red-050</code> &nbsp;/ <span class="swatch" style="background:var(--sds-color-red-450)"></span><code>--sds-color-red-450</code></td>
+      </tr>
+      <tr>
+        <td>Marker — Warning</td>
+        <td>background / border</td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-025)"></span><code>--sds-color-yellow-025</code> &nbsp;/ <span class="swatch" style="background:var(--sds-color-yellow-350)"></span><code>--sds-color-yellow-350</code></td>
+      </tr>
+      <tr>
+        <td>Marker — Success</td>
+        <td>background / border</td>
+        <td><span class="swatch" style="background:var(--sds-color-green-025)"></span><code>--sds-color-green-025</code> &nbsp;/ <span class="swatch" style="background:var(--sds-color-green-400)"></span><code>--sds-color-green-400</code></td>
+      </tr>
+      <tr>
+        <td>Marker — Info</td>
+        <td>background / border</td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-050)"></span><code>--sds-color-blue-050</code> &nbsp;/ <span class="swatch" style="background:var(--sds-color-blue-450)"></span><code>--sds-color-blue-450</code></td>
+      </tr>
+      <tr>
+        <td>Icon — Error</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-red-550)"></span><code>--sds-color-red-550</code></td>
+      </tr>
+      <tr>
+        <td>Icon — Warning</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-yellow-550)"></span><code>--sds-color-yellow-550</code></td>
+      </tr>
+      <tr>
+        <td>Icon — Success</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-green-500)"></span><code>--sds-color-green-500</code></td>
+      </tr>
+      <tr>
+        <td>Icon — Info</td>
+        <td>color</td>
+        <td><span class="swatch" style="background:var(--sds-color-blue-700)"></span><code>--sds-color-blue-700</code></td>
+      </tr>
+      <tr>
+        <td>Content margin</td>
+        <td>margin-left</td>
+        <td><code>40 px</code> from rail</td>
+      </tr>
+      <tr>
+        <td>Item spacing</td>
+        <td>padding-bottom</td>
+        <td><code>--sds-space-600</code></td>
+      </tr>
+      <tr>
+        <td>Time</td>
+        <td>font-size / color</td>
+        <td><code>--sds-type-caption</code> / <code>--sds-color-warm-gray-450</code></td>
+      </tr>
+      <tr>
+        <td>Title</td>
+        <td>font-size / weight / color</td>
+        <td><code>--sds-type-label</code> / <code>--sds-weight-medium</code> / <code>--sds-text-primary</code></td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td>font-size / color</td>
+        <td><code>--sds-type-caption</code> / <code>--sds-text-secondary</code></td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Sizing Specs</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Measurement</th><th>Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Rail position (left offset)</td><td><code>15 px</code> from container left</td></tr>
+      <tr><td>Rail width</td><td><code>2 px</code></td></tr>
+      <tr><td>Dot marker diameter</td><td><code>10 px</code></td></tr>
+      <tr><td>Icon marker diameter</td><td><code>28 px</code></td></tr>
+      <tr><td>Icon size (inside marker)</td><td><code>16 px</code></td></tr>
+      <tr><td>Content left offset</td><td><code>40 px</code></td></tr>
+      <tr><td>Item vertical spacing</td><td><code>var(--sds-space-600)</code></td></tr>
+      <tr><td>Description top margin</td><td><code>var(--sds-space-100)</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Class Reference</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-timeline</code></td><td>Container list element for the vertical timeline</td></tr>
+      <tr><td><code>.sds-timeline-item</code></td><td>Individual event entry</td></tr>
+      <tr><td><code>.sds-timeline-item__marker</code></td><td>Dot indicator on the timeline rail</td></tr>
+      <tr><td><code>.sds-timeline-item__marker--icon</code></td><td>Icon variant of the marker (28 px circle with icon)</td></tr>
+      <tr><td><code>.sds-timeline-item__connector</code></td><td>Vertical line connecting consecutive markers</td></tr>
+      <tr><td><code>.sds-timeline-item__content</code></td><td>Event content area (right of the rail)</td></tr>
+      <tr><td><code>.sds-timeline-item__time</code></td><td>Timestamp display</td></tr>
+      <tr><td><code>.sds-timeline-item__title</code></td><td>Event title or action name</td></tr>
+      <tr><td><code>.sds-timeline-item__description</code></td><td>Optional detail text below the title</td></tr>
+      <tr><td><code>.sds-timeline-item__meta</code></td><td>Metadata row (user, system tag, etc.)</td></tr>
+      <tr><td><code>.sds-timeline-item--error</code></td><td>Error/critical event styling (red marker)</td></tr>
+      <tr><td><code>.sds-timeline-item--warning</code></td><td>Warning event styling (yellow marker)</td></tr>
+      <tr><td><code>.sds-timeline-item--success</code></td><td>Success event styling (green marker)</td></tr>
+      <tr><td><code>.sds-timeline-item--info</code></td><td>Informational event styling (blue marker)</td></tr>
+      <tr><td><code>.sds-timeline-group</code></td><td>Date group header (e.g., "Today", "March 14")</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Accessibility</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Requirement</th><th>Implementation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Container</td><td><code>&lt;ol&gt;</code> with <code>role="list"</code> for ordered event sequences</td></tr>
+      <tr><td>Items</td><td><code>&lt;li&gt;</code> elements provide implicit list semantics</td></tr>
+      <tr><td>Color contrast</td><td>Semantic colors meet WCAG 2.1 AA contrast ratios for text</td></tr>
+      <tr><td>Not color-only</td><td>Error/warning states include text labels, not just colored markers</td></tr>
+      <tr><td>Date groups</td><td>Group headers provide temporal landmarks for screen readers</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>
