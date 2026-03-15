@@ -4,7 +4,7 @@
  *
  * Usage:  <script src="../shared/nav.js"></script>   (relative path)
  *
- * The script auto-detects the current page and highlights the active link.
+ * The script auto-detects base path and current page, highlighting the active link.
  */
 (function () {
   /* ---- Auto-detect base path (works on localhost and subdirectory deploys like GitHub Pages) ---- */
