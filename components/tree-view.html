@@ -125,6 +125,8 @@
     /* Invisible toggle placeholder for leaf nodes */
     .sds-tree-item__toggle--hidden {
       visibility: hidden;
+      width: 0;
+      overflow: hidden;
     }
 
     /* Icon */
@@ -1338,6 +1340,24 @@
         // Continue propagating up
         propagateUp(parentItem);
       }
+      /* ---- Click-to-select for context-tree (browser panel) ---- */
+      var contextTree = document.getElementById('context-tree');
+      if (contextTree) {
+        contextTree.addEventListener('click', function (e) {
+          var row = e.target.closest('.sds-tree-item__row');
+          if (!row) return;
+          var item = row.closest('.sds-tree-item');
+          if (!item) return;
+          // Only select leaf nodes (no children) — branch nodes toggle expand instead
+          if (hasChildren(item)) return;
+          // Clear previous selection
+          var prev = contextTree.querySelector('.sds-tree-item--selected');
+          if (prev) prev.classList.remove('sds-tree-item--selected');
+          // Select this item
+          item.classList.add('sds-tree-item--selected');
+        });
+      }
+
       /* ---- Dynamic toggle aria-labels ---- */
       document.querySelectorAll('.sds-tree-item__toggle').forEach(function (btn) {
         if (btn.classList.contains('sds-tree-item__toggle--hidden')) return;
