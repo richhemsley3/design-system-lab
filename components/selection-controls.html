@@ -881,7 +881,7 @@
        CHECKBOX GROUP
        ============================================================ -->
   <h2>Checkbox Group</h2>
-  <p>A vertical stack of checkboxes with an optional parent "Select all" that shows an indeterminate state when some children are checked. Used for permission sets, data classification selection, and bulk operations.</p>
+  <p>A vertical stack of checkboxes with an optional parent "Select all" that shows an indeterminate state when some children are checked. Used for permission sets, category selection, and bulk operations.</p>
 
   <h3>With Select All</h3>
   <div class="demo-block">
@@ -893,7 +893,7 @@
           <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="sds-checkbox-group-dash"></span>
         </span>
-        Select all classifications
+        Select all categories
       </label>
       <div class="sds-checkbox-group-children">
         <label class="sds-checkbox-group-item">
@@ -942,7 +942,7 @@
           <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span class="sds-checkbox-group-dash"></span>
         </span>
-        Select compliance frameworks
+        Select categories
       </label>
       <div class="sds-checkbox-group-children">
         <label class="sds-checkbox-group-item">
@@ -951,7 +951,7 @@
             <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="sds-checkbox-group-dash"></span>
           </span>
-          SOC 2 Type II
+          Enterprise
         </label>
         <label class="sds-checkbox-group-item">
           <input type="checkbox">
@@ -959,7 +959,7 @@
             <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="sds-checkbox-group-dash"></span>
           </span>
-          GDPR
+          Standard
         </label>
         <label class="sds-checkbox-group-item">
           <input type="checkbox">
@@ -967,11 +967,11 @@
             <svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="sds-checkbox-group-dash"></span>
           </span>
-          HIPAA
+          Professional
         </label>
       </div>
     </div>
-    <div class="sds-checkbox-group-error">At least one compliance framework is required to create a policy.</div>
+    <div class="sds-checkbox-group-error">At least one category is required to continue.</div>
   </div>
 
   <hr class="section-divider" />
@@ -980,7 +980,7 @@
        RADIO CARDS
        ============================================================ -->
   <h2>Radio Cards</h2>
-  <p>Bordered cards with radio selection for choosing between mutually exclusive options. Each card has a title, description, and optional icon. The radio indicator leads for scanability, followed by the icon and content. Use for policy type selection, scan mode configuration, or plan selection.</p>
+  <p>Bordered cards with radio selection for choosing between mutually exclusive options. Each card has a title, description, and optional icon. The radio indicator leads for scanability, followed by the icon and content. Use for type selection, mode configuration, or plan selection.</p>
 
   <h3>With Icons</h3>
   <div class="demo-block">
@@ -996,7 +996,7 @@
         </span>
         <span class="sds-radio-card-content">
           <div class="sds-radio-card-title">Full Scan</div>
-          <div class="sds-radio-card-desc">Scan all connected data sources for sensitive data. Recommended for initial setup and quarterly audits.</div>
+          <div class="sds-radio-card-desc">Check all connected services automatically. Recommended for initial setup and periodic reviews.</div>
         </span>
       </label>
       <label class="sds-radio-card">
@@ -1022,7 +1022,7 @@
         </span>
         <span class="sds-radio-card-content">
           <div class="sds-radio-card-title">Custom Scan</div>
-          <div class="sds-radio-card-desc">Choose specific data sources and classification rules to apply. Best for targeted compliance checks.</div>
+          <div class="sds-radio-card-desc">Choose specific sources and rules to apply. Best for targeted checks.</div>
         </span>
       </label>
     </div>
@@ -1039,7 +1039,7 @@
         </span>
         <span class="sds-radio-card-content">
           <div class="sds-radio-card-title">30 days</div>
-          <div class="sds-radio-card-desc">Retain audit logs for 30 days. Suitable for development environments.</div>
+          <div class="sds-radio-card-desc">Retain activity logs for 30 days. Suitable for development environments.</div>
         </span>
       </label>
       <label class="sds-radio-card">
@@ -1049,7 +1049,7 @@
         </span>
         <span class="sds-radio-card-content">
           <div class="sds-radio-card-title">1 year</div>
-          <div class="sds-radio-card-desc">Retain audit logs for 1 year. Meets most regulatory requirements.</div>
+          <div class="sds-radio-card-desc">Retain activity logs for 1 year. Meets most requirements.</div>
         </span>
       </label>
       <label class="sds-radio-card">
@@ -1059,7 +1059,7 @@
         </span>
         <span class="sds-radio-card-content">
           <div class="sds-radio-card-title">7 years</div>
-          <div class="sds-radio-card-desc">Retain audit logs for 7 years. Required for financial services compliance.</div>
+          <div class="sds-radio-card-desc">Retain activity logs for 7 years. Recommended for regulated industries.</div>
         </span>
       </label>
     </div>
@@ -1086,7 +1086,7 @@
         </span>
         <span class="sds-radio-card-content">
           <div class="sds-radio-card-title">Customer-Managed Keys</div>
-          <div class="sds-radio-card-desc">Bring your own encryption keys via AWS KMS or Azure Key Vault. Requires Enterprise plan.</div>
+          <div class="sds-radio-card-desc">Bring your own encryption keys via your preferred key management service. Requires Enterprise plan.</div>
         </span>
       </label>
     </div>
@@ -1098,7 +1098,7 @@
        CHECKBOX CARDS
        ============================================================ -->
   <h2>Checkbox Cards</h2>
-  <p>Multi-select card pattern for choosing one or more options. Same layout as radio cards but supports multiple selections. The checkbox indicator leads the row for consistent scanability. Use for data source selection, notification channel configuration, or feature enablement.</p>
+  <p>Multi-select card pattern for choosing one or more options. Same layout as radio cards but supports multiple selections. The checkbox indicator leads the row for consistent scanability. Use for source selection, notification channel configuration, or feature enablement.</p>
 
   <div class="demo-block">
     <div class="demo-label">Interactive</div>
@@ -1126,7 +1126,7 @@
         </span>
         <span class="sds-checkbox-card-content">
           <div class="sds-checkbox-card-title">Cloud Storage</div>
-          <div class="sds-checkbox-card-desc">Amazon S3, Google Cloud Storage, and Azure Blob Storage buckets.</div>
+          <div class="sds-checkbox-card-desc">Cloud storage buckets and file repositories.</div>
         </span>
       </label>
       <label class="sds-checkbox-card">
@@ -1152,7 +1152,7 @@
         </span>
         <span class="sds-checkbox-card-content">
           <div class="sds-checkbox-card-title">Email Archives</div>
-          <div class="sds-checkbox-card-desc">Microsoft 365 and Google Workspace email archives for DLP scanning.</div>
+          <div class="sds-checkbox-card-desc">Email archives from Microsoft 365 and Google Workspace.</div>
         </span>
       </label>
       <label class="sds-checkbox-card is-disabled">
@@ -1165,7 +1165,7 @@
         </span>
         <span class="sds-checkbox-card-content">
           <div class="sds-checkbox-card-title">Slack Channels</div>
-          <div class="sds-checkbox-card-desc">Scan Slack messages for sensitive data. Requires Slack integration to be configured.</div>
+          <div class="sds-checkbox-card-desc">Monitor Slack messages for keywords. Requires Slack integration.</div>
         </span>
       </label>
     </div>
@@ -1186,7 +1186,7 @@
       <label class="sds-toggle-list-item">
         <span class="sds-toggle-list-content">
           <div class="sds-toggle-list-label">Policy violations</div>
-          <div class="sds-toggle-list-desc">Receive alerts when data access violates an active policy.</div>
+          <div class="sds-toggle-list-desc">Receive alerts when activity matches a rule condition.</div>
         </span>
         <input type="checkbox" checked>
         <span class="sds-toggle-list-track">
@@ -1206,7 +1206,7 @@
       <label class="sds-toggle-list-item">
         <span class="sds-toggle-list-content">
           <div class="sds-toggle-list-label">Weekly digest</div>
-          <div class="sds-toggle-list-desc">Receive a weekly summary of data security activity and compliance status.</div>
+          <div class="sds-toggle-list-desc">Receive a weekly summary of activity and status updates.</div>
         </span>
         <input type="checkbox">
         <span class="sds-toggle-list-track">
@@ -1236,7 +1236,7 @@
       </label>
       <label class="sds-toggle-list-item is-loading">
         <span class="sds-toggle-list-content">
-          <div class="sds-toggle-list-label">Audit log forwarding</div>
+          <div class="sds-toggle-list-label">Activity log forwarding</div>
           <div class="sds-toggle-list-desc">Forward audit events to your SIEM. Connecting to external service...</div>
         </span>
         <input type="checkbox">
@@ -1291,7 +1291,7 @@
     <div class="sds-chip-group">
       <label class="sds-chip">
         <input type="checkbox" checked>
-        PII
+        Personal
       </label>
       <label class="sds-chip">
         <input type="checkbox" checked>
@@ -1299,7 +1299,7 @@
       </label>
       <label class="sds-chip">
         <input type="checkbox">
-        PCI
+        Basic
       </label>
       <label class="sds-chip">
         <input type="checkbox">
@@ -1346,7 +1346,7 @@
                 <span class="sds-table-checkbox-dash"></span>
               </div>
             </th>
-            <th>Data Source</th>
+            <th>Source</th>
             <th>Type</th>
             <th>Records</th>
             <th>Last Scanned</th>
@@ -1373,7 +1373,7 @@
               </div>
             </td>
             <td>analytics-warehouse</td>
-            <td>BigQuery</td>
+            <td>MySQL</td>
             <td>14,205,882</td>
             <td>6 hours ago</td>
           </tr>

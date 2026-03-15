@@ -451,7 +451,7 @@
 <body>
 
 <h1>Alerts &amp; Banners</h1>
-<p class="page-subtitle">Inline alerts, page banners, and compact feedback messages for communicating status, warnings, errors, and informational notices across the data security platform.</p>
+<p class="page-subtitle">Inline alerts, page banners, and compact feedback messages for communicating status, warnings, errors, and informational notices across the application.</p>
 
 <!-- ============ INLINE ALERTS ============ -->
 <h2>Inline Alerts</h2>
@@ -464,21 +464,21 @@
       <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
       <div class="sds-alert__content">
         <div class="sds-alert__title">System update available</div>
-        <div class="sds-alert__message">A new version of the data classification engine is available. Review the changelog before upgrading.</div>
+        <div class="sds-alert__message">A new version of the automation engine is available. Review the changelog before upgrading.</div>
       </div>
     </div>
     <div class="sds-alert sds-alert--success" role="alert">
       <span class="sds-alert__icon"><span class="material-symbols-outlined">check_circle</span></span>
       <div class="sds-alert__content">
-        <div class="sds-alert__title">Policy published</div>
-        <div class="sds-alert__message">The data access policy has been published and is now active across all environments.</div>
+        <div class="sds-alert__title">Changes published</div>
+        <div class="sds-alert__message">Your changes have been published and are now active across all environments.</div>
       </div>
     </div>
     <div class="sds-alert sds-alert--warning" role="alert">
       <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
       <div class="sds-alert__content">
         <div class="sds-alert__title">Approaching storage limit</div>
-        <div class="sds-alert__message">You have used 85% of your audit log storage quota. Consider archiving older records to avoid disruption.</div>
+        <div class="sds-alert__message">You have used 85% of your storage quota. Consider archiving older records to avoid disruption.</div>
       </div>
     </div>
     <div class="sds-alert sds-alert--error" role="alert">
@@ -503,8 +503,8 @@
     <div class="sds-alert sds-alert--warning" role="alert">
       <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
       <div class="sds-alert__content">
-        <div class="sds-alert__title">Compliance deadline approaching</div>
-        <div class="sds-alert__message">Your GDPR data retention review is due in 7 days. Complete the assessment to remain compliant.</div>
+        <div class="sds-alert__title">Deadline approaching</div>
+        <div class="sds-alert__message">Your quarterly review is due in 7 days. Complete the assessment to stay on track.</div>
         <div class="sds-alert__actions">
           <button class="sds-alert__action sds-alert__action--primary">Start review</button>
           <button class="sds-alert__action sds-alert__action--secondary">Remind me later</button>
@@ -514,8 +514,8 @@
     <div class="sds-alert sds-alert--error" role="alert">
       <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
       <div class="sds-alert__content">
-        <div class="sds-alert__title">3 vulnerabilities detected</div>
-        <div class="sds-alert__message">Critical security vulnerabilities were found during the latest scan of your data warehouse connections.</div>
+        <div class="sds-alert__title">3 issues detected</div>
+        <div class="sds-alert__message">Critical issues were found during the latest check of your connected services.</div>
         <div class="sds-alert__actions">
           <button class="sds-alert__action sds-alert__action--primary">View details</button>
           <button class="sds-alert__action sds-alert__action--secondary">Dismiss</button>
@@ -526,7 +526,7 @@
       <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
       <div class="sds-alert__content">
         <div class="sds-alert__title">New integration available</div>
-        <div class="sds-alert__message">Connect your Snowflake instance to enable automated data classification and policy enforcement.</div>
+        <div class="sds-alert__message">Connect your database to enable automated syncing and rule enforcement.</div>
         <div class="sds-alert__actions">
           <button class="sds-alert__action sds-alert__action--primary">Connect now</button>
           <button class="sds-alert__action sds-alert__action--secondary">Learn more</button>
@@ -547,7 +547,7 @@
   <div class="demo-stack" id="dismissible-demos">
     <div class="sds-alert sds-alert--info" role="alert">
       <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
-      <span class="sds-alert__content">Tip: You can drag columns to reorder the table layout in the data catalog.</span>
+      <span class="sds-alert__content">Tip: You can drag columns to reorder the table layout.</span>
       <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
     </div>
     <div class="sds-alert sds-alert--success" role="alert">
@@ -570,7 +570,7 @@
       <span class="sds-alert__icon"><span class="material-symbols-outlined">error</span></span>
       <div class="sds-alert__content">
         <div class="sds-alert__title">Sync failed</div>
-        <div class="sds-alert__message">The scheduled metadata sync could not complete. 12 tables were skipped due to permission errors.</div>
+        <div class="sds-alert__message">The scheduled sync could not complete. 12 items were skipped due to permission errors.</div>
       </div>
       <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
     </div>
@@ -601,7 +601,7 @@
     </div>
     <div class="sds-banner sds-banner--error" role="alert">
       <span class="sds-banner__icon"><span class="material-symbols-outlined">error</span></span>
-      <div class="sds-banner__content"><strong>Compliance overdue:</strong> Your SOC 2 audit evidence collection is past the deadline. Immediate action required.</div>
+      <div class="sds-banner__content"><strong>Overdue:</strong> Your quarterly review is past the deadline. Immediate action required.</div>
       <button class="sds-banner__action">Take action</button>
       <button class="sds-banner__dismiss" aria-label="Dismiss banner" onclick="dismissBanner(this)"><span class="material-symbols-outlined">close</span></button>
     </div>
@@ -633,11 +633,11 @@
     </div>
     <div class="sds-alert sds-alert--warning sds-alert--compact" role="alert">
       <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
-      <span class="sds-alert__content">This policy name already exists. Saving will overwrite the existing version.</span>
+      <span class="sds-alert__content">This name already exists. Saving will overwrite the existing version.</span>
     </div>
     <div class="sds-alert sds-alert--info sds-alert--compact" role="alert">
       <span class="sds-alert__icon"><span class="material-symbols-outlined">info</span></span>
-      <span class="sds-alert__content">Classification rules are evaluated top-to-bottom. Drag to reorder priority.</span>
+      <span class="sds-alert__content">Rules are evaluated top-to-bottom. Drag to reorder priority.</span>
     </div>
   </div>
 </div>
@@ -649,7 +649,7 @@
       <span class="sds-alert__icon"><span class="material-symbols-outlined">warning</span></span>
       <div class="sds-alert__content">
         <div class="sds-alert__title">Sensitive columns detected</div>
-        <div class="sds-alert__message">3 columns in this table contain PII data. Apply masking rules before sharing.</div>
+        <div class="sds-alert__message">3 fields in this table contain sensitive data. Apply visibility rules before sharing.</div>
       </div>
       <button class="sds-alert__dismiss" aria-label="Dismiss alert" onclick="dismissAlert(this)"><span class="material-symbols-outlined">close</span></button>
     </div>

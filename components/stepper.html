@@ -454,7 +454,7 @@
 <body>
 
   <h1>Stepper</h1>
-  <p class="page-subtitle">Multi-step progress indicators for wizards and sequential flows. Guides users through complex tasks like policy creation, onboarding, and data source configuration.</p>
+  <p class="page-subtitle">Multi-step progress indicators for wizards and sequential flows. Guides users through complex tasks like project setup, onboarding, and integration configuration.</p>
 
   <!-- ============================================================
        HORIZONTAL STEPPER
@@ -469,7 +469,7 @@
         <div class="sds-step__indicator">
           <span class="material-symbols-outlined">check</span>
         </div>
-        <span class="sds-step__label">Select Source</span>
+        <span class="sds-step__label">Select Service</span>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--completed">
@@ -481,7 +481,7 @@
       </div>
       <div class="sds-step sds-step--active" aria-current="step">
         <div class="sds-step__indicator">3</div>
-        <span class="sds-step__label">Set Policy</span>
+        <span class="sds-step__label">Apply Settings</span>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--error">
@@ -493,7 +493,7 @@
       </div>
       <div class="sds-step sds-step--upcoming">
         <div class="sds-step__indicator">5</div>
-        <span class="sds-step__label">Deploy</span>
+        <span class="sds-step__label">Apply</span>
       </div>
     </nav>
   </div>
@@ -509,17 +509,17 @@
       </div>
       <div class="sds-step sds-step--completed">
         <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
-        <span class="sds-step__label">Scan</span>
+        <span class="sds-step__label">Sync</span>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--completed">
         <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
-        <span class="sds-step__label">Policy</span>
+        <span class="sds-step__label">Settings</span>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--completed">
         <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
-        <span class="sds-step__label">Deploy</span>
+        <span class="sds-step__label">Apply</span>
       </div>
     </nav>
   </div>
@@ -544,16 +544,16 @@
       <div class="sds-step sds-step--active" style="position:relative" aria-current="step">
         <div class="sds-step__indicator">2</div>
         <div class="sds-step__body">
-          <span class="sds-step__label">Connect Data Source</span>
-          <div class="sds-step__content">Select and authenticate your primary data source. Supported: AWS S3, Snowflake, Google BigQuery, Azure Blob Storage.</div>
+          <span class="sds-step__label">Connect Service</span>
+          <div class="sds-step__content">Select and authenticate your primary service. Supported: PostgreSQL, MySQL, MongoDB, Redis.</div>
         </div>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--upcoming" style="position:relative">
         <div class="sds-step__indicator">3</div>
         <div class="sds-step__body">
-          <span class="sds-step__label">Configure Scanning</span>
-          <div class="sds-step__content">Set scan frequency and sensitivity rules for your data assets.</div>
+          <span class="sds-step__label">Configure Sync</span>
+          <div class="sds-step__content">Set sync frequency and notification preferences for your resources.</div>
         </div>
         <div class="sds-step__connector"></div>
       </div>
@@ -574,28 +574,28 @@
   <p>A full working wizard demonstrating step navigation with form content. Click Next and Back to move through the flow, or click completed steps to jump back.</p>
 
   <div class="demo-block">
-    <div class="demo-label">Interactive demo — Policy creation wizard</div>
+    <div class="demo-label">Interactive demo — Setup wizard</div>
     <div class="wizard-container" id="wizard">
       <div class="wizard-header">
         <nav class="sds-stepper" role="navigation" aria-label="Wizard progress" id="wizard-stepper">
           <div class="sds-step sds-step--active is-clickable" data-step="0" aria-current="step" tabindex="0" role="button">
             <div class="sds-step__indicator">1</div>
-            <span class="sds-step__label">Connect Data Source</span>
+            <span class="sds-step__label">Connect Service</span>
             <div class="sds-step__connector"></div>
           </div>
           <div class="sds-step sds-step--upcoming" data-step="1">
             <div class="sds-step__indicator">2</div>
-            <span class="sds-step__label">Configure Scan</span>
+            <span class="sds-step__label">Configure Sync</span>
             <div class="sds-step__connector"></div>
           </div>
           <div class="sds-step sds-step--upcoming" data-step="2">
             <div class="sds-step__indicator">3</div>
-            <span class="sds-step__label">Set Policy</span>
+            <span class="sds-step__label">Apply Settings</span>
             <div class="sds-step__connector"></div>
           </div>
           <div class="sds-step sds-step--upcoming" data-step="3">
             <div class="sds-step__indicator">4</div>
-            <span class="sds-step__label">Review &amp; Deploy</span>
+            <span class="sds-step__label">Review &amp; Apply</span>
           </div>
         </nav>
       </div>
@@ -681,26 +681,26 @@
     <nav class="sds-stepper" role="navigation" aria-label="Progress">
       <div class="sds-step sds-step--completed">
         <div class="sds-step__indicator"><span class="material-symbols-outlined">check</span></div>
-        <span class="sds-step__label">Connect Data Source</span>
-        <span class="sds-step__description">Authenticate and link your cloud storage</span>
+        <span class="sds-step__label">Connect Service</span>
+        <span class="sds-step__description">Authenticate and link your connection</span>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--active" aria-current="step">
         <div class="sds-step__indicator">2</div>
-        <span class="sds-step__label">Configure Scan</span>
-        <span class="sds-step__description">Set frequency, scope, and sensitivity</span>
+        <span class="sds-step__label">Configure Sync</span>
+        <span class="sds-step__description">Set frequency, scope, and preferences</span>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--upcoming">
         <div class="sds-step__indicator">3</div>
-        <span class="sds-step__label">Set Policy</span>
-        <span class="sds-step__description">Define access rules and compliance checks</span>
+        <span class="sds-step__label">Apply Settings</span>
+        <span class="sds-step__description">Define workspace rules and preferences</span>
         <div class="sds-step__connector"></div>
       </div>
       <div class="sds-step sds-step--upcoming">
         <div class="sds-step__indicator">4</div>
-        <span class="sds-step__label">Review &amp; Deploy</span>
-        <span class="sds-step__description">Confirm settings and activate protection</span>
+        <span class="sds-step__label">Review &amp; Apply</span>
+        <span class="sds-step__description">Confirm settings and activate configuration</span>
       </div>
     </nav>
   </div>
@@ -807,39 +807,39 @@
 
       var stepContent = [
         {
-          title: 'Connect Data Source',
-          description: 'Select and authenticate your primary data source to begin monitoring.',
+          title: 'Connect Service',
+          description: 'Select and authenticate your primary service to begin monitoring.',
           fields: [
-            { label: 'Data source type', type: 'select', options: ['Select a source...', 'AWS S3', 'Snowflake', 'Google BigQuery', 'Azure Blob Storage'] },
-            { label: 'Connection name', type: 'text', placeholder: 'e.g. Production Data Lake' }
+            { label: 'Service type', type: 'select', options: ['Select a service...', 'PostgreSQL', 'MySQL', 'MongoDB', 'Redis'] },
+            { label: 'Connection name', type: 'text', placeholder: 'e.g. Production Database' }
           ]
         },
         {
-          title: 'Configure Scan',
-          description: 'Define how frequently your data should be scanned and what sensitivity levels to apply.',
+          title: 'Configure Sync',
+          description: 'Define how frequently your resources should be synced and what notification levels to apply.',
           fields: [
-            { label: 'Scan frequency', type: 'select', options: ['Select frequency...', 'Every hour', 'Every 6 hours', 'Daily', 'Weekly'] },
-            { label: 'Sensitivity level', type: 'select', options: ['Select level...', 'Low — PII only', 'Medium — PII + financial', 'High — All sensitive data'] }
+            { label: 'Sync frequency', type: 'select', options: ['Select frequency...', 'Every hour', 'Every 6 hours', 'Daily', 'Weekly'] },
+            { label: 'Notification level', type: 'select', options: ['Select level...', 'Low — Critical only', 'Medium — Critical + important', 'High — All categories'] }
           ]
         },
         {
-          title: 'Set Policy',
-          description: 'Choose a policy template or create a custom policy for data access and compliance.',
+          title: 'Apply Settings',
+          description: 'Choose a template or create custom settings for your workspace.',
           fields: [
-            { label: 'Policy template', type: 'select', options: ['Select template...', 'GDPR Compliance', 'HIPAA Compliance', 'SOC 2 Type II', 'Custom Policy'] },
-            { label: 'Policy name', type: 'text', placeholder: 'e.g. Production GDPR Policy' }
+            { label: 'Settings template', type: 'select', options: ['Select template...', 'Standard', 'Strict', 'Enterprise', 'Custom'] },
+            { label: 'Configuration name', type: 'text', placeholder: 'e.g. Production Config' }
           ]
         },
         {
-          title: 'Review & Deploy',
-          description: 'Review your configuration before deploying. You can go back to any step to make changes.',
+          title: 'Review & Apply',
+          description: 'Review your configuration before applying. You can go back to any step to make changes.',
           review: [
-            { key: 'Data source', value: 'AWS S3' },
-            { key: 'Connection name', value: 'Production Data Lake' },
-            { key: 'Scan frequency', value: 'Daily' },
-            { key: 'Sensitivity', value: 'High — All sensitive data' },
-            { key: 'Policy template', value: 'GDPR Compliance' },
-            { key: 'Policy name', value: 'Production GDPR Policy' }
+            { key: 'Service', value: 'PostgreSQL' },
+            { key: 'Connection name', value: 'Production Database' },
+            { key: 'Sync frequency', value: 'Daily' },
+            { key: 'Notification level', value: 'High — All categories' },
+            { key: 'Settings template', value: 'Standard' },
+            { key: 'Configuration name', value: 'Production Config' }
           ]
         }
       ];
@@ -904,7 +904,7 @@
         // Button visibility
         backBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
         if (currentStep === totalSteps - 1) {
-          nextBtn.textContent = 'Deploy';
+          nextBtn.textContent = 'Apply';
           nextBtn.classList.remove('sds-btn--primary');
           nextBtn.classList.add('sds-btn--primary');
         } else {
@@ -944,7 +944,7 @@
           renderStep();
         } else {
           // Final step — show completion
-          bodyEl.innerHTML = '<div style="text-align:center;padding:var(--sds-space-800) 0;"><span class="material-symbols-outlined" style="font-size:48px;color:var(--sds-color-green-500);margin-bottom:var(--sds-space-300);display:block;">check_circle</span><h4 style="margin-bottom:var(--sds-space-200);">Policy Deployed Successfully</h4><p>Your GDPR Compliance policy is now active and monitoring your Production Data Lake.</p></div>';
+          bodyEl.innerHTML = '<div style="text-align:center;padding:var(--sds-space-800) 0;"><span class="material-symbols-outlined" style="font-size:48px;color:var(--sds-color-green-500);margin-bottom:var(--sds-space-300);display:block;">check_circle</span><h4 style="margin-bottom:var(--sds-space-200);">Settings Applied Successfully</h4><p>Your configuration is now active and monitoring your Production Database.</p></div>';
           nextBtn.disabled = true;
           // Mark all steps completed
           var steps = stepperEl.querySelectorAll('.sds-step');

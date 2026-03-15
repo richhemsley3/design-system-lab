@@ -494,7 +494,7 @@
      SECTION 3 — Simple Prev/Next
      ═══════════════════════════════════════════════════ -->
 <h2>Simple Prev/Next</h2>
-<p>Minimal pagination with labeled Previous and Next buttons and a page indicator. Useful for step-through interfaces like review queues or sequential record navigation in data classification workflows.</p>
+<p>Minimal pagination with labeled Previous and Next buttons and a page indicator. Useful for step-through interfaces like review queues or sequential record navigation in review workflows.</p>
 
 <h3>First Page</h3>
 <div class="demo-block">
@@ -601,11 +601,11 @@
 <div class="demo-block">
   <div class="demo-label">Scrollable List with Loading Indicator</div>
   <div class="sds-pagination-scroll-demo" data-pagination="scroll">
-    <div class="sds-pagination-scroll-demo__item">Event #1 — DLP policy violation detected on endpoint-042</div>
+    <div class="sds-pagination-scroll-demo__item">Event #1 — Rule violation detected on endpoint-042</div>
     <div class="sds-pagination-scroll-demo__item">Event #2 — Sensitive file access by user jdoe@corp.com</div>
     <div class="sds-pagination-scroll-demo__item">Event #3 — Classification label changed on Q4-financials.xlsx</div>
-    <div class="sds-pagination-scroll-demo__item">Event #4 — Data export attempt blocked by policy RESTRICT-PII</div>
-    <div class="sds-pagination-scroll-demo__item">Event #5 — New sensitive data source discovered in S3 bucket</div>
+    <div class="sds-pagination-scroll-demo__item">Event #4 — Export attempt blocked by rule RESTRICT-001</div>
+    <div class="sds-pagination-scroll-demo__item">Event #5 — New resource discovered in storage bucket</div>
     <div class="sds-pagination-scroll-demo__item">Event #6 — Access review completed for database prod-db-west</div>
     <div class="sds-pagination-scroll-demo__item">Event #7 — Encryption key rotation initiated for vault-003</div>
     <div class="sds-pagination-scroll-demo__item">Event #8 — User privilege escalation detected for admin-svc</div>
@@ -620,7 +620,7 @@
 <div class="demo-block">
   <div class="demo-label">All Items Loaded</div>
   <div class="sds-pagination-scroll-demo">
-    <div class="sds-pagination-scroll-demo__item">Event #1 — DLP policy violation detected on endpoint-042</div>
+    <div class="sds-pagination-scroll-demo__item">Event #1 — Rule violation detected on endpoint-042</div>
     <div class="sds-pagination-scroll-demo__item">Event #2 — Sensitive file access by user jdoe@corp.com</div>
     <div class="sds-pagination-scroll-demo__item">Event #3 — Classification label changed on Q4-financials.xlsx</div>
     <div class="sds-pagination-scroll__end" role="status">All 3 results loaded</div>

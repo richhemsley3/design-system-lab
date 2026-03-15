@@ -540,7 +540,7 @@
             </button>
           </div>
           <div class="sds-popover__body">
-            <p>Audit logs are retained for 90 days by default. Deleted records are permanently purged after the retention window.</p>
+            <p>Records are retained for 90 days by default. Deleted records are permanently purged after the retention window.</p>
           </div>
           <div class="sds-popover__actions">
             <a class="sds-popover__link" href="#">View settings</a>
@@ -606,7 +606,7 @@
             </button>
           </div>
           <div class="sds-popover__body">
-            <p>Only Organization Admins and Security Officers can modify encryption and access control settings.</p>
+            <p>Only Organization Admins can modify security and access control settings.</p>
           </div>
           <div class="sds-popover__actions">
             <a class="sds-popover__link" href="#">View roles</a>
@@ -688,11 +688,11 @@
           <div class="sds-popover__meta" style="margin-top: var(--sds-space-200);">
             <div class="sds-popover__meta-row">
               <span class="material-symbols-outlined">lock</span>
-              AES-256 encryption
+              Encryption
             </div>
             <div class="sds-popover__meta-row">
               <span class="material-symbols-outlined">visibility_off</span>
-              Column masking enabled
+              Field masking enabled
             </div>
             <div class="sds-popover__meta-row">
               <span class="material-symbols-outlined">group</span>
@@ -721,7 +721,7 @@
           <ul class="sds-popover__action-list">
             <li class="sds-popover__action-item">
               <span class="material-symbols-outlined">edit</span>
-              Edit policy
+              Edit rule
             </li>
             <li class="sds-popover__action-item">
               <span class="material-symbols-outlined">content_copy</span>
@@ -733,11 +733,11 @@
             </li>
             <li class="sds-popover__action-item">
               <span class="material-symbols-outlined">history</span>
-              View audit log
+              View activity log
             </li>
             <li class="sds-popover__action-item sds-popover__action-item--danger">
               <span class="material-symbols-outlined">delete</span>
-              Delete policy
+              Delete rule
             </li>
           </ul>
         </div>
@@ -763,7 +763,7 @@
         </button>
         <div class="sds-popover sds-popover--bottom sds-popover--confirm" role="alertdialog" aria-label="Confirm deletion">
           <p class="sds-popover__title" style="margin-bottom: var(--sds-space-150);">Delete masking rule?</p>
-          <p class="sds-popover__confirm-msg">This will permanently remove the masking rule from all associated data sources. This action cannot be undone.</p>
+          <p class="sds-popover__confirm-msg">This will permanently remove the rule from all associated resources. This action cannot be undone.</p>
           <div class="sds-popover__confirm-actions">
             <button class="sds-popover__btn" data-popover-cancel>Cancel</button>
             <button class="sds-popover__btn sds-popover__btn--danger" data-popover-confirm>Delete</button>
@@ -794,8 +794,8 @@
           Publish Policy
         </button>
         <div class="sds-popover sds-popover--bottom sds-popover--confirm" role="alertdialog" aria-label="Confirm publish">
-          <p class="sds-popover__title" style="margin-bottom: var(--sds-space-150);">Publish policy changes?</p>
-          <p class="sds-popover__confirm-msg">This will apply the updated access control policy across all production data sources immediately.</p>
+          <p class="sds-popover__title" style="margin-bottom: var(--sds-space-150);">Publish changes?</p>
+          <p class="sds-popover__confirm-msg">This will apply the updated settings across all production resources immediately.</p>
           <div class="sds-popover__confirm-actions">
             <button class="sds-popover__btn" data-popover-cancel>Cancel</button>
             <button class="sds-popover__btn sds-popover__btn--primary" data-popover-confirm>Publish</button>
@@ -820,11 +820,11 @@
       <span class="sds-popover-anchor" data-popover-trigger="hover">
         <button class="sds-btn sds-btn--secondary sds-btn--sm" aria-haspopup="true" aria-expanded="false">
           <span class="material-symbols-outlined" style="font-size: 18px; color: var(--sds-sentiment-positive);">check_circle</span>
-          SOC 2 Compliant
+          Verified
         </button>
         <div class="sds-popover sds-popover--bottom" role="tooltip">
           <div class="sds-popover__header">
-            <p class="sds-popover__title">SOC 2 Type II</p>
+            <p class="sds-popover__title">Enterprise tier</p>
           </div>
           <div class="sds-popover__body">
             <p>All controls passed the most recent audit. Next audit window begins April 2026.</p>
@@ -849,12 +849,12 @@
             <p class="sds-popover__title">Column: email</p>
           </div>
           <div class="sds-popover__body">
-            <p>This column is masked for users without the Data Steward role. Partial masking applied: j***@example.com.</p>
+            <p>This field is masked for users without the Editor role. Partial masking applied: j***@example.com.</p>
           </div>
           <div class="sds-popover__meta" style="margin-top: var(--sds-space-100);">
             <div class="sds-popover__meta-row">
               <span class="material-symbols-outlined">shield</span>
-              Classification: PII
+              Category: Personal
             </div>
             <div class="sds-popover__meta-row">
               <span class="material-symbols-outlined">rule</span>
@@ -936,9 +936,9 @@
           <span class="material-symbols-outlined" style="font-size: 18px;">edit</span>
           Rename
         </button>
-        <div class="sds-popover sds-popover--bottom sds-popover--form" role="dialog" aria-label="Rename data source">
+        <div class="sds-popover sds-popover--bottom sds-popover--form" role="dialog" aria-label="Rename resource">
           <div class="sds-popover__header">
-            <p class="sds-popover__title">Rename Data Source</p>
+            <p class="sds-popover__title">Rename Resource</p>
             <button class="sds-popover__close" aria-label="Close popover">
               <span class="material-symbols-outlined" style="font-size: 18px;">close</span>
             </button>
@@ -972,7 +972,7 @@
           <form onsubmit="event.preventDefault(); closePopoverFromForm(this);">
             <div class="sds-field">
               <label class="sds-field-label" for="tag-input">Tags (comma-separated)</label>
-              <input class="sds-input" id="tag-input" type="text" value="pii, production, gdpr" />
+              <input class="sds-input" id="tag-input" type="text" value="personal, production, internal" />
             </div>
             <div class="sds-field">
               <label class="sds-field-label" for="tag-note">Classification note</label>

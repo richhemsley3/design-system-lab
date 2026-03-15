@@ -620,7 +620,7 @@
           </div>
           <div class="sds-data-list__item">
             <span class="sds-data-list__key">Type</span>
-            <span class="sds-data-list__value">Snowflake Table</span>
+            <span class="sds-data-list__value">Database Table</span>
           </div>
           <div class="sds-data-list__item">
             <span class="sds-data-list__key">Owner</span>
@@ -636,7 +636,7 @@
             </span>
           </div>
           <div class="sds-data-list__item">
-            <span class="sds-data-list__key">Last scanned</span>
+            <span class="sds-data-list__key">Last checked</span>
             <span class="sds-data-list__value">2 hours ago</span>
           </div>
         </div>
@@ -699,7 +699,7 @@
             <span class="sds-data-list__value">
               <span class="sds-status-badge sds-status-badge--critical">
                 <span class="sds-status-badge__dot"></span>
-                PII — Email
+                Personal — Email
               </span>
             </span>
           </div>
@@ -746,7 +746,7 @@
     <div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" style="position: absolute; transform: none;">
       <div class="sds-side-panel-header">
         <span class="material-symbols-outlined" style="font-size: 20px; color: var(--sds-color-red-500);">error</span>
-        <h2 class="sds-side-panel-header__title">Unencrypted PII detected</h2>
+        <h2 class="sds-side-panel-header__title">Unresolved issue detected</h2>
         <button class="sds-side-panel-header__close" aria-label="Close" tabindex="-1">
           <span class="material-symbols-outlined">close</span>
         </button>
@@ -773,8 +773,8 @@
             <span class="sds-data-list__value">ssn_number</span>
           </div>
           <div class="sds-data-list__item">
-            <span class="sds-data-list__key">Data source</span>
-            <span class="sds-data-list__value">Snowflake — Production</span>
+            <span class="sds-data-list__key">Source</span>
+            <span class="sds-data-list__value">Database — Production</span>
           </div>
           <div class="sds-data-list__item">
             <span class="sds-data-list__key">Detected</span>
@@ -782,7 +782,7 @@
           </div>
           <div class="sds-data-list__item">
             <span class="sds-data-list__key">Policy violated</span>
-            <span class="sds-data-list__value">PII Encryption Required (SOC 2)</span>
+            <span class="sds-data-list__value">Encryption Required (Policy)</span>
           </div>
           <div class="sds-data-list__item">
             <span class="sds-data-list__key">Assigned to</span>
@@ -816,7 +816,7 @@
                 <span class="material-symbols-outlined">search</span>
               </div>
               <div class="sds-activity-item__content">
-                <div class="sds-activity-item__text">Finding detected by <strong>automated scan</strong></div>
+                <div class="sds-activity-item__text">Issue detected by <strong>automated check</strong></div>
                 <div class="sds-activity-item__time">Yesterday at 3:42 PM</div>
               </div>
             </div>
@@ -1103,7 +1103,7 @@
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Type</span>
-        <span class="sds-data-list__value">Snowflake Table</span>
+        <span class="sds-data-list__value">Database Table</span>
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Owner</span>
@@ -1130,7 +1130,7 @@
 <div class="sds-side-panel-overlay" id="panel-medium-overlay" onclick="closePanelOverlay(event, 'panel-medium')"></div>
 <div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" id="panel-medium" role="dialog" aria-modal="true" aria-labelledby="panel-medium-title">
   <div class="sds-side-panel-header">
-    <h2 class="sds-side-panel-header__title" id="panel-medium-title">Data Source Details</h2>
+    <h2 class="sds-side-panel-header__title" id="panel-medium-title">Resource Details</h2>
     <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-medium')">
       <span class="material-symbols-outlined">close</span>
     </button>
@@ -1139,23 +1139,23 @@
     <p>The medium panel at 560px is the default choice for most detail views. It provides enough space for structured data, forms, and multi-section content.</p>
     <div class="sds-data-list" style="margin-top: var(--sds-space-400);">
       <div class="sds-data-list__item">
-        <span class="sds-data-list__key">Data source</span>
-        <span class="sds-data-list__value">Snowflake — Production</span>
+        <span class="sds-data-list__key">Source</span>
+        <span class="sds-data-list__value">Database — Production</span>
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Database</span>
         <span class="sds-data-list__value">ANALYTICS_PROD</span>
       </div>
       <div class="sds-data-list__item">
-        <span class="sds-data-list__key">Tables scanned</span>
+        <span class="sds-data-list__key">Tables checked</span>
         <span class="sds-data-list__value">1,247</span>
       </div>
       <div class="sds-data-list__item">
-        <span class="sds-data-list__key">PII columns</span>
+        <span class="sds-data-list__key">Flagged fields</span>
         <span class="sds-data-list__value">83</span>
       </div>
       <div class="sds-data-list__item">
-        <span class="sds-data-list__key">Last scan</span>
+        <span class="sds-data-list__key">Last check</span>
         <span class="sds-data-list__value">Mar 15, 2026 at 9:14 AM</span>
       </div>
       <div class="sds-data-list__item">
@@ -1190,11 +1190,11 @@
     <div class="sds-data-list" style="margin-top: var(--sds-space-400);">
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Policy name</span>
-        <span class="sds-data-list__value">PII Encryption Required</span>
+        <span class="sds-data-list__value">Encryption Required</span>
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Framework</span>
-        <span class="sds-data-list__value">SOC 2 Type II</span>
+        <span class="sds-data-list__value">Enterprise</span>
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Scope</span>
@@ -1233,7 +1233,7 @@
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Type</span>
-        <span class="sds-data-list__value">Snowflake Table</span>
+        <span class="sds-data-list__value">Database Table</span>
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Owner</span>
@@ -1249,7 +1249,7 @@
         </span>
       </div>
       <div class="sds-data-list__item">
-        <span class="sds-data-list__key">Last scanned</span>
+        <span class="sds-data-list__key">Last checked</span>
         <span class="sds-data-list__value">2 hours ago</span>
       </div>
     </div>
@@ -1292,7 +1292,7 @@
         <span class="sds-data-list__value">
           <span class="sds-status-badge sds-status-badge--critical">
             <span class="sds-status-badge__dot"></span>
-            PII — Email
+            Personal — Email
           </span>
         </span>
       </div>
@@ -1323,7 +1323,7 @@
           <span class="material-symbols-outlined">edit</span>
         </div>
         <div class="sds-activity-item__content">
-          <div class="sds-activity-item__text"><strong>Sarah Chen</strong> updated masking policy to dynamic</div>
+          <div class="sds-activity-item__text"><strong>Sarah Chen</strong> updated visibility rule to dynamic</div>
           <div class="sds-activity-item__time">1 hour ago</div>
         </div>
       </div>
@@ -1332,7 +1332,7 @@
           <span class="material-symbols-outlined">label</span>
         </div>
         <div class="sds-activity-item__content">
-          <div class="sds-activity-item__text">Classification changed from <strong>Internal</strong> to <strong>PII — Email</strong></div>
+          <div class="sds-activity-item__text">Category changed from <strong>Internal</strong> to <strong>Personal — Email</strong></div>
           <div class="sds-activity-item__time">3 hours ago</div>
         </div>
       </div>
@@ -1341,7 +1341,7 @@
           <span class="material-symbols-outlined">search</span>
         </div>
         <div class="sds-activity-item__content">
-          <div class="sds-activity-item__text">Column scanned by <strong>automated classifier</strong></div>
+          <div class="sds-activity-item__text">Field checked by <strong>automated process</strong></div>
           <div class="sds-activity-item__time">Yesterday at 2:15 PM</div>
         </div>
       </div>
@@ -1350,7 +1350,7 @@
           <span class="material-symbols-outlined">add_circle</span>
         </div>
         <div class="sds-activity-item__content">
-          <div class="sds-activity-item__text">Column discovered during initial <strong>schema scan</strong></div>
+          <div class="sds-activity-item__text">Field discovered during initial <strong>review</strong></div>
           <div class="sds-activity-item__time">Mar 10, 2026</div>
         </div>
       </div>
@@ -1404,7 +1404,7 @@
 <div class="sds-side-panel sds-side-panel--right sds-side-panel--medium" id="panel-detail" role="dialog" aria-modal="true" aria-labelledby="panel-detail-title">
   <div class="sds-side-panel-header">
     <span class="material-symbols-outlined" style="font-size: 20px; color: var(--sds-color-red-500);">error</span>
-    <h2 class="sds-side-panel-header__title" id="panel-detail-title">Unencrypted PII detected</h2>
+    <h2 class="sds-side-panel-header__title" id="panel-detail-title">Unresolved issue detected</h2>
     <button class="sds-side-panel-header__close" aria-label="Close" onclick="closePanel('panel-detail')">
       <span class="material-symbols-outlined">close</span>
     </button>
@@ -1431,8 +1431,8 @@
         <span class="sds-data-list__value">ssn_number</span>
       </div>
       <div class="sds-data-list__item">
-        <span class="sds-data-list__key">Data source</span>
-        <span class="sds-data-list__value">Snowflake — Production</span>
+        <span class="sds-data-list__key">Source</span>
+        <span class="sds-data-list__value">Database — Production</span>
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Detected</span>
@@ -1440,7 +1440,7 @@
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Policy violated</span>
-        <span class="sds-data-list__value">PII Encryption Required (SOC 2)</span>
+        <span class="sds-data-list__value">Encryption Required (Policy)</span>
       </div>
       <div class="sds-data-list__item">
         <span class="sds-data-list__key">Assigned to</span>
@@ -1474,7 +1474,7 @@
             <span class="material-symbols-outlined">search</span>
           </div>
           <div class="sds-activity-item__content">
-            <div class="sds-activity-item__text">Finding detected by <strong>automated scan</strong></div>
+            <div class="sds-activity-item__text">Issue detected by <strong>automated check</strong></div>
             <div class="sds-activity-item__time">Yesterday at 3:42 PM</div>
           </div>
         </div>
@@ -1520,9 +1520,9 @@
       <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Resolved <span class="sds-filter-count">314</span></label>
     </div>
     <div class="sds-filter-group">
-      <div class="sds-filter-group__label">Data Source</div>
-      <label class="sds-filter-option"><input type="checkbox" checked /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Snowflake Production <span class="sds-filter-count">142</span></label>
-      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> BigQuery Analytics <span class="sds-filter-count">98</span></label>
+      <div class="sds-filter-group__label">Source</div>
+      <label class="sds-filter-option"><input type="checkbox" checked /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Production Database <span class="sds-filter-count">142</span></label>
+      <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> Analytics Database <span class="sds-filter-count">98</span></label>
       <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> PostgreSQL Staging <span class="sds-filter-count">41</span></label>
       <label class="sds-filter-option"><input type="checkbox" /><span class="sds-checkbox-group-box"><svg viewBox="0 0 10 10" fill="none"><path d="M1.5 5L4 7.5L8.5 2.5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span> S3 Data Lake <span class="sds-filter-count">300</span></label>
     </div>

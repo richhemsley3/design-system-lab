@@ -402,7 +402,7 @@
 <body>
 
   <h1>Data Lists</h1>
-  <p class="page-subtitle">Key-value pair layouts for displaying resource metadata, configuration details, and policy summaries. Built on semantic <code>&lt;dl&gt;</code> markup.</p>
+  <p class="page-subtitle">Key-value pair layouts for displaying resource metadata, configuration details, and resource summaries. Built on semantic <code>&lt;dl&gt;</code> markup.</p>
 
   <!-- ============================================================
        VERTICAL KEY-VALUE LIST
@@ -438,7 +438,7 @@
         <dd class="sds-kv__value">Jan 12, 2026</dd>
       </div>
       <div class="sds-kv">
-        <dt class="sds-kv__label">Last Scanned</dt>
+        <dt class="sds-kv__label">Last Checked</dt>
         <dd class="sds-kv__value">Mar 14, 2026 — 3:42 PM</dd>
       </div>
     </dl>
@@ -456,7 +456,7 @@
     <div class="sds-kv-grid sds-kv-grid--2col">
       <div class="sds-kv-grid__item">
         <span class="sds-kv-grid__label">Policy Name</span>
-        <span class="sds-kv-grid__value">PCI-DSS Compliance</span>
+        <span class="sds-kv-grid__value">Enterprise Security</span>
       </div>
       <div class="sds-kv-grid__item">
         <span class="sds-kv-grid__label">Enforcement</span>
@@ -464,7 +464,7 @@
       </div>
       <div class="sds-kv-grid__item">
         <span class="sds-kv-grid__label">Applied To</span>
-        <span class="sds-kv-grid__value">12 data stores</span>
+        <span class="sds-kv-grid__value">12 services</span>
       </div>
       <div class="sds-kv-grid__item">
         <span class="sds-kv-grid__label">Last Updated</span>
@@ -478,7 +478,7 @@
     <div class="demo-label">Scan results overview</div>
     <div class="sds-kv-grid sds-kv-grid--3col">
       <div class="sds-kv-grid__item">
-        <span class="sds-kv-grid__label">Total Findings</span>
+        <span class="sds-kv-grid__label">Total Items</span>
         <span class="sds-kv-grid__value">1,247</span>
       </div>
       <div class="sds-kv-grid__item">
@@ -494,11 +494,11 @@
         <span class="sds-kv-grid__value">4m 32s</span>
       </div>
       <div class="sds-kv-grid__item">
-        <span class="sds-kv-grid__label">Tables Scanned</span>
+        <span class="sds-kv-grid__label">Items Checked</span>
         <span class="sds-kv-grid__value">342</span>
       </div>
       <div class="sds-kv-grid__item">
-        <span class="sds-kv-grid__label">Columns Analyzed</span>
+        <span class="sds-kv-grid__label">Fields Analyzed</span>
         <span class="sds-kv-grid__value">2,891</span>
       </div>
     </div>
@@ -534,9 +534,9 @@
         <dt class="sds-kv__label">Compliance</dt>
         <dd class="sds-kv__value">
           <span class="sds-kv__value--with-icon">
-            <span class="sds-tag sds-tag--info">SOC 2</span>
-            <span class="sds-tag sds-tag--info">HIPAA</span>
-            <span class="sds-tag sds-tag--purple">PCI-DSS</span>
+            <span class="sds-tag sds-tag--info">Tier 1</span>
+            <span class="sds-tag sds-tag--info">Tier 2</span>
+            <span class="sds-tag sds-tag--purple">Tier 3</span>
           </span>
         </dd>
       </div>
@@ -604,16 +604,16 @@
         <dl style="margin:0; padding:0;">
           <div class="sds-kv">
             <dt class="sds-kv__label">Data Categories</dt>
-            <dd class="sds-kv__value">PII, Financial, PHI</dd>
+            <dd class="sds-kv__value">Personal, Financial, Internal</dd>
           </div>
           <div class="sds-kv">
-            <dt class="sds-kv__label">Sensitivity</dt>
+            <dt class="sds-kv__label">Priority</dt>
             <dd class="sds-kv__value">
               <span class="sds-tag sds-tag--error"><span class="sds-tag-dot"></span>Critical</span>
             </dd>
           </div>
           <div class="sds-kv">
-            <dt class="sds-kv__label">Retention Policy</dt>
+            <dt class="sds-kv__label">Retention</dt>
             <dd class="sds-kv__value">7 years</dd>
           </div>
         </dl>
@@ -622,11 +622,11 @@
         <div class="sds-data-list__group-header">Audit</div>
         <dl style="margin:0; padding:0;">
           <div class="sds-kv">
-            <dt class="sds-kv__label">Last Scanned</dt>
+            <dt class="sds-kv__label">Last Checked</dt>
             <dd class="sds-kv__value">Mar 14, 2026 — 3:42 PM</dd>
           </div>
           <div class="sds-kv">
-            <dt class="sds-kv__label">Findings</dt>
+            <dt class="sds-kv__label">Issues</dt>
             <dd class="sds-kv__value">18 critical, 63 high</dd>
           </div>
           <div class="sds-kv">
@@ -661,7 +661,7 @@
       </div>
       <div class="sds-kv sds-kv--editable">
         <dt class="sds-kv__label">Tags</dt>
-        <dd class="sds-kv__value" data-field="tags">production, analytics, pii</dd>
+        <dd class="sds-kv__value" data-field="tags">production, analytics, personal</dd>
       </div>
       <div class="sds-kv">
         <dt class="sds-kv__label">Resource ID</dt>
@@ -723,7 +723,7 @@
             <dd class="sds-kv__value">IAM Role</dd>
           </div>
           <div class="sds-kv">
-            <dt class="sds-kv__label">Sensitivity</dt>
+            <dt class="sds-kv__label">Priority</dt>
             <dd class="sds-kv__value">
               <span class="sds-tag sds-tag--error"><span class="sds-tag-dot"></span>Critical</span>
             </dd>
@@ -732,8 +732,8 @@
             <dt class="sds-kv__label">Compliance</dt>
             <dd class="sds-kv__value">
               <span class="sds-kv__value--with-icon">
-                <span class="sds-tag sds-tag--info">SOC 2</span>
-                <span class="sds-tag sds-tag--info">HIPAA</span>
+                <span class="sds-tag sds-tag--info">Tier 1</span>
+                <span class="sds-tag sds-tag--info">Tier 2</span>
               </span>
             </dd>
           </div>
@@ -742,7 +742,7 @@
             <dd class="sds-kv__value">Platform Engineering</dd>
           </div>
           <div class="sds-kv">
-            <dt class="sds-kv__label">Last Scanned</dt>
+            <dt class="sds-kv__label">Last Checked</dt>
             <dd class="sds-kv__value">Mar 14, 2026 — 3:42 PM</dd>
           </div>
         </dl>
@@ -765,8 +765,8 @@
             <span class="material-symbols-outlined">shield</span>
           </div>
           <div>
-            <div class="sds-detail-panel__title">PCI-DSS Data Protection</div>
-            <div class="sds-detail-panel__subtitle">Masking &amp; Access Control Policy</div>
+            <div class="sds-detail-panel__title">Enterprise Data Protection</div>
+            <div class="sds-detail-panel__subtitle">Access Control Settings</div>
           </div>
         </div>
         <span class="sds-tag sds-tag--purple"><span class="sds-tag-dot"></span>Active</span>
@@ -779,7 +779,7 @@
           </div>
           <div class="sds-kv">
             <dt class="sds-kv__label">Applied To</dt>
-            <dd class="sds-kv__value">12 data stores</dd>
+            <dd class="sds-kv__value">12 services</dd>
           </div>
           <div class="sds-kv">
             <dt class="sds-kv__label">Rules</dt>

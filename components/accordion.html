@@ -197,7 +197,7 @@
 <body>
 
   <h1>Accordion</h1>
-  <p class="page-subtitle">Expandable sections for organizing related content into collapsible panels. Used in settings views, policy configurations, and compliance documentation.</p>
+  <p class="page-subtitle">Expandable sections for organizing related content into collapsible panels. Used in settings views, preference panels, and documentation sections.</p>
 
   <!-- ============================================================
        BASIC ACCORDION — EXCLUSIVE MODE
@@ -210,23 +210,23 @@
     <div class="sds-accordion" data-accordion-exclusive>
       <div class="sds-accordion-item" data-expanded="true">
         <button class="sds-accordion-header" aria-expanded="true" aria-controls="basic-panel-1" id="basic-header-1">
-          <span class="sds-accordion-header-text">Data Retention Policy</span>
+          <span class="sds-accordion-header-text">Retention Policy</span>
           <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
         </button>
         <div class="sds-accordion-panel" id="basic-panel-1" role="region" aria-labelledby="basic-header-1">
           <div class="sds-accordion-panel-inner">
-            Define how long sensitive data is retained before automatic deletion. Retention periods can be configured per data classification level, with separate rules for production, staging, and archival environments.
+            Define how long records are retained before automatic archival. Retention periods can be configured per category, with separate rules for production, staging, and archival environments.
           </div>
         </div>
       </div>
       <div class="sds-accordion-item">
         <button class="sds-accordion-header" aria-expanded="false" aria-controls="basic-panel-2" id="basic-header-2">
-          <span class="sds-accordion-header-text">Encryption Settings</span>
+          <span class="sds-accordion-header-text">Security Settings</span>
           <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
         </button>
         <div class="sds-accordion-panel" id="basic-panel-2" role="region" aria-labelledby="basic-header-2">
           <div class="sds-accordion-panel-inner">
-            Configure encryption algorithms and key rotation schedules for data at rest and in transit. Supports AES-256, RSA-4096, and ChaCha20-Poly1305 cipher suites with automatic key expiration policies.
+            Configure security settings and credential rotation schedules. Supports multiple authentication methods with automatic expiration and renewal policies.
           </div>
         </div>
       </div>
@@ -237,18 +237,18 @@
         </button>
         <div class="sds-accordion-panel" id="basic-panel-3" role="region" aria-labelledby="basic-header-3">
           <div class="sds-accordion-panel-inner">
-            Manage role-based access control (RBAC) policies that govern who can view, modify, or delete protected resources. Assign granular permissions at the team, project, or individual level.
+            Manage role-based access control (RBAC) settings that govern who can view, modify, or delete resources. Assign granular permissions at the team, project, or individual level.
           </div>
         </div>
       </div>
       <div class="sds-accordion-item">
         <button class="sds-accordion-header" aria-expanded="false" aria-controls="basic-panel-4" id="basic-header-4">
-          <span class="sds-accordion-header-text">Audit Logging</span>
+          <span class="sds-accordion-header-text">Activity Logging</span>
           <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
         </button>
         <div class="sds-accordion-panel" id="basic-panel-4" role="region" aria-labelledby="basic-header-4">
           <div class="sds-accordion-panel-inner">
-            Track all user actions and system events with tamper-proof audit logs. Logs are immutable once written and can be exported to external SIEM platforms for compliance reporting.
+            Track all user actions and system events with detailed activity logs. Logs are immutable once written and can be exported for reporting and analysis.
           </div>
         </div>
       </div>
@@ -271,7 +271,7 @@
         </button>
         <div class="sds-accordion-panel" id="multi-panel-1" role="region" aria-labelledby="multi-header-1">
           <div class="sds-accordion-panel-inner">
-            Configure firewall rules, IP allowlists, and VPN tunnel settings. Network segmentation policies ensure that sensitive workloads are isolated from general-purpose traffic.
+            Configure network rules, IP allowlists, and connection settings. Network policies ensure that production workloads are isolated from development traffic.
           </div>
         </div>
       </div>
@@ -293,7 +293,7 @@
         </button>
         <div class="sds-accordion-panel" id="multi-panel-3" role="region" aria-labelledby="multi-header-3">
           <div class="sds-accordion-panel-inner">
-            Set session timeout durations, concurrent session limits, and idle lockout policies. Administrators can force-terminate active sessions for specific users or across the entire organization.
+            Set session timeout durations, concurrent session limits, and idle lockout rules. Administrators can force-terminate active sessions for specific users or across the entire organization.
           </div>
         </div>
       </div>
@@ -324,24 +324,24 @@
       <div class="sds-accordion-item">
         <button class="sds-accordion-header" aria-expanded="false" aria-controls="icon-panel-2" id="icon-header-2">
           <span class="material-symbols-outlined sds-accordion-leading-icon">policy</span>
-          <span class="sds-accordion-header-text">Compliance Frameworks</span>
+          <span class="sds-accordion-header-text">Standards Mapping</span>
           <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
         </button>
         <div class="sds-accordion-panel" id="icon-panel-2" role="region" aria-labelledby="icon-header-2">
           <div class="sds-accordion-panel-inner">
-            Map organizational controls to SOC 2, GDPR, HIPAA, and PCI-DSS requirements. Automated evidence collection generates audit-ready reports on demand.
+            Map organizational controls to your compliance requirements. Automated reporting generates review-ready reports on demand.
           </div>
         </div>
       </div>
       <div class="sds-accordion-item">
         <button class="sds-accordion-header" aria-expanded="false" aria-controls="icon-panel-3" id="icon-header-3">
           <span class="material-symbols-outlined sds-accordion-leading-icon">fingerprint</span>
-          <span class="sds-accordion-header-text">Data Classification</span>
+          <span class="sds-accordion-header-text">Categorization</span>
           <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
         </button>
         <div class="sds-accordion-panel" id="icon-panel-3" role="region" aria-labelledby="icon-header-3">
           <div class="sds-accordion-panel-inner">
-            Automatically scan and classify sensitive data across all connected sources. Labels include PII, PHI, financial records, and intellectual property with configurable sensitivity tiers.
+            Automatically categorize and label items across all connected sources. Categories include personal, financial, internal, and confidential with configurable priority tiers.
           </div>
         </div>
       </div>
@@ -380,7 +380,7 @@
             <div class="sds-accordion" data-accordion-exclusive>
               <div class="sds-accordion-item" data-expanded="true">
                 <button class="sds-accordion-header" aria-expanded="true" aria-controls="nested-sub-1" id="nested-sub-header-1">
-                  <span class="sds-accordion-header-text">European Union (GDPR)</span>
+                  <span class="sds-accordion-header-text">European Union</span>
                   <span class="material-symbols-outlined sds-accordion-icon">expand_more</span>
                 </button>
                 <div class="sds-accordion-panel" id="nested-sub-1" role="region" aria-labelledby="nested-sub-header-1">
@@ -422,7 +422,7 @@
         </button>
         <div class="sds-accordion-panel" id="nested-panel-2" role="region" aria-labelledby="nested-header-2">
           <div class="sds-accordion-panel-inner">
-            Configure automated backup schedules, retention windows, and disaster recovery failover settings across all connected data sources.
+            Configure automated backup schedules, retention windows, and disaster recovery failover settings across all connected services.
           </div>
         </div>
       </div>

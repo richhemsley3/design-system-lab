@@ -429,10 +429,10 @@
         </button>
       </div>
       <div class="sds-modal-body">
-        <p>We've shipped several improvements to help your team manage data classification policies more efficiently.</p>
-        <p><strong>Enhanced policy engine</strong> — Policies now support conditional logic with nested rule groups, allowing more granular access controls across data domains.</p>
-        <p><strong>Bulk operations</strong> — Select multiple resources from the catalog to apply tags, assign owners, or update sensitivity levels in a single action.</p>
-        <p><strong>Audit trail export</strong> — Download compliance audit logs as CSV for integration with your existing reporting workflows.</p>
+        <p>We've shipped several improvements to make your team's workflow faster and more flexible.</p>
+        <p><strong>Enhanced automations</strong> — Workflows now support conditional logic with nested rule groups, giving you more control over how tasks are processed.</p>
+        <p><strong>Bulk operations</strong> — Select multiple items to apply labels, assign owners, or update status in a single action.</p>
+        <p><strong>Activity export</strong> — Download activity logs as CSV for integration with your existing reporting tools.</p>
       </div>
       <div class="sds-modal-footer">
         <button class="sds-btn sds-btn--primary sds-btn--md" tabindex="-1">Got It</button>
@@ -448,17 +448,17 @@
   <div class="static-preview">
     <div class="sds-modal sds-modal--sm">
       <div class="sds-modal-header">
-        <h2 class="sds-modal-header__title">Delete Data Source</h2>
+        <h2 class="sds-modal-header__title">Delete Connection</h2>
         <button class="sds-modal-header__close" aria-label="Close" tabindex="-1">
           <span class="material-symbols-outlined">close</span>
         </button>
       </div>
       <div class="sds-modal-body">
-        <p>Are you sure you want to delete <strong>Snowflake Production</strong>? This will permanently remove the data source and all associated metadata, lineage records, and classification tags. This action cannot be undone.</p>
+        <p>Are you sure you want to delete <strong>Production Database</strong>? This will permanently remove the connection and all associated configuration, history, and tags. This action cannot be undone.</p>
       </div>
       <div class="sds-modal-footer">
         <button class="sds-btn sds-btn--secondary sds-btn--md" tabindex="-1">Cancel</button>
-        <button class="sds-btn sds-btn--danger sds-btn--md" tabindex="-1">Delete Data Source</button>
+        <button class="sds-btn sds-btn--danger sds-btn--md" tabindex="-1">Delete Connection</button>
       </div>
     </div>
   </div>
@@ -487,7 +487,7 @@
             <option>Viewer</option>
             <option>Editor</option>
             <option>Admin</option>
-            <option>Data Steward</option>
+            <option>Contributor</option>
           </select>
         </div>
         <div class="sds-field">
@@ -636,10 +636,10 @@
       </button>
     </div>
     <div class="sds-modal-body">
-      <p>We've shipped several improvements to help your team manage data classification policies more efficiently.</p>
-      <p><strong>Enhanced policy engine</strong> — Policies now support conditional logic with nested rule groups, allowing more granular access controls across data domains.</p>
-      <p><strong>Bulk operations</strong> — Select multiple resources from the catalog to apply tags, assign owners, or update sensitivity levels in a single action.</p>
-      <p><strong>Audit trail export</strong> — Download compliance audit logs as CSV for integration with your existing reporting workflows.</p>
+      <p>We've shipped several improvements to make your team's workflow faster and more flexible.</p>
+      <p><strong>Enhanced automations</strong> — Workflows now support conditional logic with nested rule groups, giving you more control over how tasks are processed.</p>
+      <p><strong>Bulk operations</strong> — Select multiple items to apply labels, assign owners, or update status in a single action.</p>
+      <p><strong>Activity export</strong> — Download activity logs as CSV for integration with your existing reporting tools.</p>
     </div>
     <div class="sds-modal-footer">
       <button class="sds-btn sds-btn--primary sds-btn--md" onclick="closeModal('modal-info')">Got It</button>
@@ -686,7 +686,7 @@
           <option>Viewer</option>
           <option>Editor</option>
           <option>Admin</option>
-          <option>Data Steward</option>
+          <option>Contributor</option>
         </select>
       </div>
       <div class="sds-field">
@@ -712,8 +712,8 @@
       </button>
     </div>
     <div class="sds-modal-body">
-      <p>You are about to permanently delete the workspace <strong>Production Analytics</strong> and all of its contents, including 47 data sources, 312 policies, and 8 team members' access configurations.</p>
-      <p>This action is <strong>irreversible</strong>. All data lineage records, classification history, and audit logs within this workspace will be permanently removed.</p>
+      <p>You are about to permanently delete the workspace <strong>Production Analytics</strong> and all of its contents, including 47 connections, 312 configurations, and 8 team members' access settings.</p>
+      <p>This action is <strong>irreversible</strong>. All activity history, settings, and logs within this workspace will be permanently removed.</p>
     </div>
     <div class="sds-modal-footer">
       <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-danger')">Cancel</button>
@@ -726,17 +726,17 @@
 <div class="sds-modal-overlay" id="modal-delete-resource" onclick="closeOverlay(event)">
   <div class="sds-modal sds-modal--sm">
     <div class="sds-modal-header">
-      <h2 class="sds-modal-header__title">Delete Data Source</h2>
+      <h2 class="sds-modal-header__title">Delete Connection</h2>
       <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-delete-resource')">
         <span class="material-symbols-outlined">close</span>
       </button>
     </div>
     <div class="sds-modal-body">
-      <p>Are you sure you want to delete <strong>Snowflake Production</strong>? This will permanently remove the data source and all associated metadata, lineage records, and classification tags. This action cannot be undone.</p>
+      <p>Are you sure you want to delete <strong>Production Database</strong>? This will permanently remove the connection and all associated configuration, history, and tags. This action cannot be undone.</p>
     </div>
     <div class="sds-modal-footer">
       <button class="sds-btn sds-btn--secondary sds-btn--md" onclick="closeModal('modal-delete-resource')">Cancel</button>
-      <button class="sds-btn sds-btn--danger sds-btn--md" onclick="closeModal('modal-delete-resource')">Delete Data Source</button>
+      <button class="sds-btn sds-btn--danger sds-btn--md" onclick="closeModal('modal-delete-resource')">Delete Connection</button>
     </div>
   </div>
 </div>
@@ -761,7 +761,7 @@
           <option>Viewer</option>
           <option>Editor</option>
           <option>Admin</option>
-          <option>Data Steward</option>
+          <option>Contributor</option>
         </select>
       </div>
       <div class="sds-field">

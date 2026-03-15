@@ -450,7 +450,7 @@
       <!-- Top -->
       <span class="sds-tooltip-trigger">
         <button class="sds-btn sds-btn--secondary sds-btn--sm">Top</button>
-        <span class="sds-tooltip sds-tooltip--top">Data retention policy</span>
+        <span class="sds-tooltip sds-tooltip--top">Retention policy</span>
       </span>
 
       <!-- Right -->
@@ -462,7 +462,7 @@
       <!-- Bottom -->
       <span class="sds-tooltip-trigger">
         <button class="sds-btn sds-btn--secondary sds-btn--sm">Bottom</button>
-        <span class="sds-tooltip sds-tooltip--bottom">AES-256 encryption enabled</span>
+        <span class="sds-tooltip sds-tooltip--bottom">Encryption enabled</span>
       </span>
 
       <!-- Left -->
@@ -542,8 +542,8 @@
             </button>
           </div>
           <div class="sds-popover__body">
-            <p>Audit logs are retained for 90 days by default. Deleted records are permanently purged after the retention window closes.</p>
-            <p>You can customize retention periods per data classification level in your organization settings.</p>
+            <p>Records are retained for 90 days by default. Deleted items are permanently purged after the retention window closes.</p>
+            <p>You can customize retention periods per category in your organization settings.</p>
           </div>
           <div class="sds-popover__actions">
             <a class="sds-popover__link" href="#">View retention settings</a>
@@ -566,7 +566,7 @@
           </div>
           <div class="sds-popover__body">
             <p>Each API key can be scoped to read-only, read-write, or admin access. Keys inherit the permission level of their creator.</p>
-            <p>Rotate keys every 90 days for compliance with your security policy.</p>
+            <p>Rotate credentials every 90 days to stay aligned with your security settings.</p>
           </div>
           <div class="sds-popover__actions">
             <a class="sds-popover__link" href="#">Manage API keys</a>
@@ -590,10 +590,10 @@
 
       <div>
         <span class="sds-field-label">
-          Data Classification
+          Category
           <span class="sds-tooltip-trigger">
             <span class="material-symbols-outlined sds-info-icon">info</span>
-            <span class="sds-tooltip sds-tooltip--right">Determines encryption level, access controls, and retention policies applied to this dataset.</span>
+            <span class="sds-tooltip sds-tooltip--right">Determines the security level, access controls, and retention rules applied to this resource.</span>
           </span>
         </span>
       </div>
@@ -603,7 +603,7 @@
           Masking Policy
           <span class="sds-tooltip-trigger">
             <span class="material-symbols-outlined sds-info-icon">info</span>
-            <span class="sds-tooltip sds-tooltip--right">Controls how sensitive fields are redacted when viewed by users without elevated permissions.</span>
+            <span class="sds-tooltip sds-tooltip--right">Controls how restricted fields are displayed when viewed by users without elevated permissions.</span>
           </span>
         </span>
       </div>
@@ -647,7 +647,7 @@
         <span class="preview-label">Top</span>
         <span class="sds-tooltip-trigger" style="margin-top: 48px;">
           <button class="sds-btn sds-btn--secondary sds-btn--sm">Trigger</button>
-          <span class="sds-tooltip sds-tooltip--top" style="opacity: 1;">Data retention policy</span>
+          <span class="sds-tooltip sds-tooltip--top" style="opacity: 1;">Retention policy</span>
         </span>
       </div>
 
@@ -656,7 +656,7 @@
         <span class="preview-label">Bottom</span>
         <span class="sds-tooltip-trigger" style="margin-bottom: 48px;">
           <button class="sds-btn sds-btn--secondary sds-btn--sm">Trigger</button>
-          <span class="sds-tooltip sds-tooltip--bottom" style="opacity: 1;">AES-256 encryption enabled</span>
+          <span class="sds-tooltip sds-tooltip--bottom" style="opacity: 1;">Encryption enabled</span>
         </span>
       </div>
 
@@ -692,7 +692,7 @@
         </button>
         <span class="sds-tooltip sds-tooltip--rich sds-tooltip--bottom" style="opacity: 1;">
           <p class="sds-tooltip__title">Role-based access control</p>
-          <p class="sds-tooltip__desc">Only Organization Admins and Security Officers can modify encryption and retention settings.</p>
+          <p class="sds-tooltip__desc">Only Organization Admins can modify security and retention settings.</p>
         </span>
       </span>
     </div>
@@ -710,8 +710,8 @@
           </button>
         </div>
         <div class="sds-popover__body">
-          <p>Audit logs are retained for 90 days by default. Deleted records are permanently purged after the retention window.</p>
-          <p>Customize retention periods per data classification in organization settings.</p>
+          <p>Records are retained for 90 days by default. Deleted items are permanently purged after the retention window.</p>
+          <p>Customize retention periods per category in organization settings.</p>
         </div>
         <div class="sds-popover__actions">
           <a class="sds-popover__link" href="#">View retention settings</a>
@@ -730,14 +730,14 @@
   <div class="demo-block">
     <div class="demo-label">Settings panel example</div>
     <div class="settings-panel">
-      <p class="settings-panel__title">Data Source Configuration</p>
+      <p class="settings-panel__title">Resource Configuration</p>
 
       <div class="sds-field">
         <span class="sds-field-label">
           Connection Name
           <span class="sds-tooltip-trigger">
             <span class="material-symbols-outlined sds-info-icon">info</span>
-            <span class="sds-tooltip sds-tooltip--right">A human-readable name for this data source. Used in audit logs and alert notifications.</span>
+            <span class="sds-tooltip sds-tooltip--right">A human-readable name for this resource. Used in activity logs and notifications.</span>
           </span>
         </span>
         <input class="sds-input" type="text" placeholder="e.g., Production PostgreSQL" />
@@ -748,7 +748,7 @@
           Encryption Standard
           <span class="sds-tooltip-trigger">
             <span class="material-symbols-outlined sds-info-icon">info</span>
-            <span class="sds-tooltip sds-tooltip--right">Encryption algorithm applied to data at rest. AES-256 is recommended for compliance with SOC 2 and HIPAA.</span>
+            <span class="sds-tooltip sds-tooltip--right">Encryption method applied to stored data. AES-256 is recommended for most use cases.</span>
           </span>
         </span>
         <select class="sds-select">
@@ -780,7 +780,7 @@
           Access Control
           <span class="sds-tooltip-trigger">
             <span class="material-symbols-outlined sds-info-icon">info</span>
-            <span class="sds-tooltip sds-tooltip--right">Determines which roles can query this data source. Restricted sources require explicit grant from a Security Officer.</span>
+            <span class="sds-tooltip sds-tooltip--right">Determines which roles can access this resource. Restricted resources require an explicit grant from an admin.</span>
           </span>
         </span>
         <select class="sds-select">

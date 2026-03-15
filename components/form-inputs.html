@@ -871,7 +871,7 @@
           <label class="sds-field-label">Search</label>
           <div class="sds-input-wrapper">
             <span class="material-symbols-outlined sds-input-icon--leading">search</span>
-            <input type="text" class="sds-input sds-input--has-leading-icon" placeholder="Search data sources...">
+            <input type="text" class="sds-input sds-input--has-leading-icon" placeholder="Search resources...">
           </div>
         </div>
       </div>
@@ -916,7 +916,7 @@
       <div class="demo-row-items">
         <div class="sds-field" style="width:320px;">
           <label class="sds-field-label">Description</label>
-          <textarea class="sds-textarea" rows="3" placeholder="Describe the purpose of this data source..."></textarea>
+          <textarea class="sds-textarea" rows="3" placeholder="Describe the purpose of this resource..."></textarea>
         </div>
       </div>
     </div>
@@ -925,7 +925,7 @@
       <div class="demo-row-items">
         <div class="sds-field" style="width:320px;">
           <label class="sds-field-label">Policy notes</label>
-          <textarea class="sds-textarea" rows="3" placeholder="Add notes about this security policy...">This policy restricts access to PII columns for all non-admin roles. Exceptions require manager approval.</textarea>
+          <textarea class="sds-textarea" rows="3" placeholder="Add notes about this configuration...">This rule restricts access for all non-admin roles. Exceptions require manager approval.</textarea>
           <div class="sds-textarea-footer">
             <span class="sds-textarea-charcount">98 / 500</span>
           </div>
@@ -946,8 +946,8 @@
       <span class="demo-row-label">Disabled</span>
       <div class="demo-row-items">
         <div class="sds-field" style="width:320px;">
-          <label class="sds-field-label">Audit log</label>
-          <textarea class="sds-textarea" rows="3" disabled>Created by system on 2026-01-15. Auto-generated policy based on data classification rules.</textarea>
+          <label class="sds-field-label">Activity log</label>
+          <textarea class="sds-textarea" rows="3" disabled>Created by system on 2026-01-15. Auto-generated based on workspace settings.</textarea>
         </div>
       </div>
     </div>
@@ -967,7 +967,7 @@
       <span class="demo-row-label">Default</span>
       <div class="demo-row-items">
         <div class="sds-field" style="width:240px;">
-          <label class="sds-field-label">Data classification</label>
+          <label class="sds-field-label">Category</label>
           <select class="sds-select">
             <option value="" disabled selected>Select classification...</option>
             <option>Public</option>
@@ -1074,7 +1074,7 @@
             <svg viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="sds-checkbox-dash"></span>
           </span>
-          Enable audit logging
+          Enable activity logging
         </label>
       </div>
     </div>
@@ -1087,7 +1087,7 @@
             <svg viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="sds-checkbox-dash"></span>
           </span>
-          Enable audit logging
+          Enable activity logging
         </label>
       </div>
     </div>
@@ -1235,7 +1235,7 @@
   <div class="demo-block">
     <div class="demo-label">Retention policy</div>
     <div class="sds-field" style="max-width:320px;">
-      <label class="sds-field-label">Data retention period</label>
+      <label class="sds-field-label">Retention period</label>
       <span class="sds-field-helper" style="margin-bottom:var(--sds-space-200);">How long to retain query logs and audit trails</span>
       <div style="display:flex; flex-direction:column; gap:var(--sds-space-300);">
         <label class="sds-radio">
@@ -1360,10 +1360,10 @@
   <p>A realistic settings form demonstrating multiple input types used together in an enterprise data management workflow.</p>
 
   <div class="demo-block">
-    <div class="demo-label">Create data source</div>
+    <div class="demo-label">Create resource</div>
     <div class="demo-form">
-      <div class="demo-form-title">New data source</div>
-      <div class="demo-form-desc">Connect a database or warehouse to begin cataloging and applying governance policies.</div>
+      <div class="demo-form-title">New resource</div>
+      <div class="demo-form-desc">Connect a service to begin syncing and applying your workspace settings.</div>
 
       <div class="demo-form-columns">
         <div class="sds-field">
@@ -1375,8 +1375,8 @@
           <select class="sds-select">
             <option value="" disabled selected>Select type...</option>
             <option>PostgreSQL</option>
-            <option>Snowflake</option>
-            <option>BigQuery</option>
+            <option>PostgreSQL</option>
+            <option>MySQL</option>
             <option>Redshift</option>
             <option>Databricks</option>
           </select>
@@ -1407,13 +1407,13 @@
       <div class="demo-form-row">
         <div class="sds-field">
           <label class="sds-field-label">Description</label>
-          <textarea class="sds-textarea" rows="2" placeholder="Optional description for this data source..."></textarea>
+          <textarea class="sds-textarea" rows="2" placeholder="Optional description for this resource..."></textarea>
         </div>
       </div>
 
       <div class="demo-form-row">
         <div class="sds-field">
-          <label class="sds-field-label">Default classification</label>
+          <label class="sds-field-label">Default category</label>
           <select class="sds-select">
             <option value="" disabled selected>Select classification...</option>
             <option>Public</option>
@@ -1442,7 +1442,7 @@
             <svg viewBox="0 0 10 10" fill="none"><path d="M2 5.5L4 7.5L8 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span class="sds-checkbox-dash"></span>
           </span>
-          Enable PII auto-detection on all columns
+          Enable auto-detection on all fields
         </label>
       </div>
 
@@ -1459,7 +1459,7 @@
 
       <div class="demo-form-actions">
         <button class="sds-btn sds-btn--secondary sds-btn--md" type="button">Cancel</button>
-        <button class="sds-btn sds-btn--primary sds-btn--md" type="button">Create data source</button>
+        <button class="sds-btn sds-btn--primary sds-btn--md" type="button">Create resource</button>
       </div>
     </div>
   </div>

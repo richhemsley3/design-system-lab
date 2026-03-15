@@ -436,7 +436,7 @@
 <body>
 
 <h1>File Upload</h1>
-<p class="page-subtitle">Drag-and-drop zones and inline file inputs for importing CSV configurations, compliance documents, and scan rule files.</p>
+<p class="page-subtitle">Drag-and-drop zones and inline file inputs for importing CSV files, documents, and configuration files.</p>
 
 <!-- =========== DROP ZONE =========== -->
 <h2>Drop Zone</h2>
@@ -494,7 +494,7 @@
     <label class="sds-file-upload__label">Configuration file</label>
     <div class="sds-file-upload__field">
       <span class="material-symbols-outlined" style="font-size:18px; color: var(--sds-interactive-primary);">description</span>
-      <span class="sds-file-upload__filename" style="color: var(--sds-text-primary);">scan-rules-v2.csv</span>
+      <span class="sds-file-upload__filename" style="color: var(--sds-text-primary);">import-rules-v2.csv</span>
       <button type="button" class="sds-file-upload__browse-btn">Replace</button>
     </div>
   </div>
@@ -509,12 +509,12 @@
 <div class="demo-label">Uploading</div>
 <div class="demo-block">
   <div class="sds-file-upload__list">
-    <div class="sds-file-upload__item" role="listitem" aria-label="compliance-audit-q4.pdf, uploading, 68%">
+    <div class="sds-file-upload__item" role="listitem" aria-label="quarterly-report-q4.pdf, uploading, 68%">
       <div class="sds-file-upload__item-icon">
         <span class="material-symbols-outlined">picture_as_pdf</span>
       </div>
       <div class="sds-file-upload__item-info">
-        <div class="sds-file-upload__item-name">compliance-audit-q4.pdf</div>
+        <div class="sds-file-upload__item-name">quarterly-report-q4.pdf</div>
         <div class="sds-file-upload__item-meta">
           <span>2.4 MB</span>
           <span>68%</span>
@@ -533,12 +533,12 @@
 <div class="demo-label">Complete</div>
 <div class="demo-block">
   <div class="sds-file-upload__list">
-    <div class="sds-file-upload__item sds-file-upload__item--complete" role="listitem" aria-label="scan-config.csv, upload complete">
+    <div class="sds-file-upload__item sds-file-upload__item--complete" role="listitem" aria-label="import-config.csv, upload complete">
       <div class="sds-file-upload__item-icon">
         <span class="material-symbols-outlined">table_chart</span>
       </div>
       <div class="sds-file-upload__item-info">
-        <div class="sds-file-upload__item-name">scan-config.csv</div>
+        <div class="sds-file-upload__item-name">import-config.csv</div>
         <div class="sds-file-upload__item-meta">
           <span>128 KB</span>
           <span>Complete</span>
@@ -611,9 +611,9 @@
 
 <div class="demo-label">With constraints shown</div>
 <div class="demo-block">
-  <div class="sds-dropzone" id="dropzone-constrained" role="button" tabindex="0" aria-label="Upload compliance document">
+  <div class="sds-dropzone" id="dropzone-constrained" role="button" tabindex="0" aria-label="Upload document">
     <span class="material-symbols-outlined sds-dropzone__icon">cloud_upload</span>
-    <span class="sds-dropzone__text">Upload compliance document</span>
+    <span class="sds-dropzone__text">Upload document</span>
     <span class="sds-dropzone__divider">or</span>
     <button type="button" class="sds-dropzone__btn" onclick="document.getElementById('constrained-input').click()">
       <span class="material-symbols-outlined" style="font-size:18px;">folder_open</span>
@@ -645,7 +645,7 @@
 <div class="demo-block">
   <div class="sds-dropzone" style="border-color: var(--sds-color-red-300);">
     <span class="material-symbols-outlined sds-dropzone__icon" style="color: var(--sds-color-red-450);">cloud_upload</span>
-    <span class="sds-dropzone__text">Upload compliance document</span>
+    <span class="sds-dropzone__text">Upload document</span>
     <span class="sds-dropzone__divider">or</span>
     <button type="button" class="sds-dropzone__btn">
       <span class="material-symbols-outlined" style="font-size:18px;">folder_open</span>

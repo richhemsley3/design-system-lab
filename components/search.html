@@ -575,7 +575,7 @@
 <body>
 
   <h1>Search</h1>
-  <p class="page-subtitle">Search input for finding data sources, policies, audit logs, and other resources. Supports suggestions, filter chips, and keyboard navigation.</p>
+  <p class="page-subtitle">Search input for finding projects, settings, activity logs, and other resources. Supports suggestions, filter chips, and keyboard navigation.</p>
 
   <!-- ============================================================
        BASIC SEARCH
@@ -592,8 +592,8 @@
       <input
         class="sds-search__input"
         type="text"
-        placeholder="Search data sources..."
-        aria-label="Search data sources"
+        placeholder="Search resources..."
+        aria-label="Search resources"
       />
       <button class="sds-search__clear" aria-label="Clear search" type="button">
         <span class="material-symbols-outlined">close</span>
@@ -617,7 +617,7 @@
         class="sds-search__input"
         type="text"
         value="data"
-        placeholder="Search policies, sources, logs..."
+        placeholder="Search projects, settings, logs..."
         role="combobox"
         aria-expanded="true"
         aria-controls="suggestions-list"
@@ -641,7 +641,7 @@
           </div>
         </div>
         <div class="sds-search__dropdown-group">
-          <div class="sds-search__dropdown-heading">Data Sources</div>
+          <div class="sds-search__dropdown-heading">Resources</div>
           <div class="sds-search__dropdown-item" role="option" id="suggestion-2">
             <span class="material-symbols-outlined">database</span>
             <span class="sds-search__dropdown-item-text">Production <span class="sds-search__highlight">Data</span>base — PostgreSQL</span>
@@ -685,8 +685,8 @@
       <input
         class="sds-search__input"
         type="text"
-        placeholder="Search audit logs..."
-        aria-label="Search audit logs"
+        placeholder="Search activity logs..."
+        aria-label="Search activity logs"
       />
       <button class="sds-search__clear" aria-label="Clear search" type="button">
         <span class="material-symbols-outlined">close</span>
@@ -1117,29 +1117,29 @@
 
       // ---- Suggestions demo: real-time filtering + keyboard nav ----
       var suggestionsData = [
-        { group: 'Data Sources', icon: 'database', items: [
+        { group: 'Resources', icon: 'database', items: [
           { text: 'Production Database — PostgreSQL', meta: 'Connected' },
           { text: 'Staging Database — MySQL', meta: 'Connected' },
-          { text: 'Data Warehouse — Snowflake', meta: 'Connected' },
+          { text: 'Database — PostgreSQL', meta: 'Connected' },
           { text: 'Data Lake — S3 Bucket', meta: 'Pending' }
         ]},
         { group: 'Policies', icon: 'shield', items: [
           { text: 'Data Retention Policy', meta: 'Active' },
           { text: 'Sensitive Data Masking', meta: 'Active' },
-          { text: 'Data Classification Rules', meta: 'Draft' },
+          { text: 'Automation Rules', meta: 'Draft' },
           { text: 'Data Access Controls', meta: 'Active' }
         ]},
-        { group: 'Audit Logs', icon: 'receipt_long', items: [
+        { group: 'Activity Logs', icon: 'receipt_long', items: [
           { text: 'Data export by admin@acme.com', meta: 'Today' },
           { text: 'Database connection added', meta: 'Yesterday' },
-          { text: 'Data policy updated', meta: 'Mar 12' }
+          { text: 'Settings updated', meta: 'Mar 12' }
         ]}
       ];
 
       var recentSearches = [
-        'data classification rules',
-        'data source connections',
-        'database permissions audit'
+        'automation rules',
+        'service connections',
+        'permissions review'
       ];
 
       var suggestionsContainer = document.getElementById('search-suggestions');
