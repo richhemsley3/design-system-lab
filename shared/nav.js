@@ -2,11 +2,21 @@
  * Software DS — Shared Side Navigation
  * Include this script on any page to inject the design system sidebar.
  *
- * Usage:  <script src="/shared/nav.js"></script>   (or relative path)
+ * Usage:  <script src="../shared/nav.js"></script>   (relative path)
  *
  * The script auto-detects the current page and highlights the active link.
  */
 (function () {
+  /* ---- Auto-detect base path (works on localhost and subdirectory deploys like GitHub Pages) ---- */
+  var scriptSrc = document.currentScript && document.currentScript.src;
+  var basePath = '/';
+  if (scriptSrc) {
+    // Script is at <base>/shared/nav.js — strip "/shared/nav.js" to get base
+    var url = new URL(scriptSrc);
+    basePath = url.pathname.replace(/\/shared\/nav\.js$/i, '') || '/';
+    if (!basePath.endsWith('/')) basePath += '/';
+  }
+
   /* ---- Load Material Symbols font globally ---- */
   if (!document.querySelector('link[href*="Material+Symbols"]')) {
     const msLink = document.createElement('link');
@@ -261,6 +271,7 @@
 
   /* ---- Detect active page ---- */
   const path = window.location.pathname;
+  const fullUrl = window.location.origin + path;
   const normPath = path.replace(/\/index$/, '/').replace(/\.html$/, '').replace(/\/$/, '');
 
   /* ---- Build sidebar HTML ---- */
@@ -271,7 +282,7 @@
   // Home link
   const homeLink = document.createElement('a');
   homeLink.className = 'ds-nav-home';
-  homeLink.href = '/index.html';
+  homeLink.href = basePath + 'index.html';
   homeLink.innerHTML = `
     <span class="ds-nav-logo"><svg viewBox="0 0 16 16"><path d="M6 1v5.3L3.2 11a2.5 2.5 0 0 0 2.1 4h5.4a2.5 2.5 0 0 0 2.1-4L10 6.3V1H6zm1.5 1h1v5l3 5a1 1 0 0 1-.8 1.5H5.3A1 1 0 0 1 4.5 12l3-5V2z"/></svg></span>
     <span class="ds-nav-title">Design System Lab</span>
@@ -287,9 +298,10 @@
     group.links.forEach(function (link) {
       const a = document.createElement('a');
       a.className = 'ds-nav-link';
-      a.href = link.href;
-      const normHref = link.href.replace(/\.html$/, '').replace(/\/$/, '');
-      if (normPath === normHref || path === link.href || path.endsWith(link.href)) {
+      a.href = basePath + link.href.replace(/^\//, '');
+      const normHref = a.href.replace(/\.html$/, '').replace(/\/$/, '');
+      var normFullUrl = fullUrl.replace(/\.html$/, '').replace(/\/$/, '');
+      if (normFullUrl === normHref || normPath === normHref || path.endsWith(link.href.replace(/^\//, ''))) {
         a.classList.add('is-active');
       }
       a.innerHTML = '<span class="material-symbols-outlined">' + (icons[link.icon] || '') + '</span><span>' + link.label + '</span>';
