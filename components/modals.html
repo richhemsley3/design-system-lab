@@ -115,30 +115,6 @@
       border-bottom: 1px solid var(--sds-border-subtle);
       flex-shrink: 0;
     }
-    .sds-modal-header__icon {
-      width: 36px;
-      height: 36px;
-      min-width: 36px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .sds-modal-header__icon .material-symbols-outlined {
-      font-size: 20px;
-    }
-    .sds-modal-header__icon--info {
-      background: var(--sds-color-blue-050, var(--sds-color-warm-gray-050));
-      color: var(--sds-interactive-primary);
-    }
-    .sds-modal-header__icon--danger {
-      background: var(--sds-color-red-050);
-      color: var(--sds-color-red-500);
-    }
-    .sds-modal-header__icon--warning {
-      background: var(--sds-color-yellow-050, var(--sds-color-warm-gray-050));
-      color: var(--sds-color-yellow-600, var(--sds-color-warm-gray-600));
-    }
     .sds-modal-header__title {
       flex: 1;
       font-size: var(--sds-type-subheading);
@@ -447,9 +423,6 @@
   <div class="static-preview">
     <div class="sds-modal sds-modal--md">
       <div class="sds-modal-header">
-        <div class="sds-modal-header__icon sds-modal-header__icon--info">
-          <span class="material-symbols-outlined">new_releases</span>
-        </div>
         <h2 class="sds-modal-header__title">What's New in v4.2</h2>
         <button class="sds-modal-header__close" aria-label="Close" tabindex="-1">
           <span class="material-symbols-outlined">close</span>
@@ -475,9 +448,6 @@
   <div class="static-preview">
     <div class="sds-modal sds-modal--sm">
       <div class="sds-modal-header">
-        <div class="sds-modal-header__icon sds-modal-header__icon--danger">
-          <span class="material-symbols-outlined">warning</span>
-        </div>
         <h2 class="sds-modal-header__title">Delete Data Source</h2>
         <button class="sds-modal-header__close" aria-label="Close" tabindex="-1">
           <span class="material-symbols-outlined">close</span>
@@ -501,9 +471,6 @@
   <div class="static-preview">
     <div class="sds-modal sds-modal--md">
       <div class="sds-modal-header">
-        <div class="sds-modal-header__icon sds-modal-header__icon--info">
-          <span class="material-symbols-outlined">person_add</span>
-        </div>
         <h2 class="sds-modal-header__title">Invite Team Member</h2>
         <button class="sds-modal-header__close" aria-label="Close" tabindex="-1">
           <span class="material-symbols-outlined">close</span>
@@ -655,37 +622,6 @@
   </tbody>
 </table>
 
-<h3>Icon Variants</h3>
-<table class="spec-table">
-  <thead>
-    <tr>
-      <th>Variant</th>
-      <th>Icon Background</th>
-      <th>Icon Color</th>
-      <th>Class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Info</td>
-      <td><code>--sds-color-blue-050</code></td>
-      <td><code>--sds-interactive-primary</code></td>
-      <td><code>.sds-modal-header__icon--info</code></td>
-    </tr>
-    <tr>
-      <td>Danger</td>
-      <td><code>--sds-color-red-050</code></td>
-      <td><code>--sds-color-red-500</code></td>
-      <td><code>.sds-modal-header__icon--danger</code></td>
-    </tr>
-    <tr>
-      <td>Warning</td>
-      <td><code>--sds-color-yellow-050</code></td>
-      <td><code>--sds-color-yellow-600</code></td>
-      <td><code>.sds-modal-header__icon--warning</code></td>
-    </tr>
-  </tbody>
-</table>
 
 
 <!-- ============ LIVE MODAL INSTANCES ============ -->
@@ -694,9 +630,6 @@
 <div class="sds-modal-overlay" id="modal-info" onclick="closeOverlay(event)">
   <div class="sds-modal sds-modal--md">
     <div class="sds-modal-header">
-      <div class="sds-modal-header__icon sds-modal-header__icon--info">
-        <span class="material-symbols-outlined">new_releases</span>
-      </div>
       <h2 class="sds-modal-header__title">What's New in v4.2</h2>
       <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-info')">
         <span class="material-symbols-outlined">close</span>
@@ -718,9 +651,6 @@
 <div class="sds-modal-overlay" id="modal-confirm" onclick="closeOverlay(event)">
   <div class="sds-modal sds-modal--sm">
     <div class="sds-modal-header">
-      <div class="sds-modal-header__icon sds-modal-header__icon--warning">
-        <span class="material-symbols-outlined">warning</span>
-      </div>
       <h2 class="sds-modal-header__title">Revoke API Key</h2>
       <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-confirm')">
         <span class="material-symbols-outlined">close</span>
@@ -740,9 +670,6 @@
 <div class="sds-modal-overlay" id="modal-form" onclick="closeOverlay(event)">
   <div class="sds-modal sds-modal--md">
     <div class="sds-modal-header">
-      <div class="sds-modal-header__icon sds-modal-header__icon--info">
-        <span class="material-symbols-outlined">person_add</span>
-      </div>
       <h2 class="sds-modal-header__title">Invite Team Member</h2>
       <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-form')">
         <span class="material-symbols-outlined">close</span>
@@ -779,9 +706,6 @@
 <div class="sds-modal-overlay" id="modal-danger" onclick="closeOverlay(event)">
   <div class="sds-modal sds-modal--sm">
     <div class="sds-modal-header">
-      <div class="sds-modal-header__icon sds-modal-header__icon--danger">
-        <span class="material-symbols-outlined">delete_forever</span>
-      </div>
       <h2 class="sds-modal-header__title">Delete Workspace</h2>
       <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-danger')">
         <span class="material-symbols-outlined">close</span>
@@ -802,9 +726,6 @@
 <div class="sds-modal-overlay" id="modal-delete-resource" onclick="closeOverlay(event)">
   <div class="sds-modal sds-modal--sm">
     <div class="sds-modal-header">
-      <div class="sds-modal-header__icon sds-modal-header__icon--danger">
-        <span class="material-symbols-outlined">warning</span>
-      </div>
       <h2 class="sds-modal-header__title">Delete Data Source</h2>
       <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-delete-resource')">
         <span class="material-symbols-outlined">close</span>
@@ -824,9 +745,6 @@
 <div class="sds-modal-overlay" id="modal-invite" onclick="closeOverlay(event)">
   <div class="sds-modal sds-modal--md">
     <div class="sds-modal-header">
-      <div class="sds-modal-header__icon sds-modal-header__icon--info">
-        <span class="material-symbols-outlined">group_add</span>
-      </div>
       <h2 class="sds-modal-header__title">Invite Team Member</h2>
       <button class="sds-modal-header__close" aria-label="Close" onclick="closeModal('modal-invite')">
         <span class="material-symbols-outlined">close</span>
