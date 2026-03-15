@@ -69,17 +69,17 @@
 
   .card-preview {
     height: 160px;
-    background: var(--sds-bg-subtle);
+    background: #00132B;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-bottom: 1px solid var(--sds-border-subtle);
+    border-bottom: none;
     overflow: hidden;
-    padding: var(--sds-space-400);
+    padding: 0;
   }
   .card-preview svg {
-    width: 100%;
-    height: 100%;
+    width: 60%;
+    height: 60%;
   }
 
   .card-body {
@@ -128,19 +128,13 @@
   <a class="card" href="docs/color-palette.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Color swatches — stacked blocks -->
-        <rect x="88" y="34" width="28" height="60" rx="6" fill="#013D5B"/>
-        <rect x="108" y="42" width="28" height="52" rx="6" fill="#A6CBD6"/>
-        <rect x="128" y="50" width="28" height="44" rx="6" fill="#FAF8F5"/>
-        <rect x="148" y="42" width="28" height="52" rx="6" fill="#BF5547" opacity="0.75"/>
-        <rect x="168" y="36" width="28" height="58" rx="6" fill="#7A9A01" opacity="0.7"/>
-        <!-- Small floating blocks -->
-        <rect x="72" y="50" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.6"/>
-        <rect x="202" y="44" width="12" height="12" rx="3" fill="#BF5547" opacity="0.35"/>
-        <rect x="198" y="78" width="8" height="8" rx="2" fill="#013D5B" opacity="0.15"/>
-        <circle cx="78" cy="82" r="4" fill="#A6CBD6" opacity="0.4"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Five bold color swatches -->
+        <rect x="56" y="24" width="32" height="80" rx="6" fill="#013D5B"/>
+        <rect x="96" y="34" width="32" height="70" rx="6" fill="#A6CBD6"/>
+        <rect x="136" y="28" width="32" height="76" rx="6" fill="#F7F3EB"/>
+        <rect x="176" y="38" width="32" height="66" rx="6" fill="#BF5547"/>
+        <rect x="216" y="32" width="32" height="72" rx="6" fill="#7A9A01"/>
       </svg>
     </div>
     <div class="card-body">
@@ -153,21 +147,15 @@
   <a class="card" href="docs/space-scale.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Horizontal bars representing the scale -->
-        <rect x="80" y="28" width="120" height="8" rx="3" fill="#013D5B"/>
-        <rect x="80" y="42" width="88" height="8" rx="3" fill="#013D5B" opacity="0.8"/>
-        <rect x="80" y="56" width="64" height="8" rx="3" fill="#013D5B" opacity="0.65"/>
-        <rect x="80" y="70" width="40" height="8" rx="3" fill="#013D5B" opacity="0.5"/>
-        <rect x="80" y="84" width="20" height="8" rx="3" fill="#013D5B" opacity="0.35"/>
-        <rect x="80" y="98" width="8" height="8" rx="3" fill="#013D5B" opacity="0.2"/>
-        <!-- Ruler marks -->
-        <rect x="72" y="28" width="2" height="78" rx="1" fill="#E8E4DD" opacity="0.6"/>
-        <!-- Floating accents -->
-        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="222" cy="44" r="5" fill="#A6CBD6" opacity="0.3"/>
-        <rect x="214" y="82" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.2"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Ruler bar -->
+        <rect x="68" y="20" width="4" height="88" rx="2" fill="#013D5B"/>
+        <!-- Descending spacing bars -->
+        <rect x="82" y="22" width="140" height="12" rx="4" fill="#A6CBD6"/>
+        <rect x="82" y="40" width="108" height="12" rx="4" fill="#C0EAF2"/>
+        <rect x="82" y="58" width="76" height="12" rx="4" fill="#D6E8EA"/>
+        <rect x="82" y="76" width="44" height="12" rx="4" fill="#A6CBD6"/>
+        <rect x="82" y="94" width="20" height="12" rx="4" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -180,25 +168,17 @@
   <a class="card" href="docs/type-scale.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Large "Aa" letterform -->
-        <text x="68" y="82" font-family="'Proxima Nova', -apple-system, BlinkMacSystemFont, sans-serif" font-size="72" font-weight="700" fill="#013D5B" letter-spacing="-2">Aa</text>
-        <!-- Stacked type specimens to the right -->
-        <rect x="172" y="30" width="56" height="7" rx="2.5" fill="#013D5B" opacity="0.7"/>
-        <rect x="172" y="43" width="44" height="6" rx="2" fill="#013D5B" opacity="0.5"/>
-        <rect x="172" y="55" width="52" height="5" rx="2" fill="#013D5B" opacity="0.35"/>
-        <rect x="172" y="65" width="38" height="4.5" rx="2" fill="#013D5B" opacity="0.25"/>
-        <rect x="172" y="75" width="48" height="4" rx="2" fill="#013D5B" opacity="0.18"/>
-        <!-- Baseline rule under Aa -->
-        <rect x="68" y="88" width="90" height="2" rx="1" fill="#A6CBD6" opacity="0.6"/>
-        <!-- x-height marker -->
-        <rect x="60" y="52" width="4" height="36" rx="1.5" fill="#D9EBED" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="48" y="36" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.4"/>
-        <circle cx="236" cy="44" r="5" fill="#BF5547" opacity="0.25"/>
-        <rect x="226" y="86" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.15"/>
-        <circle cx="166" cy="98" r="4" fill="#A6CBD6" opacity="0.3"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Large bold Aa -->
+        <text x="58" y="86" font-family="sans-serif" font-size="76" font-weight="800" fill="#A6CBD6" letter-spacing="-3">Aa</text>
+        <!-- Baseline -->
+        <rect x="58" y="92" width="100" height="4" rx="2" fill="#C0EAF2"/>
+        <!-- Type specimen bars -->
+        <rect x="174" y="30" width="66" height="10" rx="4" fill="#D6E8EA"/>
+        <rect x="174" y="48" width="50" height="8" rx="3" fill="#A6CBD6"/>
+        <rect x="174" y="64" width="58" height="6" rx="3" fill="#013D5B"/>
+        <rect x="174" y="78" width="42" height="5" rx="2" fill="#013D5B"/>
+        <rect x="174" y="92" width="36" height="4" rx="2" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -211,22 +191,22 @@
   <a class="card" href="docs/icons.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Icon grid: 4 rounded squares with symbols -->
-        <rect x="92" y="28" width="40" height="40" rx="8" fill="#013D5B"/>
-        <path d="M112 40l-6 8h4v4h4v-4h4l-6-8z" fill="#FFFFFF" opacity="0.9"/>
-        <rect x="148" y="28" width="40" height="40" rx="8" fill="#013D5B" opacity="0.7"/>
-        <circle cx="168" cy="48" r="6" fill="none" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
-        <path d="M172 52l4 4" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
-        <rect x="92" y="60" width="40" height="40" rx="8" fill="#013D5B" opacity="0.5"/>
-        <path d="M106 80h12M112 74v12" stroke="#FFFFFF" stroke-width="2" opacity="0.9"/>
-        <rect x="148" y="60" width="40" height="40" rx="8" fill="#013D5B" opacity="0.35"/>
-        <path d="M160 80h16M160 74h16M160 86h10" stroke="#FFFFFF" stroke-width="1.5" opacity="0.9"/>
-        <!-- Floating accents -->
-        <rect x="72" y="44" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="210" cy="38" r="5" fill="#A6CBD6" opacity="0.3"/>
-        <rect x="204" y="80" width="8" height="8" rx="2" fill="#013D5B" opacity="0.15"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- 2x2 icon grid -->
+        <rect x="80" y="18" width="48" height="48" rx="10" fill="#013D5B"/>
+        <path d="M104 32l-8 10h5v6h6v-6h5l-8-10z" fill="#C0EAF2"/>
+        <rect x="140" y="18" width="48" height="48" rx="10" fill="#013D5B"/>
+        <circle cx="164" cy="38" r="8" fill="none" stroke="#A6CBD6" stroke-width="3"/>
+        <path d="M170 44l6 6" stroke="#A6CBD6" stroke-width="3" stroke-linecap="round"/>
+        <rect x="80" y="74" width="48" height="48" rx="10" fill="#013D5B"/>
+        <path d="M98 98h12M104 92v12" stroke="#C0EAF2" stroke-width="3" stroke-linecap="round"/>
+        <rect x="140" y="74" width="48" height="48" rx="10" fill="#013D5B"/>
+        <rect x="154" y="90" width="20" height="3" rx="1.5" fill="#A6CBD6"/>
+        <rect x="154" y="96" width="20" height="3" rx="1.5" fill="#A6CBD6"/>
+        <rect x="154" y="102" width="14" height="3" rx="1.5" fill="#A6CBD6"/>
+        <!-- Large accent icon -->
+        <circle cx="224" cy="44" r="18" fill="#013D5B"/>
+        <rect x="216" y="38" width="16" height="12" rx="3" fill="#BF5547"/>
       </svg>
     </div>
     <div class="card-body">
@@ -244,26 +224,23 @@
   <a class="card" href="components/accordion.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Accordion section 1 (expanded) -->
-        <rect x="72" y="20" width="136" height="24" rx="5" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <rect x="84" y="29" width="56" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
-        <path d="M194 30l-4 4-4-4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Section 1 (expanded) -->
+        <rect x="60" y="12" width="160" height="28" rx="6" fill="#013D5B"/>
+        <rect x="76" y="22" width="64" height="6" rx="3" fill="#A6CBD6"/>
+        <path d="M202 23l-6 6-6-6" stroke="#C0EAF2" stroke-width="2" fill="none" stroke-linecap="round"/>
         <!-- Expanded content -->
-        <rect x="72" y="44" width="136" height="20" rx="0" fill="#F4F1EB"/>
-        <rect x="84" y="50" width="100" height="4" rx="2" fill="#D5CFC4"/>
-        <rect x="84" y="58" width="76" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
-        <!-- Accordion section 2 (collapsed) -->
-        <rect x="72" y="64" width="136" height="24" rx="5" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <rect x="84" y="73" width="48" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
-        <path d="M190 75l4-4 4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Accordion section 3 (collapsed) -->
-        <rect x="72" y="88" width="136" height="24" rx="5" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <rect x="84" y="97" width="60" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
-        <path d="M190 99l4-4 4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Floating accents -->
-        <rect x="56" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="36" r="5" fill="#05314D" opacity="0.15"/>
+        <rect x="60" y="40" width="160" height="22" fill="#013D5B" opacity="0.5"/>
+        <rect x="76" y="47" width="120" height="4" rx="2" fill="#D6E8EA"/>
+        <rect x="76" y="54" width="90" height="4" rx="2" fill="#D6E8EA" opacity="0.6"/>
+        <!-- Section 2 (collapsed) -->
+        <rect x="60" y="66" width="160" height="28" rx="6" fill="#013D5B"/>
+        <rect x="76" y="76" width="52" height="6" rx="3" fill="#A6CBD6"/>
+        <path d="M196 79l6-6 6 6" stroke="#C0EAF2" stroke-width="2" fill="none" stroke-linecap="round"/>
+        <!-- Section 3 (collapsed) -->
+        <rect x="60" y="98" width="160" height="28" rx="6" fill="#013D5B"/>
+        <rect x="76" y="108" width="72" height="6" rx="3" fill="#A6CBD6"/>
+        <path d="M196 111l6-6 6 6" stroke="#C0EAF2" stroke-width="2" fill="none" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="card-body">
@@ -276,25 +253,22 @@
   <a class="card" href="components/alerts.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Info alert -->
-        <rect x="68" y="20" width="144" height="26" rx="5" fill="#FFFFFF" stroke="#D9EBED" stroke-width="1.5"/>
-        <rect x="68" y="20" width="4" height="26" rx="2" fill="#05314D"/>
-        <circle cx="84" cy="33" r="6" fill="#D9EBED"/>
-        <rect x="96" y="30" width="64" height="5" rx="2.5" fill="#D5CFC4"/>
+        <rect x="56" y="14" width="168" height="28" rx="6" fill="#013D5B"/>
+        <rect x="56" y="14" width="6" height="28" rx="3" fill="#C0EAF2"/>
+        <circle cx="76" cy="28" r="7" fill="#C0EAF2"/>
+        <rect x="92" y="25" width="80" height="6" rx="3" fill="#A6CBD6"/>
         <!-- Warning alert -->
-        <rect x="68" y="52" width="144" height="26" rx="5" fill="#FFFFFF" stroke="#F4F1EB" stroke-width="1.5"/>
-        <rect x="68" y="52" width="4" height="26" rx="2" fill="#D4A843"/>
-        <circle cx="84" cy="65" r="6" fill="#FFF3D4"/>
-        <rect x="96" y="62" width="56" height="5" rx="2.5" fill="#D5CFC4"/>
+        <rect x="56" y="50" width="168" height="28" rx="6" fill="#013D5B"/>
+        <rect x="56" y="50" width="6" height="28" rx="3" fill="#F7F3EB"/>
+        <circle cx="76" cy="64" r="7" fill="#F7F3EB"/>
+        <rect x="92" y="61" width="68" height="6" rx="3" fill="#A6CBD6"/>
         <!-- Error alert -->
-        <rect x="68" y="84" width="144" height="26" rx="5" fill="#FFFFFF" stroke="#F4F1EB" stroke-width="1.5"/>
-        <rect x="68" y="84" width="4" height="26" rx="2" fill="#BF5547"/>
-        <circle cx="84" cy="97" r="6" fill="#BF5547" opacity="0.15"/>
-        <rect x="96" y="94" width="72" height="5" rx="2.5" fill="#D5CFC4"/>
-        <!-- Floating accents -->
-        <rect x="224" y="48" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="56" cy="80" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="56" y="86" width="168" height="28" rx="6" fill="#013D5B"/>
+        <rect x="56" y="86" width="6" height="28" rx="3" fill="#BF5547"/>
+        <circle cx="76" cy="100" r="7" fill="#BF5547"/>
+        <rect x="92" y="97" width="88" height="6" rx="3" fill="#A6CBD6"/>
       </svg>
     </div>
     <div class="card-body">
@@ -307,28 +281,21 @@
   <a class="card" href="components/avatars.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Avatar group (overlapping) -->
-        <circle cx="108" cy="52" r="20" fill="#013D5B" stroke="#FFFFFF" stroke-width="2"/>
-        <text x="108" y="57" text-anchor="middle" font-size="14" font-weight="600" fill="#FFFFFF" font-family="sans-serif">SC</text>
-        <circle cx="136" cy="52" r="20" fill="#4F8AA0" stroke="#FFFFFF" stroke-width="2"/>
-        <text x="136" y="57" text-anchor="middle" font-size="14" font-weight="600" fill="#FFFFFF" font-family="sans-serif">MJ</text>
-        <circle cx="164" cy="52" r="20" fill="#BF5547" stroke="#FFFFFF" stroke-width="2"/>
-        <text x="164" y="57" text-anchor="middle" font-size="14" font-weight="600" fill="#FFFFFF" font-family="sans-serif">ER</text>
-        <!-- +N badge -->
-        <circle cx="188" cy="52" r="16" fill="#E8E4DD" stroke="#FFFFFF" stroke-width="2"/>
-        <text x="188" y="56" text-anchor="middle" font-size="11" font-weight="600" fill="#6B6760" font-family="sans-serif">+4</text>
-        <!-- Status dots -->
-        <circle cx="122" cy="66" r="5" fill="#5CAF6E" stroke="#FFFFFF" stroke-width="1.5"/>
-        <circle cx="150" cy="66" r="5" fill="#D4A843" stroke="#FFFFFF" stroke-width="1.5"/>
-        <!-- Name lines below -->
-        <rect x="88" y="84" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
-        <rect x="88" y="93" width="32" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
-        <rect x="148" y="84" width="56" height="5" rx="2.5" fill="#E8E4DD"/>
-        <rect x="148" y="93" width="40" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="60" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="226" cy="66" r="5" fill="#7A9A01" opacity="0.2"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Overlapping avatar circles -->
+        <circle cx="100" cy="52" r="24" fill="#013D5B" stroke="#00132B" stroke-width="3"/>
+        <text x="100" y="58" text-anchor="middle" font-size="16" font-weight="700" fill="#A6CBD6" font-family="sans-serif">SC</text>
+        <circle cx="140" cy="52" r="24" fill="#A6CBD6" stroke="#00132B" stroke-width="3"/>
+        <text x="140" y="58" text-anchor="middle" font-size="16" font-weight="700" fill="#00132B" font-family="sans-serif">MJ</text>
+        <circle cx="180" cy="52" r="24" fill="#BF5547" stroke="#00132B" stroke-width="3"/>
+        <text x="180" y="58" text-anchor="middle" font-size="16" font-weight="700" fill="#F7F3EB" font-family="sans-serif">ER</text>
+        <!-- Status dot -->
+        <circle cx="196" cy="36" r="6" fill="#7A9A01" stroke="#00132B" stroke-width="2"/>
+        <!-- Name bars -->
+        <rect x="80" y="90" width="56" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="80" y="102" width="36" height="5" rx="2.5" fill="#013D5B"/>
+        <rect x="148" y="90" width="64" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="148" y="102" width="44" height="5" rx="2.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -341,27 +308,24 @@
   <a class="card" href="components/badges.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Count badge on icon -->
-        <rect x="80" y="34" width="36" height="36" rx="8" fill="#F4F1EB"/>
-        <rect x="88" y="42" width="20" height="20" rx="4" fill="#D5CFC4"/>
-        <circle cx="112" cy="38" r="10" fill="#BF5547"/>
-        <text x="112" y="42" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF" font-family="sans-serif">3</text>
-        <!-- Status dots row -->
-        <circle cx="148" cy="42" r="5" fill="#7A9A01"/>
-        <rect x="158" y="39" width="32" height="5" rx="2.5" fill="#D5CFC4"/>
-        <circle cx="148" cy="58" r="5" fill="#D4A843"/>
-        <rect x="158" y="55" width="28" height="5" rx="2.5" fill="#D5CFC4"/>
-        <circle cx="148" cy="74" r="5" fill="#BF5547"/>
-        <rect x="158" y="71" width="36" height="5" rx="2.5" fill="#D5CFC4"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Large icon block with count badge -->
+        <rect x="60" y="24" width="52" height="52" rx="12" fill="#013D5B"/>
+        <rect x="72" y="36" width="28" height="28" rx="6" fill="#A6CBD6"/>
+        <circle cx="106" cy="28" r="14" fill="#BF5547"/>
+        <text x="106" y="34" text-anchor="middle" font-size="14" font-weight="700" fill="#F7F3EB" font-family="sans-serif">3</text>
+        <!-- Status dots -->
+        <circle cx="140" cy="36" r="7" fill="#7A9A01"/>
+        <rect x="156" y="32" width="48" height="6" rx="3" fill="#D6E8EA"/>
+        <circle cx="140" cy="56" r="7" fill="#C0EAF2"/>
+        <rect x="156" y="52" width="40" height="6" rx="3" fill="#D6E8EA"/>
+        <circle cx="140" cy="76" r="7" fill="#BF5547"/>
+        <rect x="156" y="72" width="52" height="6" rx="3" fill="#D6E8EA"/>
         <!-- Pill badges -->
-        <rect x="80" y="86" width="40" height="18" rx="9" fill="#D9EBED"/>
-        <text x="100" y="98" text-anchor="middle" font-size="10" font-weight="600" fill="#05314D" font-family="sans-serif">12</text>
-        <rect x="128" y="86" width="48" height="18" rx="9" fill="#05314D"/>
-        <text x="152" y="98" text-anchor="middle" font-size="10" font-weight="600" fill="#FFFFFF" font-family="sans-serif">New</text>
-        <!-- Floating accents -->
-        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="218" cy="88" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="64" y="92" width="56" height="24" rx="12" fill="#C0EAF2"/>
+        <text x="92" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#00132B" font-family="sans-serif">12</text>
+        <rect x="128" y="92" width="64" height="24" rx="12" fill="#013D5B"/>
+        <text x="160" y="108" text-anchor="middle" font-size="13" font-weight="700" fill="#A6CBD6" font-family="sans-serif">New</text>
       </svg>
     </div>
     <div class="card-body">
@@ -374,22 +338,19 @@
   <a class="card" href="components/breadcrumbs.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Breadcrumb trail -->
-        <rect x="60" y="50" width="160" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Breadcrumb bar -->
+        <rect x="40" y="44" width="200" height="40" rx="8" fill="#013D5B"/>
         <!-- Home -->
-        <rect x="72" y="60" width="28" height="5" rx="2.5" fill="#05314D" opacity="0.4"/>
+        <rect x="56" y="58" width="36" height="8" rx="4" fill="#A6CBD6"/>
         <!-- Chevron 1 -->
-        <path d="M106 60l3 3-3 3" stroke="#D5CFC4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <path d="M100 58l5 6-5 6" stroke="#C0EAF2" stroke-width="2.5" fill="none" stroke-linecap="round"/>
         <!-- Section -->
-        <rect x="116" y="60" width="36" height="5" rx="2.5" fill="#05314D" opacity="0.4"/>
+        <rect x="114" y="58" width="44" height="8" rx="4" fill="#A6CBD6"/>
         <!-- Chevron 2 -->
-        <path d="M158 60l3 3-3 3" stroke="#D5CFC4" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Current page -->
-        <rect x="168" y="60" width="40" height="5" rx="2.5" fill="#47443F" opacity="0.7"/>
-        <!-- Floating accents -->
-        <rect x="56" y="36" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="78" r="5" fill="#05314D" opacity="0.12"/>
+        <path d="M166 58l5 6-5 6" stroke="#C0EAF2" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <!-- Current page (highlighted) -->
+        <rect x="180" y="56" width="48" height="12" rx="4" fill="#C0EAF2"/>
       </svg>
     </div>
     <div class="card-body">
@@ -402,26 +363,20 @@
   <a class="card" href="components/buttons.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Primary button -->
-        <rect x="72" y="28" width="96" height="34" rx="6" fill="#013D5B"/>
-        <rect x="92" y="41" width="56" height="6" rx="3" fill="#A6CBD6"/>
+        <rect x="56" y="18" width="120" height="42" rx="8" fill="#A6CBD6"/>
+        <rect x="82" y="33" width="68" height="10" rx="5" fill="#00132B"/>
         <!-- Secondary button -->
-        <rect x="84" y="70" width="80" height="32" rx="6" fill="#FFFFFF"/>
-        <rect x="84" y="70" width="80" height="32" rx="6" fill="#E8E4DD" opacity="0.4"/>
-        <rect x="102" y="82" width="44" height="6" rx="3" fill="#013D5B" opacity="0.4"/>
-        <!-- Cursor -->
-        <g transform="translate(174, 50)">
-          <path d="M0 0l2 18 6-6 4 8 4-2-4-8 7-1L0 0z" fill="#013D5B"/>
+        <rect x="56" y="72" width="100" height="38" rx="8" fill="#013D5B"/>
+        <rect x="78" y="85" width="56" height="8" rx="4" fill="#D6E8EA"/>
+        <!-- Cursor pointer -->
+        <g transform="translate(186, 44)">
+          <path d="M0 0l3 24 8-8 6 10 5-3-6-10 9-2L0 0z" fill="#F7F3EB"/>
         </g>
-        <!-- Tertiary link line -->
-        <rect x="176" y="80" width="40" height="5" rx="2.5" fill="#013D5B" opacity="0.2"/>
-        <rect x="176" y="88" width="40" height="2" rx="1" fill="#013D5B" opacity="0.15"/>
-        <!-- Floating accents -->
-        <rect x="56" y="74" width="10" height="10" rx="3" fill="#BF5547" opacity="0.25"/>
-        <circle cx="210" cy="34" r="6" fill="#D9EBED" opacity="0.4"/>
-        <rect x="216" y="60" width="8" height="8" rx="2" fill="#7A9A01" opacity="0.2"/>
+        <!-- Danger button -->
+        <rect x="172" y="76" width="68" height="30" rx="8" fill="#BF5547"/>
+        <rect x="188" y="87" width="36" height="6" rx="3" fill="#F7F3EB"/>
       </svg>
     </div>
     <div class="card-body">
@@ -434,28 +389,21 @@
   <a class="card" href="components/cards.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Back card (offset shadow) -->
-        <rect x="90" y="22" width="110" height="80" rx="8" fill="#D9EBED" opacity="0.5"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Shadow card -->
+        <rect x="86" y="18" width="120" height="96" rx="10" fill="#013D5B" opacity="0.5"/>
         <!-- Main card -->
-        <rect x="78" y="28" width="110" height="80" rx="8" fill="#FFFFFF"/>
-        <!-- Card header block -->
-        <rect x="78" y="28" width="110" height="24" rx="8" fill="#FAF8F5"/>
-        <rect x="78" y="44" width="110" height="8" fill="#FAF8F5"/>
-        <!-- Card header divider -->
-        <rect x="78" y="52" width="110" height="1.5" fill="#E8E4DD"/>
-        <!-- Card content lines -->
-        <rect x="90" y="36" width="40" height="5" rx="2.5" fill="#013D5B" opacity="0.5"/>
-        <rect x="90" y="62" width="76" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="90" y="72" width="60" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="90" y="82" width="68" height="4" rx="2" fill="#E8E4DD" opacity="0.6"/>
-        <!-- Corner accent block -->
-        <rect x="168" y="34" width="12" height="12" rx="3" fill="#A6CBD6" opacity="0.5"/>
-        <!-- Floating accents -->
-        <circle cx="214" cy="42" r="6" fill="#BF5547" opacity="0.25"/>
-        <rect x="58" y="76" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.2"/>
-        <rect x="208" y="80" width="14" height="14" rx="4" fill="#013D5B" opacity="0.08"/>
+        <rect x="74" y="14" width="120" height="96" rx="10" fill="#013D5B"/>
+        <!-- Card header -->
+        <rect x="74" y="14" width="120" height="30" rx="10" fill="#A6CBD6"/>
+        <rect x="74" y="34" width="120" height="10" fill="#A6CBD6"/>
+        <rect x="90" y="24" width="52" height="8" rx="4" fill="#00132B"/>
+        <!-- Card body lines -->
+        <rect x="90" y="54" width="88" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="90" y="66" width="68" height="6" rx="3" fill="#D6E8EA" opacity="0.6"/>
+        <rect x="90" y="78" width="76" height="6" rx="3" fill="#D6E8EA" opacity="0.4"/>
+        <!-- Accent block -->
+        <rect x="212" y="24" width="28" height="28" rx="8" fill="#C0EAF2"/>
       </svg>
     </div>
     <div class="card-body">
@@ -468,29 +416,24 @@
   <a class="card" href="components/command-palette.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Overlay dim -->
-        <rect x="52" y="12" width="176" height="104" rx="6" fill="#1C1A17" opacity="0.1"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Palette panel -->
-        <rect x="72" y="18" width="136" height="92" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <!-- Search input -->
-        <rect x="82" y="26" width="116" height="22" rx="5" fill="#F4F1EB"/>
-        <circle cx="92" cy="37" r="5" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.4"/>
-        <path d="M96 40l3 3" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.4"/>
-        <rect x="102" y="34" width="48" height="5" rx="2.5" fill="#D5CFC4"/>
-        <!-- Result item 1 (active) -->
-        <rect x="82" y="54" width="116" height="16" rx="4" fill="#D9EBED" opacity="0.4"/>
-        <rect x="90" y="59" width="8" height="6" rx="2" fill="#05314D" opacity="0.3"/>
-        <rect x="104" y="59" width="52" height="5" rx="2.5" fill="#05314D" opacity="0.4"/>
-        <!-- Result item 2 -->
-        <rect x="90" y="76" width="8" height="6" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="104" y="76" width="44" height="5" rx="2.5" fill="#D5CFC4"/>
-        <!-- Result item 3 -->
-        <rect x="90" y="90" width="8" height="6" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="104" y="90" width="56" height="5" rx="2.5" fill="#D5CFC4"/>
-        <!-- Floating accents -->
-        <rect x="56" y="60" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="226" cy="40" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="56" y="10" width="168" height="108" rx="10" fill="#013D5B"/>
+        <!-- Search bar -->
+        <rect x="68" y="20" width="144" height="26" rx="6" fill="#00132B"/>
+        <circle cx="82" cy="33" r="6" stroke="#A6CBD6" stroke-width="2" fill="none"/>
+        <path d="M87 37l4 4" stroke="#A6CBD6" stroke-width="2" stroke-linecap="round"/>
+        <rect x="96" y="29" width="60" height="6" rx="3" fill="#A6CBD6" opacity="0.4"/>
+        <!-- Active result -->
+        <rect x="68" y="54" width="144" height="20" rx="5" fill="#C0EAF2"/>
+        <rect x="80" y="60" width="12" height="8" rx="3" fill="#013D5B"/>
+        <rect x="98" y="61" width="64" height="6" rx="3" fill="#013D5B"/>
+        <!-- Result 2 -->
+        <rect x="80" y="82" width="12" height="8" rx="3" fill="#A6CBD6" opacity="0.5"/>
+        <rect x="98" y="83" width="52" height="6" rx="3" fill="#A6CBD6" opacity="0.5"/>
+        <!-- Result 3 -->
+        <rect x="80" y="98" width="12" height="8" rx="3" fill="#A6CBD6" opacity="0.3"/>
+        <rect x="98" y="99" width="72" height="6" rx="3" fill="#A6CBD6" opacity="0.3"/>
       </svg>
     </div>
     <div class="card-body">
@@ -503,30 +446,24 @@
   <a class="card" href="components/data-lists.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Key-value pairs -->
-        <rect x="72" y="26" width="136" height="76" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Container -->
+        <rect x="56" y="14" width="168" height="100" rx="8" fill="#013D5B"/>
         <!-- Row 1 -->
-        <rect x="84" y="36" width="36" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
-        <rect x="140" y="36" width="56" height="5" rx="2.5" fill="#D5CFC4"/>
+        <rect x="72" y="28" width="44" height="7" rx="3.5" fill="#C0EAF2"/>
+        <rect x="140" y="28" width="68" height="7" rx="3.5" fill="#A6CBD6"/>
         <!-- Divider -->
-        <line x1="84" y1="48" x2="196" y2="48" stroke="#F4F1EB" stroke-width="1"/>
+        <rect x="72" y="44" width="136" height="2" rx="1" fill="#00132B"/>
         <!-- Row 2 -->
-        <rect x="84" y="54" width="28" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
-        <rect x="140" y="54" width="48" height="5" rx="2.5" fill="#D5CFC4"/>
+        <rect x="72" y="54" width="36" height="7" rx="3.5" fill="#C0EAF2"/>
+        <rect x="140" y="54" width="56" height="7" rx="3.5" fill="#A6CBD6"/>
         <!-- Divider -->
-        <line x1="84" y1="66" x2="196" y2="66" stroke="#F4F1EB" stroke-width="1"/>
+        <rect x="72" y="70" width="136" height="2" rx="1" fill="#00132B"/>
         <!-- Row 3 -->
-        <rect x="84" y="72" width="40" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
-        <rect x="140" y="72" width="44" height="5" rx="2.5" fill="#D5CFC4"/>
+        <rect x="72" y="80" width="48" height="7" rx="3.5" fill="#C0EAF2"/>
+        <rect x="140" y="80" width="52" height="7" rx="3.5" fill="#A6CBD6"/>
         <!-- Divider -->
-        <line x1="84" y1="84" x2="196" y2="84" stroke="#F4F1EB" stroke-width="1"/>
-        <!-- Row 4 -->
-        <rect x="84" y="90" width="32" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
-        <rect x="140" y="90" width="52" height="5" rx="2.5" fill="#D5CFC4"/>
-        <!-- Floating accents -->
-        <rect x="56" y="48" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="82" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="72" y="96" width="136" height="2" rx="1" fill="#00132B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -539,56 +476,40 @@
   <a class="card" href="components/date-picker.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Calendar panel -->
-        <rect x="76" y="16" width="128" height="96" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect x="60" y="8" width="160" height="112" rx="10" fill="#013D5B"/>
         <!-- Month header -->
-        <rect x="110" y="24" width="60" height="6" rx="3" fill="#47443F" opacity="0.5"/>
-        <path d="M94 27l-4-3-4 3" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round" transform="rotate(90 90 27)"/>
-        <path d="M190 27l4-3 4 3" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round" transform="rotate(-90 194 27)"/>
-        <!-- Day headers -->
-        <rect x="86" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="102" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="118" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="134" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="150" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="166" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <rect x="182" y="38" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <!-- Day grid row 1 -->
-        <circle cx="90" cy="52" r="6" fill="none"/><text x="90" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">1</text>
-        <circle cx="106" cy="52" r="6" fill="none"/><text x="106" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">2</text>
-        <circle cx="122" cy="52" r="6" fill="none"/><text x="122" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">3</text>
-        <circle cx="138" cy="52" r="6" fill="#05314D"/><text x="138" y="54" text-anchor="middle" font-size="7" fill="#FFFFFF" font-family="sans-serif">4</text>
-        <circle cx="154" cy="52" r="6" fill="none"/><text x="154" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">5</text>
-        <circle cx="170" cy="52" r="6" fill="none"/><text x="170" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">6</text>
-        <circle cx="186" cy="52" r="6" fill="none"/><text x="186" y="54" text-anchor="middle" font-size="7" fill="#47443F" font-family="sans-serif">7</text>
-        <!-- Day grid row 2 -->
-        <rect x="84" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="100" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="116" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="132" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="148" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="164" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="180" y="64" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <!-- Day grid row 3 -->
-        <rect x="84" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="100" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="116" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="132" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="148" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="164" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="180" y="76" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <!-- Day grid row 4 -->
-        <rect x="84" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="100" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="116" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="132" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="148" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="164" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <rect x="180" y="88" width="8" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <!-- Floating accents -->
-        <rect x="56" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="220" cy="92" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="100" y="16" width="80" height="10" rx="5" fill="#A6CBD6"/>
+        <!-- Day grid 7x4 -->
+        <rect x="72" y="34" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="92" y="34" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="112" y="34" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="132" y="34" width="14" height="14" rx="4" fill="#C0EAF2"/>
+        <rect x="152" y="34" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="172" y="34" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="192" y="34" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="72" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="92" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="112" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="132" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="152" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="172" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="192" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="72" y="74" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="92" y="74" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="112" y="74" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="132" y="74" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="152" y="74" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="172" y="74" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="192" y="74" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="72" y="94" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="92" y="94" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="112" y="94" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="132" y="94" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="152" y="94" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="172" y="94" width="14" height="14" rx="4" fill="#00132B"/>
+        <rect x="192" y="94" width="14" height="14" rx="4" fill="#00132B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -601,28 +522,25 @@
   <a class="card" href="components/dropdown-menus.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Trigger button -->
-        <rect x="86" y="18" width="72" height="24" rx="5" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1"/>
-        <rect x="96" y="27" width="36" height="5" rx="2.5" fill="#013D5B" opacity="0.4"/>
-        <path d="M148 28l4 4 4-4" stroke="#A09A91" stroke-width="1.5" fill="none"/>
+        <rect x="72" y="8" width="96" height="28" rx="6" fill="#013D5B"/>
+        <rect x="88" y="18" width="48" height="8" rx="4" fill="#A6CBD6"/>
+        <path d="M156 20l6 6 6-6" stroke="#C0EAF2" stroke-width="2" fill="none" stroke-linecap="round"/>
         <!-- Menu panel -->
-        <rect x="86" y="44" width="120" height="72" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
-        <!-- Menu items -->
-        <rect x="94" y="52" width="12" height="12" rx="3" fill="#E8E4DD" opacity="0.5"/>
-        <rect x="112" y="55" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="72" y="40" width="148" height="84" rx="8" fill="#013D5B"/>
+        <!-- Item 1 -->
+        <rect x="84" y="50" width="16" height="12" rx="4" fill="#A6CBD6" opacity="0.4"/>
+        <rect x="108" y="52" width="60" height="8" rx="4" fill="#D6E8EA"/>
         <!-- Active item -->
-        <rect x="90" y="68" width="112" height="14" rx="4" fill="#D9EBED" opacity="0.4"/>
-        <rect x="94" y="72" width="12" height="6" rx="2" fill="#013D5B" opacity="0.3"/>
-        <rect x="112" y="73" width="56" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
+        <rect x="80" y="68" width="132" height="18" rx="5" fill="#C0EAF2"/>
+        <rect x="88" y="73" width="16" height="8" rx="3" fill="#013D5B"/>
+        <rect x="112" y="74" width="68" height="6" rx="3" fill="#013D5B"/>
         <!-- Divider -->
-        <rect x="94" y="86" width="104" height="1" fill="#E8E4DD"/>
+        <rect x="84" y="92" width="128" height="2" rx="1" fill="#00132B"/>
         <!-- Danger item -->
-        <rect x="94" y="94" width="12" height="12" rx="3" fill="#BF5547" opacity="0.15"/>
-        <rect x="112" y="97" width="40" height="5" rx="2.5" fill="#BF5547" opacity="0.3"/>
-        <!-- Floating accents -->
-        <rect x="62" y="60" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="46" r="5" fill="#7A9A01" opacity="0.2"/>
+        <rect x="84" y="100" width="16" height="12" rx="4" fill="#BF5547"/>
+        <rect x="108" y="102" width="52" height="8" rx="4" fill="#BF5547" opacity="0.5"/>
       </svg>
     </div>
     <div class="card-body">
@@ -635,22 +553,19 @@
   <a class="card" href="components/empty-states.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Empty box / inbox icon -->
-        <rect x="112" y="28" width="56" height="40" rx="4" fill="#F4F1EB" stroke="#D5CFC4" stroke-width="1.5"/>
-        <path d="M112 48h56" stroke="#D5CFC4" stroke-width="1"/>
-        <path d="M112 48l-8 -12h72l-8 12" stroke="#D5CFC4" stroke-width="1.5" fill="#EBE6DD"/>
-        <!-- Dashed line inside box -->
-        <line x1="126" y1="56" x2="154" y2="56" stroke="#D5CFC4" stroke-width="1" stroke-dasharray="3 2"/>
-        <!-- Text placeholder lines -->
-        <rect x="104" y="78" width="72" height="5" rx="2.5" fill="#D5CFC4"/>
-        <rect x="112" y="88" width="56" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <!-- Action button -->
-        <rect x="116" y="100" width="48" height="14" rx="4" fill="#05314D"/>
-        <rect x="126" y="105" width="28" height="4" rx="2" fill="#D9EBED"/>
-        <!-- Floating accents -->
-        <rect x="62" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="218" cy="36" r="5" fill="#05314D" opacity="0.12"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Empty box icon -->
+        <rect x="104" y="14" width="72" height="52" rx="6" fill="#013D5B"/>
+        <path d="M104 40l-12-16h96l-12 16" fill="#A6CBD6" opacity="0.3"/>
+        <rect x="104" y="40" width="72" height="2" fill="#A6CBD6"/>
+        <!-- Dashed line -->
+        <rect x="120" y="50" width="40" height="3" rx="1.5" fill="#A6CBD6" opacity="0.4"/>
+        <!-- Text lines -->
+        <rect x="90" y="76" width="100" height="8" rx="4" fill="#D6E8EA"/>
+        <rect x="100" y="90" width="80" height="6" rx="3" fill="#D6E8EA" opacity="0.5"/>
+        <!-- CTA button -->
+        <rect x="104" y="104" width="72" height="18" rx="6" fill="#C0EAF2"/>
+        <rect x="120" y="110" width="40" height="6" rx="3" fill="#00132B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -663,20 +578,18 @@
   <a class="card" href="components/file-upload.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Dashed drop zone -->
-        <rect x="72" y="20" width="136" height="88" rx="8" fill="#F4F1EB" stroke="#D5CFC4" stroke-width="2" stroke-dasharray="6 4"/>
-        <!-- Upload cloud icon -->
-        <path d="M122 52a16 16 0 0 1 30-4 12 12 0 0 1 8 20h-40a12 12 0 0 1-6-20z" fill="#D9EBED" stroke="#05314D" stroke-width="1.5" opacity="0.6"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Drop zone -->
+        <rect x="56" y="10" width="168" height="108" rx="10" fill="#013D5B" stroke="#A6CBD6" stroke-width="3" stroke-dasharray="10 6"/>
+        <!-- Cloud shape -->
+        <rect x="106" y="28" width="68" height="32" rx="16" fill="#A6CBD6"/>
+        <rect x="118" y="20" width="44" height="20" rx="10" fill="#A6CBD6"/>
         <!-- Upload arrow -->
-        <path d="M140 58v16" stroke="#05314D" stroke-width="2" stroke-linecap="round"/>
-        <path d="M134 64l6-6 6 6" stroke="#05314D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <!-- Text lines -->
-        <rect x="104" y="82" width="72" height="5" rx="2.5" fill="#47443F" opacity="0.3"/>
-        <rect x="112" y="92" width="56" height="4" rx="2" fill="#D5CFC4" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="42" r="5" fill="#05314D" opacity="0.12"/>
+        <path d="M140 50v24" stroke="#00132B" stroke-width="4" stroke-linecap="round"/>
+        <path d="M130 58l10-10 10 10" stroke="#00132B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Text -->
+        <rect x="92" y="86" width="96" height="8" rx="4" fill="#D6E8EA"/>
+        <rect x="104" y="100" width="72" height="6" rx="3" fill="#D6E8EA" opacity="0.5"/>
       </svg>
     </div>
     <div class="card-body">
@@ -689,27 +602,24 @@
   <a class="card" href="components/form-inputs.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Text input -->
-        <rect x="72" y="24" width="136" height="30" rx="5" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1.5"/>
-        <rect x="82" y="36" width="60" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="56" y="10" width="168" height="34" rx="6" fill="#013D5B"/>
+        <rect x="68" y="22" width="80" height="8" rx="4" fill="#A6CBD6" opacity="0.5"/>
         <!-- Label -->
-        <rect x="72" y="14" width="36" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
-        <!-- Checkbox row -->
-        <rect x="72" y="66" width="14" height="14" rx="3" fill="#013D5B"/>
-        <path d="M76 73l3 3 5-6" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="92" y="69" width="44" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="56" y="2" width="44" height="6" rx="3" fill="#D6E8EA"/>
+        <!-- Checkbox -->
+        <rect x="56" y="56" width="20" height="20" rx="5" fill="#C0EAF2"/>
+        <path d="M62 66l4 4 8-8" stroke="#00132B" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="84" y="62" width="56" height="8" rx="4" fill="#D6E8EA"/>
         <!-- Toggle -->
-        <rect x="72" y="92" width="32" height="18" rx="9" fill="#013D5B"/>
-        <circle cx="94" cy="101" r="7" fill="#FFFFFF"/>
-        <rect x="112" y="97" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
-        <!-- Select dropdown -->
-        <rect x="148" y="66" width="60" height="24" rx="5" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1"/>
-        <rect x="156" y="75" width="30" height="4" rx="2" fill="#E8E4DD"/>
-        <path d="M198 75l4 4 4-4" stroke="#A09A91" stroke-width="1.5" fill="none"/>
-        <!-- Floating accents -->
-        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="226" cy="40" r="5" fill="#BF5547" opacity="0.2"/>
+        <rect x="56" y="90" width="44" height="24" rx="12" fill="#7A9A01"/>
+        <circle cx="88" cy="102" r="9" fill="#F7F3EB"/>
+        <rect x="108" y="98" width="60" height="8" rx="4" fill="#D6E8EA"/>
+        <!-- Select -->
+        <rect x="160" y="56" width="80" height="28" rx="6" fill="#013D5B"/>
+        <rect x="172" y="66" width="40" height="8" rx="4" fill="#A6CBD6"/>
+        <path d="M228 68l6 6 6-6" stroke="#C0EAF2" stroke-width="2" fill="none" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="card-body">
@@ -722,28 +632,21 @@
   <a class="card" href="components/header.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Header bar -->
-        <rect x="50" y="40" width="180" height="36" rx="6" fill="#FFFFFF"/>
+        <rect x="24" y="36" width="232" height="48" rx="8" fill="#013D5B"/>
         <!-- Logo block -->
-        <rect x="60" y="48" width="20" height="20" rx="5" fill="#013D5B"/>
-        <rect x="66" y="54" width="8" height="8" rx="2" fill="#A6CBD6"/>
-        <!-- Nav placeholder blocks -->
-        <rect x="88" y="55" width="24" height="6" rx="3" fill="#E8E4DD"/>
-        <rect x="118" y="55" width="18" height="6" rx="3" fill="#E8E4DD"/>
+        <rect x="38" y="48" width="26" height="26" rx="6" fill="#A6CBD6"/>
+        <rect x="44" y="54" width="14" height="14" rx="4" fill="#00132B"/>
+        <!-- Nav items -->
+        <rect x="76" y="54" width="32" height="8" rx="4" fill="#D6E8EA"/>
+        <rect x="116" y="54" width="26" height="8" rx="4" fill="#D6E8EA"/>
         <!-- Help circle -->
-        <circle cx="190" cy="58" r="10" fill="#D9EBED"/>
-        <circle cx="190" cy="58" r="4" fill="#A6CBD6"/>
+        <circle cx="200" cy="60" r="13" fill="#C0EAF2"/>
         <!-- User avatar -->
-        <circle cx="216" cy="58" r="10" fill="#013D5B"/>
-        <circle cx="216" cy="55" r="4" fill="#A6CBD6"/>
-        <rect x="210" y="61" width="12" height="6" rx="3" fill="#A6CBD6"/>
-        <!-- Shadow bar below -->
-        <rect x="54" y="76" width="172" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="42" y="82" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.4"/>
-        <circle cx="234" cy="86" r="5" fill="#BF5547" opacity="0.25"/>
+        <circle cx="236" cy="60" r="13" fill="#A6CBD6"/>
+        <circle cx="236" cy="56" r="5" fill="#013D5B"/>
+        <rect x="229" y="63" width="14" height="7" rx="3.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -756,27 +659,24 @@
   <a class="card" href="components/modals.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Overlay dim -->
-        <rect x="52" y="16" width="176" height="96" rx="6" fill="#1C1A17" opacity="0.15"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Overlay -->
+        <rect x="36" y="6" width="208" height="116" rx="6" fill="#013D5B" opacity="0.3"/>
         <!-- Modal panel -->
-        <rect x="72" y="26" width="136" height="76" rx="8" fill="#FFFFFF"/>
-        <!-- Modal header -->
-        <rect x="84" y="36" width="56" height="6" rx="3" fill="#013D5B" opacity="0.5"/>
+        <rect x="56" y="16" width="168" height="96" rx="10" fill="#013D5B"/>
+        <!-- Header -->
+        <rect x="72" y="28" width="72" height="8" rx="4" fill="#A6CBD6"/>
         <!-- Close X -->
-        <path d="M196 34l-4 4m4 0l-4-4" stroke="#A09A91" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M210 28l-6 6m6 0l-6-6" stroke="#C0EAF2" stroke-width="2.5" stroke-linecap="round"/>
         <!-- Divider -->
-        <rect x="72" y="48" width="136" height="1" fill="#E8E4DD"/>
-        <!-- Body text lines -->
-        <rect x="84" y="56" width="100" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="84" y="64" width="80" height="4" rx="2" fill="#E8E4DD" opacity="0.6"/>
+        <rect x="56" y="44" width="168" height="2" rx="1" fill="#00132B"/>
+        <!-- Body -->
+        <rect x="72" y="54" width="120" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="72" y="66" width="96" height="6" rx="3" fill="#D6E8EA" opacity="0.5"/>
         <!-- Footer buttons -->
-        <rect x="72" y="80" width="136" height="1" fill="#E8E4DD"/>
-        <rect x="146" y="86" width="50" height="10" rx="4" fill="#013D5B"/>
-        <rect x="106" y="86" width="36" height="10" rx="4" fill="#FFFFFF" stroke="#D0CBC3" stroke-width="1"/>
-        <!-- Floating accents -->
-        <circle cx="46" cy="78" r="5" fill="#D9EBED" opacity="0.4"/>
-        <rect x="234" cy="42" width="8" height="8" rx="2" fill="#BF5547" opacity="0.2"/>
+        <rect x="56" y="82" width="168" height="2" rx="1" fill="#00132B"/>
+        <rect x="156" y="90" width="56" height="16" rx="5" fill="#C0EAF2"/>
+        <rect x="100" y="90" width="48" height="16" rx="5" fill="#00132B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -789,26 +689,22 @@
   <a class="card" href="components/pagination.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Pagination bar -->
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Prev arrow -->
-        <rect x="72" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <path d="M84 60l-4 4 4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+        <rect x="44" y="42" width="36" height="36" rx="8" fill="#013D5B"/>
+        <path d="M60 54l-6 6 6 6" stroke="#A6CBD6" stroke-width="2.5" fill="none" stroke-linecap="round"/>
         <!-- Page 1 (active) -->
-        <rect x="104" y="50" width="28" height="28" rx="6" fill="#05314D"/>
-        <text x="118" y="68" text-anchor="middle" font-size="11" font-weight="600" fill="#FFFFFF" font-family="sans-serif">1</text>
+        <rect x="88" y="42" width="36" height="36" rx="8" fill="#C0EAF2"/>
+        <text x="106" y="65" text-anchor="middle" font-size="16" font-weight="700" fill="#00132B" font-family="sans-serif">1</text>
         <!-- Page 2 -->
-        <rect x="136" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <text x="150" y="68" text-anchor="middle" font-size="11" fill="#47443F" font-family="sans-serif">2</text>
+        <rect x="132" y="42" width="36" height="36" rx="8" fill="#013D5B"/>
+        <text x="150" y="65" text-anchor="middle" font-size="16" font-weight="700" fill="#A6CBD6" font-family="sans-serif">2</text>
         <!-- Page 3 -->
-        <rect x="168" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <text x="182" y="68" text-anchor="middle" font-size="11" fill="#47443F" font-family="sans-serif">3</text>
+        <rect x="176" y="42" width="36" height="36" rx="8" fill="#013D5B"/>
+        <text x="194" y="65" text-anchor="middle" font-size="16" font-weight="700" fill="#A6CBD6" font-family="sans-serif">3</text>
         <!-- Next arrow -->
-        <rect x="200" y="50" width="28" height="28" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <path d="M216 60l4 4-4 4" stroke="#47443F" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <!-- Floating accents -->
-        <rect x="56" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="240" cy="82" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="220" y="42" width="36" height="36" rx="8" fill="#013D5B"/>
+        <path d="M240 54l6 6-6 6" stroke="#A6CBD6" stroke-width="2.5" fill="none" stroke-linecap="round"/>
       </svg>
     </div>
     <div class="card-body">
@@ -821,23 +717,19 @@
   <a class="card" href="components/popover.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Trigger button -->
-        <rect x="108" y="84" width="64" height="24" rx="5" fill="#F4F1EB" stroke="#D5CFC4" stroke-width="1"/>
-        <rect x="120" y="93" width="40" height="5" rx="2.5" fill="#47443F" opacity="0.4"/>
+        <rect x="96" y="88" width="88" height="28" rx="6" fill="#013D5B"/>
+        <rect x="116" y="98" width="48" height="8" rx="4" fill="#A6CBD6"/>
         <!-- Popover card -->
-        <rect x="82" y="18" width="116" height="58" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <!-- Arrow pointing down -->
-        <path d="M134 76l6 6 6-6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
-        <rect x="134" y="72" width="12" height="5" fill="#FFFFFF"/>
+        <rect x="68" y="10" width="144" height="68" rx="8" fill="#013D5B"/>
+        <!-- Arrow -->
+        <path d="M132 78l8 8 8-8" fill="#013D5B"/>
         <!-- Popover content -->
-        <rect x="94" y="28" width="72" height="6" rx="3" fill="#47443F" opacity="0.5"/>
-        <rect x="94" y="40" width="92" height="4" rx="2" fill="#D5CFC4"/>
-        <rect x="94" y="50" width="80" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
-        <rect x="94" y="60" width="60" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <!-- Floating accents -->
-        <rect x="56" y="46" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="36" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="84" y="22" width="88" height="8" rx="4" fill="#C0EAF2"/>
+        <rect x="84" y="36" width="112" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="84" y="48" width="96" height="6" rx="3" fill="#D6E8EA" opacity="0.6"/>
+        <rect x="84" y="60" width="72" height="6" rx="3" fill="#D6E8EA" opacity="0.4"/>
       </svg>
     </div>
     <div class="card-body">
@@ -850,30 +742,23 @@
   <a class="card" href="components/progress.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Progress bar -->
-        <rect x="72" y="30" width="136" height="6" rx="3" fill="#E8E4DD"/>
-        <rect x="72" y="30" width="88" height="6" rx="3" fill="#013D5B"/>
-        <!-- Percentage -->
-        <text x="214" y="35" font-size="10" fill="#6B6760" font-family="sans-serif">65%</text>
+        <rect x="56" y="22" width="168" height="12" rx="6" fill="#013D5B"/>
+        <rect x="56" y="22" width="110" height="12" rx="6" fill="#C0EAF2"/>
         <!-- Spinner -->
-        <circle cx="92" cy="64" r="14" stroke="#E8E4DD" stroke-width="2.5" fill="none"/>
-        <path d="M92 50a14 14 0 0 1 14 14" stroke="#013D5B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-        <!-- Stepper -->
-        <circle cx="116" cy="98" r="8" fill="#013D5B"/>
-        <path d="M113 98l2 2 4-4" stroke="#FFFFFF" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-        <rect x="124" y="97" width="20" height="2" rx="1" fill="#013D5B"/>
-        <circle cx="152" cy="98" r="8" fill="#013D5B" opacity="0.8"/>
-        <circle cx="152" cy="98" r="3" fill="#FFFFFF"/>
-        <rect x="160" y="97" width="20" height="2" rx="1" fill="#E8E4DD"/>
-        <circle cx="188" cy="98" r="8" fill="none" stroke="#E8E4DD" stroke-width="2"/>
-        <!-- Skeleton shimmer block -->
-        <rect x="140" y="50" width="68" height="8" rx="4" fill="#E8E4DD"/>
-        <rect x="140" y="62" width="52" height="8" rx="4" fill="#E8E4DD" opacity="0.6"/>
-        <rect x="140" y="74" width="60" height="8" rx="4" fill="#E8E4DD" opacity="0.35"/>
-        <!-- Floating accents -->
-        <rect x="56" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="230" cy="42" r="5" fill="#BF5547" opacity="0.2"/>
+        <circle cx="88" cy="64" r="18" stroke="#013D5B" stroke-width="4" fill="none"/>
+        <path d="M88 46a18 18 0 0 1 18 18" stroke="#A6CBD6" stroke-width="4" fill="none" stroke-linecap="round"/>
+        <!-- Step indicators -->
+        <circle cx="140" cy="100" r="12" fill="#C0EAF2"/>
+        <path d="M135 100l4 4 6-6" stroke="#00132B" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        <rect x="152" y="99" width="24" height="3" rx="1.5" fill="#A6CBD6"/>
+        <circle cx="188" cy="100" r="12" fill="#A6CBD6"/>
+        <rect x="200" y="99" width="24" height="3" rx="1.5" fill="#013D5B"/>
+        <circle cx="236" cy="100" r="12" fill="none" stroke="#013D5B" stroke-width="3"/>
+        <!-- Skeleton bars -->
+        <rect x="140" y="48" width="88" height="10" rx="5" fill="#013D5B"/>
+        <rect x="140" y="64" width="68" height="10" rx="5" fill="#013D5B" opacity="0.6"/>
       </svg>
     </div>
     <div class="card-body">
@@ -886,18 +771,19 @@
   <a class="card" href="components/search.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <rect x="68" y="40" width="144" height="32" rx="6" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1.5"/>
-        <circle cx="86" cy="56" r="7" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.5"/>
-        <path d="M91 61l4 4" stroke="#47443F" stroke-width="1.5" fill="none" opacity="0.5" stroke-linecap="round"/>
-        <rect x="100" y="53" width="60" height="5" rx="2.5" fill="#D5CFC4"/>
-        <path d="M198 52l-4 4m4 0l-4-4" stroke="#D5CFC4" stroke-width="1.5" stroke-linecap="round"/>
-        <rect x="68" y="76" width="144" height="12" rx="4" fill="#F4F1EB"/>
-        <rect x="78" y="80" width="48" height="4" rx="2" fill="#D5CFC4"/>
-        <rect x="68" y="92" width="144" height="12" rx="4" fill="#F4F1EB" opacity="0.6"/>
-        <rect x="78" y="96" width="56" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
-        <rect x="56" y="32" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="228" cy="86" r="5" fill="#05314D" opacity="0.12"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Search bar -->
+        <rect x="48" y="28" width="184" height="36" rx="8" fill="#013D5B"/>
+        <circle cx="72" cy="46" r="9" stroke="#A6CBD6" stroke-width="2.5" fill="none"/>
+        <path d="M79 53l5 5" stroke="#A6CBD6" stroke-width="2.5" stroke-linecap="round"/>
+        <rect x="92" y="42" width="72" height="8" rx="4" fill="#A6CBD6" opacity="0.4"/>
+        <!-- Clear X -->
+        <path d="M212 42l-6 6m6 0l-6-6" stroke="#A6CBD6" stroke-width="2" stroke-linecap="round"/>
+        <!-- Result rows -->
+        <rect x="48" y="72" width="184" height="18" rx="5" fill="#013D5B"/>
+        <rect x="60" y="77" width="64" height="8" rx="4" fill="#D6E8EA"/>
+        <rect x="48" y="96" width="184" height="18" rx="5" fill="#013D5B" opacity="0.6"/>
+        <rect x="60" y="101" width="76" height="8" rx="4" fill="#D6E8EA" opacity="0.6"/>
       </svg>
     </div>
     <div class="card-body">
@@ -910,29 +796,22 @@
   <a class="card" href="components/selection-controls.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Checkbox group container -->
-        <rect x="70" y="20" width="140" height="88" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
-        <!-- Select all row -->
-        <rect x="84" y="30" width="14" height="14" rx="3" fill="#013D5B"/>
-        <path d="M88 37l3 3 5-5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <rect x="104" y="34" width="42" height="4" rx="2" fill="#1C1A17" opacity="0.5"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Container -->
+        <rect x="56" y="10" width="168" height="108" rx="8" fill="#013D5B"/>
+        <!-- Select all -->
+        <rect x="72" y="22" width="20" height="20" rx="5" fill="#C0EAF2"/>
+        <path d="M78 32l4 4 8-7" stroke="#00132B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="100" y="28" width="56" height="8" rx="4" fill="#A6CBD6"/>
         <!-- Divider -->
-        <line x1="84" y1="50" x2="196" y2="50" stroke="#E8E4DD" stroke-width="0.5"/>
-        <!-- Child row 1 (checked) -->
-        <rect x="94" y="56" width="14" height="14" rx="3" fill="#013D5B"/>
-        <path d="M98 63l3 3 5-5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <rect x="114" y="60" width="36" height="4" rx="2" fill="#E8E4DD"/>
-        <!-- Child row 2 (unchecked) -->
-        <rect x="94" y="76" width="14" height="14" rx="3" fill="none" stroke="#D0CBC3" stroke-width="1.5"/>
-        <rect x="114" y="80" width="28" height="4" rx="2" fill="#E8E4DD"/>
-        <!-- Filter chips floating -->
-        <rect x="42" y="86" width="24" height="12" rx="6" fill="#013D5B" opacity="0.6"/>
-        <rect x="218" y="32" width="20" height="12" rx="6" fill="#D9EBED" opacity="0.6"/>
-        <!-- Toggle accent -->
-        <rect x="224" y="76" width="22" height="12" rx="6" fill="#013D5B" opacity="0.3"/>
-        <circle cx="240" cy="82" r="4" fill="white" opacity="0.8"/>
+        <rect x="72" y="48" width="136" height="2" rx="1" fill="#00132B"/>
+        <!-- Row 1 checked -->
+        <rect x="84" y="56" width="20" height="20" rx="5" fill="#C0EAF2"/>
+        <path d="M90 66l4 4 8-7" stroke="#00132B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <rect x="112" y="62" width="48" height="8" rx="4" fill="#D6E8EA"/>
+        <!-- Row 2 unchecked -->
+        <rect x="84" y="82" width="20" height="20" rx="5" fill="none" stroke="#A6CBD6" stroke-width="2"/>
+        <rect x="112" y="88" width="40" height="8" rx="4" fill="#D6E8EA"/>
       </svg>
     </div>
     <div class="card-body">
@@ -945,40 +824,28 @@
   <a class="card" href="components/side-navigation.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Expanded sidebar -->
-        <rect x="68" y="16" width="76" height="96" rx="8" fill="#FAF8F5"/>
+        <rect x="48" y="8" width="100" height="112" rx="8" fill="#013D5B"/>
         <!-- Group label -->
-        <rect x="80" y="26" width="28" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="64" y="20" width="36" height="6" rx="3" fill="#A6CBD6" opacity="0.5"/>
         <!-- Inactive item -->
-        <rect x="78" y="36" width="58" height="10" rx="4" fill="transparent"/>
-        <rect x="80" y="38" width="8" height="6" rx="2" fill="#E8E4DD"/>
-        <rect x="92" y="39" width="30" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="64" y="34" width="12" height="10" rx="3" fill="#A6CBD6" opacity="0.4"/>
+        <rect x="82" y="36" width="40" height="6" rx="3" fill="#D6E8EA" opacity="0.4"/>
         <!-- Active item -->
-        <rect x="76" y="50" width="62" height="14" rx="6" fill="#D9EBED"/>
-        <rect x="82" y="54" width="8" height="6" rx="2" fill="#013D5B"/>
-        <rect x="94" y="55" width="32" height="4" rx="2" fill="#013D5B" opacity="0.6"/>
+        <rect x="58" y="50" width="80" height="18" rx="6" fill="#C0EAF2"/>
+        <rect x="66" y="55" width="12" height="8" rx="3" fill="#013D5B"/>
+        <rect x="84" y="56" width="40" height="6" rx="3" fill="#013D5B"/>
         <!-- Inactive item -->
-        <rect x="78" y="70" width="58" height="10" rx="4" fill="transparent"/>
-        <rect x="80" y="72" width="8" height="6" rx="2" fill="#E8E4DD"/>
-        <rect x="92" y="73" width="26" height="4" rx="2" fill="#E8E4DD"/>
+        <rect x="64" y="76" width="12" height="10" rx="3" fill="#A6CBD6" opacity="0.4"/>
+        <rect x="82" y="78" width="32" height="6" rx="3" fill="#D6E8EA" opacity="0.4"/>
         <!-- Group label 2 -->
-        <rect x="80" y="88" width="24" height="4" rx="2" fill="#E8E4DD"/>
-        <!-- Inactive item -->
-        <rect x="80" y="96" width="8" height="6" rx="2" fill="#E8E4DD"/>
-        <rect x="92" y="97" width="30" height="4" rx="2" fill="#E8E4DD"/>
-        <!-- Collapsed sidebar (faded) -->
-        <rect x="162" y="16" width="32" height="96" rx="8" fill="#FAF8F5" opacity="0.5"/>
-        <rect x="172" y="38" width="12" height="12" rx="4" fill="#D9EBED" opacity="0.5"/>
-        <rect x="174" y="40" width="8" height="8" rx="2" fill="#013D5B" opacity="0.25"/>
-        <rect x="174" y="58" width="8" height="8" rx="2" fill="#E8E4DD" opacity="0.4"/>
-        <rect x="174" y="74" width="8" height="8" rx="2" fill="#E8E4DD" opacity="0.4"/>
-        <!-- Collapse arrow -->
-        <circle cx="152" cy="64" r="7" fill="#E8E4DD" opacity="0.5"/>
-        <!-- Floating accents -->
-        <circle cx="210" cy="34" r="5" fill="#BF5547" opacity="0.2"/>
-        <rect x="50" y="66" width="10" height="10" rx="3" fill="#D9EBED" opacity="0.4"/>
+        <rect x="64" y="96" width="30" height="6" rx="3" fill="#A6CBD6" opacity="0.5"/>
+        <!-- Collapsed sidebar -->
+        <rect x="170" y="8" width="48" height="112" rx="8" fill="#013D5B" opacity="0.5"/>
+        <rect x="182" y="34" width="24" height="18" rx="5" fill="#C0EAF2" opacity="0.5"/>
+        <rect x="186" y="60" width="16" height="12" rx="4" fill="#A6CBD6" opacity="0.3"/>
+        <rect x="186" y="80" width="16" height="12" rx="4" fill="#A6CBD6" opacity="0.3"/>
       </svg>
     </div>
     <div class="card-body">
@@ -991,30 +858,24 @@
   <a class="card" href="components/side-panel.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Main content area (dimmed) -->
-        <rect x="52" y="16" width="176" height="96" rx="6" fill="#1C1A17" opacity="0.08"/>
-        <!-- Content placeholder lines -->
-        <rect x="62" y="30" width="80" height="5" rx="2.5" fill="#D5CFC4" opacity="0.3"/>
-        <rect x="62" y="42" width="64" height="4" rx="2" fill="#D5CFC4" opacity="0.2"/>
-        <rect x="62" y="52" width="72" height="4" rx="2" fill="#D5CFC4" opacity="0.2"/>
-        <!-- Side panel sliding from right -->
-        <rect x="158" y="16" width="76" height="96" rx="0 6 6 0" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Main content (dimmed) -->
+        <rect x="32" y="8" width="216" height="112" rx="6" fill="#013D5B" opacity="0.3"/>
+        <rect x="48" y="28" width="100" height="8" rx="4" fill="#A6CBD6" opacity="0.2"/>
+        <rect x="48" y="44" width="80" height="6" rx="3" fill="#A6CBD6" opacity="0.15"/>
+        <rect x="48" y="58" width="88" height="6" rx="3" fill="#A6CBD6" opacity="0.1"/>
+        <!-- Side panel -->
+        <rect x="160" y="8" width="96" height="112" rx="8" fill="#013D5B"/>
         <!-- Panel header -->
-        <rect x="168" y="26" width="44" height="6" rx="3" fill="#47443F" opacity="0.5"/>
-        <path d="M224 28l-4 4m4 0l-4-4" stroke="#D5CFC4" stroke-width="1.5" stroke-linecap="round"/>
+        <rect x="174" y="22" width="56" height="8" rx="4" fill="#C0EAF2"/>
+        <path d="M244 24l-6 6m6 0l-6-6" stroke="#A6CBD6" stroke-width="2" stroke-linecap="round"/>
         <!-- Panel content -->
-        <rect x="168" y="42" width="56" height="4" rx="2" fill="#D5CFC4"/>
-        <rect x="168" y="52" width="48" height="4" rx="2" fill="#D5CFC4" opacity="0.6"/>
-        <rect x="168" y="62" width="52" height="4" rx="2" fill="#D5CFC4" opacity="0.4"/>
-        <!-- Panel action button -->
-        <rect x="168" y="80" width="56" height="14" rx="4" fill="#05314D"/>
-        <rect x="180" y="85" width="32" height="4" rx="2" fill="#D9EBED"/>
-        <!-- Slide arrow indicator -->
-        <path d="M154 64l-6-4v8z" fill="#D5CFC4" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="42" y="72" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="146" cy="30" r="4" fill="#05314D" opacity="0.1"/>
+        <rect x="174" y="42" width="68" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="174" y="54" width="56" height="6" rx="3" fill="#D6E8EA" opacity="0.6"/>
+        <rect x="174" y="66" width="60" height="6" rx="3" fill="#D6E8EA" opacity="0.4"/>
+        <!-- Panel button -->
+        <rect x="174" y="86" width="68" height="18" rx="5" fill="#C0EAF2"/>
+        <rect x="190" y="92" width="36" height="6" rx="3" fill="#00132B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1027,25 +888,22 @@
   <a class="card" href="components/skeleton-loaders.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Card skeleton -->
-        <rect x="72" y="20" width="136" height="88" rx="8" fill="#FFFFFF" stroke="#D5CFC4" stroke-width="1"/>
+        <rect x="56" y="10" width="168" height="108" rx="10" fill="#013D5B"/>
         <!-- Image placeholder -->
-        <rect x="82" y="30" width="116" height="28" rx="4" fill="#EBE6DD"/>
-        <!-- Shimmer effect on image -->
-        <rect x="82" y="30" width="40" height="28" rx="4" fill="#F4F1EB" opacity="0.6"/>
-        <!-- Avatar circle skeleton -->
-        <circle cx="96" cy="72" r="10" fill="#EBE6DD"/>
-        <!-- Title line skeleton -->
-        <rect x="112" y="66" width="72" height="6" rx="3" fill="#EBE6DD"/>
-        <!-- Subtitle line skeleton -->
-        <rect x="112" y="78" width="52" height="4" rx="2" fill="#EBE6DD" opacity="0.6"/>
-        <!-- Button skeleton -->
-        <rect x="82" y="92" width="48" height="10" rx="4" fill="#EBE6DD"/>
-        <rect x="136" y="92" width="48" height="10" rx="4" fill="#EBE6DD" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="226" cy="44" r="5" fill="#05314D" opacity="0.12"/>
+        <rect x="68" y="20" width="144" height="32" rx="6" fill="#00132B"/>
+        <!-- Shimmer -->
+        <rect x="68" y="20" width="50" height="32" rx="6" fill="#013D5B" opacity="0.5"/>
+        <!-- Avatar skeleton -->
+        <circle cx="88" cy="68" r="12" fill="#00132B"/>
+        <!-- Title skeleton -->
+        <rect x="108" y="60" width="88" height="8" rx="4" fill="#00132B"/>
+        <!-- Subtitle skeleton -->
+        <rect x="108" y="74" width="64" height="6" rx="3" fill="#00132B" opacity="0.6"/>
+        <!-- Button skeletons -->
+        <rect x="68" y="94" width="60" height="14" rx="5" fill="#00132B"/>
+        <rect x="136" y="94" width="60" height="14" rx="5" fill="#00132B" opacity="0.5"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1058,26 +916,23 @@
   <a class="card" href="components/stepper.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Step 1 (completed) -->
-        <circle cx="80" cy="56" r="14" fill="#05314D"/>
-        <path d="M74 56l4 4 8-8" stroke="#FFFFFF" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="68" y="76" width="24" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
-        <!-- Connector 1 (done) -->
-        <rect x="94" y="55" width="32" height="2" rx="1" fill="#05314D"/>
+        <circle cx="72" cy="50" r="18" fill="#C0EAF2"/>
+        <path d="M64 50l6 6 10-10" stroke="#00132B" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="56" y="76" width="32" height="7" rx="3.5" fill="#D6E8EA"/>
+        <!-- Connector 1 -->
+        <rect x="90" y="49" width="40" height="4" rx="2" fill="#A6CBD6"/>
         <!-- Step 2 (active) -->
-        <circle cx="140" cy="56" r="14" fill="#05314D" opacity="0.8"/>
-        <text x="140" y="60" text-anchor="middle" font-size="12" font-weight="600" fill="#FFFFFF" font-family="sans-serif">2</text>
-        <rect x="128" y="76" width="24" height="5" rx="2.5" fill="#47443F" opacity="0.5"/>
-        <!-- Connector 2 (pending) -->
-        <rect x="154" y="55" width="32" height="2" rx="1" fill="#D5CFC4"/>
+        <circle cx="148" cy="50" r="18" fill="#A6CBD6"/>
+        <text x="148" y="56" text-anchor="middle" font-size="16" font-weight="700" fill="#00132B" font-family="sans-serif">2</text>
+        <rect x="132" y="76" width="32" height="7" rx="3.5" fill="#D6E8EA"/>
+        <!-- Connector 2 -->
+        <rect x="166" y="49" width="40" height="4" rx="2" fill="#013D5B"/>
         <!-- Step 3 (pending) -->
-        <circle cx="200" cy="56" r="14" fill="none" stroke="#D5CFC4" stroke-width="2"/>
-        <text x="200" y="60" text-anchor="middle" font-size="12" fill="#D5CFC4" font-family="sans-serif">3</text>
-        <rect x="188" y="76" width="24" height="5" rx="2.5" fill="#D5CFC4" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="54" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="232" cy="80" r="5" fill="#05314D" opacity="0.12"/>
+        <circle cx="224" cy="50" r="18" fill="none" stroke="#013D5B" stroke-width="3"/>
+        <text x="224" y="56" text-anchor="middle" font-size="16" font-weight="700" fill="#013D5B" font-family="sans-serif">3</text>
+        <rect x="208" y="76" width="32" height="7" rx="3.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1090,42 +945,36 @@
   <a class="card" href="components/tables.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Table container -->
-        <rect x="56" y="22" width="168" height="84" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
+        <rect x="32" y="12" width="216" height="104" rx="8" fill="#013D5B"/>
         <!-- Header row -->
-        <rect x="57" y="23" width="166" height="16" rx="5" fill="#FAF8F5"/>
-        <!-- Header texts -->
-        <rect x="66" y="29" width="28" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
-        <rect x="110" y="29" width="22" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
-        <rect x="148" y="29" width="18" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
-        <rect x="186" y="29" width="24" height="4" rx="2" fill="#A09A91" opacity="0.6"/>
+        <rect x="32" y="12" width="216" height="22" rx="8" fill="#A6CBD6"/>
+        <rect x="32" y="26" width="216" height="8" fill="#A6CBD6"/>
+        <rect x="46" y="20" width="36" height="6" rx="3" fill="#00132B"/>
+        <rect x="100" y="20" width="28" height="6" rx="3" fill="#00132B"/>
+        <rect x="148" y="20" width="24" height="6" rx="3" fill="#00132B"/>
+        <rect x="200" y="20" width="32" height="6" rx="3" fill="#00132B"/>
         <!-- Row 1 -->
-        <rect x="66" y="47" width="32" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="110" y="47" width="24" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="148" y="45" width="24" height="8" rx="4" fill="#E5F0D1" opacity="0.8"/>
-        <rect x="186" y="47" width="28" height="4" rx="2" fill="#E8E4DD"/>
-        <!-- Row divider -->
-        <line x1="66" y1="57" x2="214" y2="57" stroke="#E8E4DD" stroke-width="0.5"/>
+        <rect x="46" y="44" width="40" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="100" y="44" width="30" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="148" y="42" width="28" height="10" rx="5" fill="#7A9A01"/>
+        <rect x="200" y="44" width="36" height="6" rx="3" fill="#D6E8EA"/>
+        <!-- Divider -->
+        <rect x="46" y="56" width="186" height="2" rx="1" fill="#00132B"/>
         <!-- Row 2 (selected) -->
-        <rect x="57" y="58" width="166" height="18" fill="#D9EBED" opacity="0.35"/>
-        <rect x="66" y="65" width="36" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
-        <rect x="110" y="65" width="20" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
-        <rect x="148" y="63" width="28" height="8" rx="4" fill="#FFF3D4" opacity="0.8"/>
-        <rect x="186" y="65" width="22" height="4" rx="2" fill="#013D5B" opacity="0.3"/>
-        <!-- Row divider -->
-        <line x1="66" y1="77" x2="214" y2="77" stroke="#E8E4DD" stroke-width="0.5"/>
+        <rect x="36" y="62" width="208" height="20" rx="4" fill="#C0EAF2" opacity="0.15"/>
+        <rect x="46" y="68" width="44" height="6" rx="3" fill="#C0EAF2"/>
+        <rect x="100" y="68" width="26" height="6" rx="3" fill="#C0EAF2"/>
+        <rect x="148" y="66" width="32" height="10" rx="5" fill="#F7F3EB"/>
+        <rect x="200" y="68" width="28" height="6" rx="3" fill="#C0EAF2"/>
+        <!-- Divider -->
+        <rect x="46" y="86" width="186" height="2" rx="1" fill="#00132B"/>
         <!-- Row 3 -->
-        <rect x="66" y="83" width="28" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="110" y="83" width="26" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="148" y="81" width="22" height="8" rx="4" fill="#E5F0D1" opacity="0.8"/>
-        <rect x="186" y="83" width="26" height="4" rx="2" fill="#E8E4DD"/>
-        <!-- Sort indicator -->
-        <path d="M96 28l3 5h-6z" fill="#013D5B" opacity="0.4"/>
-        <!-- Floating accents -->
-        <circle cx="42" cy="82" r="5" fill="#D9EBED" opacity="0.4"/>
-        <rect x="230" cy="36" width="8" height="8" rx="2" fill="#BF5547" opacity="0.2"/>
+        <rect x="46" y="94" width="36" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="100" y="94" width="32" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="148" y="92" width="26" height="10" rx="5" fill="#7A9A01"/>
+        <rect x="200" y="94" width="32" height="6" rx="3" fill="#D6E8EA"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1138,28 +987,22 @@
   <a class="card" href="components/tabs.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Tab panel body -->
-        <rect x="52" y="50" width="176" height="46" rx="0" fill="#FFFFFF"/>
-        <!-- Tab divider line -->
-        <rect x="52" y="50" width="176" height="2" fill="#E8E4DD"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Tab bar -->
+        <rect x="32" y="44" width="216" height="4" fill="#013D5B"/>
         <!-- Active tab -->
-        <rect x="56" y="34" width="50" height="18" rx="0" fill="#FFFFFF"/>
-        <rect x="66" y="40" width="30" height="5" rx="2.5" fill="#013D5B" opacity="0.6"/>
-        <rect x="56" y="50" width="50" height="3" fill="#013D5B"/>
+        <rect x="36" y="24" width="64" height="24" rx="6" fill="#013D5B"/>
+        <rect x="48" y="32" width="40" height="8" rx="4" fill="#C0EAF2"/>
+        <rect x="36" y="44" width="64" height="4" fill="#C0EAF2"/>
         <!-- Inactive tabs -->
-        <rect x="116" y="40" width="28" height="5" rx="2.5" fill="#E8E4DD"/>
-        <!-- Badge on tab -->
-        <rect x="150" y="38" width="14" height="9" rx="4.5" fill="#D9EBED"/>
-        <rect x="172" y="40" width="36" height="5" rx="2.5" fill="#E8E4DD"/>
+        <rect x="112" y="32" width="36" height="8" rx="4" fill="#A6CBD6" opacity="0.4"/>
+        <rect x="160" y="32" width="44" height="8" rx="4" fill="#A6CBD6" opacity="0.4"/>
+        <!-- Badge -->
+        <rect x="212" y="30" width="20" height="12" rx="6" fill="#BF5547"/>
         <!-- Content lines -->
-        <rect x="64" y="60" width="100" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="64" y="70" width="80" height="4" rx="2" fill="#E8E4DD" opacity="0.6"/>
-        <rect x="64" y="80" width="60" height="4" rx="2" fill="#E8E4DD" opacity="0.35"/>
-        <!-- Floating accents -->
-        <circle cx="44" cy="82" r="5" fill="#D9EBED" opacity="0.4"/>
-        <rect x="234" y="40" width="10" height="10" rx="3" fill="#BF5547" opacity="0.2"/>
+        <rect x="48" y="60" width="120" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="48" y="74" width="96" height="6" rx="3" fill="#D6E8EA" opacity="0.5"/>
+        <rect x="48" y="88" width="76" height="6" rx="3" fill="#D6E8EA" opacity="0.3"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1172,32 +1015,27 @@
   <a class="card" href="components/tags.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Red tag -->
-        <rect x="66" y="30" width="72" height="22" rx="4" fill="#BF5547" opacity="0.15"/>
-        <circle cx="78" cy="41" r="4" fill="#BF5547" opacity="0.6"/>
-        <rect x="86" y="38" width="40" height="5" rx="2.5" fill="#BF5547" opacity="0.45"/>
+        <rect x="44" y="20" width="88" height="28" rx="6" fill="#BF5547"/>
+        <circle cx="60" cy="34" r="5" fill="#F7F3EB"/>
+        <rect x="72" y="30" width="48" height="8" rx="4" fill="#F7F3EB" opacity="0.6"/>
         <!-- Blue tag -->
-        <rect x="148" y="30" width="68" height="22" rx="4" fill="#013D5B" opacity="0.12"/>
-        <circle cx="160" cy="41" r="4" fill="#013D5B" opacity="0.5"/>
-        <rect x="168" y="38" width="36" height="5" rx="2.5" fill="#013D5B" opacity="0.35"/>
+        <rect x="144" y="20" width="92" height="28" rx="6" fill="#A6CBD6"/>
+        <circle cx="160" cy="34" r="5" fill="#013D5B"/>
+        <rect x="172" y="30" width="48" height="8" rx="4" fill="#013D5B"/>
         <!-- Green tag -->
-        <rect x="76" y="58" width="64" height="22" rx="4" fill="#7A9A01" opacity="0.15"/>
-        <circle cx="88" cy="69" r="4" fill="#7A9A01" opacity="0.6"/>
-        <rect x="96" y="66" width="32" height="5" rx="2.5" fill="#7A9A01" opacity="0.45"/>
-        <!-- Navy tag -->
-        <rect x="150" y="58" width="74" height="22" rx="4" fill="#A6CBD6" opacity="0.4"/>
-        <circle cx="162" cy="69" r="4" fill="#013D5B" opacity="0.5"/>
-        <rect x="170" y="66" width="42" height="5" rx="2.5" fill="#013D5B" opacity="0.35"/>
-        <!-- Purple tag -->
-        <rect x="98" y="86" width="80" height="22" rx="4" fill="#8B6AAF" opacity="0.12"/>
-        <circle cx="110" cy="97" r="4" fill="#8B6AAF" opacity="0.5"/>
-        <rect x="118" y="94" width="48" height="5" rx="2.5" fill="#8B6AAF" opacity="0.35"/>
-        <!-- Floating accents -->
-        <rect x="50" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="234" cy="50" r="5" fill="#BF5547" opacity="0.2"/>
-        <rect x="226" y="86" width="10" height="10" rx="3" fill="#7A9A01" opacity="0.15"/>
+        <rect x="56" y="56" width="80" height="28" rx="6" fill="#7A9A01"/>
+        <circle cx="72" cy="70" r="5" fill="#F7F3EB"/>
+        <rect x="84" y="66" width="40" height="8" rx="4" fill="#F7F3EB" opacity="0.6"/>
+        <!-- Sky tag -->
+        <rect x="148" y="56" width="92" height="28" rx="6" fill="#C0EAF2"/>
+        <circle cx="164" cy="70" r="5" fill="#00132B"/>
+        <rect x="176" y="66" width="52" height="8" rx="4" fill="#00132B"/>
+        <!-- Oat tag -->
+        <rect x="88" y="92" width="104" height="28" rx="6" fill="#F7F3EB"/>
+        <circle cx="104" cy="106" r="5" fill="#013D5B"/>
+        <rect x="116" y="102" width="60" height="8" rx="4" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1210,29 +1048,25 @@
   <a class="card" href="components/toasts.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Toast 1 — success -->
-        <rect x="68" y="24" width="150" height="28" rx="6" fill="#FFFFFF"/>
-        <rect x="68" y="24" width="4" height="28" rx="2" fill="#7A9A01"/>
-        <rect x="80" y="34" width="10" height="10" rx="5" fill="#7A9A01" opacity="0.3"/>
-        <rect x="96" y="35" width="56" height="5" rx="2.5" fill="#E8E4DD"/>
-        <rect x="96" y="43" width="36" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
-        <!-- Toast 2 — warning -->
-        <rect x="74" y="58" width="150" height="28" rx="6" fill="#FFFFFF"/>
-        <rect x="74" y="58" width="4" height="28" rx="2" fill="#D4A843"/>
-        <rect x="86" y="68" width="10" height="10" rx="5" fill="#D4A843" opacity="0.3"/>
-        <rect x="102" y="69" width="48" height="5" rx="2.5" fill="#E8E4DD"/>
-        <rect x="102" y="77" width="64" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
-        <!-- Toast 3 — error -->
-        <rect x="80" y="92" width="150" height="28" rx="6" fill="#FFFFFF"/>
-        <rect x="80" y="92" width="4" height="28" rx="2" fill="#BF5547"/>
-        <rect x="92" y="102" width="10" height="10" rx="5" fill="#BF5547" opacity="0.3"/>
-        <rect x="108" y="103" width="42" height="5" rx="2.5" fill="#E8E4DD"/>
-        <rect x="108" y="111" width="54" height="4" rx="2" fill="#E8E4DD" opacity="0.5"/>
-        <!-- Floating accents -->
-        <rect x="54" y="46" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="236" cy="48" r="5" fill="#A6CBD6" opacity="0.3"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Toast 1 - success -->
+        <rect x="48" y="10" width="184" height="32" rx="8" fill="#013D5B"/>
+        <rect x="48" y="10" width="6" height="32" rx="3" fill="#7A9A01"/>
+        <circle cx="68" cy="26" r="8" fill="#7A9A01"/>
+        <rect x="84" y="20" width="72" height="7" rx="3.5" fill="#D6E8EA"/>
+        <rect x="84" y="31" width="48" height="5" rx="2.5" fill="#D6E8EA" opacity="0.5"/>
+        <!-- Toast 2 - warning -->
+        <rect x="56" y="48" width="184" height="32" rx="8" fill="#013D5B"/>
+        <rect x="56" y="48" width="6" height="32" rx="3" fill="#F7F3EB"/>
+        <circle cx="76" cy="64" r="8" fill="#F7F3EB"/>
+        <rect x="92" y="58" width="60" height="7" rx="3.5" fill="#D6E8EA"/>
+        <rect x="92" y="69" width="80" height="5" rx="2.5" fill="#D6E8EA" opacity="0.5"/>
+        <!-- Toast 3 - error -->
+        <rect x="64" y="86" width="184" height="32" rx="8" fill="#013D5B"/>
+        <rect x="64" y="86" width="6" height="32" rx="3" fill="#BF5547"/>
+        <circle cx="84" cy="102" r="8" fill="#BF5547"/>
+        <rect x="100" y="96" width="56" height="7" rx="3.5" fill="#D6E8EA"/>
+        <rect x="100" y="107" width="68" height="5" rx="2.5" fill="#D6E8EA" opacity="0.5"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1245,26 +1079,23 @@
   <a class="card" href="components/tooltips.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <!-- Dark tooltip (top) -->
-        <rect x="92" y="24" width="96" height="28" rx="4" fill="#1C1A17"/>
-        <rect x="102" y="34" width="64" height="5" rx="2.5" fill="#FFFFFF" opacity="0.7"/>
-        <rect x="102" y="42" width="40" height="4" rx="2" fill="#FFFFFF" opacity="0.4"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Dark tooltip -->
+        <rect x="76" y="16" width="128" height="36" rx="6" fill="#A6CBD6"/>
+        <rect x="90" y="26" width="80" height="8" rx="4" fill="#00132B"/>
+        <rect x="90" y="38" width="52" height="6" rx="3" fill="#00132B" opacity="0.5"/>
         <!-- Arrow down -->
-        <path d="M140 52l6-6h-12z" fill="#1C1A17"/>
+        <path d="M140 52l8-8h-16z" fill="#A6CBD6"/>
         <!-- Trigger element -->
-        <circle cx="140" cy="68" r="10" fill="#D9EBED"/>
-        <circle cx="140" cy="66" r="2" fill="#013D5B" opacity="0.5"/>
-        <rect x="138" y="70" width="4" height="4" rx="1" fill="#013D5B" opacity="0.5"/>
-        <!-- Light popover (bottom right) -->
-        <rect x="158" y="82" width="76" height="32" rx="6" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
-        <rect x="166" y="90" width="48" height="5" rx="2.5" fill="#013D5B" opacity="0.3"/>
-        <rect x="166" y="100" width="36" height="4" rx="2" fill="#E8E4DD"/>
+        <circle cx="140" cy="72" r="14" fill="#013D5B"/>
+        <circle cx="140" cy="68" r="3" fill="#C0EAF2"/>
+        <rect x="137" y="74" width="6" height="6" rx="2" fill="#C0EAF2"/>
+        <!-- Light tooltip -->
+        <rect x="168" y="90" width="88" height="32" rx="6" fill="#013D5B"/>
+        <rect x="180" y="100" width="56" height="6" rx="3" fill="#D6E8EA"/>
+        <rect x="180" y="110" width="40" height="5" rx="2.5" fill="#D6E8EA" opacity="0.5"/>
         <!-- Arrow up -->
-        <path d="M180 82l5 -5h-10z" fill="#FFFFFF" stroke="#E8E4DD" stroke-width="1"/>
-        <!-- Floating accents -->
-        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="232" cy="38" r="5" fill="#BF5547" opacity="0.2"/>
+        <path d="M196 90l6-6h-12z" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1282,15 +1113,15 @@
   <a class="card" href="data-viz/area-chart.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <path d="M72 90L100 72 128 78 156 52 184 60 212 48 212 100 72 100Z" fill="#013D5B" opacity="0.15"/>
-        <polyline points="72,90 100,72 128,78 156,52 184,60 212,48" stroke="#013D5B" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M72 96L100 84 128 88 156 70 184 78 212 66 212 100 72 100Z" fill="#A6CBD6" opacity="0.25"/>
-        <polyline points="72,96 100,84 128,88 156,70 184,78 212,66" stroke="#A6CBD6" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <rect x="72" y="100" width="140" height="2" rx="1" fill="#E8E4DD"/>
-        <rect x="54" y="56" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="226" cy="40" r="5" fill="#7A9A01" opacity="0.2"/>
-        <rect x="220" y="82" width="10" height="10" rx="3" fill="#BF5547" opacity="0.15"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Area 1 -->
+        <path d="M40 100L80 76 120 82 160 50 200 62 240 40 240 110 40 110Z" fill="#A6CBD6" opacity="0.3"/>
+        <polyline points="40,100 80,76 120,82 160,50 200,62 240,40" stroke="#A6CBD6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Area 2 -->
+        <path d="M40 108L80 90 120 96 160 74 200 84 240 68 240 110 40 110Z" fill="#C0EAF2" opacity="0.25"/>
+        <polyline points="40,108 80,90 120,96 160,74 200,84 240,68" stroke="#C0EAF2" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Axis -->
+        <rect x="40" y="110" width="200" height="3" rx="1.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1303,16 +1134,15 @@
   <a class="card" href="data-viz/bar-chart.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <rect x="80" y="72" width="24" height="34" rx="3" fill="#013D5B"/>
-        <rect x="110" y="52" width="24" height="54" rx="3" fill="#4F8AA0"/>
-        <rect x="140" y="36" width="24" height="70" rx="3" fill="#A6CBD6"/>
-        <rect x="170" y="58" width="24" height="48" rx="3" fill="#BF5547"/>
-        <rect x="72" y="106" width="128" height="2" rx="1" fill="#E8E4DD"/>
-        <rect x="72" y="36" width="2" height="70" rx="1" fill="#E8E4DD" opacity="0.6"/>
-        <rect x="56" y="50" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="218" cy="44" r="5" fill="#7A9A01" opacity="0.2"/>
-        <rect x="210" y="86" width="10" height="10" rx="3" fill="#BF5547" opacity="0.2"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Bars -->
+        <rect x="56" y="68" width="36" height="42" rx="4" fill="#013D5B"/>
+        <rect x="100" y="44" width="36" height="66" rx="4" fill="#A6CBD6"/>
+        <rect x="144" y="24" width="36" height="86" rx="4" fill="#C0EAF2"/>
+        <rect x="188" y="52" width="36" height="58" rx="4" fill="#BF5547"/>
+        <!-- Axis -->
+        <rect x="48" y="110" width="184" height="3" rx="1.5" fill="#013D5B"/>
+        <rect x="48" y="24" width="3" height="86" rx="1.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1325,15 +1155,15 @@
   <a class="card" href="data-viz/donut-chart.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <circle cx="140" cy="64" r="36" stroke="#013D5B" stroke-width="18" fill="none" stroke-dasharray="90 226" stroke-dashoffset="0"/>
-        <circle cx="140" cy="64" r="36" stroke="#4F8AA0" stroke-width="18" fill="none" stroke-dasharray="56 226" stroke-dashoffset="-90"/>
-        <circle cx="140" cy="64" r="36" stroke="#A6CBD6" stroke-width="18" fill="none" stroke-dasharray="45 226" stroke-dashoffset="-146"/>
-        <circle cx="140" cy="64" r="36" stroke="#BF5547" stroke-width="18" fill="none" stroke-dasharray="35 226" stroke-dashoffset="-191"/>
-        <rect x="132" y="58" width="16" height="5" rx="2.5" fill="#013D5B" opacity="0.5"/>
-        <rect x="134" y="66" width="12" height="4" rx="2" fill="#E8E4DD"/>
-        <rect x="56" y="44" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="82" r="5" fill="#7A9A01" opacity="0.2"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Donut segments -->
+        <circle cx="140" cy="64" r="40" stroke="#013D5B" stroke-width="22" fill="none" stroke-dasharray="100 251" stroke-dashoffset="0"/>
+        <circle cx="140" cy="64" r="40" stroke="#A6CBD6" stroke-width="22" fill="none" stroke-dasharray="62 251" stroke-dashoffset="-100"/>
+        <circle cx="140" cy="64" r="40" stroke="#C0EAF2" stroke-width="22" fill="none" stroke-dasharray="50 251" stroke-dashoffset="-162"/>
+        <circle cx="140" cy="64" r="40" stroke="#BF5547" stroke-width="22" fill="none" stroke-dasharray="39 251" stroke-dashoffset="-212"/>
+        <!-- Center text -->
+        <rect x="126" y="58" width="28" height="8" rx="4" fill="#D6E8EA"/>
+        <rect x="130" y="70" width="20" height="5" rx="2.5" fill="#D6E8EA" opacity="0.5"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1346,19 +1176,20 @@
   <a class="card" href="data-viz/histogram.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <rect x="72" y="82" width="18" height="18" fill="#013D5B" opacity="0.5"/>
-        <rect x="90" y="68" width="18" height="32" fill="#013D5B" opacity="0.65"/>
-        <rect x="108" y="50" width="18" height="50" fill="#013D5B" opacity="0.8"/>
-        <rect x="126" y="34" width="18" height="66" fill="#013D5B"/>
-        <rect x="144" y="42" width="18" height="58" fill="#013D5B" opacity="0.85"/>
-        <rect x="162" y="56" width="18" height="44" fill="#013D5B" opacity="0.7"/>
-        <rect x="180" y="72" width="18" height="28" fill="#013D5B" opacity="0.55"/>
-        <rect x="198" y="84" width="18" height="16" fill="#013D5B" opacity="0.4"/>
-        <rect x="72" y="100" width="144" height="2" rx="1" fill="#E8E4DD"/>
-        <path d="M76 94Q108 56 140 38Q172 56 210 92" stroke="#BF5547" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round"/>
-        <rect x="54" y="54" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="228" cy="68" r="5" fill="#7A9A01" opacity="0.2"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Histogram bars -->
+        <rect x="48" y="84" width="22" height="22" fill="#013D5B"/>
+        <rect x="70" y="68" width="22" height="38" fill="#013D5B"/>
+        <rect x="92" y="48" width="22" height="58" fill="#A6CBD6" opacity="0.7"/>
+        <rect x="114" y="28" width="22" height="78" fill="#A6CBD6"/>
+        <rect x="136" y="36" width="22" height="70" fill="#A6CBD6" opacity="0.9"/>
+        <rect x="158" y="52" width="22" height="54" fill="#A6CBD6" opacity="0.7"/>
+        <rect x="180" y="72" width="22" height="34" fill="#013D5B"/>
+        <rect x="202" y="86" width="22" height="20" fill="#013D5B"/>
+        <!-- Bell curve -->
+        <path d="M54 96Q92 52 140 32Q188 52 226 96" stroke="#BF5547" stroke-width="3" fill="none" stroke-linecap="round"/>
+        <!-- Axis -->
+        <rect x="48" y="106" width="176" height="3" rx="1.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1371,19 +1202,20 @@
   <a class="card" href="data-viz/line-chart.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <polyline points="76,80 106,60 136,68 166,42 196,54" stroke="#013D5B" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="76" cy="80" r="5" fill="#013D5B"/>
-        <circle cx="106" cy="60" r="5" fill="#013D5B"/>
-        <circle cx="136" cy="68" r="5" fill="#013D5B"/>
-        <circle cx="166" cy="42" r="5" fill="#013D5B"/>
-        <circle cx="196" cy="54" r="5" fill="#013D5B"/>
-        <polyline points="76,90 106,76 136,82 166,62 196,70" stroke="#A6CBD6" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-        <circle cx="106" cy="76" r="3.5" fill="#A6CBD6"/>
-        <circle cx="166" cy="62" r="3.5" fill="#A6CBD6"/>
-        <rect x="72" y="100" width="130" height="2" rx="1" fill="#E8E4DD"/>
-        <rect x="58" y="40" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="222" cy="72" r="5" fill="#BF5547" opacity="0.2"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Line 1 -->
+        <polyline points="48,86 96,60 144,70 192,36 240,50" stroke="#C0EAF2" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="48" cy="86" r="6" fill="#C0EAF2"/>
+        <circle cx="96" cy="60" r="6" fill="#C0EAF2"/>
+        <circle cx="144" cy="70" r="6" fill="#C0EAF2"/>
+        <circle cx="192" cy="36" r="6" fill="#C0EAF2"/>
+        <circle cx="240" cy="50" r="6" fill="#C0EAF2"/>
+        <!-- Line 2 -->
+        <polyline points="48,96 96,78 144,86 192,62 240,72" stroke="#A6CBD6" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <circle cx="96" cy="78" r="4.5" fill="#A6CBD6"/>
+        <circle cx="192" cy="62" r="4.5" fill="#A6CBD6"/>
+        <!-- Axis -->
+        <rect x="40" y="108" width="208" height="3" rx="1.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1396,18 +1228,23 @@
   <a class="card" href="data-viz/waterfall-chart.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
-        <rect x="72" y="32" width="22" height="68" rx="2" fill="#013D5B"/>
-        <rect x="100" y="32" width="22" height="24" rx="2" fill="#7A9A01"/>
-        <line x1="122" y1="56" x2="128" y2="56" stroke="#E8E4DD" stroke-width="1.5" stroke-dasharray="2 2"/>
-        <rect x="128" y="56" width="22" height="18" rx="2" fill="#BF5547"/>
-        <line x1="150" y1="74" x2="156" y2="74" stroke="#E8E4DD" stroke-width="1.5" stroke-dasharray="2 2"/>
-        <rect x="156" y="74" width="22" height="12" rx="2" fill="#BF5547"/>
-        <line x1="178" y1="86" x2="184" y2="86" stroke="#E8E4DD" stroke-width="1.5" stroke-dasharray="2 2"/>
-        <rect x="184" y="32" width="22" height="54" rx="2" fill="#013D5B" opacity="0.7"/>
-        <rect x="72" y="100" width="134" height="2" rx="1" fill="#E8E4DD"/>
-        <rect x="56" y="68" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="224" cy="46" r="5" fill="#8B6AAF" opacity="0.2"/>
+        <rect width="280" height="128" fill="#00132B"/>
+        <!-- Start bar -->
+        <rect x="44" y="24" width="30" height="80" rx="3" fill="#A6CBD6"/>
+        <!-- Increase -->
+        <rect x="82" y="24" width="30" height="28" rx="3" fill="#7A9A01"/>
+        <!-- Decrease 1 -->
+        <rect x="120" y="52" width="30" height="22" rx="3" fill="#BF5547"/>
+        <!-- Decrease 2 -->
+        <rect x="158" y="74" width="30" height="16" rx="3" fill="#BF5547"/>
+        <!-- Connectors -->
+        <line x1="112" y1="52" x2="120" y2="52" stroke="#D6E8EA" stroke-width="2" stroke-dasharray="3 2"/>
+        <line x1="150" y1="74" x2="158" y2="74" stroke="#D6E8EA" stroke-width="2" stroke-dasharray="3 2"/>
+        <line x1="188" y1="90" x2="196" y2="90" stroke="#D6E8EA" stroke-width="2" stroke-dasharray="3 2"/>
+        <!-- End bar -->
+        <rect x="196" y="24" width="30" height="66" rx="3" fill="#A6CBD6" opacity="0.7"/>
+        <!-- Axis -->
+        <rect x="40" y="104" width="192" height="3" rx="1.5" fill="#013D5B"/>
       </svg>
     </div>
     <div class="card-body">
@@ -1424,31 +1261,27 @@
   <a class="card" href="docs/color-sampler.html">
     <div class="card-preview">
       <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <!-- Backdrop circle -->
-        <circle cx="140" cy="64" r="54" fill="#E8E4DD" opacity="0.45"/>
+        <rect width="280" height="128" fill="#00132B"/>
         <!-- Screenshot frame -->
-        <rect x="80" y="22" width="96" height="72" rx="6" fill="#FFFFFF"/>
-        <!-- Image color blocks -->
-        <rect x="86" y="28" width="84" height="18" rx="3" fill="#013D5B" opacity="0.1"/>
-        <rect x="86" y="50" width="38" height="14" rx="3" fill="#D9EBED" opacity="0.5"/>
-        <rect x="128" y="50" width="38" height="14" rx="3" fill="#BF5547" opacity="0.15"/>
-        <rect x="86" y="68" width="56" height="10" rx="3" fill="#7A9A01" opacity="0.1"/>
-        <!-- Eyedropper tool -->
-        <g transform="translate(190, 36) rotate(28)">
-          <rect x="-4" y="-18" width="8" height="26" rx="3" fill="#013D5B"/>
-          <rect x="-3" y="-20" width="6" height="6" rx="3" fill="#A6CBD6"/>
-          <rect x="-3" y="8" width="6" height="10" rx="2" fill="#C4A57B" opacity="0.8"/>
+        <rect x="56" y="14" width="120" height="88" rx="8" fill="#013D5B"/>
+        <!-- Color blocks inside -->
+        <rect x="66" y="24" width="100" height="22" rx="4" fill="#A6CBD6"/>
+        <rect x="66" y="52" width="46" height="18" rx="4" fill="#C0EAF2"/>
+        <rect x="118" y="52" width="46" height="18" rx="4" fill="#BF5547"/>
+        <rect x="66" y="76" width="68" height="16" rx="4" fill="#7A9A01"/>
+        <!-- Crosshair -->
+        <circle cx="96" cy="36" r="10" stroke="#F7F3EB" stroke-width="2" fill="none"/>
+        <circle cx="96" cy="36" r="3" fill="#F7F3EB"/>
+        <!-- Eyedropper -->
+        <g transform="translate(206, 28) rotate(30)">
+          <rect x="-6" y="-22" width="12" height="32" rx="4" fill="#A6CBD6"/>
+          <rect x="-4" y="-26" width="8" height="8" rx="4" fill="#C0EAF2"/>
+          <rect x="-4" y="10" width="8" height="12" rx="2" fill="#F7F3EB"/>
         </g>
-        <!-- Sampled color chip -->
-        <rect x="190" y="74" width="26" height="18" rx="5" fill="#BF5547"/>
-        <rect x="194" y="78" width="18" height="4" rx="2" fill="#FFFFFF" opacity="0.5"/>
-        <rect x="194" y="84" width="12" height="4" rx="2" fill="#FFFFFF" opacity="0.3"/>
-        <!-- Crosshair target -->
-        <circle cx="108" cy="38" r="8" fill="#013D5B" opacity="0.08"/>
-        <circle cx="108" cy="38" r="3" fill="#013D5B" opacity="0.15"/>
-        <!-- Floating accents -->
-        <rect x="62" y="42" width="8" height="8" rx="2" fill="#D9EBED" opacity="0.5"/>
-        <circle cx="230" cy="52" r="5" fill="#7A9A01" opacity="0.2"/>
+        <!-- Sampled chip -->
+        <rect x="200" y="80" width="40" height="26" rx="6" fill="#BF5547"/>
+        <rect x="208" y="86" width="24" height="6" rx="3" fill="#F7F3EB" opacity="0.6"/>
+        <rect x="208" y="96" width="16" height="5" rx="2.5" fill="#F7F3EB" opacity="0.3"/>
       </svg>
     </div>
     <div class="card-body">
