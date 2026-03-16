@@ -140,16 +140,26 @@
 
     /* ---- Highlighted variant ---- */
     .sds-stat-card--highlighted {
-      box-shadow: inset 3px 0 0 0 var(--sds-color-blue-550);
+      position: relative;
+      overflow: hidden;
     }
-    .sds-stat-card--highlighted-info {
-      box-shadow: inset 3px 0 0 0 var(--sds-color-blue-550);
+    .sds-stat-card--highlighted::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 3px;
+      background: var(--sds-color-blue-550);
     }
-    .sds-stat-card--highlighted-critical {
-      box-shadow: inset 3px 0 0 0 var(--sds-color-red-450);
+    .sds-stat-card--highlighted-info::before {
+      background: var(--sds-color-blue-550);
     }
-    .sds-stat-card--highlighted-health {
-      box-shadow: inset 3px 0 0 0 var(--sds-color-green-400);
+    .sds-stat-card--highlighted-critical::before {
+      background: var(--sds-color-red-450);
+    }
+    .sds-stat-card--highlighted-health::before {
+      background: var(--sds-color-green-400);
     }
 
     /* ---- Dashboard grid ---- */
@@ -453,7 +463,7 @@
        5. HIGHLIGHTED VARIANT
        ============================================================ -->
   <h2>Highlighted Variant</h2>
-  <p>Cards with a colored inset left accent to categorize metrics by type. The accent renders inside the card's border-radius. Blue for informational, red for critical alerts, and green for health metrics.</p>
+  <p>Cards with a colored left accent bar to categorize metrics by type. The accent renders inside the card using a pseudo-element with a straight right edge and a rounded left edge clipped by the card's overflow. Blue for informational, red for critical alerts, and green for health metrics.</p>
 
   <div class="demo-block">
     <div class="demo-label">Highlighted border accents</div>
@@ -651,8 +661,8 @@
       </tr>
       <tr>
         <td>Highlighted accent</td>
-        <td>box-shadow (inset)</td>
-        <td><code>inset 3 px 0 0 0</code> (color varies by type)</td>
+        <td>::before pseudo-element</td>
+        <td><code>width: 3 px</code>, absolute left, straight right edge (color varies by type)</td>
       </tr>
       <tr>
         <td>Dashboard grid</td>
@@ -725,10 +735,10 @@
       <tr><td><code>.sds-stat-card__icon</code></td><td>Optional leading icon container (36 px, 8 px radius)</td></tr>
       <tr><td><code>.sds-stat-card__footer</code></td><td>Bottom secondary info area with top border</td></tr>
       <tr><td><code>.sds-stat-card--compact</code></td><td>Smaller variant: reduced padding, 22 px value</td></tr>
-      <tr><td><code>.sds-stat-card--highlighted</code></td><td>Base highlighted variant with inset 3 px left accent</td></tr>
-      <tr><td><code>.sds-stat-card--highlighted-info</code></td><td>Blue inset accent for informational metrics</td></tr>
-      <tr><td><code>.sds-stat-card--highlighted-critical</code></td><td>Red inset accent for critical alerts</td></tr>
-      <tr><td><code>.sds-stat-card--highlighted-health</code></td><td>Green inset accent for health metrics</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted</code></td><td>Base highlighted variant with 3 px left accent (::before pseudo-element, straight right edge)</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted-info</code></td><td>Blue accent for informational metrics</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted-critical</code></td><td>Red accent for critical alerts</td></tr>
+      <tr><td><code>.sds-stat-card--highlighted-health</code></td><td>Green accent for health metrics</td></tr>
       <tr><td><code>.sds-stat-grid</code></td><td>4-column CSS grid layout for stat card rows</td></tr>
     </tbody>
   </table>
