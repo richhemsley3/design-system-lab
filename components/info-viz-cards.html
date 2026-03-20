@@ -1,0 +1,1343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Info Visualization Cards</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+
+    /* Section category dividers */
+    .section-category {
+      margin: var(--sds-space-1600) 0 var(--sds-space-400);
+      padding: 0 0 var(--sds-space-300);
+      border-bottom: 2px solid var(--sds-color-warm-gray-150);
+    }
+    .section-category:first-of-type { margin-top: 0; }
+    .section-category__label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--sds-interactive-primary);
+      margin: 0 0 var(--sds-space-100);
+    }
+    .section-category__title {
+      font-size: 24px;
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0 0 var(--sds-space-100);
+      letter-spacing: -0.01em;
+    }
+    .section-category__desc {
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+      margin: 0;
+      line-height: var(--sds-leading-normal);
+      max-width: 600px;
+    }
+
+    /* Quick nav pills */
+    .section-nav {
+      display: flex;
+      gap: var(--sds-space-200);
+      flex-wrap: wrap;
+      margin: 0 0 var(--sds-space-1200);
+    }
+    .section-nav__pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      padding: var(--sds-space-150) var(--sds-space-400);
+      border-radius: 20px;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-white);
+      color: var(--sds-text-secondary);
+      text-decoration: none;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      transition: all 150ms ease;
+      user-select: none;
+    }
+    .section-nav__pill:hover {
+      border-color: var(--sds-interactive-primary);
+      color: var(--sds-interactive-primary);
+      background: var(--sds-color-blue-025, #f0f7fa);
+    }
+    .section-nav__pill .material-symbols-outlined {
+      font-size: 16px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-grid {
+      display: grid;
+      gap: var(--sds-space-500);
+    }
+    .demo-grid--2 { grid-template-columns: repeat(2, 1fr); }
+    .demo-grid--3 { grid-template-columns: repeat(3, 1fr); }
+    .demo-grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* ============================================================
+       INSIGHT CARD
+       Text-driven cards that surface findings, recommendations,
+       anomalies, or alerts. Used in dashboards and summary views.
+       ============================================================ */
+
+    .sds-insight {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    /* Icon slot */
+    .sds-insight__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .sds-insight__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* Content area */
+    .sds-insight__content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+    }
+
+    .sds-insight__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+    .sds-insight__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      line-height: var(--sds-leading-snug);
+    }
+
+    .sds-insight__description {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+      margin: 0;
+    }
+
+    .sds-insight__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      margin-top: var(--sds-space-100);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+    }
+    .sds-insight__meta-divider {
+      width: 1px;
+      height: 12px;
+      background: var(--sds-color-warm-gray-200);
+    }
+
+    /* Severity badge */
+    .sds-insight__severity {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      border-radius: 4px;
+      line-height: 1.4;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sds-insight__severity--critical {
+      background: var(--sds-status-error-bg);
+      color: var(--sds-color-red-550);
+    }
+    .sds-insight__severity--warning {
+      background: var(--sds-status-warning-bg);
+      color: var(--sds-color-yellow-650);
+    }
+    .sds-insight__severity--info {
+      background: var(--sds-status-info-bg);
+      color: var(--sds-color-blue-700);
+    }
+    .sds-insight__severity--success {
+      background: var(--sds-status-success-bg);
+      color: var(--sds-color-green-500);
+    }
+
+    /* Accent bar variant */
+    .sds-insight--accent {
+      position: relative;
+      overflow: hidden;
+      padding-left: calc(var(--sds-space-500) + 4px);
+    }
+    .sds-insight--accent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+    }
+    .sds-insight--accent-critical::before { background: var(--sds-color-red-450); }
+    .sds-insight--accent-warning::before { background: var(--sds-color-yellow-400); }
+    .sds-insight--accent-info::before { background: var(--sds-color-blue-550); }
+    .sds-insight--accent-success::before { background: var(--sds-color-green-400); }
+
+    /* Action link */
+    .sds-insight__action {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-blue-750);
+      text-decoration: none;
+      font-weight: var(--sds-weight-medium);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      margin-top: var(--sds-space-100);
+    }
+    .sds-insight__action:hover { text-decoration: underline; text-underline-offset: 2px; }
+    .sds-insight__action .material-symbols-outlined { font-size: 16px; text-decoration: none; display: inline-block; }
+    .sds-insight__action:hover .material-symbols-outlined { text-decoration: none; }
+
+    /* Compact variant */
+    .sds-insight--compact {
+      padding: var(--sds-space-400);
+      gap: var(--sds-space-300);
+    }
+    .sds-insight--compact .sds-insight__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+    .sds-insight--compact .sds-insight__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* Insight list (stacked, no outer gaps) */
+    .sds-insight-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .sds-insight-list .sds-insight {
+      border-radius: 0;
+      border-bottom-width: 0;
+    }
+    .sds-insight-list .sds-insight:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+    .sds-insight-list .sds-insight:last-child {
+      border-radius: 0 0 8px 8px;
+      border-bottom-width: 1px;
+    }
+    .sds-insight-list .sds-insight:only-child {
+      border-radius: 8px;
+    }
+
+    /* ============================================================
+       MINI DATA-VIZ CARD
+       Lightweight chart cards for dashboard grids.
+       Wraps a small visualization with metric + label.
+       ============================================================ */
+
+    .sds-viz-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-300);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .sds-viz-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+    .sds-viz-card__label {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-500);
+      font-weight: var(--sds-weight-medium);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      margin: 0;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .sds-viz-card__value {
+      font-size: var(--sds-type-display);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .sds-viz-card__trend {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      line-height: 1;
+      padding: 3px 8px 3px 5px;
+      border-radius: 20px;
+    }
+    .sds-viz-card__trend .material-symbols-outlined {
+      font-size: 14px;
+    }
+    .sds-viz-card__trend--positive {
+      color: var(--sds-color-green-500);
+      background: var(--sds-status-success-bg);
+    }
+    .sds-viz-card__trend--negative {
+      color: var(--sds-color-red-550);
+      background: var(--sds-status-error-bg);
+    }
+    .sds-viz-card__trend--neutral {
+      color: var(--sds-color-warm-gray-500);
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    /* Chart region */
+    .sds-viz-card__chart {
+      flex: 1;
+      min-height: 0;
+    }
+    .sds-viz-card__chart svg {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+    /* Metric row (value + chart side by side) */
+    .sds-viz-card--row {
+      flex-direction: row;
+      align-items: center;
+    }
+    .sds-viz-card--row .sds-viz-card__info {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+    }
+    .sds-viz-card--row .sds-viz-card__chart {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Footer */
+    .sds-viz-card__footer {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      padding-top: var(--sds-space-300);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    /* ---- Sparkline ---- */
+    .sparkline-line {
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .sparkline-area {
+      opacity: 0.12;
+    }
+    .sparkline-dot {
+      stroke-width: 2;
+      stroke: var(--sds-color-white);
+    }
+
+    /* ---- Mini donut ---- */
+    .mini-donut-track {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+    }
+    .mini-donut-fill {
+      fill: none;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mini-donut-label {
+      font-family: var(--sds-font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      fill: var(--sds-text-primary);
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    /* ---- Mini horizontal bars ---- */
+    .mini-bar-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      font-size: var(--sds-type-caption);
+    }
+    .mini-bar-row + .mini-bar-row {
+      margin-top: var(--sds-space-200);
+    }
+    .mini-bar-label {
+      width: 72px;
+      flex-shrink: 0;
+      color: var(--sds-text-secondary);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mini-bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--sds-color-warm-gray-075, var(--sds-color-warm-gray-050));
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mini-bar-value {
+      width: 36px;
+      flex-shrink: 0;
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-semibold);
+    }
+
+    /* ---- Progress ring ---- */
+    .progress-ring-track {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+    }
+    .progress-ring-fill {
+      fill: none;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: center;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .progress-ring-label {
+      font-family: var(--sds-font-sans);
+      font-weight: 600;
+      fill: var(--sds-text-primary);
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    /* ---- Comparison card ---- */
+    .sds-viz-card__comparison {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sds-space-200);
+    }
+    .sds-viz-card__target {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-450);
+    }
+    .sds-viz-card__target-value {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-secondary);
+    }
+    .sds-viz-card__bar-track {
+      height: 8px;
+      background: var(--sds-color-warm-gray-100);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sds-viz-card__bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sds-viz-card__bar-marker {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: var(--sds-color-warm-gray-500);
+      border-radius: 1px;
+    }
+
+    /* ---- Dashboard grid ---- */
+    .sds-viz-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sds-space-400);
+    }
+
+    /* ---- Optional hover-float modifier ----
+       Add .sds-card--hoverable to any card to enable lift-on-hover.
+       Best for clickable/linked cards in interactive dashboards. */
+    .sds-card--hoverable {
+      transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+    }
+    @media (hover: hover) {
+      .sds-card--hoverable:hover {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.04);
+        transform: translateY(-1px);
+      }
+      .sds-card--hoverable:active {
+        transform: scale(0.98);
+        transition-duration: 80ms;
+      }
+    }
+
+    /* ============================================================
+       METRIC BADGE CARD
+       Simple stat with icon badge — inspired by "Order 201" pattern
+       ============================================================ */
+    .sds-metric-badge {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-metric-badge__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sds-metric-badge__label {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .sds-metric-badge__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .sds-metric-badge__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+    .sds-metric-badge__value {
+      font-size: 32px;
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      margin-top: var(--sds-space-100);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-metric-badge__secondary {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-450);
+    }
+
+    /* ============================================================
+       DONUT BREAKDOWN CARD
+       Metric + inline donut with legend — "Users 5614" pattern
+       ============================================================ */
+    .sds-donut-breakdown {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-500);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-donut-breakdown__info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-donut-breakdown__label {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0 0 var(--sds-space-050);
+    }
+    .sds-donut-breakdown__value {
+      font-size: 32px;
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-donut-breakdown__legend {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-150);
+      margin-top: var(--sds-space-300);
+    }
+    .sds-donut-breakdown__legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+    }
+    .sds-donut-breakdown__legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .sds-donut-breakdown__chart {
+      flex-shrink: 0;
+    }
+
+    /* Multi-segment donut */
+    .donut-segment {
+      fill: none;
+      stroke-linecap: butt;
+    }
+
+    /* ============================================================
+       AREA CHART CARD
+       Card wrapping a filled area chart — "Overall Performance" pattern
+       ============================================================ */
+    .area-fill {
+      opacity: 0.15;
+    }
+    .area-line {
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .area-dot {
+      stroke: var(--sds-color-white);
+      stroke-width: 2;
+    }
+
+    /* Chart tooltip */
+    .sds-viz-card__tooltip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      background: var(--sds-color-warm-gray-900);
+      color: var(--sds-color-white);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       MULTI-SERIES LINE CARD
+       Two overlapping line series with legend pills
+       ============================================================ */
+    .sds-viz-card__legend {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      flex-wrap: wrap;
+    }
+    .sds-viz-card__legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+    }
+    .sds-viz-card__legend-line {
+      width: 16px;
+      height: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Chart axis labels for inline charts */
+    .chart-inline-axis {
+      font-family: var(--sds-font-sans);
+      font-size: 10px;
+      fill: var(--sds-color-warm-gray-400);
+    }
+    .chart-inline-grid {
+      stroke: var(--sds-color-warm-gray-100);
+      stroke-width: 1;
+    }
+
+    /* ============================================================
+       VERTICAL MINI BAR CARD
+       Small vertical bars inside a card — "Sales dynamics" pattern
+       ============================================================ */
+    .mini-vbar {
+      rx: 2;
+      ry: 2;
+    }
+
+    /* ============================================================
+       FINANCIAL CARD
+       Icon badge + label + large value + subtitle — "Paid Invoices" pattern
+       ============================================================ */
+    .sds-financial-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-financial-card__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .sds-financial-card__icon .material-symbols-outlined {
+      font-size: 22px;
+    }
+    .sds-financial-card__info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-financial-card__label {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      margin: 0 0 var(--sds-space-050);
+    }
+    .sds-financial-card__value {
+      font-size: var(--sds-type-heading);
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-financial-card__sub {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin-top: var(--sds-space-050);
+    }
+    .sds-financial-card__ring {
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       GAUGE CARD
+       Semi-circle gauge for scores and health ratings
+       ============================================================ */
+    .sds-gauge-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--sds-space-200);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-gauge-card__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      align-self: flex-start;
+    }
+    .sds-gauge-card__chart {
+      position: relative;
+    }
+    .sds-gauge-card__value {
+      font-size: var(--sds-type-heading);
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-gauge-card__sub {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+    }
+    .gauge-track {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+      stroke-linecap: round;
+    }
+    .gauge-fill {
+      fill: none;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gauge-needle {
+      fill: var(--sds-color-warm-gray-700);
+      transform-origin: center center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       LOLLIPOP / DUMBBELL CHART CARD
+       Paired dots with connecting stem for comparisons
+       ============================================================ */
+    .lollipop-stem {
+      stroke: var(--sds-color-warm-gray-200);
+      stroke-width: 2;
+    }
+    .lollipop-dot {
+      stroke: var(--sds-color-white);
+      stroke-width: 2;
+    }
+
+    /* ============================================================
+       RADAR CHART CARD
+       Multi-axis scoring for posture/capability views
+       ============================================================ */
+    .radar-grid {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+      stroke-width: 1;
+    }
+    .radar-axis {
+      stroke: var(--sds-color-warm-gray-150);
+      stroke-width: 1;
+    }
+    .radar-fill {
+      fill-opacity: 0.12;
+      stroke-width: 2;
+    }
+    .radar-label {
+      font-family: var(--sds-font-sans);
+      font-size: 10px;
+      fill: var(--sds-color-warm-gray-500);
+      text-anchor: middle;
+    }
+    .radar-dot {
+      stroke: var(--sds-color-white);
+      stroke-width: 2;
+    }
+
+    /* ============================================================
+       ACTIVITY BAR CARD
+       Vertical progress bars per day/period with track
+       ============================================================ */
+    .sds-activity-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-activity-card__bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+      height: 120px;
+    }
+    .sds-activity-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-150);
+      height: 100%;
+    }
+    .sds-activity-bar__track {
+      width: 100%;
+      max-width: 28px;
+      flex: 1;
+      background: var(--sds-color-warm-gray-050);
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .sds-activity-bar__fill {
+      width: 100%;
+      border-radius: 14px;
+      transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sds-activity-bar__label {
+      font-size: 10px;
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-400);
+      text-transform: uppercase;
+    }
+    .sds-activity-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Info Visualization Cards</h1>
+  <p class="page-subtitle">Compact visual scoring and comparison cards — gauges, radars, lollipops, and activity bars. Use when the visualization itself communicates a score, posture, or pattern rather than precise data.</p>
+
+  <h2>Gauge Cards</h2>
+  <p>Semi-circle gauge for displaying scores, health ratings, or performance metrics. The needle position and arc color communicate the value at a glance — ideal for security posture scores, SLA health, or compliance ratings.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Gauge score cards</div>
+    <div class="sds-viz-grid">
+
+      <div class="sds-gauge-card">
+        <span class="sds-gauge-card__title">Security Score</span>
+        <div class="sds-gauge-card__chart">
+          <svg viewBox="0 0 120 76" style="width:120px; height:76px;">
+            <path class="gauge-track" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"/>
+            <path class="gauge-fill" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"
+              stroke="var(--sds-color-green-400)" stroke-dasharray="150.8" stroke-dashoffset="27.1"/>
+            <line x1="60" y1="64" x2="60" y2="22" stroke="var(--sds-color-warm-gray-700)" stroke-width="2" stroke-linecap="round"
+              transform="rotate(57.6, 60, 64)"/>
+            <circle cx="60" cy="64" r="4" fill="var(--sds-color-warm-gray-700)"/>
+          </svg>
+        </div>
+        <span class="sds-gauge-card__value">82</span>
+        <span class="sds-gauge-card__sub">out of 100</span>
+      </div>
+
+      <div class="sds-gauge-card">
+        <span class="sds-gauge-card__title">API Health</span>
+        <div class="sds-gauge-card__chart">
+          <svg viewBox="0 0 120 76" style="width:120px; height:76px;">
+            <path class="gauge-track" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"/>
+            <path class="gauge-fill" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"
+              stroke="var(--sds-color-green-400)" stroke-dasharray="150.8" stroke-dashoffset="4.5"/>
+            <line x1="60" y1="64" x2="60" y2="22" stroke="var(--sds-color-warm-gray-700)" stroke-width="2" stroke-linecap="round"
+              transform="rotate(84, 60, 64)"/>
+            <circle cx="60" cy="64" r="4" fill="var(--sds-color-warm-gray-700)"/>
+          </svg>
+        </div>
+        <span class="sds-gauge-card__value">97%</span>
+        <span class="sds-gauge-card__sub">Uptime this month</span>
+      </div>
+
+      <div class="sds-gauge-card">
+        <span class="sds-gauge-card__title">Risk Rating</span>
+        <div class="sds-gauge-card__chart">
+          <svg viewBox="0 0 120 76" style="width:120px; height:76px;">
+            <path class="gauge-track" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"/>
+            <path class="gauge-fill" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"
+              stroke="var(--sds-color-yellow-400)" stroke-dasharray="150.8" stroke-dashoffset="60.3"/>
+            <line x1="60" y1="64" x2="60" y2="22" stroke="var(--sds-color-warm-gray-700)" stroke-width="2" stroke-linecap="round"
+              transform="rotate(18, 60, 64)"/>
+            <circle cx="60" cy="64" r="4" fill="var(--sds-color-warm-gray-700)"/>
+          </svg>
+        </div>
+        <span class="sds-gauge-card__value">Medium</span>
+        <span class="sds-gauge-card__sub">60 / 100</span>
+      </div>
+
+      <div class="sds-gauge-card">
+        <span class="sds-gauge-card__title">Scan Coverage</span>
+        <div class="sds-gauge-card__chart">
+          <svg viewBox="0 0 120 76" style="width:120px; height:76px;">
+            <path class="gauge-track" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"/>
+            <path class="gauge-fill" d="M12,64 A48,48 0 0,1 108,64" stroke-width="10"
+              stroke="var(--sds-color-red-450)" stroke-dasharray="150.8" stroke-dashoffset="105.6"/>
+            <line x1="60" y1="64" x2="60" y2="22" stroke="var(--sds-color-warm-gray-700)" stroke-width="2" stroke-linecap="round"
+              transform="rotate(-36, 60, 64)"/>
+            <circle cx="60" cy="64" r="4" fill="var(--sds-color-warm-gray-700)"/>
+          </svg>
+        </div>
+        <span class="sds-gauge-card__value">30%</span>
+        <span class="sds-gauge-card__sub">Needs attention</span>
+      </div>
+
+    </div>
+  </div>
+
+  <h2>Lollipop Chart Cards</h2>
+  <p>Paired dots connected by a vertical stem, comparing two values per category — such as current vs. previous period, or actual vs. target. The visual gap between dots communicates the delta at a glance.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Dual-metric lollipop comparison</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <span class="sds-viz-card__label">Scans: This Month vs Last</span>
+          <div class="sds-viz-card__legend">
+            <span class="sds-viz-card__legend-item">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--sds-chart-1);flex-shrink:0;"></span> Current
+            </span>
+            <span class="sds-viz-card__legend-item">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--sds-chart-8);flex-shrink:0;"></span> Previous
+            </span>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 320 120" style="height:120px; width:100%;">
+            <line class="chart-inline-grid" x1="20" y1="10" x2="300" y2="10"/>
+            <line class="chart-inline-grid" x1="20" y1="40" x2="300" y2="40"/>
+            <line class="chart-inline-grid" x1="20" y1="70" x2="300" y2="70"/>
+            <line class="chart-inline-grid" x1="20" y1="95" x2="300" y2="95"/>
+            <line class="lollipop-stem" x1="40" y1="28" x2="40" y2="55"/>
+            <circle class="lollipop-dot" cx="40" cy="28" r="5" fill="var(--sds-chart-1)"/>
+            <circle class="lollipop-dot" cx="40" cy="55" r="5" fill="var(--sds-chart-8)"/>
+            <line class="lollipop-stem" x1="80" y1="18" x2="80" y2="42"/>
+            <circle class="lollipop-dot" cx="80" cy="18" r="5" fill="var(--sds-chart-1)"/>
+            <circle class="lollipop-dot" cx="80" cy="42" r="5" fill="var(--sds-chart-8)"/>
+            <line class="lollipop-stem" x1="120" y1="22" x2="120" y2="48"/>
+            <circle class="lollipop-dot" cx="120" cy="22" r="5" fill="var(--sds-chart-1)"/>
+            <circle class="lollipop-dot" cx="120" cy="48" r="5" fill="var(--sds-chart-8)"/>
+            <line class="lollipop-stem" x1="160" y1="15" x2="160" y2="35"/>
+            <circle class="lollipop-dot" cx="160" cy="15" r="5" fill="var(--sds-chart-1)"/>
+            <circle class="lollipop-dot" cx="160" cy="35" r="5" fill="var(--sds-chart-8)"/>
+            <line class="lollipop-stem" x1="200" y1="30" x2="200" y2="58"/>
+            <circle class="lollipop-dot" cx="200" cy="30" r="5" fill="var(--sds-chart-1)"/>
+            <circle class="lollipop-dot" cx="200" cy="58" r="5" fill="var(--sds-chart-8)"/>
+            <line class="lollipop-stem" x1="240" y1="12" x2="240" y2="50"/>
+            <circle class="lollipop-dot" cx="240" cy="12" r="5" fill="var(--sds-chart-1)"/>
+            <circle class="lollipop-dot" cx="240" cy="50" r="5" fill="var(--sds-chart-8)"/>
+            <line class="lollipop-stem" x1="280" y1="20" x2="280" y2="38"/>
+            <circle class="lollipop-dot" cx="280" cy="20" r="5" fill="var(--sds-chart-1)"/>
+            <circle class="lollipop-dot" cx="280" cy="38" r="5" fill="var(--sds-chart-8)"/>
+            <text class="chart-inline-axis" x="40" y="112" text-anchor="middle">Mon</text>
+            <text class="chart-inline-axis" x="80" y="112" text-anchor="middle">Tue</text>
+            <text class="chart-inline-axis" x="120" y="112" text-anchor="middle">Wed</text>
+            <text class="chart-inline-axis" x="160" y="112" text-anchor="middle">Thu</text>
+            <text class="chart-inline-axis" x="200" y="112" text-anchor="middle">Fri</text>
+            <text class="chart-inline-axis" x="240" y="112" text-anchor="middle">Sat</text>
+            <text class="chart-inline-axis" x="280" y="112" text-anchor="middle">Sun</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <span class="sds-viz-card__label">Findings: Actual vs Target</span>
+          <div class="sds-viz-card__legend">
+            <span class="sds-viz-card__legend-item">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--sds-chart-5);flex-shrink:0;"></span> Actual
+            </span>
+            <span class="sds-viz-card__legend-item">
+              <span style="width:8px;height:8px;border-radius:50%;background:var(--sds-chart-4);flex-shrink:0;"></span> Target
+            </span>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 320 120" style="height:120px; width:100%;">
+            <line class="chart-inline-grid" x1="20" y1="10" x2="300" y2="10"/>
+            <line class="chart-inline-grid" x1="20" y1="40" x2="300" y2="40"/>
+            <line class="chart-inline-grid" x1="20" y1="70" x2="300" y2="70"/>
+            <line class="chart-inline-grid" x1="20" y1="95" x2="300" y2="95"/>
+            <line class="lollipop-stem" x1="52" y1="35" x2="52" y2="60"/>
+            <circle class="lollipop-dot" cx="52" cy="60" r="5" fill="var(--sds-chart-5)"/>
+            <circle class="lollipop-dot" cx="52" cy="35" r="5" fill="var(--sds-chart-4)"/>
+            <line class="lollipop-stem" x1="108" y1="42" x2="108" y2="55"/>
+            <circle class="lollipop-dot" cx="108" cy="55" r="5" fill="var(--sds-chart-5)"/>
+            <circle class="lollipop-dot" cx="108" cy="42" r="5" fill="var(--sds-chart-4)"/>
+            <line class="lollipop-stem" x1="164" y1="48" x2="164" y2="65"/>
+            <circle class="lollipop-dot" cx="164" cy="48" r="5" fill="var(--sds-chart-5)"/>
+            <circle class="lollipop-dot" cx="164" cy="65" r="5" fill="var(--sds-chart-4)"/>
+            <line class="lollipop-stem" x1="220" y1="30" x2="220" y2="72"/>
+            <circle class="lollipop-dot" cx="220" cy="72" r="5" fill="var(--sds-chart-5)"/>
+            <circle class="lollipop-dot" cx="220" cy="30" r="5" fill="var(--sds-chart-4)"/>
+            <line class="lollipop-stem" x1="276" y1="38" x2="276" y2="50"/>
+            <circle class="lollipop-dot" cx="276" cy="50" r="5" fill="var(--sds-chart-5)"/>
+            <circle class="lollipop-dot" cx="276" cy="38" r="5" fill="var(--sds-chart-4)"/>
+            <text class="chart-inline-axis" x="52" y="112" text-anchor="middle">Q1</text>
+            <text class="chart-inline-axis" x="108" y="112" text-anchor="middle">Q2</text>
+            <text class="chart-inline-axis" x="164" y="112" text-anchor="middle">Q3</text>
+            <text class="chart-inline-axis" x="220" y="112" text-anchor="middle">Q4</text>
+            <text class="chart-inline-axis" x="276" y="112" text-anchor="middle">YTD</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <h2>Radar Chart Cards</h2>
+  <p>Multi-axis radar charts for visualizing scores across several dimensions simultaneously. Use for security posture assessments, maturity models, or capability comparisons where 4-6 factors need to be evaluated together.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Multi-dimensional scoring</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-viz-card" style="align-items:center;">
+        <span class="sds-viz-card__label" style="align-self:flex-start;">Security Posture</span>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 200 200" style="width:200px; height:200px;">
+            <polygon class="radar-grid" points="100,30 160.6,65 160.6,135 100,170 39.4,135 39.4,65"/>
+            <polygon class="radar-grid" points="100,52.5 141.2,78.75 141.2,121.25 100,147.5 58.8,121.25 58.8,78.75"/>
+            <polygon class="radar-grid" points="100,75 121.8,92.5 121.8,107.5 100,125 78.2,107.5 78.2,92.5"/>
+            <line class="radar-axis" x1="100" y1="100" x2="100" y2="30"/>
+            <line class="radar-axis" x1="100" y1="100" x2="160.6" y2="65"/>
+            <line class="radar-axis" x1="100" y1="100" x2="160.6" y2="135"/>
+            <line class="radar-axis" x1="100" y1="100" x2="100" y2="170"/>
+            <line class="radar-axis" x1="100" y1="100" x2="39.4" y2="135"/>
+            <line class="radar-axis" x1="100" y1="100" x2="39.4" y2="65"/>
+            <polygon class="radar-fill" points="100,40.5 151.5,72.5 146.2,128 100,142 50.8,117.5 47.8,72.5"
+              fill="var(--sds-chart-1)" stroke="var(--sds-chart-1)"/>
+            <circle class="radar-dot" cx="100" cy="40.5" r="3.5" fill="var(--sds-chart-1)"/>
+            <circle class="radar-dot" cx="151.5" cy="72.5" r="3.5" fill="var(--sds-chart-1)"/>
+            <circle class="radar-dot" cx="146.2" cy="128" r="3.5" fill="var(--sds-chart-1)"/>
+            <circle class="radar-dot" cx="100" cy="142" r="3.5" fill="var(--sds-chart-1)"/>
+            <circle class="radar-dot" cx="50.8" cy="117.5" r="3.5" fill="var(--sds-chart-1)"/>
+            <circle class="radar-dot" cx="47.8" cy="72.5" r="3.5" fill="var(--sds-chart-1)"/>
+            <text class="radar-label" x="100" y="20">Access</text>
+            <text class="radar-label" x="170" y="62">Encrypt</text>
+            <text class="radar-label" x="170" y="142">Classify</text>
+            <text class="radar-label" x="100" y="188">Monitor</text>
+            <text class="radar-label" x="28" y="142">Mask</text>
+            <text class="radar-label" x="28" y="62">Audit</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sds-viz-card" style="align-items:center;">
+        <span class="sds-viz-card__label" style="align-self:flex-start;">Compliance Maturity</span>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 200 200" style="width:200px; height:200px;">
+            <polygon class="radar-grid" points="100,30 166.6,78.4 141.4,160.6 58.6,160.6 33.4,78.4"/>
+            <polygon class="radar-grid" points="100,53.5 146.6,85.9 128.5,146.5 71.5,146.5 53.4,85.9"/>
+            <polygon class="radar-grid" points="100,77 126.6,93.4 116.2,132.4 83.8,132.4 73.4,93.4"/>
+            <line class="radar-axis" x1="100" y1="100" x2="100" y2="30"/>
+            <line class="radar-axis" x1="100" y1="100" x2="166.6" y2="78.4"/>
+            <line class="radar-axis" x1="100" y1="100" x2="141.4" y2="160.6"/>
+            <line class="radar-axis" x1="100" y1="100" x2="58.6" y2="160.6"/>
+            <line class="radar-axis" x1="100" y1="100" x2="33.4" y2="78.4"/>
+            <polygon class="radar-fill" points="100,37 155.5,82.4 129,155 67,145 43,82"
+              fill="var(--sds-chart-2)" stroke="var(--sds-chart-2)"/>
+            <circle class="radar-dot" cx="100" cy="37" r="3.5" fill="var(--sds-chart-2)"/>
+            <circle class="radar-dot" cx="155.5" cy="82.4" r="3.5" fill="var(--sds-chart-2)"/>
+            <circle class="radar-dot" cx="129" cy="155" r="3.5" fill="var(--sds-chart-2)"/>
+            <circle class="radar-dot" cx="67" cy="145" r="3.5" fill="var(--sds-chart-2)"/>
+            <circle class="radar-dot" cx="43" cy="82" r="3.5" fill="var(--sds-chart-2)"/>
+            <text class="radar-label" x="100" y="20">GDPR</text>
+            <text class="radar-label" x="178" y="78">HIPAA</text>
+            <text class="radar-label" x="150" y="172">SOC 2</text>
+            <text class="radar-label" x="50" y="172">PCI DSS</text>
+            <text class="radar-label" x="22" y="78">CCPA</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <h2>Activity Bar Cards</h2>
+  <p>Vertical rounded progress bars per day or period, with a track background showing capacity. Use for scan activity, login volume, or alert frequency over a week.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Weekly activity bars</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-activity-card">
+        <div class="sds-activity-card__header">
+          <div>
+            <span class="sds-viz-card__label">Daily Scan Activity</span>
+            <div style="margin-top:var(--sds-space-150); display:flex; align-items:baseline; gap:var(--sds-space-200);">
+              <span style="font-size:var(--sds-type-heading); font-weight:var(--sds-weight-bold); color:var(--sds-text-primary);">2,847</span>
+              <span style="font-size:var(--sds-type-caption); color:var(--sds-color-warm-gray-450);">this week</span>
+            </div>
+          </div>
+        </div>
+        <div class="sds-activity-card__bars">
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:72%; background:var(--sds-chart-1);"></div></div><span class="sds-activity-bar__label">Mo</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:88%; background:var(--sds-chart-1);"></div></div><span class="sds-activity-bar__label">Tu</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:95%; background:var(--sds-chart-1);"></div></div><span class="sds-activity-bar__label">We</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:60%; background:var(--sds-chart-1);"></div></div><span class="sds-activity-bar__label">Th</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:82%; background:var(--sds-chart-1);"></div></div><span class="sds-activity-bar__label">Fr</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:35%; background:var(--sds-color-blue-200);"></div></div><span class="sds-activity-bar__label">Sa</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:20%; background:var(--sds-color-blue-200);"></div></div><span class="sds-activity-bar__label">Su</span></div>
+        </div>
+      </div>
+
+      <div class="sds-activity-card">
+        <div class="sds-activity-card__header">
+          <div>
+            <span class="sds-viz-card__label">Alert Volume</span>
+            <div style="margin-top:var(--sds-space-150); display:flex; align-items:baseline; gap:var(--sds-space-200);">
+              <span style="font-size:var(--sds-type-heading); font-weight:var(--sds-weight-bold); color:var(--sds-text-primary);">184</span>
+              <span class="sds-viz-card__trend sds-viz-card__trend--negative">
+                <span class="material-symbols-outlined">trending_up</span> 22%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="sds-activity-card__bars">
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:45%; background:var(--sds-chart-4);"></div></div><span class="sds-activity-bar__label">Mo</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:60%; background:var(--sds-chart-4);"></div></div><span class="sds-activity-bar__label">Tu</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:78%; background:var(--sds-chart-4);"></div></div><span class="sds-activity-bar__label">We</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:92%; background:var(--sds-color-red-450);"></div></div><span class="sds-activity-bar__label">Th</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:55%; background:var(--sds-chart-4);"></div></div><span class="sds-activity-bar__label">Fr</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:30%; background:var(--sds-color-red-250);"></div></div><span class="sds-activity-bar__label">Sa</span></div>
+          <div class="sds-activity-bar"><div class="sds-activity-bar__track"><div class="sds-activity-bar__fill" style="height:18%; background:var(--sds-color-red-250);"></div></div><span class="sds-activity-bar__label">Su</span></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <h2>Specifications</h2>
+
+  <h3>Info Visualization Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Card surface</td><td>background</td><td><code>--sds-color-white</code></td></tr>
+      <tr><td>Card padding</td><td>padding</td><td><code>--sds-space-500</code> (20px)</td></tr>
+      <tr><td>Card border</td><td>border</td><td><code>--sds-color-warm-gray-100</code> 1px</td></tr>
+      <tr><td>Card radius</td><td>border-radius</td><td><code>10px</code></td></tr>
+      <tr><td>Gauge arc</td><td>size / stroke-width</td><td><code>120x70px</code> SVG / <code>10px</code></td></tr>
+      <tr><td>Gauge needle</td><td>stroke-width / color</td><td><code>2px</code> / <code>warm-gray-700</code></td></tr>
+      <tr><td>Lollipop dot</td><td>radius</td><td><code>5px</code></td></tr>
+      <tr><td>Lollipop stem</td><td>stroke-width / color</td><td><code>2px</code> / <code>warm-gray-200</code></td></tr>
+      <tr><td>Radar chart</td><td>size</td><td><code>200x200px</code> SVG</td></tr>
+      <tr><td>Radar fill</td><td>opacity</td><td><code>0.12</code></td></tr>
+      <tr><td>Activity bar track</td><td>max-width / height</td><td><code>28px</code> / <code>120px</code></td></tr>
+      <tr><td>Activity bar</td><td>border-radius</td><td><code>14px</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes Reference</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Gauge Cards</td></tr>
+      <tr><td><code>.sds-gauge-card</code></td><td>Semi-circle gauge with needle, value, and sub-label</td></tr>
+      <tr><td><code>.sds-gauge-card__title</code></td><td>Card title (body size, semibold, left-aligned)</td></tr>
+      <tr><td><code>.sds-gauge-card__chart</code></td><td>120x70 SVG container for semi-circle arc and needle</td></tr>
+      <tr><td><code>.sds-gauge-card__value</code></td><td>Large centered metric (heading size, bold)</td></tr>
+      <tr><td><code>.sds-gauge-card__sub</code></td><td>Descriptive sub-label below value (caption size)</td></tr>
+      <tr><td><code>.gauge-track</code></td><td>Background arc path (warm-gray-100 stroke)</td></tr>
+      <tr><td><code>.gauge-fill</code></td><td>Colored arc path with stroke-dashoffset animation</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Lollipop Chart Cards</td></tr>
+      <tr><td><code>.lollipop-stem</code></td><td>Connecting line between paired dots (warm-gray-200, 2px)</td></tr>
+      <tr><td><code>.lollipop-dot</code></td><td>Data point circles (5px radius) colored by series</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Radar Chart Cards</td></tr>
+      <tr><td><code>.radar-grid</code></td><td>Concentric polygon outlines (warm-gray-100 stroke)</td></tr>
+      <tr><td><code>.radar-axis</code></td><td>Axis lines from center to vertices (warm-gray-150)</td></tr>
+      <tr><td><code>.radar-fill</code></td><td>Filled data polygon (chart color, 12% opacity)</td></tr>
+      <tr><td><code>.radar-dot</code></td><td>Vertex data points (3.5px radius, chart color fill)</td></tr>
+      <tr><td><code>.radar-label</code></td><td>Axis labels positioned around the chart perimeter</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Activity Bar Cards</td></tr>
+      <tr><td><code>.sds-activity-card</code></td><td>Card with vertical rounded bars per day/period</td></tr>
+      <tr><td><code>.sds-activity-card__header</code></td><td>Header row with label and metric</td></tr>
+      <tr><td><code>.sds-activity-card__bars</code></td><td>Flex row container for bar columns</td></tr>
+      <tr><td><code>.sds-activity-bar</code></td><td>Single bar column: label + track</td></tr>
+      <tr><td><code>.sds-activity-bar__track</code></td><td>Vertical track (28px max-width, rounded, gray background)</td></tr>
+      <tr><td><code>.sds-activity-bar__fill</code></td><td>Filled portion anchored to bottom of track</td></tr>
+      <tr><td><code>.sds-activity-bar__label</code></td><td>Day/period label below bar (10px, uppercase)</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Shared Utilities</td></tr>
+      <tr><td><code>.sds-viz-card</code></td><td>Base card container used by lollipop and radar cards</td></tr>
+      <tr><td><code>.sds-viz-card__header</code></td><td>Header with label and legend</td></tr>
+      <tr><td><code>.sds-viz-card__label</code></td><td>Metric label (uppercase, caption size)</td></tr>
+      <tr><td><code>.sds-viz-card__chart</code></td><td>Chart container region</td></tr>
+      <tr><td><code>.sds-viz-card__legend</code></td><td>Flex row of legend items for multi-series charts</td></tr>
+      <tr><td><code>.sds-viz-card__legend-item</code></td><td>Legend entry: colored dot + label</td></tr>
+      <tr><td><code>.sds-viz-card__trend</code></td><td>Trend indicator pill with color variants</td></tr>
+      <tr><td><code>.sds-viz-grid</code></td><td>4-column CSS grid for dashboard layouts</td></tr>
+      <tr><td><code>.chart-inline-axis</code></td><td>SVG text labels for chart axes (10px, gray)</td></tr>
+      <tr><td><code>.chart-inline-grid</code></td><td>SVG grid lines (warm-gray-100, 1px)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>

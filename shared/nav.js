@@ -189,7 +189,6 @@
       { label: 'Side Panel',       href: '/components/side-panel.html',       icon: 'sidepanel' },
       { label: 'Skeleton Loaders', href: '/components/skeleton-loaders.html', icon: 'skeleton' },
       { label: 'Split View',       href: '/components/split-view.html',       icon: 'splitview' },
-      { label: 'Stat Card',        href: '/components/stat-card.html',        icon: 'statcard' },
       { label: 'Status Indicator', href: '/components/status-indicator.html', icon: 'statusindicator' },
       { label: 'Stepper',          href: '/components/stepper.html',          icon: 'stepper' },
       { label: 'Tables',           href: '/components/tables.html',           icon: 'table' },
@@ -199,6 +198,13 @@
       { label: 'Toasts',           href: '/components/toasts.html',           icon: 'toast' },
       { label: 'Tooltips',         href: '/components/tooltips.html',         icon: 'tooltip' },
       { label: 'Tree View',        href: '/components/tree-view.html',        icon: 'treeview' },
+    ]},
+    { group: 'Data Display', links: [
+      { label: 'Chart Cards',       href: '/components/chart-cards.html',     icon: 'chartcard' },
+      { label: 'Info Visualization', href: '/components/info-viz-cards.html', icon: 'infoviz' },
+      { label: 'Insight Cards',     href: '/components/insight-cards.html',   icon: 'insightcard' },
+      { label: 'KPI & Metrics',     href: '/components/kpi-cards.html',      icon: 'kpimetric' },
+      { label: 'Stat Cards',        href: '/components/stat-card.html',      icon: 'statcard' },
     ]},
     { group: 'Data Visualization', links: [
       { label: 'Area Chart',     href: '/data-viz/area-chart.html',     icon: 'area' },
@@ -260,6 +266,10 @@
     codeblock:  'code',
     filterbar:  'filter_alt',
     inlineedit: 'edit_note',
+    infoviz:     'bubble_chart',
+    insightcard: 'lightbulb',
+    chartcard:   'insert_chart',
+    kpimetric:   'speed',
     notifcenter:'notifications_active',
     segmented:  'toggle_on',
     splitview:  'vertical_split',
@@ -299,9 +309,12 @@
       const a = document.createElement('a');
       a.className = 'ds-nav-link';
       a.href = basePath + link.href.replace(/^\//, '');
-      const normHref = a.href.replace(/\.html$/, '').replace(/\/$/, '');
+      // Strip hash for page-level matching
+      const hrefNoHash = a.href.replace(/#.*$/, '');
+      const normHref = hrefNoHash.replace(/\.html$/, '').replace(/\/$/, '');
       var normFullUrl = fullUrl.replace(/\.html$/, '').replace(/\/$/, '');
-      if (normFullUrl === normHref || normPath === normHref || path.endsWith(link.href.replace(/^\//, ''))) {
+      const linkPath = link.href.replace(/^\//, '').replace(/#.*$/, '');
+      if (normFullUrl === normHref || normPath === normHref || path.endsWith(linkPath)) {
         a.classList.add('is-active');
       }
       a.innerHTML = '<span class="material-symbols-outlined">' + (icons[link.icon] || '') + '</span><span>' + link.label + '</span>';

@@ -51,8 +51,9 @@
 
     .sds-stat-card {
       background: var(--sds-color-white);
-      border: 1px solid var(--sds-color-warm-gray-150);
-      border-radius: 8px;
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
       padding: var(--sds-space-500) var(--sds-space-600);
       display: flex;
       flex-direction: column;
@@ -75,37 +76,48 @@
       color: var(--sds-text-primary);
       margin-top: var(--sds-space-150);
       line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
     }
 
     .sds-stat-card__trend {
       display: inline-flex;
       align-items: center;
-      gap: var(--sds-space-100);
+      gap: var(--sds-space-050);
       font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
       margin-top: var(--sds-space-150);
       line-height: 1;
+      padding: 3px 8px 3px 5px;
+      border-radius: 20px;
+      width: fit-content;
     }
     .sds-stat-card__trend .material-symbols-outlined {
-      font-size: 16px;
+      font-size: 14px;
     }
 
     /* Directional trends (arrow direction) */
     .sds-stat-card__trend--up {
       color: var(--sds-color-green-500);
+      background: var(--sds-status-success-bg);
     }
     .sds-stat-card__trend--down {
       color: var(--sds-color-red-550);
+      background: var(--sds-status-error-bg);
     }
     .sds-stat-card__trend--neutral {
-      color: var(--sds-color-warm-gray-400);
+      color: var(--sds-color-warm-gray-500);
+      background: var(--sds-color-warm-gray-050);
     }
 
     /* Semantic trends (good/bad regardless of direction) */
     .sds-stat-card__trend--positive {
       color: var(--sds-color-green-500);
+      background: var(--sds-status-success-bg);
     }
     .sds-stat-card__trend--negative {
       color: var(--sds-color-red-550);
+      background: var(--sds-status-error-bg);
     }
 
     .sds-stat-card__icon {
@@ -592,12 +604,17 @@
       <tr>
         <td>Card border</td>
         <td>border</td>
-        <td><span class="swatch" style="background:var(--sds-color-warm-gray-150)"></span><code>--sds-color-warm-gray-150</code> &nbsp;1 px</td>
+        <td><span class="swatch" style="background:var(--sds-color-warm-gray-100)"></span><code>--sds-color-warm-gray-100</code> &nbsp;1 px</td>
+      </tr>
+      <tr>
+        <td>Card shadow</td>
+        <td>box-shadow</td>
+        <td><code>0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02)</code></td>
       </tr>
       <tr>
         <td>Card radius</td>
         <td>border-radius</td>
-        <td><code>8 px</code></td>
+        <td><code>10 px</code></td>
       </tr>
       <tr>
         <td>Card padding</td>
@@ -723,7 +740,7 @@
       <tr><th>Class</th><th>Description</th></tr>
     </thead>
     <tbody>
-      <tr><td><code>.sds-stat-card</code></td><td>Base card container -- white background, border, 8 px radius</td></tr>
+      <tr><td><code>.sds-stat-card</code></td><td>Base card container -- white background, border, 10 px radius, dual-layer shadow</td></tr>
       <tr><td><code>.sds-stat-card__label</code></td><td>Metric label text (uppercase, caption size, warm-gray-500)</td></tr>
       <tr><td><code>.sds-stat-card__value</code></td><td>Large metric number (28 px, semibold)</td></tr>
       <tr><td><code>.sds-stat-card__trend</code></td><td>Trend indicator wrapper (inline-flex, caption size)</td></tr>

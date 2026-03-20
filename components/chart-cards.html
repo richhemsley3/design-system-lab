@@ -1,0 +1,1574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Software DS — Chart Cards</title>
+  <link rel="stylesheet" href="../tokens/colors.css" />
+  <link rel="stylesheet" href="../tokens/spacing.css" />
+  <link rel="stylesheet" href="../tokens/typography.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+  <style>
+    /* ---- Page chrome ---- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: var(--sds-font-sans);
+      background: var(--sds-bg-page);
+      color: var(--sds-text-primary);
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+    .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+    h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+
+    /* Section category dividers */
+    .section-category {
+      margin: var(--sds-space-1600) 0 var(--sds-space-400);
+      padding: 0 0 var(--sds-space-300);
+      border-bottom: 2px solid var(--sds-color-warm-gray-150);
+    }
+    .section-category:first-of-type { margin-top: 0; }
+    .section-category__label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--sds-interactive-primary);
+      margin: 0 0 var(--sds-space-100);
+    }
+    .section-category__title {
+      font-size: 24px;
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0 0 var(--sds-space-100);
+      letter-spacing: -0.01em;
+    }
+    .section-category__desc {
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+      margin: 0;
+      line-height: var(--sds-leading-normal);
+      max-width: 600px;
+    }
+
+    /* Quick nav pills */
+    .section-nav {
+      display: flex;
+      gap: var(--sds-space-200);
+      flex-wrap: wrap;
+      margin: 0 0 var(--sds-space-1200);
+    }
+    .section-nav__pill {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      padding: var(--sds-space-150) var(--sds-space-400);
+      border-radius: 20px;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-white);
+      color: var(--sds-text-secondary);
+      text-decoration: none;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      transition: all 150ms ease;
+      user-select: none;
+    }
+    .section-nav__pill:hover {
+      border-color: var(--sds-interactive-primary);
+      color: var(--sds-interactive-primary);
+      background: var(--sds-color-blue-025, #f0f7fa);
+    }
+    .section-nav__pill .material-symbols-outlined {
+      font-size: 16px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+    h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); color: var(--sds-text-primary); margin: var(--sds-space-800) 0 var(--sds-space-150); }
+    p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+    code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+
+    /* Demo containers */
+    .demo-block {
+      background: var(--sds-color-warm-gray-025);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      padding: var(--sds-space-800);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .demo-label {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+      margin: 0 0 var(--sds-space-400);
+    }
+    .demo-grid {
+      display: grid;
+      gap: var(--sds-space-500);
+    }
+    .demo-grid--2 { grid-template-columns: repeat(2, 1fr); }
+    .demo-grid--3 { grid-template-columns: repeat(3, 1fr); }
+    .demo-grid--4 { grid-template-columns: repeat(4, 1fr); }
+
+    /* ============================================================
+       INSIGHT CARD
+       Text-driven cards that surface findings, recommendations,
+       anomalies, or alerts. Used in dashboards and summary views.
+       ============================================================ */
+
+    .sds-insight {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    /* Icon slot */
+    .sds-insight__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .sds-insight__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+    /* Content area */
+    .sds-insight__content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+    }
+
+    .sds-insight__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+    .sds-insight__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      line-height: var(--sds-leading-snug);
+    }
+
+    .sds-insight__description {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+      margin: 0;
+    }
+
+    .sds-insight__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      margin-top: var(--sds-space-100);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+    }
+    .sds-insight__meta-divider {
+      width: 1px;
+      height: 12px;
+      background: var(--sds-color-warm-gray-200);
+    }
+
+    /* Severity badge */
+    .sds-insight__severity {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      border-radius: 4px;
+      line-height: 1.4;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .sds-insight__severity--critical {
+      background: var(--sds-status-error-bg);
+      color: var(--sds-color-red-550);
+    }
+    .sds-insight__severity--warning {
+      background: var(--sds-status-warning-bg);
+      color: var(--sds-color-yellow-650);
+    }
+    .sds-insight__severity--info {
+      background: var(--sds-status-info-bg);
+      color: var(--sds-color-blue-700);
+    }
+    .sds-insight__severity--success {
+      background: var(--sds-status-success-bg);
+      color: var(--sds-color-green-500);
+    }
+
+    /* Accent bar variant */
+    .sds-insight--accent {
+      position: relative;
+      overflow: hidden;
+      padding-left: calc(var(--sds-space-500) + 4px);
+    }
+    .sds-insight--accent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+    }
+    .sds-insight--accent-critical::before { background: var(--sds-color-red-450); }
+    .sds-insight--accent-warning::before { background: var(--sds-color-yellow-400); }
+    .sds-insight--accent-info::before { background: var(--sds-color-blue-550); }
+    .sds-insight--accent-success::before { background: var(--sds-color-green-400); }
+
+    /* Action link */
+    .sds-insight__action {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-blue-750);
+      text-decoration: none;
+      font-weight: var(--sds-weight-medium);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      margin-top: var(--sds-space-100);
+    }
+    .sds-insight__action:hover { text-decoration: underline; text-underline-offset: 2px; }
+    .sds-insight__action .material-symbols-outlined { font-size: 16px; text-decoration: none; display: inline-block; }
+    .sds-insight__action:hover .material-symbols-outlined { text-decoration: none; }
+
+    /* Compact variant */
+    .sds-insight--compact {
+      padding: var(--sds-space-400);
+      gap: var(--sds-space-300);
+    }
+    .sds-insight--compact .sds-insight__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+    .sds-insight--compact .sds-insight__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+    /* Insight list (stacked, no outer gaps) */
+    .sds-insight-list {
+      display: flex;
+      flex-direction: column;
+    }
+    .sds-insight-list .sds-insight {
+      border-radius: 0;
+      border-bottom-width: 0;
+    }
+    .sds-insight-list .sds-insight:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+    .sds-insight-list .sds-insight:last-child {
+      border-radius: 0 0 8px 8px;
+      border-bottom-width: 1px;
+    }
+    .sds-insight-list .sds-insight:only-child {
+      border-radius: 8px;
+    }
+
+    /* ============================================================
+       MINI DATA-VIZ CARD
+       Lightweight chart cards for dashboard grids.
+       Wraps a small visualization with metric + label.
+       ============================================================ */
+
+    .sds-viz-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-300);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+    .sds-viz-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+    .sds-viz-card__label {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-500);
+      font-weight: var(--sds-weight-medium);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      margin: 0;
+      line-height: 1;
+      user-select: none;
+    }
+
+    .sds-viz-card__value {
+      font-size: var(--sds-type-display);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+    .sds-viz-card__trend {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      line-height: 1;
+      padding: 3px 8px 3px 5px;
+      border-radius: 20px;
+    }
+    .sds-viz-card__trend .material-symbols-outlined {
+      font-size: 14px;
+    }
+    .sds-viz-card__trend--positive {
+      color: var(--sds-color-green-500);
+      background: var(--sds-status-success-bg);
+    }
+    .sds-viz-card__trend--negative {
+      color: var(--sds-color-red-550);
+      background: var(--sds-status-error-bg);
+    }
+    .sds-viz-card__trend--neutral {
+      color: var(--sds-color-warm-gray-500);
+      background: var(--sds-color-warm-gray-050);
+    }
+
+    /* Chart region */
+    .sds-viz-card__chart {
+      flex: 1;
+      min-height: 0;
+    }
+    .sds-viz-card__chart svg {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+    /* Metric row (value + chart side by side) */
+    .sds-viz-card--row {
+      flex-direction: row;
+      align-items: center;
+    }
+    .sds-viz-card--row .sds-viz-card__info {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+    }
+    .sds-viz-card--row .sds-viz-card__chart {
+      flex: 1;
+      min-width: 0;
+    }
+
+    /* Footer */
+    .sds-viz-card__footer {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      padding-top: var(--sds-space-300);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+    /* ---- Sparkline ---- */
+    .sparkline-line {
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .sparkline-area {
+      opacity: 0.12;
+    }
+    .sparkline-dot {
+      stroke-width: 2;
+      stroke: var(--sds-color-white);
+    }
+
+    /* ---- Mini donut ---- */
+    .mini-donut-track {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+    }
+    .mini-donut-fill {
+      fill: none;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mini-donut-label {
+      font-family: var(--sds-font-sans);
+      font-size: 13px;
+      font-weight: 600;
+      fill: var(--sds-text-primary);
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    /* ---- Mini horizontal bars ---- */
+    .mini-bar-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      font-size: var(--sds-type-caption);
+    }
+    .mini-bar-row + .mini-bar-row {
+      margin-top: var(--sds-space-200);
+    }
+    .mini-bar-label {
+      width: 72px;
+      flex-shrink: 0;
+      color: var(--sds-text-secondary);
+      text-align: right;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mini-bar-track {
+      flex: 1;
+      height: 8px;
+      background: var(--sds-color-warm-gray-075, var(--sds-color-warm-gray-050));
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .mini-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .mini-bar-value {
+      width: 36px;
+      flex-shrink: 0;
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-semibold);
+    }
+
+    /* ---- Progress ring ---- */
+    .progress-ring-track {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+    }
+    .progress-ring-fill {
+      fill: none;
+      stroke-linecap: round;
+      transform: rotate(-90deg);
+      transform-origin: center;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .progress-ring-label {
+      font-family: var(--sds-font-sans);
+      font-weight: 600;
+      fill: var(--sds-text-primary);
+      text-anchor: middle;
+      dominant-baseline: central;
+    }
+
+    /* ---- Comparison card ---- */
+    .sds-viz-card__comparison {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sds-space-200);
+    }
+    .sds-viz-card__target {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-450);
+    }
+    .sds-viz-card__target-value {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-secondary);
+    }
+    .sds-viz-card__bar-track {
+      height: 8px;
+      background: var(--sds-color-warm-gray-100);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .sds-viz-card__bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sds-viz-card__bar-marker {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: var(--sds-color-warm-gray-500);
+      border-radius: 1px;
+    }
+
+    /* ---- Dashboard grid ---- */
+    .sds-viz-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sds-space-400);
+    }
+
+    /* ---- Optional hover-float modifier ----
+       Add .sds-card--hoverable to any card to enable lift-on-hover.
+       Best for clickable/linked cards in interactive dashboards. */
+    .sds-card--hoverable {
+      transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+    }
+    @media (hover: hover) {
+      .sds-card--hoverable:hover {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.04);
+        transform: translateY(-1px);
+      }
+      .sds-card--hoverable:active {
+        transform: scale(0.98);
+        transition-duration: 80ms;
+      }
+    }
+
+    /* ============================================================
+       METRIC BADGE CARD
+       Simple stat with icon badge — inspired by "Order 201" pattern
+       ============================================================ */
+    .sds-metric-badge {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-metric-badge__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .sds-metric-badge__label {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+    .sds-metric-badge__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+    .sds-metric-badge__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+    .sds-metric-badge__value {
+      font-size: 32px;
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      margin-top: var(--sds-space-100);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-metric-badge__secondary {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-450);
+    }
+
+    /* ============================================================
+       DONUT BREAKDOWN CARD
+       Metric + inline donut with legend — "Users 5614" pattern
+       ============================================================ */
+    .sds-donut-breakdown {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-500);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-donut-breakdown__info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-donut-breakdown__label {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0 0 var(--sds-space-050);
+    }
+    .sds-donut-breakdown__value {
+      font-size: 32px;
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-donut-breakdown__legend {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-150);
+      margin-top: var(--sds-space-300);
+    }
+    .sds-donut-breakdown__legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+    }
+    .sds-donut-breakdown__legend-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+    .sds-donut-breakdown__chart {
+      flex-shrink: 0;
+    }
+
+    /* Multi-segment donut */
+    .donut-segment {
+      fill: none;
+      stroke-linecap: butt;
+    }
+
+    /* ============================================================
+       AREA CHART CARD
+       Card wrapping a filled area chart — "Overall Performance" pattern
+       ============================================================ */
+    .area-fill {
+      opacity: 0.15;
+    }
+    .area-line {
+      fill: none;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    .area-dot {
+      stroke: var(--sds-color-white);
+      stroke-width: 2;
+    }
+
+    /* Chart tooltip */
+    .sds-viz-card__tooltip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      background: var(--sds-color-warm-gray-900);
+      color: var(--sds-color-white);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* ============================================================
+       MULTI-SERIES LINE CARD
+       Two overlapping line series with legend pills
+       ============================================================ */
+    .sds-viz-card__legend {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      flex-wrap: wrap;
+    }
+    .sds-viz-card__legend-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+    }
+    .sds-viz-card__legend-line {
+      width: 16px;
+      height: 3px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    /* Chart axis labels for inline charts */
+    .chart-inline-axis {
+      font-family: var(--sds-font-sans);
+      font-size: 10px;
+      fill: var(--sds-color-warm-gray-400);
+    }
+    .chart-inline-grid {
+      stroke: var(--sds-color-warm-gray-100);
+      stroke-width: 1;
+    }
+
+    /* ============================================================
+       VERTICAL MINI BAR CARD
+       Small vertical bars inside a card — "Sales dynamics" pattern
+       ============================================================ */
+    .mini-vbar {
+      rx: 2;
+      ry: 2;
+    }
+
+    /* ============================================================
+       FINANCIAL CARD
+       Icon badge + label + large value + subtitle — "Paid Invoices" pattern
+       ============================================================ */
+    .sds-financial-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-financial-card__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .sds-financial-card__icon .material-symbols-outlined {
+      font-size: 22px;
+    }
+    .sds-financial-card__info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sds-financial-card__label {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      margin: 0 0 var(--sds-space-050);
+    }
+    .sds-financial-card__value {
+      font-size: var(--sds-type-heading);
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-financial-card__sub {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin-top: var(--sds-space-050);
+    }
+    .sds-financial-card__ring {
+      flex-shrink: 0;
+    }
+
+    /* ============================================================
+       GAUGE CARD
+       Semi-circle gauge for scores and health ratings
+       ============================================================ */
+    .sds-gauge-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--sds-space-200);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-gauge-card__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      align-self: flex-start;
+    }
+    .sds-gauge-card__chart {
+      position: relative;
+    }
+    .sds-gauge-card__value {
+      font-size: var(--sds-type-heading);
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+    .sds-gauge-card__sub {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+    }
+    .gauge-track {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+      stroke-linecap: round;
+    }
+    .gauge-fill {
+      fill: none;
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .gauge-needle {
+      fill: var(--sds-color-warm-gray-700);
+      transform-origin: center center;
+      transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* ============================================================
+       LOLLIPOP / DUMBBELL CHART CARD
+       Paired dots with connecting stem for comparisons
+       ============================================================ */
+    .lollipop-stem {
+      stroke: var(--sds-color-warm-gray-200);
+      stroke-width: 2;
+    }
+    .lollipop-dot {
+      stroke: var(--sds-color-white);
+      stroke-width: 2;
+    }
+
+    /* ============================================================
+       RADAR CHART CARD
+       Multi-axis scoring for posture/capability views
+       ============================================================ */
+    .radar-grid {
+      fill: none;
+      stroke: var(--sds-color-warm-gray-100);
+      stroke-width: 1;
+    }
+    .radar-axis {
+      stroke: var(--sds-color-warm-gray-150);
+      stroke-width: 1;
+    }
+    .radar-fill {
+      fill-opacity: 0.12;
+      stroke-width: 2;
+    }
+    .radar-label {
+      font-family: var(--sds-font-sans);
+      font-size: 10px;
+      fill: var(--sds-color-warm-gray-500);
+      text-anchor: middle;
+    }
+    .radar-dot {
+      stroke: var(--sds-color-white);
+      stroke-width: 2;
+    }
+
+    /* ============================================================
+       ACTIVITY BAR CARD
+       Vertical progress bars per day/period with track
+       ============================================================ */
+    .sds-activity-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+    .sds-activity-card__bars {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+      height: 120px;
+    }
+    .sds-activity-bar {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-150);
+      height: 100%;
+    }
+    .sds-activity-bar__track {
+      width: 100%;
+      max-width: 28px;
+      flex: 1;
+      background: var(--sds-color-warm-gray-050);
+      border-radius: 14px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .sds-activity-bar__fill {
+      width: 100%;
+      border-radius: 14px;
+      transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .sds-activity-bar__label {
+      font-size: 10px;
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-400);
+      text-transform: uppercase;
+    }
+    .sds-activity-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+    }
+
+    /* ============================================================
+       SPEC TABLE
+       ============================================================ */
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+      margin: var(--sds-space-400) 0 var(--sds-space-800);
+    }
+    .spec-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-650);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+    .spec-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+    .spec-table td code { font-size: var(--sds-type-caption); }
+    .swatch {
+      display: inline-block;
+      width: 14px;
+      height: 14px;
+      border-radius: 3px;
+      vertical-align: middle;
+      margin-right: var(--sds-space-150);
+      border: 1px solid rgba(0,0,0,0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Chart Cards</h1>
+  <p class="page-subtitle">Cards built around data visualizations — horizontal bars, donuts, area charts, multi-series lines, and vertical bars. Use when the chart is the primary content, not a supporting detail.</p>
+
+  <h2>Horizontal Bar Cards</h2>
+  <p>Horizontal bar breakdowns inside a card. Useful for showing distribution across categories like data types, departments, or risk levels.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Horizontal bar breakdown cards</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <div>
+            <span class="sds-viz-card__label">Sensitive Data by Type</span>
+            <div style="margin-top:var(--sds-space-150);">
+              <span class="sds-viz-card__value" style="font-size:var(--sds-type-heading);">4,218</span>
+              <span style="font-size:var(--sds-type-caption); color:var(--sds-color-warm-gray-450); margin-left:var(--sds-space-150);">fields</span>
+            </div>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">PII</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:78%; background:var(--sds-chart-1);"></div></div>
+            <span class="mini-bar-value">1,842</span>
+          </div>
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">Financial</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:52%; background:var(--sds-chart-2);"></div></div>
+            <span class="mini-bar-value">1,106</span>
+          </div>
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">Healthcare</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:34%; background:var(--sds-chart-3);"></div></div>
+            <span class="mini-bar-value">724</span>
+          </div>
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">Credentials</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:21%; background:var(--sds-chart-4);"></div></div>
+            <span class="mini-bar-value">546</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <div>
+            <span class="sds-viz-card__label">Risk Distribution</span>
+            <div style="margin-top:var(--sds-space-150);">
+              <span class="sds-viz-card__value" style="font-size:var(--sds-type-heading);">312</span>
+              <span style="font-size:var(--sds-type-caption); color:var(--sds-color-warm-gray-450); margin-left:var(--sds-space-150);">assets</span>
+            </div>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">Critical</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:18%; background:var(--sds-color-red-450);"></div></div>
+            <span class="mini-bar-value">56</span>
+          </div>
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">High</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:30%; background:var(--sds-color-yellow-400);"></div></div>
+            <span class="mini-bar-value">94</span>
+          </div>
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">Medium</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:38%; background:var(--sds-color-blue-450);"></div></div>
+            <span class="mini-bar-value">118</span>
+          </div>
+          <div class="mini-bar-row">
+            <span class="mini-bar-label">Low</span>
+            <div class="mini-bar-track"><div class="mini-bar-fill" style="width:14%; background:var(--sds-color-warm-gray-300);"></div></div>
+            <span class="mini-bar-value">44</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <h2>Donut Breakdown Cards</h2>
+  <p>A metric paired with a multi-segment donut chart and inline legend. Shows how a total breaks down across categories — ideal for asset distribution, user segments, or risk allocation.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Metric + donut breakdown</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-donut-breakdown">
+        <div class="sds-donut-breakdown__info">
+          <h3 class="sds-donut-breakdown__label">Sensitive Fields</h3>
+          <span class="sds-donut-breakdown__value">5,614</span>
+          <div class="sds-donut-breakdown__legend">
+            <span class="sds-donut-breakdown__legend-item">
+              <span class="sds-donut-breakdown__legend-dot" style="background:var(--sds-chart-1);"></span> PII (2,480)
+            </span>
+            <span class="sds-donut-breakdown__legend-item">
+              <span class="sds-donut-breakdown__legend-dot" style="background:var(--sds-chart-2);"></span> Financial (1,842)
+            </span>
+            <span class="sds-donut-breakdown__legend-item">
+              <span class="sds-donut-breakdown__legend-dot" style="background:var(--sds-chart-3);"></span> Healthcare (1,292)
+            </span>
+          </div>
+        </div>
+        <div class="sds-donut-breakdown__chart">
+          <svg viewBox="0 0 88 88" style="width:88px; height:88px;">
+            <circle class="mini-donut-track" cx="44" cy="44" r="34" stroke-width="12"/>
+            <circle class="donut-segment" cx="44" cy="44" r="34" stroke-width="12"
+              stroke="var(--sds-chart-1)" stroke-dasharray="94.2 119.4" stroke-dashoffset="0" transform="rotate(-90 44 44)"/>
+            <circle class="donut-segment" cx="44" cy="44" r="34" stroke-width="12"
+              stroke="var(--sds-chart-2)" stroke-dasharray="70.5 143.1" stroke-dashoffset="-94.2" transform="rotate(-90 44 44)"/>
+            <circle class="donut-segment" cx="44" cy="44" r="34" stroke-width="12"
+              stroke="var(--sds-chart-3)" stroke-dasharray="49.1 164.5" stroke-dashoffset="-164.7" transform="rotate(-90 44 44)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sds-donut-breakdown">
+        <div class="sds-donut-breakdown__info">
+          <h3 class="sds-donut-breakdown__label">Access Roles</h3>
+          <span class="sds-donut-breakdown__value">1,256</span>
+          <div class="sds-donut-breakdown__legend">
+            <span class="sds-donut-breakdown__legend-item">
+              <span class="sds-donut-breakdown__legend-dot" style="background:var(--sds-chart-1);"></span> Admin (126)
+            </span>
+            <span class="sds-donut-breakdown__legend-item">
+              <span class="sds-donut-breakdown__legend-dot" style="background:var(--sds-chart-2);"></span> Editor (502)
+            </span>
+            <span class="sds-donut-breakdown__legend-item">
+              <span class="sds-donut-breakdown__legend-dot" style="background:var(--sds-chart-4);"></span> Viewer (628)
+            </span>
+          </div>
+        </div>
+        <div class="sds-donut-breakdown__chart">
+          <svg viewBox="0 0 88 88" style="width:88px; height:88px;">
+            <circle class="mini-donut-track" cx="44" cy="44" r="34" stroke-width="12"/>
+            <circle class="donut-segment" cx="44" cy="44" r="34" stroke-width="12"
+              stroke="var(--sds-chart-1)" stroke-dasharray="21.4 192.3" stroke-dashoffset="0" transform="rotate(-90 44 44)"/>
+            <circle class="donut-segment" cx="44" cy="44" r="34" stroke-width="12"
+              stroke="var(--sds-chart-2)" stroke-dasharray="85.4 128.2" stroke-dashoffset="-21.4" transform="rotate(-90 44 44)"/>
+            <circle class="donut-segment" cx="44" cy="44" r="34" stroke-width="12"
+              stroke="var(--sds-chart-4)" stroke-dasharray="106.9 106.7" stroke-dashoffset="-106.8" transform="rotate(-90 44 44)"/>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---- Area chart cards ---- -->
+  <h2>Area Chart Cards</h2>
+  <p>Cards wrapping a filled area chart with axis labels and an optional tooltip annotation. Shows trends over time with more visual weight than a sparkline.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Area chart with tooltip</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <div>
+            <span class="sds-viz-card__label">Scan Activity</span>
+            <div style="margin-top:var(--sds-space-150); display:flex; align-items:baseline; gap:var(--sds-space-200);">
+              <span style="font-size:var(--sds-type-heading); font-weight:var(--sds-weight-bold); color:var(--sds-text-primary);">4,500</span>
+              <span class="sds-viz-card__trend sds-viz-card__trend--positive">
+                <span class="material-symbols-outlined">trending_up</span> 12%
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 340 120" style="height:120px; width:100%;">
+            <defs>
+              <linearGradient id="area-grad-1" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--sds-chart-1)" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="var(--sds-chart-1)" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <!-- Grid lines -->
+            <line class="chart-inline-grid" x1="30" y1="10" x2="330" y2="10"/>
+            <line class="chart-inline-grid" x1="30" y1="37" x2="330" y2="37"/>
+            <line class="chart-inline-grid" x1="30" y1="64" x2="330" y2="64"/>
+            <line class="chart-inline-grid" x1="30" y1="91" x2="330" y2="91"/>
+            <!-- Area -->
+            <path d="M30,80 L80,72 L130,58 L180,65 L230,42 L280,30 L330,18 L330,100 L30,100Z" fill="url(#area-grad-1)"/>
+            <polyline class="area-line" points="30,80 80,72 130,58 180,65 230,42 280,30 330,18" stroke="var(--sds-chart-1)"/>
+            <circle class="area-dot" cx="280" cy="30" r="4" fill="var(--sds-chart-1)"/>
+            <!-- Tooltip -->
+            <g transform="translate(246, 8)">
+              <rect x="0" y="0" width="64" height="22" rx="4" fill="var(--sds-color-warm-gray-900)"/>
+              <text x="32" y="15" text-anchor="middle" style="font-family:var(--sds-font-sans); font-size:11px; font-weight:600; fill:white;">4,500</text>
+            </g>
+            <!-- X axis labels -->
+            <text class="chart-inline-axis" x="30" y="115" text-anchor="middle">Mon</text>
+            <text class="chart-inline-axis" x="80" y="115" text-anchor="middle">Tue</text>
+            <text class="chart-inline-axis" x="130" y="115" text-anchor="middle">Wed</text>
+            <text class="chart-inline-axis" x="180" y="115" text-anchor="middle">Thu</text>
+            <text class="chart-inline-axis" x="230" y="115" text-anchor="middle">Fri</text>
+            <text class="chart-inline-axis" x="280" y="115" text-anchor="middle">Sat</text>
+            <text class="chart-inline-axis" x="330" y="115" text-anchor="middle">Sun</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <div>
+            <span class="sds-viz-card__label">Data Volume (GB)</span>
+            <div style="margin-top:var(--sds-space-150); display:flex; align-items:baseline; gap:var(--sds-space-200);">
+              <span style="font-size:var(--sds-type-heading); font-weight:var(--sds-weight-bold); color:var(--sds-text-primary);">2.4 TB</span>
+              <span class="sds-viz-card__trend sds-viz-card__trend--neutral">
+                <span class="material-symbols-outlined">trending_flat</span> Steady
+              </span>
+            </div>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 340 120" style="height:120px; width:100%;">
+            <defs>
+              <linearGradient id="area-grad-2" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="var(--sds-chart-2)" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="var(--sds-chart-2)" stop-opacity="0.02"/>
+              </linearGradient>
+            </defs>
+            <line class="chart-inline-grid" x1="30" y1="10" x2="330" y2="10"/>
+            <line class="chart-inline-grid" x1="30" y1="37" x2="330" y2="37"/>
+            <line class="chart-inline-grid" x1="30" y1="64" x2="330" y2="64"/>
+            <line class="chart-inline-grid" x1="30" y1="91" x2="330" y2="91"/>
+            <path d="M30,55 L80,48 L130,52 L180,45 L230,50 L280,42 L330,44 L330,100 L30,100Z" fill="url(#area-grad-2)"/>
+            <polyline class="area-line" points="30,55 80,48 130,52 180,45 230,50 280,42 330,44" stroke="var(--sds-chart-2)"/>
+            <circle class="area-dot" cx="330" cy="44" r="4" fill="var(--sds-chart-2)"/>
+            <text class="chart-inline-axis" x="30" y="115" text-anchor="middle">Jan</text>
+            <text class="chart-inline-axis" x="80" y="115" text-anchor="middle">Feb</text>
+            <text class="chart-inline-axis" x="130" y="115" text-anchor="middle">Mar</text>
+            <text class="chart-inline-axis" x="180" y="115" text-anchor="middle">Apr</text>
+            <text class="chart-inline-axis" x="230" y="115" text-anchor="middle">May</text>
+            <text class="chart-inline-axis" x="280" y="115" text-anchor="middle">Jun</text>
+            <text class="chart-inline-axis" x="330" y="115" text-anchor="middle">Jul</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---- Multi-series line cards ---- -->
+  <h2>Multi-Series Line Cards</h2>
+  <p>Two or more line series plotted on the same axes with a legend to distinguish them. Use for comparing related metrics over the same time period — like scans vs. findings, or inbound vs. outbound data.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Dual-series comparison</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <span class="sds-viz-card__label">Scans vs Findings</span>
+          <div class="sds-viz-card__legend">
+            <span class="sds-viz-card__legend-item">
+              <span class="sds-viz-card__legend-line" style="background:var(--sds-chart-1);"></span> Scans
+            </span>
+            <span class="sds-viz-card__legend-item">
+              <span class="sds-viz-card__legend-line" style="background:var(--sds-chart-4);"></span> Findings
+            </span>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 340 110" style="height:110px; width:100%;">
+            <!-- Grid -->
+            <line class="chart-inline-grid" x1="30" y1="10" x2="330" y2="10"/>
+            <line class="chart-inline-grid" x1="30" y1="35" x2="330" y2="35"/>
+            <line class="chart-inline-grid" x1="30" y1="60" x2="330" y2="60"/>
+            <line class="chart-inline-grid" x1="30" y1="85" x2="330" y2="85"/>
+            <!-- Scans line -->
+            <polyline fill="none" stroke="var(--sds-chart-1)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              points="30,60 80,45 130,50 180,32 230,28 280,35 330,20"/>
+            <!-- Findings line -->
+            <polyline fill="none" stroke="var(--sds-chart-4)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              points="30,75 80,70 130,68 180,58 230,62 280,55 330,48"/>
+            <!-- X axis -->
+            <text class="chart-inline-axis" x="30" y="100" text-anchor="middle">Mon</text>
+            <text class="chart-inline-axis" x="80" y="100" text-anchor="middle">Tue</text>
+            <text class="chart-inline-axis" x="130" y="100" text-anchor="middle">Wed</text>
+            <text class="chart-inline-axis" x="180" y="100" text-anchor="middle">Thu</text>
+            <text class="chart-inline-axis" x="230" y="100" text-anchor="middle">Fri</text>
+            <text class="chart-inline-axis" x="280" y="100" text-anchor="middle">Sat</text>
+            <text class="chart-inline-axis" x="330" y="100" text-anchor="middle">Sun</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <span class="sds-viz-card__label">Inbound vs Outbound</span>
+          <div class="sds-viz-card__legend">
+            <span class="sds-viz-card__legend-item">
+              <span class="sds-viz-card__legend-line" style="background:var(--sds-chart-5);"></span> Inbound
+            </span>
+            <span class="sds-viz-card__legend-item">
+              <span class="sds-viz-card__legend-line" style="background:var(--sds-chart-6);"></span> Outbound
+            </span>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 340 110" style="height:110px; width:100%;">
+            <line class="chart-inline-grid" x1="30" y1="10" x2="330" y2="10"/>
+            <line class="chart-inline-grid" x1="30" y1="35" x2="330" y2="35"/>
+            <line class="chart-inline-grid" x1="30" y1="60" x2="330" y2="60"/>
+            <line class="chart-inline-grid" x1="30" y1="85" x2="330" y2="85"/>
+            <!-- Inbound -->
+            <polyline fill="none" stroke="var(--sds-chart-5)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              points="30,50 80,42 130,55 180,38 230,30 280,45 330,35"/>
+            <!-- Outbound -->
+            <polyline fill="none" stroke="var(--sds-chart-6)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+              points="30,65 80,58 130,62 180,50 230,55 280,48 330,42"/>
+            <text class="chart-inline-axis" x="30" y="100" text-anchor="middle">Jan</text>
+            <text class="chart-inline-axis" x="80" y="100" text-anchor="middle">Feb</text>
+            <text class="chart-inline-axis" x="130" y="100" text-anchor="middle">Mar</text>
+            <text class="chart-inline-axis" x="180" y="100" text-anchor="middle">Apr</text>
+            <text class="chart-inline-axis" x="230" y="100" text-anchor="middle">May</text>
+            <text class="chart-inline-axis" x="280" y="100" text-anchor="middle">Jun</text>
+            <text class="chart-inline-axis" x="330" y="100" text-anchor="middle">Jul</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---- Vertical mini bar cards ---- -->
+  <h2>Vertical Bar Cards</h2>
+  <p>Compact vertical bar charts inside cards, similar to the "Sales dynamics" pattern. Useful for showing monthly or weekly categorical comparisons at a glance.</p>
+
+  <div class="demo-block">
+    <div class="demo-label">Vertical bar chart cards</div>
+    <div class="demo-grid demo-grid--2">
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <span class="sds-viz-card__label">Monthly Scans</span>
+          <span style="font-size:var(--sds-type-caption); color:var(--sds-color-warm-gray-450);">2026</span>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 340 120" style="height:120px; width:100%;">
+            <!-- Grid -->
+            <line class="chart-inline-grid" x1="10" y1="10" x2="340" y2="10"/>
+            <line class="chart-inline-grid" x1="10" y1="35" x2="340" y2="35"/>
+            <line class="chart-inline-grid" x1="10" y1="60" x2="340" y2="60"/>
+            <line class="chart-inline-grid" x1="10" y1="85" x2="340" y2="85"/>
+            <!-- Bars -->
+            <rect class="mini-vbar" x="18" y="42" width="20" height="58" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="46" y="55" width="20" height="45" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="74" y="30" width="20" height="70" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="102" y="48" width="20" height="52" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="130" y="22" width="20" height="78" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="158" y="35" width="20" height="65" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="186" y="18" width="20" height="82" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="214" y="38" width="20" height="62" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="242" y="12" width="20" height="88" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="270" y="28" width="20" height="72" fill="var(--sds-chart-1)"/>
+            <rect class="mini-vbar" x="298" y="42" width="20" height="58" fill="var(--sds-chart-1)" opacity="0.4"/>
+            <rect class="mini-vbar" x="326" y="58" width="20" height="42" fill="var(--sds-chart-1)" opacity="0.4"/>
+            <!-- X axis -->
+            <text class="chart-inline-axis" x="28" y="112" text-anchor="middle">J</text>
+            <text class="chart-inline-axis" x="56" y="112" text-anchor="middle">F</text>
+            <text class="chart-inline-axis" x="84" y="112" text-anchor="middle">M</text>
+            <text class="chart-inline-axis" x="112" y="112" text-anchor="middle">A</text>
+            <text class="chart-inline-axis" x="140" y="112" text-anchor="middle">M</text>
+            <text class="chart-inline-axis" x="168" y="112" text-anchor="middle">J</text>
+            <text class="chart-inline-axis" x="196" y="112" text-anchor="middle">J</text>
+            <text class="chart-inline-axis" x="224" y="112" text-anchor="middle">A</text>
+            <text class="chart-inline-axis" x="252" y="112" text-anchor="middle">S</text>
+            <text class="chart-inline-axis" x="280" y="112" text-anchor="middle">O</text>
+            <text class="chart-inline-axis" x="308" y="112" text-anchor="middle">N</text>
+            <text class="chart-inline-axis" x="336" y="112" text-anchor="middle">D</text>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sds-viz-card">
+        <div class="sds-viz-card__header">
+          <span class="sds-viz-card__label">Findings by Week</span>
+          <div class="sds-viz-card__legend">
+            <span class="sds-viz-card__legend-item">
+              <span class="sds-viz-card__legend-line" style="background:var(--sds-chart-4);"></span> Critical
+            </span>
+            <span class="sds-viz-card__legend-item">
+              <span class="sds-viz-card__legend-line" style="background:var(--sds-chart-2);"></span> Other
+            </span>
+          </div>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 340 120" style="height:120px; width:100%;">
+            <line class="chart-inline-grid" x1="10" y1="10" x2="340" y2="10"/>
+            <line class="chart-inline-grid" x1="10" y1="35" x2="340" y2="35"/>
+            <line class="chart-inline-grid" x1="10" y1="60" x2="340" y2="60"/>
+            <line class="chart-inline-grid" x1="10" y1="85" x2="340" y2="85"/>
+            <!-- Grouped bars: critical (left) + other (right) -->
+            <rect class="mini-vbar" x="22" y="60" width="16" height="40" fill="var(--sds-chart-4)"/>
+            <rect class="mini-vbar" x="40" y="40" width="16" height="60" fill="var(--sds-chart-2)"/>
+            <rect class="mini-vbar" x="78" y="52" width="16" height="48" fill="var(--sds-chart-4)"/>
+            <rect class="mini-vbar" x="96" y="32" width="16" height="68" fill="var(--sds-chart-2)"/>
+            <rect class="mini-vbar" x="134" y="45" width="16" height="55" fill="var(--sds-chart-4)"/>
+            <rect class="mini-vbar" x="152" y="25" width="16" height="75" fill="var(--sds-chart-2)"/>
+            <rect class="mini-vbar" x="190" y="55" width="16" height="45" fill="var(--sds-chart-4)"/>
+            <rect class="mini-vbar" x="208" y="38" width="16" height="62" fill="var(--sds-chart-2)"/>
+            <rect class="mini-vbar" x="246" y="65" width="16" height="35" fill="var(--sds-chart-4)"/>
+            <rect class="mini-vbar" x="264" y="42" width="16" height="58" fill="var(--sds-chart-2)"/>
+            <rect class="mini-vbar" x="302" y="70" width="16" height="30" fill="var(--sds-chart-4)"/>
+            <rect class="mini-vbar" x="320" y="48" width="16" height="52" fill="var(--sds-chart-2)"/>
+            <!-- X axis -->
+            <text class="chart-inline-axis" x="39" y="112" text-anchor="middle">W1</text>
+            <text class="chart-inline-axis" x="95" y="112" text-anchor="middle">W2</text>
+            <text class="chart-inline-axis" x="151" y="112" text-anchor="middle">W3</text>
+            <text class="chart-inline-axis" x="207" y="112" text-anchor="middle">W4</text>
+            <text class="chart-inline-axis" x="263" y="112" text-anchor="middle">W5</text>
+            <text class="chart-inline-axis" x="319" y="112" text-anchor="middle">W6</text>
+          </svg>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ---- In context: dashboard ---- -->
+  <h2 id="dashboard">In Context: Dashboard Layout</h2>
+  <p>A mixed dashboard strip combining sparkline cards, insight cards, and mini bar cards as they might appear on a data security overview page.</p>
+
+  <div class="demo-block" style="background: var(--sds-color-warm-gray-050);">
+    <div class="demo-label">Security overview dashboard</div>
+
+    <!-- KPI row -->
+    <div class="sds-viz-grid" style="margin-bottom:var(--sds-space-500);">
+      <div class="sds-viz-card">
+        <span class="sds-viz-card__label">Total Assets</span>
+        <div style="display:flex; align-items:baseline; gap:var(--sds-space-300);">
+          <span class="sds-viz-card__value">2,847</span>
+          <span class="sds-viz-card__trend sds-viz-card__trend--positive">
+            <span class="material-symbols-outlined">trending_up</span> 6%
+          </span>
+        </div>
+        <div class="sds-viz-card__chart">
+          <svg viewBox="0 0 200 40" preserveAspectRatio="none" style="height:40px;">
+            <defs><linearGradient id="ctx-g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="var(--sds-color-blue-450)" stop-opacity="0.2"/><stop offset="100%" stop-color="var(--sds-color-blue-450)" stop-opacity="0"/></linearGradient></defs>
+            <path class="sparkline-area" d="M0,30 L40,26 L80,22 L120,24 L160,18 L200,14 L200,40 L0,40Z" fill="url(#ctx-g1)"/>
+            <polyline class="sparkline-line" points="0,30 40,26 80,22 120,24 160,18 200,14" stroke="var(--sds-color-blue-450)"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="sds-viz-card">
+        <span class="sds-viz-card__label">Compliance</span>
+        <div style="display:flex; align-items:baseline; gap:var(--sds-space-300);">
+          <span class="sds-viz-card__value">93%</span>
+          <span class="sds-viz-card__trend sds-viz-card__trend--positive">
+            <span class="material-symbols-outlined">trending_up</span> 2%
+          </span>
+        </div>
+        <div class="sds-viz-card__bar-track" style="margin-top:auto;">
+          <div class="sds-viz-card__bar-fill" style="width:93%; background:var(--sds-color-green-400);"></div>
+          <div class="sds-viz-card__bar-marker" style="left:95%;"></div>
+        </div>
+      </div>
+
+      <div class="sds-viz-card sds-viz-card--row">
+        <div class="sds-viz-card__chart" style="width:64px; flex-shrink:0;">
+          <svg viewBox="0 0 72 72" style="height:64px; width:64px;">
+            <circle class="mini-donut-track" cx="36" cy="36" r="28" stroke-width="7"/>
+            <circle class="mini-donut-fill" cx="36" cy="36" r="28" stroke-width="7"
+              stroke="var(--sds-color-blue-550)"
+              stroke-dasharray="175.93"
+              stroke-dashoffset="44.0"
+              transform="rotate(-90 36 36)"/>
+            <text class="mini-donut-label" x="36" y="36" style="font-size:12px;">75%</text>
+          </svg>
+        </div>
+        <div class="sds-viz-card__info">
+          <span class="sds-viz-card__label">Classified</span>
+          <span class="sds-viz-card__trend sds-viz-card__trend--positive">
+            <span class="material-symbols-outlined">trending_up</span> +10%
+          </span>
+        </div>
+      </div>
+
+      <div class="sds-viz-card sds-viz-card--row">
+        <div class="sds-viz-card__chart" style="width:64px; flex-shrink:0;">
+          <svg viewBox="0 0 72 72" style="height:64px; width:64px;">
+            <circle class="mini-donut-track" cx="36" cy="36" r="28" stroke-width="7"/>
+            <circle class="mini-donut-fill" cx="36" cy="36" r="28" stroke-width="7"
+              stroke="var(--sds-color-green-400)"
+              stroke-dasharray="175.93"
+              stroke-dashoffset="14.07"
+              transform="rotate(-90 36 36)"/>
+            <text class="mini-donut-label" x="36" y="36" style="font-size:12px;">92%</text>
+          </svg>
+        </div>
+        <div class="sds-viz-card__info">
+          <span class="sds-viz-card__label">Masked</span>
+          <span class="sds-viz-card__trend sds-viz-card__trend--positive">
+            <span class="material-symbols-outlined">trending_up</span> +3%
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Insight row -->
+    <div class="demo-grid demo-grid--2">
+      <div class="sds-insight sds-insight--accent sds-insight--accent-critical">
+        <div class="sds-insight__content">
+          <h3 class="sds-insight__title">12 unmasked PII fields in production</h3>
+          <p class="sds-insight__description">3 databases contain exposed SSN and credit card fields. Masking policies not yet applied.</p>
+          <a class="sds-insight__action" href="#" onclick="event.preventDefault()">Apply masking <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+      </div>
+
+      <div class="sds-insight sds-insight--accent sds-insight--accent-warning">
+        <div class="sds-insight__content">
+          <h3 class="sds-insight__title">Compliance target at risk for Q1</h3>
+          <p class="sds-insight__description">Current rate of 93% is 2 points below the 95% target with 10 days remaining in the quarter.</p>
+          <a class="sds-insight__action" href="#" onclick="event.preventDefault()">View details <span class="material-symbols-outlined">arrow_forward</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ============================================================
+       SPECIFICATIONS
+       ============================================================ -->
+  <h2>Specifications</h2>
+
+  <h3>Chart Card Token Map</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Element</th><th>Property</th><th>Token / Value</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Card surface</td><td>background</td><td><code>--sds-color-white</code></td></tr>
+      <tr><td>Card border</td><td>border</td><td><code>--sds-color-warm-gray-100</code> 1px</td></tr>
+      <tr><td>Card radius</td><td>border-radius</td><td><code>10px</code></td></tr>
+      <tr><td>Card padding</td><td>padding</td><td><code>--sds-space-500</code> (20px)</td></tr>
+      <tr><td>Label</td><td>font-size / color</td><td><code>--sds-type-caption</code> / <code>warm-gray-500</code></td></tr>
+      <tr><td>Value</td><td>font-size / weight</td><td><code>--sds-type-display</code> / <code>--sds-weight-semibold</code></td></tr>
+      <tr><td>Mini bar track</td><td>height / radius</td><td><code>8px</code> / <code>4px</code></td></tr>
+      <tr><td>Mini bar label</td><td>width</td><td><code>72px</code></td></tr>
+      <tr><td>Donut breakdown</td><td>donut size / stroke</td><td><code>88px</code> / <code>12px</code></td></tr>
+      <tr><td>Donut legend dot</td><td>size / radius</td><td><code>8px</code> / <code>2px</code></td></tr>
+      <tr><td>Area chart line</td><td>stroke-width</td><td><code>2px</code></td></tr>
+      <tr><td>Area chart fill</td><td>opacity</td><td><code>0.15 &ndash; 0.2</code> (via gradient)</td></tr>
+      <tr><td>Area chart dot</td><td>radius / stroke</td><td><code>4px</code> / <code>2px white</code></td></tr>
+      <tr><td>Chart tooltip</td><td>background / radius</td><td><code>warm-gray-900</code> / <code>4px</code></td></tr>
+      <tr><td>Multi-series line</td><td>stroke-width</td><td><code>2px</code></td></tr>
+      <tr><td>Legend line swatch</td><td>width / height</td><td><code>16px</code> / <code>3px</code></td></tr>
+      <tr><td>Vertical bar</td><td>border-radius</td><td><code>2px</code> (rx/ry)</td></tr>
+      <tr><td>Grid lines</td><td>stroke / width</td><td><code>warm-gray-100</code> / <code>1px</code></td></tr>
+      <tr><td>Axis labels</td><td>font-size / color</td><td><code>10px</code> / <code>warm-gray-400</code></td></tr>
+      <tr><td>Dashboard grid</td><td>columns / gap</td><td><code>repeat(4, 1fr)</code> / <code>--sds-space-400</code></td></tr>
+    </tbody>
+  </table>
+
+  <h3>CSS Classes Reference</h3>
+  <table class="spec-table">
+    <thead>
+      <tr><th>Class</th><th>Description</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><code>.sds-viz-card</code></td><td>Base chart card container</td></tr>
+      <tr><td><code>.sds-viz-card--row</code></td><td>Horizontal layout (chart + info side by side)</td></tr>
+      <tr><td><code>.sds-viz-card__header</code></td><td>Header row: label left, legend/meta right</td></tr>
+      <tr><td><code>.sds-viz-card__label</code></td><td>Metric label (uppercase, caption size)</td></tr>
+      <tr><td><code>.sds-viz-card__value</code></td><td>Large metric number (28px, semibold)</td></tr>
+      <tr><td><code>.sds-viz-card__trend</code></td><td>Trend indicator with color variants</td></tr>
+      <tr><td><code>.sds-viz-card__chart</code></td><td>Chart container region</td></tr>
+      <tr><td><code>.sds-viz-card__legend</code></td><td>Flex row of legend items for multi-series charts</td></tr>
+      <tr><td><code>.sds-viz-card__legend-item</code></td><td>Legend entry: colored line + label</td></tr>
+      <tr><td><code>.sds-viz-card__legend-line</code></td><td>16px colored line swatch in legend</td></tr>
+      <tr><td><code>.sds-viz-card__tooltip</code></td><td>Dark pill tooltip for annotating chart data points</td></tr>
+      <tr><td><code>.sds-viz-card__footer</code></td><td>Optional footer with top border</td></tr>
+      <tr><td><code>.sds-viz-grid</code></td><td>4-column CSS grid for dashboard layouts</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Horizontal Bar Elements</td></tr>
+      <tr><td><code>.mini-bar-row</code></td><td>Single horizontal bar row: label + track + value</td></tr>
+      <tr><td><code>.mini-bar-label</code></td><td>72px right-aligned category label</td></tr>
+      <tr><td><code>.mini-bar-track</code></td><td>8px tall bar track with rounded corners</td></tr>
+      <tr><td><code>.mini-bar-fill</code></td><td>Colored fill inside bar track</td></tr>
+      <tr><td><code>.mini-bar-value</code></td><td>Numeric value at end of bar row</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Donut Breakdown Cards</td></tr>
+      <tr><td><code>.sds-donut-breakdown</code></td><td>Metric + multi-segment donut with legend, row layout</td></tr>
+      <tr><td><code>.sds-donut-breakdown__info</code></td><td>Label, value, and legend column</td></tr>
+      <tr><td><code>.sds-donut-breakdown__chart</code></td><td>88px donut chart container</td></tr>
+      <tr><td><code>.sds-donut-breakdown__legend</code></td><td>Stacked legend items with colored dots</td></tr>
+      <tr><td><code>.donut-segment</code></td><td>Individual donut arc segment (SVG circle)</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Area Chart Elements</td></tr>
+      <tr><td><code>.area-line</code></td><td>Stroke line for area chart (2px, rounded joins)</td></tr>
+      <tr><td><code>.area-fill</code></td><td>Filled region below line (15% opacity)</td></tr>
+      <tr><td><code>.area-dot</code></td><td>Data point circle with white stroke</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Vertical Bar Elements</td></tr>
+      <tr><td><code>.mini-vbar</code></td><td>Vertical bar rect with 2px border-radius</td></tr>
+      <tr><td colspan="2" style="padding-top:var(--sds-space-400); font-weight:var(--sds-weight-semibold); color:var(--sds-text-primary);">Shared Chart Utilities</td></tr>
+      <tr><td><code>.chart-inline-axis</code></td><td>Axis label text (10px, warm-gray-400)</td></tr>
+      <tr><td><code>.chart-inline-grid</code></td><td>Horizontal grid lines (warm-gray-100, 1px)</td></tr>
+    </tbody>
+  </table>
+
+  <!-- Shared nav -->
+  <script src="../shared/nav.js"></script>
+</body>
+</html>
