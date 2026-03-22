@@ -1,0 +1,211 @@
+/* insight-cards — extracted from Design System Labs */
+
+/* ============================================================
+       INSIGHT CARD
+       Text-driven cards that surface findings, recommendations,
+       anomalies, or alerts. Used in dashboards and summary views.
+       ============================================================ */
+
+    .sds-insight {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+/* Icon slot */
+    .sds-insight__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+.sds-insight__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+/* Content area */
+    .sds-insight__content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+    }
+
+.sds-insight__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+.sds-insight__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      line-height: var(--sds-leading-snug);
+    }
+
+.sds-insight__description {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+      margin: 0;
+    }
+
+.sds-insight__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      margin-top: var(--sds-space-100);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+    }
+
+.sds-insight__meta-divider {
+      width: 1px;
+      height: 12px;
+      background: var(--sds-color-warm-gray-200);
+    }
+
+/* Severity badge */
+    .sds-insight__severity {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      border-radius: 4px;
+      line-height: 1.4;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+.sds-insight__severity--critical {
+      background: var(--sds-status-error-bg);
+      color: var(--sds-color-red-550);
+    }
+
+.sds-insight__severity--warning {
+      background: var(--sds-status-warning-bg);
+      color: var(--sds-color-yellow-650);
+    }
+
+.sds-insight__severity--info {
+      background: var(--sds-status-info-bg);
+      color: var(--sds-color-blue-700);
+    }
+
+.sds-insight__severity--success {
+      background: var(--sds-status-success-bg);
+      color: var(--sds-color-green-500);
+    }
+
+/* Accent bar variant */
+    .sds-insight--accent {
+      position: relative;
+      overflow: hidden;
+      padding-left: calc(var(--sds-space-500) + 4px);
+    }
+
+.sds-insight--accent::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 4px;
+    }
+
+.sds-insight--accent-critical::before { background: var(--sds-color-red-450); }
+
+.sds-insight--accent-warning::before { background: var(--sds-color-yellow-400); }
+
+.sds-insight--accent-info::before { background: var(--sds-color-blue-550); }
+
+.sds-insight--accent-success::before { background: var(--sds-color-green-400); }
+
+/* Action link */
+    .sds-insight__action {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-blue-750);
+      text-decoration: none;
+      font-weight: var(--sds-weight-medium);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      margin-top: var(--sds-space-100);
+    }
+
+.sds-insight__action:hover { text-decoration: underline; text-underline-offset: 2px; }
+
+.sds-insight__action .material-symbols-outlined { font-size: 16px; text-decoration: none; display: inline-block; }
+
+.sds-insight__action:hover .material-symbols-outlined { text-decoration: none; }
+
+/* Compact variant */
+    .sds-insight--compact {
+      padding: var(--sds-space-400);
+      gap: var(--sds-space-300);
+    }
+
+.sds-insight--compact .sds-insight__icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+    }
+
+.sds-insight--compact .sds-insight__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+/* Insight list (stacked, no outer gaps) */
+    .sds-insight-list {
+      display: flex;
+      flex-direction: column;
+    }
+
+.sds-insight-list .sds-insight {
+      border-radius: 0;
+      border-bottom-width: 0;
+    }
+
+.sds-insight-list .sds-insight:first-child {
+      border-radius: 8px 8px 0 0;
+    }
+
+.sds-insight-list .sds-insight:last-child {
+      border-radius: 0 0 8px 8px;
+      border-bottom-width: 1px;
+    }
+
+.sds-insight-list .sds-insight:only-child {
+      border-radius: 8px;
+    }
+
+/* ---- Optional hover-float modifier ----
+       Add .sds-card--hoverable to any card to enable lift-on-hover.
+       Best for clickable/linked cards in interactive dashboards. */
+    .sds-card--hoverable {
+      transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+    }
+
+@media (hover: hover) {
+      .sds-card--hoverable:hover {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.04);
+        transform: translateY(-1px);
+      }
+      .sds-card--hoverable:active {
+        transform: scale(0.98);
+        transition-duration: 80ms;
+      }
+    }

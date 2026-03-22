@@ -1,0 +1,300 @@
+/* badges — extracted from Design System Labs */
+
+/* ============================================================
+       COUNT BADGES
+       Pill-shaped numeric indicators for notification counts,
+       tab labels, and card headers.
+       ============================================================ */
+
+    .sds-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 var(--sds-space-150);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      border-radius: 10px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+/* ---- Badge color variants ---- */
+    .sds-badge--default {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+
+.sds-badge--primary {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+
+.sds-badge--danger {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+
+.sds-badge--danger-solid {
+      background: var(--sds-color-red-450);
+      color: var(--sds-color-white);
+    }
+
+/* ---- Badge sizes ---- */
+    .sds-badge--sm {
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+      padding: 0 var(--sds-space-100);
+      border-radius: 8px;
+    }
+
+.sds-badge--lg {
+      min-width: 24px;
+      height: 24px;
+      font-size: var(--sds-type-label);
+      padding: 0 var(--sds-space-200);
+      border-radius: 12px;
+    }
+
+/* ============================================================
+       DOT BADGES
+       Small colored dots overlaid on icons or avatars to
+       indicate status or unread count.
+       ============================================================ */
+
+    .sds-dot-badge-wrapper {
+      position: relative;
+      display: inline-flex;
+    }
+
+.sds-dot-badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--sds-color-red-450);
+      border: 2px solid var(--sds-color-white);
+    }
+
+.sds-dot-badge--with-count {
+      width: auto;
+      height: 16px;
+      min-width: 16px;
+      top: -6px;
+      right: -8px;
+      border-radius: 8px;
+      padding: 0 var(--sds-space-100);
+      font-family: inherit;
+      font-size: 10px;
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-white);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+/* ============================================================
+       STATUS INDICATORS
+       Inline dot + label combinations for live status display.
+       ============================================================ */
+
+    .sds-status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+.sds-status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+.sds-status--online .sds-status-dot  { background: var(--sds-color-green-400); }
+
+.sds-status--online .sds-status-label { color: var(--sds-color-green-500); }
+
+.sds-status--away .sds-status-dot    { background: var(--sds-color-yellow-350); }
+
+.sds-status--away .sds-status-label   { color: var(--sds-color-yellow-550); }
+
+.sds-status--offline .sds-status-dot { background: var(--sds-color-red-450); }
+
+.sds-status--offline .sds-status-label { color: var(--sds-color-red-550); }
+
+.sds-status--busy .sds-status-dot    { background: var(--sds-color-blue-450); }
+
+.sds-status--busy .sds-status-label   { color: var(--sds-color-blue-700); }
+
+.sds-status--busy .sds-status-dot {
+      animation: sds-pulse 1.5s ease-in-out infinite;
+    }
+
+.sds-status-label {
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+/* ============================================================
+       ICON BADGE WRAPPER
+       For overlaying badges on Material Symbols icons.
+       ============================================================ */
+
+    .sds-icon-badge-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+.sds-icon-badge-wrapper .material-symbols-outlined {
+      font-size: 24px;
+      color: var(--sds-color-warm-gray-600);
+    }
+
+.sds-icon-badge-wrapper .sds-badge--floating {
+      position: absolute;
+      top: -6px;
+      right: -8px;
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+      padding: 0 var(--sds-space-100);
+      border-radius: 8px;
+      border: 2px solid var(--sds-color-white);
+    }
+
+.sds-icon-badge-wrapper .sds-dot-floating {
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--sds-color-red-450);
+      border: 2px solid var(--sds-color-white);
+    }
+
+/* ============================================================
+       AVATAR WITH STATUS
+       Status dot positioned on avatar circles.
+       ============================================================ */
+
+    .sds-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      flex-shrink: 0;
+      position: relative;
+      user-select: none;
+    }
+
+.sds-avatar--teal    { background: var(--sds-color-blue-450); }
+
+.sds-avatar--purple  { background: var(--sds-color-purple-550); }
+
+.sds-avatar--green   { background: var(--sds-color-green-400); }
+
+.sds-avatar--amber   { background: var(--sds-color-yellow-350); }
+
+.sds-avatar-status {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid var(--sds-color-white);
+    }
+
+.sds-avatar-status--online  { background: var(--sds-color-green-400); }
+
+.sds-avatar-status--away    { background: var(--sds-color-yellow-350); }
+
+.sds-avatar-status--offline { background: var(--sds-color-warm-gray-300); }
+
+.sds-avatar-status--busy    { background: var(--sds-color-red-450); }
+
+/* ============================================================
+       SEVERITY BADGES
+       Distinct color-coded labels for security finding severity.
+       ============================================================ */
+
+    .sds-severity {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+    }
+
+.sds-severity-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+.sds-severity--critical {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+
+.sds-severity--critical .sds-severity-dot { background: var(--sds-color-red-450); }
+
+.sds-severity--high {
+      background: var(--sds-color-yellow-050);
+      color: var(--sds-color-yellow-650);
+    }
+
+.sds-severity--high .sds-severity-dot { background: var(--sds-color-yellow-550); }
+
+.sds-severity--medium {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+
+.sds-severity--medium .sds-severity-dot { background: var(--sds-color-yellow-350); }
+
+.sds-severity--low {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+
+.sds-severity--low .sds-severity-dot { background: var(--sds-color-blue-450); }
+
+.sds-severity--info {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+
+.sds-severity--info .sds-severity-dot { background: var(--sds-color-warm-gray-400); }

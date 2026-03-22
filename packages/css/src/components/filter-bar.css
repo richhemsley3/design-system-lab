@@ -1,0 +1,202 @@
+/* filter-bar — extracted from Design System Labs */
+
+/* ============================================================
+       FILTER BAR
+       A complex multi-attribute filtering system for lists,
+       tables, and search results. Filter chips can be
+       added, removed, and combined.
+       ============================================================ */
+
+    .sds-filter-bar {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--sds-space-200);
+      min-height: 44px;
+      position: relative;
+    }
+
+.sds-filter-bar__filters {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: var(--sds-space-200);
+    }
+
+.sds-filter-bar__add {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      background: none;
+      border: none;
+      color: var(--sds-color-blue-700);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-150);
+      border-radius: 6px;
+      transition: background 0.15s ease;
+    }
+
+.sds-filter-bar__add:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-filter-bar__add .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+.sds-filter-bar__placeholder {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-350);
+    }
+
+.sds-filter-bar__clear {
+      background: none;
+      border: none;
+      color: var(--sds-color-warm-gray-500);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-150);
+      text-decoration: none;
+    }
+
+.sds-filter-bar__clear:hover {
+      text-decoration: underline;
+    }
+
+.sds-filter-bar__count {
+      color: var(--sds-color-warm-gray-450);
+      font-size: var(--sds-type-caption);
+      margin-left: auto;
+      white-space: nowrap;
+    }
+
+/* ---- Filter Chip ---- */
+
+    .sds-filter-chip {
+      background: var(--sds-color-warm-gray-050);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      padding: var(--sds-space-100) var(--sds-space-200);
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-size: var(--sds-type-caption);
+      transition: border-color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+      cursor: default;
+    }
+
+.sds-filter-chip:hover {
+      border-color: var(--sds-color-warm-gray-300);
+      background: var(--sds-color-warm-gray-100);
+    }
+
+.sds-filter-chip--active {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1,61,91,0.15);
+    }
+
+.sds-filter-chip--active:hover {
+      border-color: var(--sds-border-focus);
+    }
+
+.sds-filter-chip__indicator {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+.sds-filter-chip__label {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+.sds-filter-chip__operator {
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-color-warm-gray-450);
+    }
+
+.sds-filter-chip__value {
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-blue-700);
+    }
+
+.sds-filter-chip__remove {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--sds-color-warm-gray-400);
+      transition: color 0.15s ease;
+      line-height: 1;
+    }
+
+.sds-filter-chip__remove:hover {
+      color: var(--sds-color-warm-gray-700);
+    }
+
+.sds-filter-chip__remove .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+/* ---- Filter Dropdown ---- */
+
+    .sds-filter-dropdown {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      padding: var(--sds-space-200) 0;
+      min-width: 220px;
+      position: absolute;
+      top: calc(100% + var(--sds-space-100));
+      left: var(--sds-space-300);
+      z-index: 10;
+      display: none;
+    }
+
+.sds-filter-dropdown--open {
+      display: block;
+    }
+
+.sds-filter-dropdown__item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-200) var(--sds-space-400);
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+      cursor: pointer;
+      transition: background 0.1s ease;
+      border: none;
+      background: none;
+      width: 100%;
+      text-align: left;
+      font: inherit;
+    }
+
+.sds-filter-dropdown__item:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-filter-dropdown__item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-color-warm-gray-400);
+    }
+
+/* ---- Demo-specific: static dropdown (for showcase) ---- */
+    .sds-filter-dropdown--static {
+      position: static;
+      display: block;
+    }

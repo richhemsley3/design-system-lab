@@ -151,6 +151,9 @@
 
   /* ---- Navigation items ---- */
   const items = [
+    { group: 'Getting Started', links: [
+      { label: 'Installation',   href: '/docs/getting-started.html',  icon: 'install' },
+    ]},
     { group: 'Foundations', links: [
       { label: 'Colors',    href: '/docs/color-palette.html', icon: 'palette' },
       { label: 'Icons',     href: '/docs/icons.html',         icon: 'icons' },
@@ -221,6 +224,7 @@
 
   /* ---- Icons (Material Symbols) ---- */
   const icons = {
+    install:    'download',
     palette:    'palette',
     header:     'web_asset',
     button:     'smart_button',

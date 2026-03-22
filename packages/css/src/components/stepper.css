@@ -1,0 +1,268 @@
+/* stepper — extracted from Design System Labs */
+
+/* ============================================================
+       STEPPER — Horizontal
+       ============================================================ */
+    .sds-stepper {
+      display: flex;
+      align-items: flex-start;
+      width: 100%;
+    }
+
+.sds-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      cursor: default;
+    }
+
+.sds-step.is-clickable {
+      cursor: pointer;
+    }
+
+.sds-step.is-clickable:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+      border-radius: 8px;
+    }
+
+/* Step indicator (circle) */
+    .sds-step__indicator {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      position: relative;
+      z-index: 1;
+      transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+.sds-step__indicator .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+/* Upcoming (default) */
+    .sds-step--upcoming .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-color-warm-gray-250);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+/* Active */
+    .sds-step--active .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-interactive-primary);
+      color: var(--sds-interactive-primary);
+    }
+
+/* Completed */
+    .sds-step--completed .sds-step__indicator {
+      background: var(--sds-interactive-primary);
+      border: 2px solid var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+    }
+
+/* Error */
+    .sds-step--error .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-color-red-500);
+      color: var(--sds-color-red-500);
+    }
+
+/* Step label */
+    .sds-step__label {
+      margin-top: var(--sds-space-200);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-color-warm-gray-450);
+      text-align: center;
+      line-height: var(--sds-leading-normal);
+      transition: color 0.2s ease, font-weight 0.2s ease;
+    }
+
+.sds-step--active .sds-step__label {
+      color: var(--sds-text-primary);
+      font-weight: var(--sds-weight-semibold);
+    }
+
+.sds-step--completed .sds-step__label {
+      color: var(--sds-text-secondary);
+      font-weight: var(--sds-weight-medium);
+    }
+
+.sds-step--error .sds-step__label {
+      color: var(--sds-color-red-500);
+      font-weight: var(--sds-weight-medium);
+    }
+
+/* Step description */
+    .sds-step__description {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      text-align: center;
+      margin-top: var(--sds-space-050);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-step--active .sds-step__description {
+      color: var(--sds-color-warm-gray-550);
+    }
+
+/* Connector lines */
+    .sds-step__connector {
+      position: absolute;
+      top: 16px;
+      left: calc(50% + 20px);
+      right: calc(-50% + 20px);
+      height: 2px;
+      background: var(--sds-color-warm-gray-200);
+      z-index: 0;
+      transition: background 0.2s ease;
+    }
+
+.sds-step--completed .sds-step__connector {
+      background: var(--sds-interactive-primary);
+    }
+
+/* ============================================================
+       STEPPER — Vertical
+       ============================================================ */
+    .sds-stepper--vertical {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+.sds-stepper--vertical .sds-step {
+      flex-direction: row;
+      align-items: flex-start;
+      flex: none;
+      gap: var(--sds-space-400);
+    }
+
+.sds-stepper--vertical .sds-step__label {
+      text-align: left;
+      margin-top: 0;
+      line-height: 32px;
+    }
+
+.sds-stepper--vertical .sds-step__description {
+      text-align: left;
+      margin-top: var(--sds-space-050);
+    }
+
+.sds-stepper--vertical .sds-step__body {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      padding-bottom: var(--sds-space-600);
+    }
+
+.sds-stepper--vertical .sds-step__content {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-500);
+      margin-top: var(--sds-space-300);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-stepper--vertical .sds-step:last-child .sds-step__body {
+      padding-bottom: 0;
+    }
+
+/* Vertical connector */
+    .sds-stepper--vertical .sds-step__connector {
+      position: absolute;
+      top: 36px;
+      left: 15px;
+      right: auto;
+      width: 2px;
+      height: calc(100% - 36px);
+    }
+
+/* ============================================================
+       STEPPER — Compact (dots only)
+       ============================================================ */
+    .sds-stepper--compact {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      justify-content: center;
+    }
+
+.sds-stepper--compact .sds-step {
+      flex: none;
+    }
+
+.sds-stepper--compact .sds-step__indicator {
+      width: 10px;
+      height: 10px;
+      font-size: 0;
+    }
+
+.sds-stepper--compact .sds-step--upcoming .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-color-warm-gray-250);
+    }
+
+.sds-stepper--compact .sds-step--active .sds-step__indicator {
+      background: var(--sds-color-white);
+      border: 2px solid var(--sds-interactive-primary);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+    }
+
+.sds-stepper--compact .sds-step--completed .sds-step__indicator {
+      background: var(--sds-interactive-primary);
+      border: 2px solid var(--sds-interactive-primary);
+    }
+
+.sds-stepper--compact .sds-step__connector {
+      position: static;
+      width: 16px;
+      height: 2px;
+      flex-shrink: 0;
+    }
+
+/* Form inputs (canonical — matches form-inputs.html) */
+    .wizard-body .sds-field {
+      margin-bottom: var(--sds-space-400);
+    }
+
+.wizard-body .sds-field-label {
+      display: block;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-150);
+    }
+
+.wizard-body .sds-input,
+    .wizard-body .sds-select {
+      width: 100%;
+      max-width: 400px;
+      height: 40px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      border: 1.5px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-text-primary);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+.wizard-body .sds-input:focus,
+    .wizard-body .sds-select:focus {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }

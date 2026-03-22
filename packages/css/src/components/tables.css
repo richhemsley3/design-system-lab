@@ -1,0 +1,360 @@
+/* tables — extracted from Design System Labs */
+
+/* ── Table component ─────────────────────────────── */
+    .sds-table-container {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      overflow-x: auto;
+    }
+
+.sds-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+    }
+
+.sds-table th {
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      padding: var(--sds-space-250) var(--sds-space-400);
+      text-align: left;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-550);
+      white-space: nowrap;
+    }
+
+.sds-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      color: var(--sds-color-warm-gray-700);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+/* Striped */
+    .sds-table--striped tbody tr:nth-child(even) td {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+/* Hoverable */
+    .sds-table--hoverable tbody tr {
+      transition: background 0.15s ease;
+    }
+
+.sds-table--hoverable tbody tr:hover td {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+/* Compact */
+    .sds-table--compact th {
+      padding: var(--sds-space-150) var(--sds-space-300);
+    }
+
+.sds-table--compact td {
+      padding: var(--sds-space-150) var(--sds-space-300);
+      font-size: var(--sds-type-caption);
+    }
+
+/* Selected row */
+    .sds-table__row--selected td {
+      background: var(--sds-color-blue-100) !important;
+    }
+
+/* ── Sortable header buttons ─────────────────────── */
+    .sds-table__sort-btn {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      cursor: pointer;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-550);
+      font-family: inherit;
+      white-space: nowrap;
+    }
+
+.sds-table__sort-btn:focus-visible {
+      outline: 2px solid var(--sds-color-blue-750);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+.sds-table__sort-btn:hover {
+      color: var(--sds-color-warm-gray-700);
+    }
+
+.sds-table__sort-icon {
+      display: inline-flex;
+      opacity: 0.35;
+      transition: opacity 0.15s ease, transform 0.15s ease;
+      vertical-align: middle;
+    }
+
+.sds-table__sort-icon--active {
+      opacity: 1;
+      color: var(--sds-color-warm-gray-900);
+    }
+
+.sds-table__sort-icon--desc {
+      transform: rotate(180deg);
+    }
+
+/* ── Checkbox styling (canonical — from selection-controls) ── */
+    .sds-table-checkbox {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-color-warm-gray-350, var(--sds-border-strong));
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+.sds-table-checkbox svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+    }
+
+.sds-table-checkbox:hover {
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-table-checkbox.is-checked {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-table-checkbox.is-checked svg {
+      opacity: 1;
+    }
+
+.sds-table-checkbox.is-indeterminate {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-table-checkbox-dash {
+      display: none;
+      width: 8px;
+      height: 2px;
+      background: var(--sds-color-white);
+      border-radius: 1px;
+    }
+
+.sds-table-checkbox.is-indeterminate svg {
+      display: none;
+    }
+
+.sds-table-checkbox.is-indeterminate .sds-table-checkbox-dash {
+      display: block;
+    }
+
+.sds-table-checkbox:focus-visible {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+      outline: none;
+    }
+
+/* ── Pagination ──────────────────────────────────── */
+    .sds-table-pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-300) var(--sds-space-400);
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-550);
+    }
+
+.sds-table-pagination__controls {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+    }
+
+.sds-table-pagination__btn {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 var(--sds-space-200);
+      border-radius: 6px;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-650);
+      cursor: pointer;
+      transition: background 0.15s ease, color 0.15s ease;
+      font-family: inherit;
+    }
+
+.sds-table-pagination__btn:hover:not(:disabled) {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-table-pagination__btn:focus-visible {
+      outline: 2px solid var(--sds-color-blue-750);
+      outline-offset: 2px;
+    }
+
+.sds-table-pagination__btn--active {
+      background: var(--sds-color-blue-100);
+      color: var(--sds-color-blue-750);
+      font-weight: var(--sds-weight-semibold);
+    }
+
+.sds-table-pagination__btn--active:hover {
+      background: var(--sds-color-blue-100);
+    }
+
+.sds-table-pagination__btn:disabled {
+      opacity: 0.35;
+      cursor: default;
+    }
+
+/* ── Search bar & toolbar ─────────────────────────── */
+    .sds-table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+      margin-bottom: var(--sds-space-300);
+      min-height: 36px;
+      flex-wrap: wrap;
+    }
+
+.sds-table-search {
+      position: relative;
+      width: 220px;
+      flex-shrink: 0;
+    }
+
+.sds-table-search__icon {
+      position: absolute;
+      left: var(--sds-space-250);
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--sds-color-warm-gray-400);
+      pointer-events: none;
+      display: flex;
+      align-items: center;
+    }
+
+.sds-table-search__icon .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-table-search__input {
+      width: 100%;
+      height: 36px;
+      padding: var(--sds-space-150) var(--sds-space-300) var(--sds-space-150) var(--sds-space-800);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+      background: var(--sds-color-white);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+.sds-table-search__input::placeholder {
+      color: var(--sds-color-warm-gray-400);
+    }
+
+.sds-table-search__input:focus {
+      border-color: var(--sds-color-blue-750);
+      box-shadow: 0 0 0 2px rgba(1, 61, 91, 0.15);
+    }
+
+/* ── Bulk action bar ─────────────────────────────── */
+    .sds-table-bulk-bar {
+      display: none;
+      align-items: center;
+      gap: var(--sds-space-300);
+    }
+
+.sds-table-bulk-bar--visible {
+      display: flex;
+    }
+
+.sds-table-bulk-bar__count {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-color-warm-gray-650);
+      white-space: nowrap;
+    }
+
+.sds-table-bulk-bar__clear {
+      all: unset;
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-blue-750);
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+.sds-table-bulk-bar__clear:hover {
+      text-decoration: underline;
+    }
+
+.sds-table-bulk-bar__clear:focus-visible {
+      outline: 2px solid var(--sds-color-blue-750);
+      outline-offset: 2px;
+      border-radius: 2px;
+    }
+
+.sds-table-bulk-bar__actions {
+      display: flex;
+      gap: var(--sds-space-200);
+    }
+
+.sds-table-bulk-bar__btn {
+      all: unset;
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border-radius: 6px;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s ease;
+    }
+
+.sds-table-bulk-bar__btn:focus-visible {
+      outline: 2px solid var(--sds-color-blue-750);
+      outline-offset: 2px;
+    }
+
+.sds-table-bulk-bar__btn--secondary {
+      color: var(--sds-color-warm-gray-700);
+      border: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+.sds-table-bulk-bar__btn--secondary:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-table-bulk-bar__btn--danger {
+      color: var(--sds-color-red-550);
+      border: 1px solid var(--sds-color-red-200);
+    }
+
+.sds-table-bulk-bar__btn--danger:hover {
+      background: var(--sds-color-red-050);
+    }

@@ -1,0 +1,293 @@
+/* kpi-cards — extracted from Design System Labs */
+
+/* ============================================================
+       MINI DATA-VIZ CARD
+       Lightweight chart cards for dashboard grids.
+       Wraps a small visualization with metric + label.
+       ============================================================ */
+
+    .sds-viz-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-300);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+.sds-viz-card__header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+.sds-viz-card__label {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-500);
+      font-weight: var(--sds-weight-medium);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      margin: 0;
+      line-height: 1;
+      user-select: none;
+    }
+
+.sds-viz-card__value {
+      font-size: var(--sds-type-display);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+.sds-viz-card__trend {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      line-height: 1;
+      padding: 3px 8px 3px 5px;
+      border-radius: 20px;
+    }
+
+.sds-viz-card__trend .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+.sds-viz-card__trend--positive {
+      color: var(--sds-color-green-500);
+      background: var(--sds-status-success-bg);
+    }
+
+.sds-viz-card__trend--negative {
+      color: var(--sds-color-red-550);
+      background: var(--sds-status-error-bg);
+    }
+
+.sds-viz-card__trend--neutral {
+      color: var(--sds-color-warm-gray-500);
+      background: var(--sds-color-warm-gray-050);
+    }
+
+/* Chart region */
+    .sds-viz-card__chart {
+      flex: 1;
+      min-height: 0;
+    }
+
+.sds-viz-card__chart svg {
+      display: block;
+      width: 100%;
+      overflow: visible;
+    }
+
+/* Metric row (value + chart side by side) */
+    .sds-viz-card--row {
+      flex-direction: row;
+      align-items: center;
+    }
+
+.sds-viz-card--row .sds-viz-card__info {
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+    }
+
+.sds-viz-card--row .sds-viz-card__chart {
+      flex: 1;
+      min-width: 0;
+    }
+
+/* Footer */
+    .sds-viz-card__footer {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      padding-top: var(--sds-space-300);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+/* ---- Comparison card ---- */
+    .sds-viz-card__comparison {
+      display: flex;
+      align-items: baseline;
+      gap: var(--sds-space-200);
+    }
+
+.sds-viz-card__target {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-450);
+    }
+
+.sds-viz-card__target-value {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-secondary);
+    }
+
+.sds-viz-card__bar-track {
+      height: 8px;
+      background: var(--sds-color-warm-gray-100);
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+
+.sds-viz-card__bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+.sds-viz-card__bar-marker {
+      position: absolute;
+      top: -3px;
+      bottom: -3px;
+      width: 2px;
+      background: var(--sds-color-warm-gray-500);
+      border-radius: 1px;
+    }
+
+/* ---- Dashboard grid ---- */
+    .sds-viz-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sds-space-400);
+    }
+
+/* ---- Optional hover-float modifier ----
+       Add .sds-card--hoverable to any card to enable lift-on-hover.
+       Best for clickable/linked cards in interactive dashboards. */
+    .sds-card--hoverable {
+      transition: box-shadow 150ms ease-out, transform 150ms ease-out;
+    }
+
+@media (hover: hover) {
+      .sds-card--hoverable:hover {
+        box-shadow: 0 2px 4px rgba(0,0,0,0.06), 0 6px 16px rgba(0,0,0,0.04);
+        transform: translateY(-1px);
+      }
+      .sds-card--hoverable:active {
+        transform: scale(0.98);
+        transition-duration: 80ms;
+      }
+    }
+
+/* ============================================================
+       METRIC BADGE CARD
+       Simple stat with icon badge — inspired by "Order 201" pattern
+       ============================================================ */
+    .sds-metric-badge {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+.sds-metric-badge__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+.sds-metric-badge__label {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+
+.sds-metric-badge__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      flex-shrink: 0;
+    }
+
+.sds-metric-badge__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+.sds-metric-badge__value {
+      font-size: 32px;
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      margin-top: var(--sds-space-100);
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+.sds-metric-badge__secondary {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-450);
+    }
+
+/* ============================================================
+       FINANCIAL CARD
+       Icon badge + label + large value + subtitle — "Paid Invoices" pattern
+       ============================================================ */
+    .sds-financial-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      padding: var(--sds-space-500);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+    }
+
+.sds-financial-card__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+
+.sds-financial-card__icon .material-symbols-outlined {
+      font-size: 22px;
+    }
+
+.sds-financial-card__info {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-financial-card__label {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      margin: 0 0 var(--sds-space-050);
+    }
+
+.sds-financial-card__value {
+      font-size: var(--sds-type-heading);
+      font-weight: var(--sds-weight-bold);
+      color: var(--sds-text-primary);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+.sds-financial-card__sub {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin-top: var(--sds-space-050);
+    }
+
+.sds-financial-card__ring {
+      flex-shrink: 0;
+    }

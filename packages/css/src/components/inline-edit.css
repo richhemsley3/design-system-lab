@@ -1,0 +1,213 @@
+/* inline-edit — extracted from Design System Labs */
+
+/* ============================================================
+       INLINE EDIT
+       Click-to-edit text fields for modifying values directly
+       in tables, lists, and detail views without opening a modal.
+       ============================================================ */
+
+    .sds-inline-edit {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      position: relative;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+    }
+
+/* ---- Display (read-only) ---- */
+    .sds-inline-edit__display {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      cursor: pointer;
+      padding: var(--sds-space-100) 0;
+      border-bottom: 1px solid transparent;
+      transition: border-color 0.15s ease;
+      color: inherit;
+      font-size: inherit;
+      line-height: inherit;
+    }
+
+.sds-inline-edit__trigger {
+      display: inline-flex;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+      color: var(--sds-color-warm-gray-400);
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+
+.sds-inline-edit__trigger .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+/* Hover state */
+    .sds-inline-edit--hover .sds-inline-edit__display,
+    .sds-inline-edit__display:hover {
+      border-bottom-color: var(--sds-color-warm-gray-300);
+      border-bottom-style: dashed;
+    }
+
+.sds-inline-edit--hover .sds-inline-edit__trigger,
+    .sds-inline-edit__display:hover .sds-inline-edit__trigger {
+      opacity: 1;
+    }
+
+/* ---- Input (editing) ---- */
+    .sds-inline-edit__input {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-page);
+      border: 1.5px solid var(--sds-color-warm-gray-250);
+      border-radius: 6px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      min-width: 200px;
+    }
+
+.sds-inline-edit__input:focus {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1,61,91,0.15);
+    }
+
+/* ---- Select (dropdown variant) ---- */
+    .sds-inline-edit__select {
+      font-family: inherit;
+      font-size: inherit;
+      line-height: inherit;
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-page);
+      border: 1.5px solid var(--sds-color-warm-gray-250);
+      border-radius: 6px;
+      padding: var(--sds-space-200) var(--sds-space-300);
+      padding-right: var(--sds-space-800);
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6560' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right var(--sds-space-300) center;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+.sds-inline-edit__select:focus {
+      border-color: var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1,61,91,0.15);
+    }
+
+/* ---- Action buttons ---- */
+    .sds-inline-edit__actions {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+    }
+
+.sds-inline-edit__actions button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      transition: opacity 0.15s ease;
+    }
+
+.sds-inline-edit__actions button:hover { opacity: 0.85; }
+
+.sds-inline-edit__actions button .material-symbols-outlined { font-size: 16px; }
+
+.sds-inline-edit__confirm {
+      background: var(--sds-color-green-400);
+      color: white;
+    }
+
+.sds-inline-edit__cancel {
+      background: var(--sds-color-warm-gray-150);
+      color: var(--sds-color-warm-gray-600);
+    }
+
+/* ---- Editing state ---- */
+    .sds-inline-edit--editing .sds-inline-edit__display { display: none; }
+
+.sds-inline-edit:not(.sds-inline-edit--editing) .sds-inline-edit__input,
+    .sds-inline-edit:not(.sds-inline-edit--editing) .sds-inline-edit__select,
+    .sds-inline-edit:not(.sds-inline-edit--editing) .sds-inline-edit__actions {
+      display: none;
+    }
+
+/* ---- Error state ---- */
+    .sds-inline-edit--error .sds-inline-edit__input {
+      border-color: var(--sds-color-red-450);
+    }
+
+.sds-inline-edit--error .sds-inline-edit__input:focus {
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.12);
+    }
+
+.sds-inline-edit__error-msg {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-red-550);
+      margin-top: var(--sds-space-100);
+    }
+
+/* ---- Saving state ---- */
+    .sds-inline-edit--saving .sds-inline-edit__input {
+      opacity: 0.6;
+      pointer-events: none;
+    }
+
+.sds-inline-edit--saving .sds-inline-edit__actions button {
+      opacity: 0.4;
+      pointer-events: none;
+    }
+
+.sds-inline-edit__saving-text {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      font-style: italic;
+    }
+
+/* ---- Size: Small ---- */
+    .sds-inline-edit--sm {
+      font-size: var(--sds-type-caption);
+    }
+
+.sds-inline-edit--sm .sds-inline-edit__input {
+      padding: var(--sds-space-100) var(--sds-space-200);
+      min-width: 140px;
+    }
+
+.sds-inline-edit--sm .sds-inline-edit__actions button {
+      width: 20px;
+      height: 20px;
+    }
+
+.sds-inline-edit--sm .sds-inline-edit__actions button .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+.sds-inline-edit--sm .sds-inline-edit__trigger .material-symbols-outlined {
+      font-size: 12px;
+    }
+
+/* ---- Size: Large ---- */
+    .sds-inline-edit--lg {
+      font-size: var(--sds-type-title);
+    }
+
+.sds-inline-edit--lg .sds-inline-edit__input {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      min-width: 320px;
+    }
+
+.sds-inline-edit--lg .sds-inline-edit__trigger .material-symbols-outlined {
+      font-size: 18px;
+    }

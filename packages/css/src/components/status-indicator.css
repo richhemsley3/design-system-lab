@@ -1,0 +1,78 @@
+/* status-indicator — extracted from Design System Labs */
+
+/* ---- Base ---- */
+    .sds-status {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+.sds-status__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+.sds-status__label {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+      white-space: nowrap;
+    }
+
+/* ---- State variants ---- */
+
+    /* Online / Connected — green, pulsing */
+    .sds-status--online .sds-status__dot,
+    .sds-status--connected .sds-status__dot {
+      background: var(--sds-color-green-400);
+      animation: sds-pulse 2s ease-in-out infinite;
+    }
+
+/* Offline / Disconnected — gray, static */
+    .sds-status--offline .sds-status__dot,
+    .sds-status--disconnected .sds-status__dot {
+      background: var(--sds-color-warm-gray-300);
+    }
+
+/* Warning / Degraded — yellow, static */
+    .sds-status--warning .sds-status__dot,
+    .sds-status--degraded .sds-status__dot {
+      background: var(--sds-color-yellow-350);
+    }
+
+/* Error / Critical — red, pulsing */
+    .sds-status--error .sds-status__dot,
+    .sds-status--critical .sds-status__dot {
+      background: var(--sds-color-red-450);
+      animation: sds-pulse 2s ease-in-out infinite;
+    }
+
+/* Scanning / Syncing — blue, pulsing */
+    .sds-status--scanning .sds-status__dot,
+    .sds-status--syncing .sds-status__dot {
+      background: var(--sds-color-blue-450);
+      animation: sds-pulse 2s ease-in-out infinite;
+    }
+
+/* ---- Size variants ---- */
+
+    /* Small */
+    .sds-status--sm .sds-status__dot {
+      width: 6px;
+      height: 6px;
+    }
+
+.sds-status--sm .sds-status__label {
+      font-size: var(--sds-type-caption);
+    }
+
+/* Large */
+    .sds-status--lg .sds-status__dot {
+      width: 10px;
+      height: 10px;
+    }
+
+.sds-status--lg .sds-status__label {
+      font-size: var(--sds-type-body);
+    }

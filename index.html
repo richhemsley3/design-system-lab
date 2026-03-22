@@ -13,13 +13,13 @@
   /* Illustration tokens — used inside card preview SVGs */
   :root {
     --ill-bg: #F4F1EB;
-    --ill-primary: #013D5B;
-    --ill-secondary: #4F8AA0;
-    --ill-tertiary: #6AA5B8;
-    --ill-muted: #D0CBC3;
+    --ill-primary: #9BBECE;
+    --ill-secondary: #72A7BA;
+    --ill-tertiary: #8EBDD0;
+    --ill-muted: #CBC5BB;
     --ill-surface: #FFFFFF;
-    --ill-accent-red: #BF5547;
-    --ill-accent-green: #7A9A01;
+    --ill-accent-red: #C4867C;
+    --ill-accent-green: #96A655;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -1127,6 +1127,178 @@
       <div class="card-desc">Dark tooltips, rich tooltips with titles, and light popovers for contextual information.</div>
     </div>
   </a>
+</div>
+
+<!-- ===== DATA DISPLAY ===== -->
+<h2>Data Display</h2>
+<div class="card-grid">
+
+  <!-- Chart Cards -->
+  <a class="card" href="components/chart-cards.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="128" fill="var(--ill-bg)"/>
+        <!-- Card frame -->
+        <rect x="52" y="12" width="176" height="104" rx="8" fill="var(--ill-surface)"/>
+        <!-- Title bar -->
+        <rect x="66" y="24" width="60" height="6" rx="3" fill="var(--ill-muted)"/>
+        <rect x="66" y="34" width="36" height="4" rx="2" fill="var(--ill-muted)" opacity="0.5"/>
+        <!-- Mini bar chart inside card -->
+        <rect x="66" y="56" width="20" height="44" rx="3" fill="var(--ill-secondary)"/>
+        <rect x="92" y="66" width="20" height="34" rx="3" fill="var(--ill-tertiary)"/>
+        <rect x="118" y="50" width="20" height="50" rx="3" fill="var(--ill-secondary)"/>
+        <rect x="144" y="72" width="20" height="28" rx="3" fill="var(--ill-tertiary)"/>
+        <rect x="170" y="60" width="20" height="40" rx="3" fill="var(--ill-secondary)"/>
+        <!-- Axis -->
+        <rect x="66" y="100" width="124" height="2" rx="1" fill="var(--ill-muted)"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Chart Cards</div>
+      <div class="card-desc">Container cards for displaying charts with titles, metadata, and action controls.</div>
+    </div>
+  </a>
+
+  <!-- Info Viz Cards -->
+  <a class="card" href="components/info-viz-cards.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="128" fill="var(--ill-bg)"/>
+        <!-- Card frame -->
+        <rect x="52" y="12" width="176" height="104" rx="8" fill="var(--ill-surface)"/>
+        <!-- Mini donut -->
+        <circle cx="100" cy="60" r="22" stroke="var(--ill-secondary)" stroke-width="10" fill="none" stroke-dasharray="55 138" stroke-dashoffset="0"/>
+        <circle cx="100" cy="60" r="22" stroke="var(--ill-tertiary)" stroke-width="10" fill="none" stroke-dasharray="35 138" stroke-dashoffset="-55"/>
+        <circle cx="100" cy="60" r="22" stroke="var(--ill-accent-red)" stroke-width="10" fill="none" stroke-dasharray="28 138" stroke-dashoffset="-90"/>
+        <!-- Legend lines -->
+        <rect x="140" y="44" width="8" height="8" rx="2" fill="var(--ill-secondary)"/>
+        <rect x="152" y="46" width="36" height="4" rx="2" fill="var(--ill-muted)"/>
+        <rect x="140" y="58" width="8" height="8" rx="2" fill="var(--ill-tertiary)"/>
+        <rect x="152" y="60" width="28" height="4" rx="2" fill="var(--ill-muted)"/>
+        <rect x="140" y="72" width="8" height="8" rx="2" fill="var(--ill-accent-red)"/>
+        <rect x="152" y="74" width="32" height="4" rx="2" fill="var(--ill-muted)"/>
+        <!-- Title -->
+        <rect x="66" y="96" width="56" height="5" rx="2.5" fill="var(--ill-muted)"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Info Viz Cards</div>
+      <div class="card-desc">Specialized cards for presenting information visualizations and data representations.</div>
+    </div>
+  </a>
+
+  <!-- Insight Cards -->
+  <a class="card" href="components/insight-cards.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="128" fill="var(--ill-bg)"/>
+        <!-- Card frame -->
+        <rect x="52" y="12" width="176" height="104" rx="8" fill="var(--ill-surface)"/>
+        <!-- Lightbulb icon -->
+        <circle cx="82" cy="36" r="10" fill="var(--ill-secondary)" opacity="0.3"/>
+        <circle cx="82" cy="36" r="6" fill="var(--ill-secondary)"/>
+        <!-- Title + insight text -->
+        <rect x="100" y="30" width="64" height="6" rx="3" fill="var(--ill-primary)"/>
+        <rect x="100" y="40" width="44" height="4" rx="2" fill="var(--ill-muted)"/>
+        <!-- Sparkline -->
+        <polyline points="66,72 86,66 106,68 126,58 146,62 166,52 186,56 206,48" stroke="var(--ill-accent-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Metric -->
+        <rect x="66" y="86" width="40" height="8" rx="4" fill="var(--ill-secondary)"/>
+        <rect x="66" y="98" width="56" height="4" rx="2" fill="var(--ill-muted)"/>
+        <!-- Change badge -->
+        <rect x="170" y="86" width="40" height="16" rx="8" fill="var(--ill-accent-green)" opacity="0.3"/>
+        <rect x="178" y="91" width="24" height="5" rx="2.5" fill="var(--ill-accent-green)"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Insight Cards</div>
+      <div class="card-desc">Cards for displaying key insights and analysis findings with sparklines and trends.</div>
+    </div>
+  </a>
+
+  <!-- KPI Cards -->
+  <a class="card" href="components/kpi-cards.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="128" fill="var(--ill-bg)"/>
+        <!-- Card 1 -->
+        <rect x="36" y="16" width="96" height="96" rx="8" fill="var(--ill-surface)"/>
+        <rect x="50" y="28" width="36" height="5" rx="2.5" fill="var(--ill-muted)"/>
+        <rect x="50" y="42" width="52" height="10" rx="4" fill="var(--ill-secondary)"/>
+        <!-- Mini trend arrow up -->
+        <path d="M58 72l10-12 10 8 14-14" stroke="var(--ill-accent-green)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="50" y="86" width="40" height="14" rx="7" fill="var(--ill-accent-green)" opacity="0.25"/>
+        <rect x="56" y="90" width="28" height="5" rx="2.5" fill="var(--ill-accent-green)"/>
+        <!-- Card 2 -->
+        <rect x="148" y="16" width="96" height="96" rx="8" fill="var(--ill-surface)"/>
+        <rect x="162" y="28" width="44" height="5" rx="2.5" fill="var(--ill-muted)"/>
+        <rect x="162" y="42" width="48" height="10" rx="4" fill="var(--ill-secondary)"/>
+        <!-- Mini trend arrow down -->
+        <path d="M170 60l10 12 10-6 14 14" stroke="var(--ill-accent-red)" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="162" y="86" width="40" height="14" rx="7" fill="var(--ill-accent-red)" opacity="0.25"/>
+        <rect x="168" y="90" width="28" height="5" rx="2.5" fill="var(--ill-accent-red)"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">KPI Cards</div>
+      <div class="card-desc">Key performance indicator cards with metrics, trend arrows, and change indicators.</div>
+    </div>
+  </a>
+
+  <!-- Stat Card -->
+  <a class="card" href="components/stat-card.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="128" fill="var(--ill-bg)"/>
+        <!-- Card frame -->
+        <rect x="52" y="12" width="176" height="104" rx="8" fill="var(--ill-surface)"/>
+        <!-- Label -->
+        <rect x="68" y="26" width="48" height="5" rx="2.5" fill="var(--ill-muted)"/>
+        <!-- Big number -->
+        <rect x="68" y="40" width="72" height="16" rx="6" fill="var(--ill-primary)"/>
+        <!-- Comparison -->
+        <rect x="68" y="66" width="56" height="10" rx="5" fill="var(--ill-accent-green)" opacity="0.25"/>
+        <rect x="74" y="69" width="44" height="4" rx="2" fill="var(--ill-accent-green)"/>
+        <!-- Horizontal bar gauge -->
+        <rect x="68" y="86" width="144" height="10" rx="5" fill="var(--ill-muted)" opacity="0.4"/>
+        <rect x="68" y="86" width="100" height="10" rx="5" fill="var(--ill-secondary)"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Stat Card</div>
+      <div class="card-desc">Single statistic cards with big numbers, comparison badges, and progress gauges.</div>
+    </div>
+  </a>
+
+  <!-- Status Indicator -->
+  <a class="card" href="components/status-indicator.html">
+    <div class="card-preview">
+      <svg viewBox="0 0 280 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="280" height="128" fill="var(--ill-bg)"/>
+        <!-- Row 1 -->
+        <circle cx="84" cy="32" r="8" fill="var(--ill-accent-green)"/>
+        <rect x="100" y="28" width="56" height="6" rx="3" fill="var(--ill-muted)"/>
+        <rect x="168" y="28" width="36" height="6" rx="3" fill="var(--ill-primary)"/>
+        <!-- Row 2 -->
+        <circle cx="84" cy="56" r="8" fill="var(--ill-secondary)"/>
+        <rect x="100" y="52" width="48" height="6" rx="3" fill="var(--ill-muted)"/>
+        <rect x="168" y="52" width="28" height="6" rx="3" fill="var(--ill-primary)"/>
+        <!-- Row 3 -->
+        <circle cx="84" cy="80" r="8" fill="var(--ill-accent-red)"/>
+        <rect x="100" y="76" width="64" height="6" rx="3" fill="var(--ill-muted)"/>
+        <rect x="168" y="76" width="40" height="6" rx="3" fill="var(--ill-primary)"/>
+        <!-- Row 4 -->
+        <circle cx="84" cy="104" r="8" fill="var(--ill-muted)"/>
+        <rect x="100" y="100" width="40" height="6" rx="3" fill="var(--ill-muted)"/>
+        <rect x="168" y="100" width="32" height="6" rx="3" fill="var(--ill-primary)"/>
+      </svg>
+    </div>
+    <div class="card-body">
+      <div class="card-title">Status Indicator</div>
+      <div class="card-desc">Visual status indicators with color-coded dots and labels for system and process states.</div>
+    </div>
+  </a>
+
 </div>
 
 <!-- ===== DATA VISUALIZATION ===== -->

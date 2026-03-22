@@ -1,0 +1,27 @@
+export const typography = {
+  '--sds-font-sans': "'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
+  '--sds-font-mono': "'SF Mono', SFMono-Regular, Consolas, monospace",
+  '--sds-type-display': "28px",
+  '--sds-type-heading': "22px",
+  '--sds-type-subheading': "16px",
+  '--sds-type-title': "15px",
+  '--sds-type-body': "14px",
+  '--sds-type-label': "13px",
+  '--sds-type-caption': "12px",
+  '--sds-type-overline': "11px",
+  '--sds-weight-light': "300",
+  '--sds-weight-regular': "400",
+  '--sds-weight-medium': "500",
+  '--sds-weight-semibold': "600",
+  '--sds-weight-bold': "700",
+  '--sds-weight-extrabold': "800",
+  '--sds-leading-tight': "1.2",
+  '--sds-leading-snug': "1.35",
+  '--sds-leading-normal': "1.5",
+  '--sds-leading-relaxed': "1.6",
+  '--sds-tracking-tight': "-0.01em",
+  '--sds-tracking-normal': "0em",
+  '--sds-tracking-wide': "0.5px",
+} as const;
+
+export type TypographyToken = keyof typeof typography;

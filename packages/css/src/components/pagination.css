@@ -1,0 +1,328 @@
+/* pagination — extracted from Design System Labs */
+
+/* ── Pagination component ────────────────────────── */
+
+    /* Base pagination nav */
+    .sds-pagination {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+    }
+
+/* Page button */
+    .sds-pagination__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      padding: 0 var(--sds-space-200);
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--sds-color-warm-gray-600);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      user-select: none;
+      line-height: 1;
+    }
+
+.sds-pagination__btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-color-warm-gray-800);
+    }
+
+.sds-pagination__btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-pagination__btn--active {
+      background: var(--sds-color-blue-100);
+      color: var(--sds-color-blue-750);
+      font-weight: var(--sds-weight-semibold);
+      border-color: var(--sds-color-blue-100);
+    }
+
+.sds-pagination__btn--active:hover {
+      background: var(--sds-color-blue-100);
+      color: var(--sds-color-blue-750);
+    }
+
+.sds-pagination__btn:disabled,
+    .sds-pagination__btn[aria-disabled="true"] {
+      color: var(--sds-color-warm-gray-300);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+/* Arrow / icon buttons */
+    .sds-pagination__arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      padding: 0;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-600);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+.sds-pagination__arrow:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-color-warm-gray-800);
+      border-color: var(--sds-color-warm-gray-200);
+    }
+
+.sds-pagination__arrow:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-pagination__arrow:disabled,
+    .sds-pagination__arrow[aria-disabled="true"] {
+      color: var(--sds-color-warm-gray-300);
+      border-color: var(--sds-color-warm-gray-100);
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+
+.sds-pagination__arrow .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+/* Ellipsis */
+    .sds-pagination__ellipsis {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 32px;
+      height: 32px;
+      color: var(--sds-color-warm-gray-400);
+      font-size: var(--sds-type-label);
+      user-select: none;
+    }
+
+/* ── With page-size selector ─────────────────────── */
+    .sds-pagination-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sds-space-400);
+      flex-wrap: wrap;
+    }
+
+.sds-pagination-bar__info {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-500);
+    }
+
+.sds-pagination-bar__right {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+    }
+
+.sds-pagination-bar__selector {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-500);
+    }
+
+.sds-pagination-bar__select {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-700);
+      cursor: pointer;
+    }
+
+.sds-pagination-bar__select:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+/* ── Simple prev/next ────────────────────────────── */
+    .sds-pagination--simple {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+    }
+
+.sds-pagination__text-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-150) var(--sds-space-300);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-700);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+.sds-pagination__text-btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+
+.sds-pagination__text-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-pagination__text-btn:disabled {
+      color: var(--sds-color-warm-gray-300);
+      border-color: var(--sds-color-warm-gray-100);
+      cursor: not-allowed;
+    }
+
+.sds-pagination__text-btn .material-symbols-outlined {
+      font-size: 16px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-pagination__current {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-500);
+      white-space: nowrap;
+    }
+
+/* ── Compact ──────────────────────────────────────── */
+    .sds-pagination--compact {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+.sds-pagination--compact .sds-pagination__arrow {
+      width: 28px;
+      height: 28px;
+    }
+
+.sds-pagination--compact .sds-pagination__arrow .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+.sds-pagination--compact .sds-pagination__current {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-500);
+      white-space: nowrap;
+    }
+
+/* ── Load more ────────────────────────────────────── */
+    .sds-pagination-load-more {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+.sds-pagination-load-more__btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      padding: var(--sds-space-200) var(--sds-space-600);
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 6px;
+      background: var(--sds-color-white);
+      color: var(--sds-color-warm-gray-700);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+
+.sds-pagination-load-more__btn:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+    }
+
+.sds-pagination-load-more__btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-pagination-load-more__btn:disabled {
+      color: var(--sds-color-warm-gray-300);
+      border-color: var(--sds-color-warm-gray-100);
+      cursor: not-allowed;
+    }
+
+.sds-pagination-load-more__count {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+/* ── Infinite scroll indicator ────────────────────── */
+    .sds-pagination-scroll {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-600) 0;
+    }
+
+.sds-pagination-scroll__spinner {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--sds-color-warm-gray-150);
+      border-top-color: var(--sds-color-blue-750);
+      border-radius: 50%;
+      animation: sds-spin 0.8s linear infinite;
+    }
+
+.sds-pagination-scroll__text {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+.sds-pagination-scroll__end {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      padding: var(--sds-space-400) 0;
+    }
+
+@keyframes sds-spin {
+      to { transform: rotate(360deg); }
+    }
+
+/* Simulated list items for scroll demo */
+    .sds-pagination-scroll-demo {
+      max-height: 240px;
+      overflow-y: auto;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+    }
+
+.sds-pagination-scroll-demo__item {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+.sds-pagination-scroll-demo__item:last-child {
+      border-bottom: none;
+    }

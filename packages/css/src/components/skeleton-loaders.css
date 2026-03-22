@@ -1,0 +1,136 @@
+/* skeleton-loaders — extracted from Design System Labs */
+
+.sds-skeleton {
+      background: linear-gradient(
+        90deg,
+        var(--sds-color-warm-gray-100) 0%,
+        var(--sds-color-warm-gray-150) 50%,
+        var(--sds-color-warm-gray-100) 100%
+      );
+      background-size: 800px 100%;
+      animation: sds-skeleton-shimmer 1.5s ease-in-out infinite;
+      border-radius: 4px;
+    }
+
+/* ── Primitive shapes ────────────────────────────── */
+    .sds-skeleton--text {
+      height: 14px;
+      border-radius: 4px;
+    }
+
+.sds-skeleton--circle {
+      border-radius: 50%;
+    }
+
+.sds-skeleton--rect {
+      border-radius: 6px;
+    }
+
+/* ── Text block ──────────────────────────────────── */
+    .sds-skeleton-text-block {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+/* ── Card skeleton ───────────────────────────────── */
+    .sds-skeleton-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 320px;
+    }
+
+.sds-skeleton-card__image {
+      width: 100%;
+      height: 160px;
+    }
+
+.sds-skeleton-card__body {
+      padding: var(--sds-space-500);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-300);
+    }
+
+.sds-skeleton-card__title {
+      height: 18px;
+      width: 70%;
+    }
+
+.sds-skeleton-card__desc {
+      height: 14px;
+    }
+
+.sds-skeleton-card__action {
+      height: 36px;
+      width: 100px;
+      border-radius: 6px;
+      margin-top: var(--sds-space-200);
+    }
+
+/* ── Table skeleton ──────────────────────────────── */
+    .sds-skeleton-table {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+.sds-skeleton-table__row {
+      display: grid;
+      grid-template-columns: 2fr 2fr 1fr 1fr;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      align-items: center;
+    }
+
+.sds-skeleton-table__row:last-child {
+      border-bottom: none;
+    }
+
+.sds-skeleton-table__row--header {
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+.sds-skeleton-table__cell {
+      height: 14px;
+    }
+
+/* ── List skeleton ───────────────────────────────── */
+    .sds-skeleton-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+.sds-skeleton-list__item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-400) 0;
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-skeleton-list__item:last-child {
+      border-bottom: none;
+    }
+
+.sds-skeleton-list__avatar {
+      width: 36px;
+      height: 36px;
+      flex-shrink: 0;
+    }
+
+.sds-skeleton-list__lines {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+.toggle-wrapper.is-loaded .sds-skeleton-card { display: none; }

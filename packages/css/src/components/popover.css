@@ -1,0 +1,462 @@
+/* popover — extracted from Design System Labs */
+
+/* ============================================================
+       POPOVER COMPONENT
+       ============================================================ */
+
+    .sds-popover-anchor {
+      position: relative;
+      display: inline-flex;
+    }
+
+.sds-popover {
+      position: absolute;
+      z-index: 1000;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      padding: var(--sds-space-400);
+      max-width: 320px;
+      min-width: 220px;
+      font-family: var(--sds-font-sans);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 150ms ease, visibility 150ms ease;
+    }
+
+.sds-popover.is-open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+/* Static variant for previews */
+    .sds-popover--static {
+      position: relative;
+      opacity: 1;
+      visibility: visible;
+    }
+
+/* Arrow base */
+    .sds-popover::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--sds-bg-elevated);
+      border-left: 1px solid var(--sds-border-default);
+      border-top: 1px solid var(--sds-border-default);
+      transform: rotate(45deg);
+    }
+
+/* Positions */
+    .sds-popover--top {
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+.sds-popover--top::before {
+      bottom: -6px;
+      left: 50%;
+      margin-left: -5px;
+      border-left: none;
+      border-top: none;
+      border-right: 1px solid var(--sds-border-default);
+      border-bottom: 1px solid var(--sds-border-default);
+    }
+
+.sds-popover--bottom {
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+.sds-popover--bottom::before {
+      top: -6px;
+      left: 50%;
+      margin-left: -5px;
+    }
+
+.sds-popover--left {
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+.sds-popover--left::before {
+      right: -6px;
+      top: 50%;
+      margin-top: -5px;
+      border-left: none;
+      border-top: none;
+      border-right: 1px solid var(--sds-border-default);
+      border-bottom: 1px solid var(--sds-border-default);
+      transform: rotate(-45deg);
+    }
+
+.sds-popover--right {
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+.sds-popover--right::before {
+      left: -6px;
+      top: 50%;
+      margin-top: -5px;
+      transform: rotate(225deg);
+    }
+
+/* Sub-elements */
+    .sds-popover__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--sds-space-200);
+    }
+
+.sds-popover__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+    }
+
+.sds-popover__close {
+      background: none;
+      border: none;
+      padding: var(--sds-space-050);
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+.sds-popover__close:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+
+.sds-popover__close:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-popover__body {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-popover__body p {
+      font-size: var(--sds-type-caption);
+      margin: 0 0 var(--sds-space-200);
+    }
+
+.sds-popover__body p:last-child { margin-bottom: 0; }
+
+.sds-popover__actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-300);
+    }
+
+.sds-popover__link {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+.sds-popover__link:hover { text-decoration: underline; }
+
+.sds-popover__link:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+/* ============================================================
+       RICH CONTENT POPOVER — PROFILE CARD
+       ============================================================ */
+
+    .sds-popover__profile {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      margin-bottom: var(--sds-space-300);
+    }
+
+.sds-popover__avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      flex-shrink: 0;
+    }
+
+.sds-popover__profile-info {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+.sds-popover__profile-name {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+
+.sds-popover__profile-role {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+
+.sds-popover__meta {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-100);
+      padding-top: var(--sds-space-200);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-popover__meta-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+    }
+
+.sds-popover__meta-row .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-text-tertiary);
+    }
+
+/* ============================================================
+       RICH CONTENT — RESOURCE PREVIEW
+       ============================================================ */
+
+    .sds-popover__resource-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-interactive-primary);
+      flex-shrink: 0;
+    }
+
+.sds-popover__resource-icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+.sds-popover__resource-header {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+      margin-bottom: var(--sds-space-250);
+    }
+
+.sds-popover__resource-title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+
+.sds-popover__resource-subtitle {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+    }
+
+/* ============================================================
+       RICH CONTENT — QUICK ACTIONS
+       ============================================================ */
+
+    .sds-popover__action-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+.sds-popover__action-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-200) var(--sds-space-150);
+      border-radius: 6px;
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-primary);
+      cursor: pointer;
+      transition: background 100ms ease;
+    }
+
+.sds-popover__action-item:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-popover__action-item:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -2px;
+    }
+
+.sds-popover__action-item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-tertiary);
+    }
+
+.sds-popover__action-item--danger {
+      color: var(--sds-sentiment-negative);
+    }
+
+.sds-popover__action-item--danger .material-symbols-outlined {
+      color: var(--sds-sentiment-negative);
+    }
+
+/* ============================================================
+       CONFIRMATION POPOVER
+       ============================================================ */
+
+    .sds-popover--confirm {
+      max-width: 280px;
+      min-width: 200px;
+    }
+
+.sds-popover__confirm-msg {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+      margin: 0 0 var(--sds-space-300);
+    }
+
+.sds-popover__confirm-actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      justify-content: flex-end;
+    }
+
+.sds-popover__btn {
+      padding: var(--sds-space-100) var(--sds-space-300);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      border: 1px solid var(--sds-border-default);
+      background: var(--sds-bg-elevated);
+      color: var(--sds-text-primary);
+      transition: background 120ms ease, border-color 120ms ease;
+    }
+
+.sds-popover__btn:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-popover__btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-popover__btn--danger {
+      background: var(--sds-sentiment-negative);
+      color: var(--sds-color-white);
+      border-color: var(--sds-sentiment-negative);
+    }
+
+.sds-popover__btn--danger:hover {
+      opacity: 0.9;
+      background: var(--sds-sentiment-negative);
+    }
+
+.sds-popover__btn--primary {
+      background: var(--sds-interactive-primary);
+      color: var(--sds-color-white);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-popover__btn--primary:hover {
+      opacity: 0.9;
+      background: var(--sds-interactive-primary);
+    }
+
+/* ============================================================
+       FORM POPOVER
+       ============================================================ */
+
+    .sds-popover--form {
+      max-width: 300px;
+      min-width: 260px;
+    }
+
+/* Form inputs in popovers (canonical names — matches form-inputs.html) */
+    .sds-popover--form .sds-field {
+      margin-bottom: var(--sds-space-300);
+    }
+
+.sds-popover--form .sds-field:last-of-type {
+      margin-bottom: 0;
+    }
+
+.sds-popover--form .sds-field-label {
+      display: block;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-100);
+    }
+
+.sds-popover--form .sds-input {
+      display: block;
+      width: 100%;
+      padding: var(--sds-space-150) var(--sds-space-250);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+    }
+
+.sds-popover--form .sds-input:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+.sds-popover--form .sds-textarea {
+      display: block;
+      width: 100%;
+      padding: var(--sds-space-150) var(--sds-space-250);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+      resize: vertical;
+      min-height: 60px;
+    }
+
+.sds-popover--form .sds-textarea:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+.sds-popover__form-actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      justify-content: flex-end;
+      margin-top: var(--sds-space-300);
+    }

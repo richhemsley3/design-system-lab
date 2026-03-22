@@ -1,0 +1,224 @@
+/* avatars — extracted from Design System Labs */
+
+/* ============================================================
+       AVATAR — BASE
+       Circle with centered initials, icon, or image used to
+       represent users throughout the application.
+       ============================================================ */
+
+    .sds-avatar {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      flex-shrink: 0;
+      position: relative;
+      user-select: none;
+    }
+
+.sds-avatar .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+/* ---- Sizes ---- */
+
+    .sds-avatar--xs {
+      width: 24px;
+      height: 24px;
+      font-size: 10px;
+    }
+
+.sds-avatar--xs .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+.sds-avatar--sm {
+      width: 32px;
+      height: 32px;
+      font-size: var(--sds-type-caption);
+    }
+
+.sds-avatar--sm .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+/* Default is 40px — no modifier needed */
+
+    .sds-avatar--lg {
+      width: 48px;
+      height: 48px;
+      font-size: var(--sds-type-subheading);
+    }
+
+.sds-avatar--lg .material-symbols-outlined {
+      font-size: 24px;
+    }
+
+.sds-avatar--xl {
+      width: 64px;
+      height: 64px;
+      font-size: var(--sds-type-heading);
+    }
+
+.sds-avatar--xl .material-symbols-outlined {
+      font-size: 32px;
+    }
+
+/* ---- Color variants ---- */
+
+    .sds-avatar--teal {
+      background: var(--sds-color-blue-450);
+    }
+
+.sds-avatar--coral {
+      background: var(--sds-color-red-450);
+    }
+
+.sds-avatar--green {
+      background: var(--sds-color-green-400);
+    }
+
+.sds-avatar--gray {
+      background: var(--sds-color-warm-gray-400);
+    }
+
+/* ---- Image variant ---- */
+
+    .sds-avatar--image {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+/* ============================================================
+       STATUS INDICATOR
+       Small dot at bottom-right of the avatar to show
+       online/away/busy/offline state.
+       ============================================================ */
+
+    .sds-avatar-status {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      border: 2px solid var(--sds-color-white);
+    }
+
+.sds-avatar--xs .sds-avatar-status,
+    .sds-avatar--sm .sds-avatar-status {
+      width: 8px;
+      height: 8px;
+    }
+
+.sds-avatar--lg .sds-avatar-status,
+    .sds-avatar--xl .sds-avatar-status {
+      width: 12px;
+      height: 12px;
+    }
+
+.sds-avatar-status--online  { background: var(--sds-color-green-400); }
+
+.sds-avatar-status--away    { background: var(--sds-color-yellow-350); }
+
+.sds-avatar-status--busy    { background: var(--sds-color-red-450); }
+
+.sds-avatar-status--offline { background: var(--sds-color-warm-gray-300); }
+
+/* ============================================================
+       AVATAR GROUP
+       Overlapping row of avatars with optional overflow count.
+       ============================================================ */
+
+    .sds-avatar-group {
+      display: flex;
+      align-items: center;
+    }
+
+.sds-avatar-group .sds-avatar {
+      border: 2px solid var(--sds-color-white);
+      margin-left: -8px;
+    }
+
+.sds-avatar-group .sds-avatar:first-child {
+      margin-left: 0;
+    }
+
+/* Stack order: first avatar on top */
+    .sds-avatar-group .sds-avatar:nth-child(1) { z-index: 5; }
+
+.sds-avatar-group .sds-avatar:nth-child(2) { z-index: 4; }
+
+.sds-avatar-group .sds-avatar:nth-child(3) { z-index: 3; }
+
+.sds-avatar-group .sds-avatar:nth-child(4) { z-index: 2; }
+
+.sds-avatar-group .sds-avatar:nth-child(5) { z-index: 1; }
+
+.sds-avatar-group__overflow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-600);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      border: 2px solid var(--sds-color-white);
+      margin-left: -8px;
+      z-index: 0;
+    }
+
+/* ============================================================
+       AVATAR WITH DETAILS
+       Horizontal layout: avatar + name + role/email.
+       ============================================================ */
+
+    .sds-avatar-details {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+    }
+
+.sds-avatar-details__text {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-050);
+    }
+
+.sds-avatar-details__name {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-tight);
+    }
+
+.sds-avatar-details__subtitle {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-tertiary);
+      line-height: var(--sds-leading-tight);
+    }
+
+.sds-dot {
+      display: inline-block;
+      border-radius: 50%;
+    }
+
+.sds-dot--success { background: var(--sds-color-green-400); }
+
+.sds-dot--warning { background: var(--sds-color-yellow-350); }
+
+.sds-dot--neutral { background: var(--sds-color-warm-gray-300); }

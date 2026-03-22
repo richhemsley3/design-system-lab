@@ -1,0 +1,23 @@
+{
+  "name": "@sds/css",
+  "version": "0.1.0",
+  "description": "Extracted component CSS for Design System Labs",
+  "main": "dist/index.css",
+  "exports": {
+    ".": "./dist/index.css",
+    "./components/*": "./dist/components/*.css",
+    "./data-viz/*": "./dist/data-viz/*.css",
+    "./base": "./dist/base.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "extract": "node scripts/extract-css.js",
+    "build": "npm run extract && node scripts/build.js",
+    "clean": "rm -rf dist"
+  },
+  "peerDependencies": {
+    "@sds/tokens": ">=0.1.0"
+  }
+}

@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design System Lab — Installation &amp; Setup</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--sds-font-sans);
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    padding: var(--sds-space-1200) var(--sds-space-1000);
+    line-height: var(--sds-leading-normal);
+    max-width: 860px;
+  }
+
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin-bottom: var(--sds-space-200); }
+  .subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin-bottom: var(--sds-space-1200); }
+  h2 {
+    font-size: var(--sds-type-heading); font-weight: var(--sds-weight-semibold);
+    margin: var(--sds-space-1200) 0 var(--sds-space-400);
+    padding-top: var(--sds-space-600);
+    border-top: 1px solid var(--sds-border-subtle);
+  }
+  h2:first-of-type { border-top: none; padding-top: 0; }
+  h3 {
+    font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold);
+    margin: var(--sds-space-800) 0 var(--sds-space-300);
+  }
+  p {
+    font-size: var(--sds-type-body); color: var(--sds-text-secondary);
+    margin-bottom: var(--sds-space-400); max-width: 640px;
+  }
+  p strong { color: var(--sds-text-primary); }
+
+  /* Package cards */
+  .package-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: var(--sds-space-400);
+    margin-bottom: var(--sds-space-800);
+  }
+  .package-card {
+    border: 1px solid var(--sds-border-default);
+    border-radius: 10px;
+    padding: var(--sds-space-500);
+    background: var(--sds-bg-card);
+  }
+  .package-card-name {
+    font-size: var(--sds-type-title);
+    font-weight: var(--sds-weight-semibold);
+    font-family: var(--sds-font-mono);
+    color: var(--sds-interactive-primary);
+    margin-bottom: var(--sds-space-200);
+  }
+  .package-card-desc {
+    font-size: var(--sds-type-label);
+    color: var(--sds-text-secondary);
+    line-height: 1.45;
+  }
+
+  /* Code blocks */
+  pre {
+    background: var(--sds-bg-surface);
+    border: 1px solid var(--sds-border-default);
+    border-radius: 8px;
+    padding: var(--sds-space-400) var(--sds-space-500);
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    line-height: 1.7;
+    overflow-x: auto;
+    margin-bottom: var(--sds-space-600);
+    color: var(--sds-text-primary);
+    position: relative;
+  }
+  pre .comment { color: var(--sds-text-tertiary); }
+  pre .keyword { color: var(--sds-color-blue-750); }
+  pre .string { color: var(--sds-color-green-750); }
+
+  code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    background: var(--sds-bg-subtle);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+  }
+
+  /* Tab switcher */
+  .tab-bar {
+    display: flex;
+    gap: var(--sds-space-100);
+    margin-bottom: 0;
+    position: relative;
+    z-index: 1;
+  }
+  .tab-btn {
+    font-family: var(--sds-font-sans);
+    font-size: var(--sds-type-label);
+    font-weight: var(--sds-weight-semibold);
+    padding: var(--sds-space-200) var(--sds-space-400);
+    background: var(--sds-bg-surface);
+    border: 1px solid var(--sds-border-default);
+    border-bottom: none;
+    border-radius: 8px 8px 0 0;
+    cursor: pointer;
+    color: var(--sds-text-secondary);
+    transition: background 0.1s, color 0.1s;
+  }
+  .tab-btn:hover { color: var(--sds-text-primary); }
+  .tab-btn.active {
+    background: var(--sds-bg-card);
+    color: var(--sds-interactive-primary);
+    border-color: var(--sds-border-default);
+  }
+  .tab-content {
+    display: none;
+  }
+  .tab-content.active {
+    display: block;
+  }
+  .tab-content pre {
+    border-top-left-radius: 0;
+    margin-top: -1px;
+  }
+
+  /* Token table */
+  .token-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: var(--sds-space-600);
+    font-size: var(--sds-type-label);
+  }
+  .token-table th {
+    text-align: left;
+    font-weight: var(--sds-weight-semibold);
+    font-size: var(--sds-type-caption);
+    text-transform: uppercase;
+    letter-spacing: var(--sds-tracking-wide);
+    color: var(--sds-text-tertiary);
+    padding: var(--sds-space-200) var(--sds-space-300);
+    border-bottom: 2px solid var(--sds-border-default);
+  }
+  .token-table td {
+    padding: var(--sds-space-300);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    vertical-align: top;
+  }
+  .token-table td:first-child {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    white-space: nowrap;
+    color: var(--sds-interactive-primary);
+  }
+
+  /* Step list */
+  .steps {
+    list-style: none;
+    counter-reset: step;
+    margin-bottom: var(--sds-space-800);
+  }
+  .steps li {
+    counter-increment: step;
+    padding-left: var(--sds-space-1000);
+    position: relative;
+    margin-bottom: var(--sds-space-500);
+    font-size: var(--sds-type-body);
+    color: var(--sds-text-secondary);
+    line-height: 1.6;
+  }
+  .steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 0;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--sds-interactive-primary);
+    color: var(--sds-color-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--sds-type-caption);
+    font-weight: var(--sds-weight-semibold);
+  }
+  .steps li strong { color: var(--sds-text-primary); }
+
+  /* Callout */
+  .callout {
+    background: var(--sds-bg-surface);
+    border-left: 4px solid var(--sds-interactive-primary);
+    border-radius: 0 8px 8px 0;
+    padding: var(--sds-space-400) var(--sds-space-500);
+    margin-bottom: var(--sds-space-600);
+    font-size: var(--sds-type-label);
+    color: var(--sds-text-secondary);
+    line-height: 1.5;
+  }
+  .callout strong { color: var(--sds-text-primary); }
+</style>
+</head>
+<body>
+
+<h1>Installation &amp; Setup</h1>
+<p class="subtitle">Get started with Design System Lab in your project. Available as CSS, React, and Angular packages.</p>
+
+<!-- ===== PACKAGES ===== -->
+<h2>Packages</h2>
+<p>The design system is distributed as four npm packages. Install only what you need.</p>
+
+<div class="package-grid">
+  <div class="package-card">
+    <div class="package-card-name">@sds/tokens</div>
+    <div class="package-card-desc">Design tokens as CSS custom properties, JSON, and TypeScript objects. Colors, spacing, typography.</div>
+  </div>
+  <div class="package-card">
+    <div class="package-card-name">@sds/css</div>
+    <div class="package-card-desc">Extracted component CSS with BEM class names. 45 components, individually importable.</div>
+  </div>
+  <div class="package-card">
+    <div class="package-card-name">@sds/react</div>
+    <div class="package-card-desc">React component library with TypeScript. 47 components with typed props and forwardRef.</div>
+  </div>
+  <div class="package-card">
+    <div class="package-card-name">@sds/angular</div>
+    <div class="package-card-desc">Angular component library. 47 standalone components with inputs and outputs.</div>
+  </div>
+</div>
+
+<!-- ===== QUICK START ===== -->
+<h2>Quick Start</h2>
+
+<h3>React</h3>
+<ol class="steps">
+  <li><strong>Install the packages</strong>
+    <pre>npm install @sds/react @sds/css @sds/tokens</pre>
+  </li>
+  <li><strong>Import the styles</strong> in your app entry point (e.g. <code>main.tsx</code> or <code>App.tsx</code>)
+    <pre><span class="keyword">import</span> <span class="string">'@sds/tokens/css'</span>;
+<span class="keyword">import</span> <span class="string">'@sds/css'</span>;</pre>
+  </li>
+  <li><strong>Use components</strong> with typed props
+    <pre><span class="keyword">import</span> { Button, Card, Tag } <span class="keyword">from</span> <span class="string">'@sds/react'</span>;
+
+<span class="keyword">function</span> App() {
+  <span class="keyword">return</span> (
+    &lt;Card&gt;
+      &lt;Card.Header title=<span class="string">"Dashboard"</span> /&gt;
+      &lt;Card.Body&gt;
+        &lt;Tag status=<span class="string">"success"</span>&gt;Active&lt;/Tag&gt;
+        &lt;Button variant=<span class="string">"primary"</span> size=<span class="string">"md"</span>&gt;View Details&lt;/Button&gt;
+      &lt;/Card.Body&gt;
+    &lt;/Card&gt;
+  );
+}</pre>
+  </li>
+</ol>
+
+<h3>Angular</h3>
+<ol class="steps">
+  <li><strong>Install the packages</strong>
+    <pre>npm install @sds/angular @sds/css @sds/tokens</pre>
+  </li>
+  <li><strong>Add styles</strong> to your <code>angular.json</code>
+    <pre><span class="string">"styles"</span>: [
+  <span class="string">"node_modules/@sds/tokens/css/index.css"</span>,
+  <span class="string">"node_modules/@sds/css/dist/index.css"</span>,
+  <span class="string">"src/styles.css"</span>
+]</pre>
+  </li>
+  <li><strong>Import standalone components</strong> in your modules or components
+    <pre><span class="keyword">import</span> { SdsButtonComponent, SdsCardComponent } <span class="keyword">from</span> <span class="string">'@sds/angular'</span>;
+
+@Component({
+  standalone: <span class="keyword">true</span>,
+  imports: [SdsButtonComponent, SdsCardComponent],
+  template: <span class="string">`
+    &lt;sds-card&gt;
+      &lt;sds-card-header title="Dashboard" /&gt;
+      &lt;sds-card-body&gt;
+        &lt;sds-button variant="primary" size="md"&gt;View&lt;/sds-button&gt;
+      &lt;/sds-card-body&gt;
+    &lt;/sds-card&gt;
+  `</span>
+})
+<span class="keyword">export class</span> DashboardComponent {}</pre>
+  </li>
+</ol>
+
+<h3>CSS Only</h3>
+<ol class="steps">
+  <li><strong>Install tokens and CSS</strong>
+    <pre>npm install @sds/css @sds/tokens</pre>
+  </li>
+  <li><strong>Import in your stylesheet</strong>
+    <pre><span class="keyword">@import</span> <span class="string">'@sds/tokens/css'</span>;
+<span class="keyword">@import</span> <span class="string">'@sds/css'</span>;</pre>
+  </li>
+  <li><strong>Use BEM class names</strong> in your markup
+    <pre>&lt;button class=<span class="string">"sds-btn sds-btn--primary sds-btn--md"</span>&gt;Submit&lt;/button&gt;
+
+&lt;div class=<span class="string">"sds-card"</span>&gt;
+  &lt;div class=<span class="string">"sds-card-header"</span>&gt;
+    &lt;div class=<span class="string">"sds-card-title"</span>&gt;Dashboard&lt;/div&gt;
+  &lt;/div&gt;
+  &lt;div class=<span class="string">"sds-card-body"</span>&gt;
+    &lt;span class=<span class="string">"sds-tag sds-tag--success"</span>&gt;Active&lt;/span&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</pre>
+  </li>
+</ol>
+
+<div class="callout">
+  <strong>Selective imports:</strong> For smaller bundles, import only the components you need instead of the full bundle:<br><br>
+  <code>@import '@sds/css/components/buttons';</code><br>
+  <code>@import '@sds/css/components/cards';</code>
+</div>
+
+<!-- ===== TOKENS ===== -->
+<h2>Using Tokens</h2>
+<p>The token system uses CSS custom properties with the <code>--sds-</code> prefix. Import the token stylesheet to access all variables.</p>
+
+<h3>CSS Custom Properties</h3>
+<pre><span class="keyword">@import</span> <span class="string">'@sds/tokens/css'</span>;
+
+.my-component {
+  color: <span class="keyword">var</span>(--sds-text-primary);
+  background: <span class="keyword">var</span>(--sds-bg-surface);
+  padding: <span class="keyword">var</span>(--sds-space-400);
+  font-size: <span class="keyword">var</span>(--sds-type-body);
+  font-weight: <span class="keyword">var</span>(--sds-weight-semibold);
+  border-radius: 8px;
+  border: 1px solid <span class="keyword">var</span>(--sds-border-default);
+}</pre>
+
+<h3>TypeScript Objects</h3>
+<p>For programmatic access (theming, charting libraries, CSS-in-JS), import the typed token objects.</p>
+<pre><span class="keyword">import</span> { colors, spacing, typography } <span class="keyword">from</span> <span class="string">'@sds/tokens'</span>;
+
+colors[<span class="string">'--sds-color-blue-750'</span>]     <span class="comment">// '#013D5B'</span>
+spacing[<span class="string">'--sds-space-400'</span>]           <span class="comment">// '16px'</span>
+typography[<span class="string">'--sds-type-body'</span>]        <span class="comment">// '14px'</span></pre>
+
+<h3>JSON Exports</h3>
+<p>For build tools, design token pipelines, or Figma sync:</p>
+<pre><span class="keyword">import</span> colors <span class="keyword">from</span> <span class="string">'@sds/tokens/json/colors'</span>;
+<span class="keyword">import</span> semanticColors <span class="keyword">from</span> <span class="string">'@sds/tokens/json/semantic-colors'</span>;</pre>
+
+<!-- ===== TOKEN LAYERS ===== -->
+<h2>Token Architecture</h2>
+<p>The design system uses a three-layer token architecture. Always use semantic tokens in your components — they automatically adapt to dark mode.</p>
+
+<table class="token-table">
+  <thead>
+    <tr><th>Layer</th><th>Example</th><th>Usage</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>--sds-color-blue-750</td>
+      <td>Primitive</td>
+      <td>Raw color value. Rarely used directly — reference via semantic tokens.</td>
+    </tr>
+    <tr>
+      <td>--sds-interactive-primary</td>
+      <td>Semantic</td>
+      <td>Maps to blue-750 in light mode, adjusts in dark mode. Use this in components.</td>
+    </tr>
+    <tr>
+      <td>--sds-bg-page</td>
+      <td>Semantic</td>
+      <td>Page background. White in light mode, dark gray in dark mode.</td>
+    </tr>
+    <tr>
+      <td>--sds-text-primary</td>
+      <td>Semantic</td>
+      <td>Primary text color. Warm gray in light mode, cool gray in dark mode.</td>
+    </tr>
+    <tr>
+      <td>--sds-space-400</td>
+      <td>Space</td>
+      <td>16px. Use for standard component padding.</td>
+    </tr>
+    <tr>
+      <td>--sds-type-body</td>
+      <td>Typography</td>
+      <td>14px. Primary body text size.</td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="callout">
+  <strong>Dark mode:</strong> The token system supports dark mode via <code>prefers-color-scheme: dark</code>. Semantic tokens automatically swap warm grays for cool grays — no code changes needed in your components.
+</div>
+
+<!-- ===== FONT ===== -->
+<h2>Font Setup</h2>
+<p>The design system uses <strong>Proxima Nova</strong> (weights 300-800). This is a licensed font — your team must provide their own license.</p>
+
+<pre><span class="comment">/* Load Proxima Nova via @sds/tokens typography */</span>
+<span class="keyword">@import</span> <span class="string">'@sds/tokens/css/typography'</span>;
+
+<span class="comment">/* Or self-host and reference the font-family token */</span>
+body {
+  font-family: <span class="keyword">var</span>(--sds-font-sans);
+  <span class="comment">/* 'Proxima Nova', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif */</span>
+}</pre>
+
+<p>If Proxima Nova is unavailable, the system falls back to the platform's default system font.</p>
+
+<!-- ===== COMPONENT CONVENTIONS ===== -->
+<h2>Component Conventions</h2>
+<p>All components in both React and Angular follow the same patterns.</p>
+
+<h3>CSS Class Naming</h3>
+<p>Components use BEM naming with the <code>.sds-</code> prefix:</p>
+<pre><span class="comment">/* Block */</span>
+.sds-alert { }
+
+<span class="comment">/* Element */</span>
+.sds-alert__icon { }
+.sds-alert__content { }
+
+<span class="comment">/* Modifier */</span>
+.sds-alert--warning { }
+.sds-alert--compact { }</pre>
+
+<h3>React Components</h3>
+<p>Every React component supports <code>className</code> for composition and <code>ref</code> forwarding.</p>
+<pre><span class="keyword">import</span> { Button } <span class="keyword">from</span> <span class="string">'@sds/react'</span>;
+
+<span class="comment">// All props are typed</span>
+&lt;Button
+  variant=<span class="string">"primary"</span>
+  size=<span class="string">"md"</span>
+  className=<span class="string">"my-custom-class"</span>
+  onClick={handleClick}
+  ref={buttonRef}
+&gt;
+  Submit
+&lt;/Button&gt;</pre>
+
+<h3>Angular Components</h3>
+<p>Angular components use standalone components with typed inputs and outputs.</p>
+<pre><span class="keyword">import</span> { SdsAlertComponent } <span class="keyword">from</span> <span class="string">'@sds/angular'</span>;
+
+<span class="comment">// In your component</span>
+&lt;sds-alert variant=<span class="string">"warning"</span> title=<span class="string">"Attention"</span> dismissible (dismissed)=<span class="string">"onDismiss()"</span>&gt;
+  Check your configuration.
+&lt;/sds-alert&gt;</pre>
+
+<!-- ===== PROJECT STRUCTURE ===== -->
+<h2>Project Structure</h2>
+<pre>@sds/tokens          <span class="comment">Design tokens — CSS, JSON, TypeScript</span>
+  css/               <span class="comment">colors.css, spacing.css, typography.css</span>
+  json/              <span class="comment">colors.json, semantic-colors.json</span>
+  dist/              <span class="comment">TypeScript objects (ESM + CJS)</span>
+
+@sds/css             <span class="comment">Component stylesheets</span>
+  dist/
+    base.css         <span class="comment">Reset + body defaults</span>
+    index.css        <span class="comment">Full bundle (all components)</span>
+    components/      <span class="comment">Individual component CSS files</span>
+
+@sds/react           <span class="comment">React component library</span>
+  dist/
+    index.mjs        <span class="comment">ESM bundle</span>
+    index.js         <span class="comment">CJS bundle</span>
+    index.d.ts       <span class="comment">TypeScript declarations</span>
+
+@sds/angular         <span class="comment">Angular component library</span>
+  dist/
+    fesm2022/        <span class="comment">ES module bundle</span>
+    esm2022/         <span class="comment">Individual component modules</span></pre>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>

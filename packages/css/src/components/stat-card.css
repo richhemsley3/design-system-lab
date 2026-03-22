@@ -1,0 +1,150 @@
+/* stat-card — extracted from Design System Labs */
+
+/* ============================================================
+       STAT CARD / KPI
+       Dedicated metric display cards for dashboard KPIs.
+       Shows a large number with label, trend indicator,
+       and optional icon.
+       ============================================================ */
+
+    .sds-stat-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-100);
+      border-radius: 10px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04), 0 2px 8px rgba(0,0,0,0.02);
+      padding: var(--sds-space-500) var(--sds-space-600);
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-050);
+    }
+
+.sds-stat-card__label {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-500);
+      font-weight: var(--sds-weight-medium);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      margin: 0;
+      line-height: 1;
+    }
+
+.sds-stat-card__value {
+      font-size: var(--sds-type-display);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-top: var(--sds-space-150);
+      line-height: 1.1;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: -0.02em;
+    }
+
+.sds-stat-card__trend {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      margin-top: var(--sds-space-150);
+      line-height: 1;
+      padding: 3px 8px 3px 5px;
+      border-radius: 20px;
+      width: fit-content;
+    }
+
+.sds-stat-card__trend .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+/* Directional trends (arrow direction) */
+    .sds-stat-card__trend--up {
+      color: var(--sds-color-green-500);
+      background: var(--sds-status-success-bg);
+    }
+
+.sds-stat-card__trend--down {
+      color: var(--sds-color-red-550);
+      background: var(--sds-status-error-bg);
+    }
+
+.sds-stat-card__trend--neutral {
+      color: var(--sds-color-warm-gray-500);
+      background: var(--sds-color-warm-gray-050);
+    }
+
+/* Semantic trends (good/bad regardless of direction) */
+    .sds-stat-card__trend--positive {
+      color: var(--sds-color-green-500);
+      background: var(--sds-status-success-bg);
+    }
+
+.sds-stat-card__trend--negative {
+      color: var(--sds-color-red-550);
+      background: var(--sds-status-error-bg);
+    }
+
+.sds-stat-card__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      flex-shrink: 0;
+      margin-bottom: var(--sds-space-100);
+    }
+
+.sds-stat-card__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+.sds-stat-card__footer {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin-top: var(--sds-space-200);
+      padding-top: var(--sds-space-300);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+/* ---- Compact variant ---- */
+    .sds-stat-card--compact {
+      padding: var(--sds-space-400);
+    }
+
+.sds-stat-card--compact .sds-stat-card__value {
+      font-size: var(--sds-type-heading);
+    }
+
+/* ---- Highlighted variant ---- */
+    .sds-stat-card--highlighted {
+      position: relative;
+      overflow: hidden;
+    }
+
+.sds-stat-card--highlighted::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 6px;
+      background: var(--sds-color-blue-550);
+    }
+
+.sds-stat-card--highlighted-info::before {
+      background: var(--sds-color-blue-550);
+    }
+
+.sds-stat-card--highlighted-critical::before {
+      background: var(--sds-color-red-450);
+    }
+
+.sds-stat-card--highlighted-health::before {
+      background: var(--sds-color-green-400);
+    }
+
+/* ---- Dashboard grid ---- */
+    .sds-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: var(--sds-space-400);
+    }

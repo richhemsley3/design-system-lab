@@ -1,0 +1,338 @@
+/* alerts — extracted from Design System Labs */
+
+/* ============================================================
+       INLINE ALERTS
+       Full-width banners with tinted background, colored border,
+       rounded icon badge, and optional dismiss.
+       ============================================================ */
+
+    .sds-alert {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+.sds-alert.is-dismissing {
+      opacity: 0;
+      transform: translateY(-4px);
+      pointer-events: none;
+    }
+
+/* Icon badge */
+    .sds-alert__icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+.sds-alert__icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-white);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-alert__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-alert__title {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+.sds-alert__message {
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-label);
+    }
+
+.sds-alert__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-150);
+      color: var(--sds-text-tertiary);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+.sds-alert__dismiss .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-alert__dismiss:hover {
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-subtle);
+    }
+
+.sds-alert__dismiss:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+/* Alert actions */
+    .sds-alert__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      margin-top: var(--sds-space-200);
+    }
+
+.sds-alert__action {
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+      border-radius: 4px;
+      transition: opacity 0.15s ease;
+    }
+
+.sds-alert__action:hover {
+      opacity: 0.8;
+    }
+
+.sds-alert__action:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-alert__action--primary {
+      color: var(--sds-text-primary);
+    }
+
+.sds-alert__action--secondary {
+      color: var(--sds-text-tertiary);
+    }
+
+/* ---- Semantic variants ---- */
+    .sds-alert--success {
+      background: var(--sds-status-success-bg);
+      border-color: var(--sds-color-green-100);
+    }
+
+.sds-alert--success .sds-alert__icon {
+      background: var(--sds-status-success-strong);
+    }
+
+.sds-alert--warning {
+      background: var(--sds-status-warning-bg);
+      border-color: var(--sds-color-yellow-100);
+    }
+
+.sds-alert--warning .sds-alert__icon {
+      background: var(--sds-status-warning-strong);
+    }
+
+.sds-alert--error {
+      background: var(--sds-status-error-bg);
+      border-color: var(--sds-color-red-100);
+    }
+
+.sds-alert--error .sds-alert__icon {
+      background: var(--sds-status-error-strong);
+    }
+
+.sds-alert--info {
+      background: var(--sds-status-info-bg);
+      border-color: var(--sds-color-blue-100);
+    }
+
+.sds-alert--info .sds-alert__icon {
+      background: var(--sds-status-info-text);
+    }
+
+/* ============================================================
+       PAGE BANNERS
+       Full-width persistent banners for system-level messages.
+       No border-radius, edge-to-edge.
+       ============================================================ */
+
+    .sds-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-300) var(--sds-space-600);
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      border-bottom: 1px solid transparent;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+.sds-banner.is-dismissing {
+      opacity: 0;
+      transform: translateY(-100%);
+      pointer-events: none;
+    }
+
+.sds-banner__icon .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-banner__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-banner__content strong {
+      font-weight: var(--sds-weight-semibold);
+    }
+
+.sds-banner__action {
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      text-decoration: underline;
+      border: none;
+      background: none;
+      cursor: pointer;
+      padding: 0;
+      transition: opacity 0.15s ease;
+      flex-shrink: 0;
+    }
+
+.sds-banner__action:hover {
+      opacity: 0.8;
+    }
+
+.sds-banner__action:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-banner__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-100);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+.sds-banner__dismiss .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-banner__dismiss:hover {
+      background: rgba(0,0,0,0.06);
+    }
+
+.sds-banner__dismiss:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+/* Banner variants */
+    .sds-banner--info {
+      background: var(--sds-status-info-bg);
+      border-bottom-color: var(--sds-color-blue-100);
+      color: var(--sds-status-info-text);
+    }
+
+.sds-banner--info .sds-banner__action { color: var(--sds-status-info-text); }
+
+.sds-banner--info .sds-banner__dismiss { color: var(--sds-status-info-text); }
+
+.sds-banner--warning {
+      background: var(--sds-status-warning-bg);
+      border-bottom-color: var(--sds-color-yellow-100);
+      color: var(--sds-status-warning-text);
+    }
+
+.sds-banner--warning .sds-banner__action { color: var(--sds-status-warning-text); }
+
+.sds-banner--warning .sds-banner__dismiss { color: var(--sds-status-warning-text); }
+
+.sds-banner--error {
+      background: var(--sds-status-error-bg);
+      border-bottom-color: var(--sds-color-red-100);
+      color: var(--sds-status-error-text);
+    }
+
+.sds-banner--error .sds-banner__action { color: var(--sds-status-error-text); }
+
+.sds-banner--error .sds-banner__dismiss { color: var(--sds-status-error-text); }
+
+.sds-banner--success {
+      background: var(--sds-status-success-bg);
+      border-bottom-color: var(--sds-color-green-100);
+      color: var(--sds-status-success-text);
+    }
+
+.sds-banner--success .sds-banner__action { color: var(--sds-status-success-text); }
+
+.sds-banner--success .sds-banner__dismiss { color: var(--sds-status-success-text); }
+
+/* ============================================================
+       COMPACT ALERTS
+       Smaller inline alerts for form-level or section-level
+       feedback. Reduced padding, no shadow.
+       ============================================================ */
+
+    .sds-alert--compact {
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border-radius: 8px;
+      box-shadow: none;
+      font-size: var(--sds-type-label);
+    }
+
+.sds-alert--compact .sds-alert__icon {
+      width: 18px;
+      height: 18px;
+      min-width: 18px;
+      border-radius: 4px;
+    }
+
+.sds-alert--compact .sds-alert__icon .material-symbols-outlined {
+      font-size: 12px;
+    }
+
+.sds-alert--compact .sds-alert__title {
+      font-size: var(--sds-type-label);
+    }
+
+.sds-alert--compact .sds-alert__message {
+      font-size: var(--sds-type-caption);
+    }
+
+.sds-alert--compact .sds-alert__dismiss {
+      padding: var(--sds-space-100);
+    }
+
+.sds-alert--compact .sds-alert__dismiss .material-symbols-outlined {
+      font-size: 16px;
+    }

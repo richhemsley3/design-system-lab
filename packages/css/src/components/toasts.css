@@ -1,0 +1,259 @@
+/* toasts — extracted from Design System Labs */
+
+/* ============================================================
+       INLINE ALERTS
+       Full-width banners with tinted background, colored border,
+       rounded icon badge, and optional dismiss.
+       Inspired by Figma: Toast Messages Notifications Component
+       ============================================================ */
+
+    .sds-alert {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+/* Icon badge — rounded square with colored fill + white symbol */
+    .sds-alert__icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+.sds-alert__icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-white);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-alert__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-alert__title {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+.sds-alert__message {
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-label);
+    }
+
+.sds-alert__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-150);
+      color: var(--sds-text-tertiary);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+.sds-alert__dismiss .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-alert__dismiss:hover {
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-subtle);
+    }
+
+/* ---- Semantic variants (using design system status tokens) ---- */
+    .sds-alert--success {
+      background: var(--sds-status-success-bg);
+      border-color: var(--sds-color-green-100);
+    }
+
+.sds-alert--success .sds-alert__icon {
+      background: var(--sds-status-success-strong);
+    }
+
+.sds-alert--warning {
+      background: var(--sds-status-warning-bg);
+      border-color: var(--sds-color-yellow-100);
+    }
+
+.sds-alert--warning .sds-alert__icon {
+      background: var(--sds-status-warning-strong);
+    }
+
+.sds-alert--error {
+      background: var(--sds-status-error-bg);
+      border-color: var(--sds-color-red-100);
+    }
+
+.sds-alert--error .sds-alert__icon {
+      background: var(--sds-status-error-strong);
+    }
+
+.sds-alert--info {
+      background: var(--sds-status-info-bg);
+      border-color: var(--sds-color-blue-100);
+    }
+
+.sds-alert--info .sds-alert__icon {
+      background: var(--sds-status-info-text);
+    }
+
+.sds-alert--neutral {
+      background: var(--sds-status-neutral-bg);
+      border-color: var(--sds-border-default);
+    }
+
+.sds-alert--neutral .sds-alert__icon {
+      background: var(--sds-status-neutral-text);
+    }
+
+/* ============================================================
+       FLOATING TOASTS
+       Fixed-position notifications that slide in from the right,
+       stack vertically, and auto-dismiss. Same visual treatment
+       as inline alerts but with shadow elevation.
+       ============================================================ */
+
+    .sds-toast-container {
+      position: fixed;
+      top: var(--sds-space-600);
+      right: var(--sds-space-600);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-300);
+      pointer-events: none;
+    }
+
+.sds-toast {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      width: 380px;
+      padding: var(--sds-space-400);
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: var(--sds-color-white);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.10), 0 1px 4px rgba(0,0,0,0.06);
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-primary);
+      pointer-events: auto;
+      animation: sds-toast-slide-in 300ms cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    }
+
+.sds-toast.is-dismissing {
+      animation: sds-toast-fade-out 200ms ease forwards;
+    }
+
+@keyframes sds-toast-slide-in {
+      from { opacity: 0; transform: translateX(100%); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+@keyframes sds-toast-fade-out {
+      from { opacity: 1; transform: translateX(0); }
+      to   { opacity: 0; transform: translateX(40px); }
+    }
+
+/* Toast icon badge */
+    .sds-toast__icon {
+      width: 24px;
+      height: 24px;
+      min-width: 24px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+.sds-toast__icon .material-symbols-outlined {
+      font-size: 16px;
+      color: var(--sds-color-white);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-toast__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-toast__title {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+.sds-toast__message {
+      color: var(--sds-text-tertiary);
+      font-size: var(--sds-type-label);
+    }
+
+.sds-toast__dismiss {
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-150);
+      color: var(--sds-text-tertiary);
+      line-height: 1;
+      flex-shrink: 0;
+      border-radius: 6px;
+      transition: color 0.15s ease, background 0.15s ease;
+      align-self: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+.sds-toast__dismiss .material-symbols-outlined {
+      font-size: 20px;
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    }
+
+.sds-toast__dismiss:hover {
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-subtle);
+    }
+
+/* ---- Toast color accents (semantic tokens) ---- */
+    .sds-toast--success { border-color: var(--sds-color-green-100); }
+
+.sds-toast--success .sds-toast__icon { background: var(--sds-status-success-strong); }
+
+.sds-toast--warning { border-color: var(--sds-color-yellow-100); }
+
+.sds-toast--warning .sds-toast__icon { background: var(--sds-status-warning-strong); }
+
+.sds-toast--error { border-color: var(--sds-color-red-100); }
+
+.sds-toast--error .sds-toast__icon { background: var(--sds-status-error-strong); }
+
+.sds-toast--info { border-color: var(--sds-color-blue-100); }
+
+.sds-toast--info .sds-toast__icon { background: var(--sds-status-info-text); }
+
+.sds-toast--neutral { border-color: var(--sds-border-default); }
+
+.sds-toast--neutral .sds-toast__icon { background: var(--sds-status-neutral-text); }

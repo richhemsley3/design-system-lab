@@ -1,0 +1,75 @@
+/* cards — extracted from Design System Labs */
+
+/* ============================================================
+       BASE CARD
+       ============================================================ */
+    .sds-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+/* Card header */
+    .sds-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      gap: var(--sds-space-300);
+    }
+
+.sds-card-header--bordered {
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-900);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+.sds-card-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+/* Card body */
+    .sds-card-body {
+      padding: var(--sds-space-400) var(--sds-space-500);
+    }
+
+.sds-card-header + .sds-card-body {
+      padding-top: var(--sds-space-0);
+    }
+
+.sds-card-header--bordered + .sds-card-body {
+      padding-top: var(--sds-space-400);
+    }
+
+/* Card footer */
+    .sds-card-footer {
+      padding: var(--sds-space-300) var(--sds-space-500);
+      border-top: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sds-space-300);
+    }
+
+/* Inline text link */
+    .sds-link {
+      font-size: var(--sds-type-label);
+      color: var(--sds-color-blue-750);
+      text-decoration: none;
+      font-weight: var(--sds-weight-medium);
+    }
+
+.sds-link:hover {
+      text-decoration: underline;
+    }

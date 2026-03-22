@@ -1,0 +1,186 @@
+/* code-block — extracted from Design System Labs */
+
+/* ============================================================
+       CODE BLOCK
+       Formatted code/syntax display for database queries, API
+       responses, configuration files, and code snippets
+       across the platform.
+       ============================================================ */
+
+    .sds-code-block {
+      background: var(--sds-color-warm-gray-900);
+      border-radius: 8px;
+      overflow: hidden;
+      font-family: var(--sds-font-mono);
+      font-size: var(--sds-type-caption);
+      line-height: var(--sds-leading-relaxed);
+      color: var(--sds-color-warm-gray-100);
+    }
+
+.sds-code-block__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-300) var(--sds-space-500);
+      background: var(--sds-color-warm-gray-850);
+      border-bottom: 1px solid var(--sds-color-warm-gray-750);
+    }
+
+.sds-code-block__language {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+.sds-code-block__copy {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      background: none;
+      border: none;
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      color: var(--sds-color-warm-gray-400);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-medium);
+      cursor: pointer;
+      transition: color 0.15s ease, background 0.15s ease;
+      position: relative;
+    }
+
+.sds-code-block__copy:hover {
+      color: var(--sds-color-warm-gray-200);
+      background: var(--sds-color-warm-gray-750);
+    }
+
+.sds-code-block__copy .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+/* Copy tooltip */
+    .sds-code-block__copy-tooltip {
+      position: absolute;
+      top: -32px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--sds-color-warm-gray-700);
+      color: var(--sds-color-warm-gray-100);
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-medium);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.15s ease;
+    }
+
+.sds-code-block__copy-tooltip--visible {
+      opacity: 1;
+    }
+
+.sds-code-block__content {
+      padding: var(--sds-space-500);
+      margin: 0;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+.sds-code-block__content code {
+      background: none;
+      padding: 0;
+      border-radius: 0;
+      font-size: inherit;
+      color: inherit;
+    }
+
+/* Line numbers variant */
+    .sds-code-block--line-numbers .sds-code-block__content {
+      padding: var(--sds-space-500) 0;
+    }
+
+.sds-code-block__line {
+      display: flex;
+      min-height: 1.6em;
+    }
+
+.sds-code-block__line-number {
+      display: inline-block;
+      width: 40px;
+      flex-shrink: 0;
+      text-align: right;
+      padding-right: var(--sds-space-300);
+      margin-right: var(--sds-space-400);
+      color: var(--sds-color-warm-gray-500);
+      border-right: 1px solid var(--sds-color-warm-gray-750);
+      user-select: none;
+    }
+
+.sds-code-block__line-text {
+      padding-right: var(--sds-space-500);
+    }
+
+/* ---- Compact variant ---- */
+    .sds-code-block--compact {
+      font-size: var(--sds-type-overline);
+    }
+
+.sds-code-block--compact .sds-code-block__content {
+      padding: var(--sds-space-300);
+    }
+
+/* ---- Redacted variant ---- */
+    .sds-code-block--redacted .sds-code-block__redacted-value {
+      background: rgba(207, 98, 83, 0.2);
+      color: var(--sds-color-red-300);
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 3px;
+      font-weight: var(--sds-weight-medium);
+      letter-spacing: 0.05em;
+    }
+
+/* ---- Canonical card (from cards.html) ---- */
+    .sds-card {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+.sds-card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      gap: var(--sds-space-300);
+    }
+
+.sds-card-header--bordered {
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-900);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+.sds-card-body {
+      padding: var(--sds-space-400) var(--sds-space-500);
+    }
+
+.sds-card-header + .sds-card-body {
+      padding-top: var(--sds-space-0);
+    }
+
+.sds-card-header--bordered + .sds-card-body {
+      padding-top: var(--sds-space-400);
+    }

@@ -1,0 +1,217 @@
+/* tags — extracted from Design System Labs */
+
+/* ============================================================
+       STATUS TAGS
+       Compact labels used in tables, cards, and lists to
+       communicate state. Matched pixel-for-pixel from the
+       application's status display pattern.
+       ============================================================ */
+
+    .sds-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-050) var(--sds-space-200);
+      font-family: inherit;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      line-height: var(--sds-leading-normal);
+      border-radius: 4px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+/* ---- Semantic variants ---- */
+
+    /* Error / Critical */
+    .sds-tag--error {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+
+/* Warning / Pending */
+    .sds-tag--warning {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+
+/* Success / Complete */
+    .sds-tag--success {
+      background: var(--sds-color-green-025);
+      color: var(--sds-color-green-500);
+    }
+
+/* Info / In Review */
+    .sds-tag--info {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+
+/* Neutral / Draft */
+    .sds-tag--neutral {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+
+/* Purple / Active */
+    .sds-tag--purple {
+      background: #F7EEFF;
+      color: var(--sds-color-purple-550);
+    }
+
+/* ---- With leading dot indicator ---- */
+    .sds-tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+.sds-tag--error .sds-tag-dot   { background: var(--sds-color-red-450); }
+
+.sds-tag--warning .sds-tag-dot { background: var(--sds-color-yellow-350); }
+
+.sds-tag--success .sds-tag-dot { background: var(--sds-color-green-400); }
+
+.sds-tag--info .sds-tag-dot    { background: var(--sds-color-blue-550); }
+
+.sds-tag--neutral .sds-tag-dot { background: var(--sds-color-warm-gray-400); }
+
+.sds-tag--purple .sds-tag-dot  { background: var(--sds-color-purple-550); }
+
+/* ---- Outline variant ---- */
+    .sds-tag--outline {
+      background: transparent;
+      border: 1px solid currentColor;
+      padding: var(--sds-space-050) var(--sds-space-200);
+    }
+
+.sds-tag--outline.sds-tag--error   { color: var(--sds-color-red-450); }
+
+.sds-tag--outline.sds-tag--warning { color: var(--sds-color-yellow-450); }
+
+.sds-tag--outline.sds-tag--success { color: var(--sds-color-green-450); }
+
+.sds-tag--outline.sds-tag--info    { color: var(--sds-color-blue-600); }
+
+.sds-tag--outline.sds-tag--neutral { color: var(--sds-color-warm-gray-450); }
+
+.sds-tag--outline.sds-tag--purple  { color: var(--sds-color-purple-550); }
+
+/* ---- Size: Small ---- */
+    .sds-tag--sm {
+      font-size: 10px;
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 3px;
+    }
+
+.sds-tag--sm .sds-tag-dot {
+      width: 5px;
+      height: 5px;
+    }
+
+/* ---- Size: Large ---- */
+    .sds-tag--lg {
+      font-size: var(--sds-type-caption);
+      padding: var(--sds-space-100) var(--sds-space-250);
+      border-radius: 5px;
+      font-weight: var(--sds-weight-medium);
+    }
+
+.sds-tag--lg .sds-tag-dot {
+      width: 7px;
+      height: 7px;
+    }
+
+/* ============================================================
+       COUNT BADGES
+       Round pill-shaped number indicators used in card headers
+       and tab labels.
+       ============================================================ */
+    .sds-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 var(--sds-space-150);
+      font-family: inherit;
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      line-height: 1;
+      border-radius: 10px;
+      white-space: nowrap;
+      vertical-align: middle;
+    }
+
+.sds-badge--error {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-550);
+    }
+
+.sds-badge--warning {
+      background: var(--sds-color-yellow-025);
+      color: var(--sds-color-yellow-550);
+    }
+
+.sds-badge--success {
+      background: var(--sds-color-green-025);
+      color: var(--sds-color-green-500);
+    }
+
+.sds-badge--info {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+
+.sds-badge--neutral {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-650);
+    }
+
+.sds-badge--purple {
+      background: #F7EEFF;
+      color: var(--sds-color-purple-550);
+    }
+
+/* ---- Badge sizes ---- */
+    .sds-badge--sm {
+      min-width: 16px;
+      height: 16px;
+      font-size: 10px;
+      padding: 0 var(--sds-space-100);
+      border-radius: 8px;
+    }
+
+.sds-badge--lg {
+      min-width: 24px;
+      height: 24px;
+      font-size: var(--sds-type-label);
+      padding: 0 var(--sds-space-200);
+      border-radius: 12px;
+    }
+
+/* ============================================================
+       INLINE DOT
+       Standalone status dot used in data tables for
+       inline status indicators.
+       ============================================================ */
+    .sds-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      vertical-align: middle;
+    }
+
+.sds-dot--error   { background: var(--sds-color-red-450); }
+
+.sds-dot--warning { background: var(--sds-color-yellow-300); }
+
+.sds-dot--success { background: var(--sds-color-green-400); }
+
+.sds-dot--info    { background: var(--sds-color-blue-450); }
+
+.sds-dot--neutral { background: var(--sds-color-warm-gray-300); }
+
+.sds-dot--purple  { background: var(--sds-color-purple-550); }

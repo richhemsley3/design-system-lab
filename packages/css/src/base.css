@@ -1,0 +1,18 @@
+/* base.css — Reset and defaults for Design System Labs */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--sds-font-sans);
+  font-size: var(--sds-type-body);
+  font-weight: var(--sds-weight-regular);
+  line-height: var(--sds-leading-normal);
+  color: var(--sds-text-primary);
+  background: var(--sds-bg-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

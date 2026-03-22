@@ -1,0 +1,129 @@
+/* banner — extracted from Design System Labs */
+
+/* ============================================================
+       BANNER
+       Full-width system-level announcements for maintenance
+       windows, important updates, subscription changes, notices.
+       ============================================================ */
+
+    .sds-banner {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-300);
+      min-height: 48px;
+      padding: var(--sds-space-300) var(--sds-space-500);
+      width: 100%;
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      line-height: var(--sds-leading-normal);
+      border-bottom: 1px solid transparent;
+    }
+
+/* --- Variant: Info --- */
+    .sds-banner--info {
+      background: var(--sds-color-blue-050);
+      border-bottom-color: var(--sds-color-blue-150);
+      color: var(--sds-color-blue-750);
+    }
+
+.sds-banner--info .sds-banner__icon {
+      color: var(--sds-color-blue-550);
+    }
+
+/* --- Variant: Warning --- */
+    .sds-banner--warning {
+      background: var(--sds-color-yellow-025);
+      border-bottom-color: var(--sds-color-yellow-100);
+      color: var(--sds-color-yellow-700);
+    }
+
+.sds-banner--warning .sds-banner__icon {
+      color: var(--sds-color-yellow-450);
+    }
+
+/* --- Variant: Error --- */
+    .sds-banner--error {
+      background: var(--sds-color-red-050);
+      border-bottom-color: var(--sds-color-red-100);
+      color: var(--sds-color-red-700);
+    }
+
+.sds-banner--error .sds-banner__icon {
+      color: var(--sds-color-red-550);
+    }
+
+/* --- Variant: Success --- */
+    .sds-banner--success {
+      background: var(--sds-color-green-025);
+      border-bottom-color: var(--sds-color-green-100);
+      color: var(--sds-color-green-700);
+    }
+
+.sds-banner--success .sds-banner__icon {
+      color: var(--sds-color-green-400);
+    }
+
+/* --- Elements --- */
+    .sds-banner__icon {
+      font-size: 20px;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+.sds-banner__content {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: baseline;
+      gap: var(--sds-space-150);
+      flex-wrap: wrap;
+    }
+
+.sds-banner__title {
+      font-weight: var(--sds-weight-medium);
+      font-size: var(--sds-type-label);
+    }
+
+.sds-banner__message {
+      font-size: var(--sds-type-label);
+    }
+
+.sds-banner__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      flex-shrink: 0;
+      margin-left: auto;
+    }
+
+.sds-banner__dismiss {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border: none;
+      background: transparent;
+      border-radius: 6px;
+      cursor: pointer;
+      color: inherit;
+      opacity: 0.6;
+      transition: opacity 0.15s ease, background 0.15s ease;
+      flex-shrink: 0;
+      padding: 0;
+    }
+
+.sds-banner__dismiss:hover {
+      opacity: 1;
+      background: rgba(0, 0, 0, 0.06);
+    }
+
+.sds-banner__dismiss .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+.sticky-demo-container .sds-banner {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }

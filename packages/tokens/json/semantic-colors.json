@@ -1,0 +1,80 @@
+{
+  "$schema": "https://tr.designtokens.org/format/",
+  "$description": "Semantic color tokens — maps primitive color scales to UI intent.",
+
+  "semantic": {
+
+    "background": {
+      "page":           { "$value": "{color.static.white}", "$type": "color", "$description": "Main page background" },
+      "surface":        { "$value": "{color.warm-gray.025}", "$type": "color", "$description": "Sidebar, panels, and secondary surfaces (#FAF8F5)" },
+      "card":           { "$value": "{color.static.white}", "$type": "color", "$description": "Card and content container background" },
+      "elevated":       { "$value": "{color.static.white}", "$type": "color", "$description": "Elevated surfaces (modals, popovers)" },
+      "subtle":         { "$value": "{color.warm-gray.050}", "$type": "color", "$description": "Subtle background for table headers, empty states" }
+    },
+
+    "text": {
+      "primary":        { "$value": "{color.warm-gray.900}", "$type": "color", "$description": "Primary text — headings, high emphasis (#1C1A17)" },
+      "secondary":      { "$value": "{color.warm-gray.650}", "$type": "color", "$description": "Secondary text — body copy, descriptions (#54514D)" },
+      "tertiary":       { "$value": "{color.warm-gray.550}", "$type": "color", "$description": "Tertiary text — placeholders, captions (#6B6760)" },
+      "disabled":       { "$value": "{color.warm-gray.300}", "$type": "color", "$description": "Disabled text (#B0ABA2)" },
+      "on-primary":     { "$value": "{color.static.white}", "$type": "color", "$description": "Text on primary-colored backgrounds" },
+      "link":           { "$value": "{color.blue.750}", "$type": "color", "$description": "Interactive link text (#013D5B)" }
+    },
+
+    "border": {
+      "default":        { "$value": "{color.warm-gray.150}", "$type": "color", "$description": "Default border for cards, dividers (#E0DCD3)" },
+      "subtle":         { "$value": "{color.warm-gray.100}", "$type": "color", "$description": "Subtle borders, table rules (#EBE6DD)" },
+      "strong":         { "$value": "{color.warm-gray.200}", "$type": "color", "$description": "Strong borders, input outlines (#D0CBC3)" },
+      "focus":          { "$value": "{color.blue.750}", "$type": "color", "$description": "Focus ring color (#013D5B)" }
+    },
+
+    "interactive": {
+      "primary":           { "$value": "{color.blue.750}", "$type": "color", "$description": "Primary actions — buttons, active nav, CTAs (#013D5B)" },
+      "primary-hover":     { "$value": "{color.blue.800}", "$type": "color", "$description": "Primary hover state (#05314D)" },
+      "primary-active":    { "$value": "{color.blue.850}", "$type": "color", "$description": "Primary active/pressed state (#032740)" },
+      "primary-subtle":    { "$value": "{color.blue.100}", "$type": "color", "$description": "Light primary backgrounds — active tab badges, highlights (#D9EBED)" },
+      "secondary":         { "$value": "{color.static.white}", "$type": "color", "$description": "Secondary/ghost button background" },
+      "secondary-border":  { "$value": "{color.warm-gray.800}", "$type": "color", "$description": "Ghost button border color (#302D28)" }
+    },
+
+    "nav": {
+      "sidebar-bg":       { "$value": "{color.warm-gray.025}", "$type": "color", "$description": "Sidebar background (#FAF8F5)" },
+      "item-active-bg":   { "$value": "{color.blue.100}", "$type": "color", "$description": "Active nav item background (#D9EBED)" },
+      "item-active-text":  { "$value": "{color.blue.750}", "$type": "color", "$description": "Active nav item text (#013D5B)" },
+      "item-default-text": { "$value": "{color.warm-gray.650}", "$type": "color", "$description": "Default nav item text (#54514D)" },
+      "section-header":    { "$value": "{color.warm-gray.550}", "$type": "color", "$description": "Nav section header text (#6B6760)" }
+    },
+
+    "status": {
+      "success-bg":       { "$value": "{color.green.025}", "$type": "color", "$description": "Success badge/alert background (#F4FAEB)" },
+      "success-text":     { "$value": "{color.green.500}", "$type": "color", "$description": "Success badge/alert text (#62800B)" },
+      "success-strong":   { "$value": "{color.green.400}", "$type": "color", "$description": "Success indicator, progress bar (#7A9A01)" },
+
+      "warning-bg":       { "$value": "{color.yellow.025}", "$type": "color", "$description": "Warning badge/alert background (#FCF9D9)" },
+      "warning-text":     { "$value": "{color.yellow.500}", "$type": "color", "$description": "Warning badge/alert text (#8A7515)" },
+      "warning-strong":   { "$value": "{color.yellow.200}", "$type": "color", "$description": "Warning indicator (#EBCE2D)" },
+
+      "error-bg":         { "$value": "{color.red.050}", "$type": "color", "$description": "Error/risk badge background (#FFEEEB)" },
+      "error-text":       { "$value": "{color.red.500}", "$type": "color", "$description": "Error/risk badge text (#BF5547)" },
+      "error-strong":     { "$value": "{color.red.450}", "$type": "color", "$description": "Error indicator (#CF6253)" },
+
+      "info-bg":          { "$value": "{color.blue.050}", "$type": "color", "$description": "Info badge/alert background (#EBF4F5)" },
+      "info-text":        { "$value": "{color.blue.700}", "$type": "color", "$description": "Info badge/alert text (#0C4A69)" },
+
+      "neutral-bg":       { "$value": "{color.warm-gray.100}", "$type": "color", "$description": "Neutral badge/tag background (#EBE6DD)" },
+      "neutral-text":     { "$value": "{color.warm-gray.650}", "$type": "color", "$description": "Neutral badge/tag text (#54514D)" },
+
+      "purple-bg":        { "$value": "#F7EEFF", "$type": "color", "$description": "Purple category background (from dashboard)" },
+      "purple-text":      { "$value": "{color.purple.550}", "$type": "color", "$description": "Purple category text (#805AA1)" }
+    },
+
+    "data-viz": {
+      "$description": "Colors observed in dashboard charts and data visualization",
+      "primary":    { "$value": "{color.blue.750}", "$type": "color" },
+      "secondary":  { "$value": "{color.green.400}", "$type": "color" },
+      "tertiary":   { "$value": "{color.yellow.200}", "$type": "color" },
+      "quaternary": { "$value": "{color.red.450}", "$type": "color" },
+      "quinary":    { "$value": "{color.purple.550}", "$type": "color" }
+    }
+  }
+}

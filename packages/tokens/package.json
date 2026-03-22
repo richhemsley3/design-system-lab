@@ -1,0 +1,34 @@
+{
+  "name": "@sds/tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for Design System Labs — CSS custom properties, JSON, and TypeScript exports",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./css": "./css/index.css",
+    "./css/colors": "./css/colors.css",
+    "./css/spacing": "./css/spacing.css",
+    "./css/typography": "./css/typography.css",
+    "./json/colors": "./json/colors.json",
+    "./json/semantic-colors": "./json/semantic-colors.json"
+  },
+  "files": [
+    "dist",
+    "css",
+    "json"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate-tokens.js",
+    "build": "npm run generate && tsup js/index.ts --format esm,cjs --dts --outDir dist",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0"
+  }
+}

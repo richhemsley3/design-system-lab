@@ -1,0 +1,734 @@
+/* selection-controls — extracted from Design System Labs */
+
+/* ============================================================
+       SELECTION CONTROLS
+       Advanced selection patterns for checkboxes, radios, and
+       toggles used in enterprise data management interfaces.
+       ============================================================ */
+
+    /* ---- Shared: hidden native input ---- */
+    .sds-checkbox-group input[type="checkbox"],
+    .sds-radio-card-group input[type="radio"],
+    .sds-checkbox-card-group input[type="checkbox"],
+    .sds-chip-group input[type="radio"],
+    .sds-chip-group input[type="checkbox"],
+    .sds-toggle-list input[type="checkbox"] {
+      position: absolute;
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+/* ============================================================
+       1. CHECKBOX GROUP (with Select All)
+       ============================================================ */
+    .sds-checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+.sds-checkbox-group-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-200) 0;
+      cursor: pointer;
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-snug);
+      user-select: none;
+    }
+
+.sds-checkbox-group-item:hover .sds-checkbox-group-box {
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-checkbox-group-box {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+.sds-checkbox-group-box svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+.sds-checkbox-group-item input:checked + .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-checkbox-group-item input:checked + .sds-checkbox-group-box svg {
+      opacity: 1;
+    }
+
+.sds-checkbox-group-item input:focus-visible + .sds-checkbox-group-box {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+/* Indeterminate dash */
+    .sds-checkbox-group-dash {
+      display: none;
+      width: 8px;
+      height: 2px;
+      background: var(--sds-color-white);
+      border-radius: 1px;
+    }
+
+.sds-checkbox-group-item input.is-indeterminate + .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-checkbox-group-item input.is-indeterminate + .sds-checkbox-group-box svg {
+      display: none;
+    }
+
+.sds-checkbox-group-item input.is-indeterminate + .sds-checkbox-group-box .sds-checkbox-group-dash {
+      display: block;
+    }
+
+/* Parent separator */
+    .sds-checkbox-group-parent {
+      font-weight: var(--sds-weight-medium);
+      padding-bottom: var(--sds-space-200);
+      margin-bottom: var(--sds-space-100);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-checkbox-group-children {
+      display: flex;
+      flex-direction: column;
+      padding-left: var(--sds-space-600);
+    }
+
+/* ERROR STATE */
+    .sds-checkbox-group.has-error .sds-checkbox-group-box {
+      border-color: var(--sds-color-red-500);
+    }
+
+.sds-checkbox-group-error {
+      display: none;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-red-500);
+      margin-top: var(--sds-space-150);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-checkbox-group.has-error + .sds-checkbox-group-error {
+      display: block;
+    }
+
+/* ============================================================
+       2. RADIO CARD GROUP
+       ============================================================ */
+    .sds-radio-card-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+.sds-radio-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+.sds-radio-card:hover {
+      border-color: var(--sds-border-strong);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-radio-card-circle {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 50%;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: border-color 0.15s ease;
+    }
+
+.sds-radio-card-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: transparent;
+      transition: background-color 0.15s ease;
+    }
+
+.sds-radio-card input:checked ~ .sds-radio-card-circle {
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-radio-card input:checked ~ .sds-radio-card-circle .sds-radio-card-dot {
+      background: var(--sds-interactive-primary);
+    }
+
+.sds-radio-card:has(input:checked) {
+      border-color: var(--sds-interactive-primary);
+      background: var(--sds-interactive-primary-subtle);
+    }
+
+.sds-radio-card input:focus-visible ~ .sds-radio-card-circle {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+.sds-radio-card-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-radio-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+.sds-radio-card-desc {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-radio-card-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--sds-interactive-primary-subtle);
+      border-radius: 6px;
+      color: var(--sds-interactive-primary);
+      margin-top: 2px;
+    }
+
+.sds-radio-card-icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+/* DISABLED STATE */
+    .sds-radio-card.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: var(--sds-color-warm-gray-025);
+    }
+
+/* ============================================================
+       3. CHECKBOX CARD GROUP
+       ============================================================ */
+    .sds-checkbox-card-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--sds-space-200);
+    }
+
+.sds-checkbox-card {
+      display: flex;
+      align-items: flex-start;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-400);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease;
+      user-select: none;
+    }
+
+.sds-checkbox-card:hover {
+      border-color: var(--sds-border-strong);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-checkbox-card-box {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+.sds-checkbox-card-box svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+.sds-checkbox-card input:checked ~ .sds-checkbox-card-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-checkbox-card input:checked ~ .sds-checkbox-card-box svg {
+      opacity: 1;
+    }
+
+.sds-checkbox-card:has(input:checked) {
+      border-color: var(--sds-interactive-primary);
+      background: var(--sds-interactive-primary-subtle);
+    }
+
+.sds-checkbox-card input:focus-visible ~ .sds-checkbox-card-box {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+.sds-checkbox-card-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-checkbox-card-title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+.sds-checkbox-card-desc {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-checkbox-card-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--sds-interactive-primary-subtle);
+      border-radius: 6px;
+      color: var(--sds-interactive-primary);
+      margin-top: 2px;
+    }
+
+.sds-checkbox-card-icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+/* DISABLED STATE */
+    .sds-checkbox-card.is-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      pointer-events: none;
+      background: var(--sds-color-warm-gray-025);
+    }
+
+/* ============================================================
+       4. TOGGLE LIST
+       ============================================================ */
+    .sds-toggle-list {
+      display: flex;
+      flex-direction: column;
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+.sds-toggle-list-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--sds-space-400);
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.15s ease;
+    }
+
+.sds-toggle-list-item:last-child {
+      border-bottom: none;
+    }
+
+.sds-toggle-list-item:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-toggle-list-content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-toggle-list-label {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      margin-bottom: var(--sds-space-050);
+    }
+
+.sds-toggle-list-desc {
+      font-size: var(--sds-type-label);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-toggle-list-track {
+      width: 36px;
+      height: 20px;
+      flex-shrink: 0;
+      background: var(--sds-color-warm-gray-250);
+      border-radius: 10px;
+      position: relative;
+      transition: background-color 0.2s ease;
+    }
+
+.sds-toggle-list-knob {
+      width: 16px;
+      height: 16px;
+      background: var(--sds-color-white);
+      border-radius: 50%;
+      position: absolute;
+      top: 2px;
+      left: 2px;
+      transition: transform 0.2s ease;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+    }
+
+.sds-toggle-list-item input:checked + .sds-toggle-list-track {
+      background: var(--sds-interactive-primary);
+    }
+
+.sds-toggle-list-item input:checked + .sds-toggle-list-track .sds-toggle-list-knob {
+      transform: translateX(16px);
+    }
+
+.sds-toggle-list-item input:focus-visible + .sds-toggle-list-track {
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+.sds-toggle-list-section {
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-semibold);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      color: var(--sds-color-warm-gray-450);
+      padding: var(--sds-space-400) var(--sds-space-500) var(--sds-space-200);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-toggle-list-section:not(:first-child) {
+      border-top: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+/* LOADING STATE */
+    .sds-toggle-list-item.is-loading {
+      pointer-events: none;
+    }
+
+@keyframes sds-toggle-pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 0.85; }
+    }
+
+.sds-toggle-list-item.is-loading .sds-toggle-list-track {
+      animation: sds-toggle-pulse 1.2s ease-in-out infinite;
+    }
+
+/* ============================================================
+       5. FILTER CHIPS
+       ============================================================ */
+    .sds-chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--sds-space-150);
+    }
+
+.sds-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      min-height: 36px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-secondary);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 100px;
+      cursor: pointer;
+      user-select: none;
+      position: relative;
+      transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+/* 44px touch target via pseudo-element */
+    .sds-chip::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      min-width: 100%;
+      min-height: 44px;
+    }
+
+.sds-chip:hover {
+      border-color: var(--sds-border-strong);
+      color: var(--sds-text-primary);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-chip:active {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-chip:has(input:checked) {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+      color: var(--sds-text-on-primary);
+    }
+
+.sds-chip:has(input:checked):hover {
+      background: var(--sds-interactive-primary-hover);
+      border-color: var(--sds-interactive-primary-hover);
+    }
+
+.sds-chip:has(input:checked):active {
+      background: var(--sds-interactive-primary-active, var(--sds-interactive-primary));
+    }
+
+.sds-chip:has(input:focus-visible) {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+      padding: calc(var(--sds-space-200) - 1px) calc(var(--sds-space-300) - 1px);
+    }
+
+.sds-chip .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+.sds-chip:has(input:checked) .material-symbols-outlined {
+      color: var(--sds-text-on-primary);
+    }
+
+/* ============================================================
+       6. INLINE CHECKBOX TABLE
+       ============================================================ */
+    .sds-selection-table-wrapper {
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--sds-color-white);
+    }
+
+.sds-selection-bar {
+      display: none;
+      align-items: center;
+      gap: var(--sds-space-300);
+      padding: var(--sds-space-250) var(--sds-space-400);
+      background: var(--sds-interactive-primary-subtle);
+      border-bottom: 1px solid var(--sds-color-blue-150, var(--sds-border-default));
+      font-size: var(--sds-type-label);
+      color: var(--sds-interactive-primary);
+    }
+
+.sds-selection-bar.is-visible {
+      display: flex;
+    }
+
+.sds-selection-bar-count {
+      font-weight: var(--sds-weight-semibold);
+    }
+
+.sds-selection-bar-actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-left: auto;
+    }
+
+.sds-selection-bar-btn {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      background: none;
+      border: 1px solid var(--sds-interactive-primary);
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-250);
+      border-radius: 4px;
+      transition: background-color 0.15s ease;
+    }
+
+.sds-selection-bar-btn:hover {
+      background: rgba(1, 61, 91, 0.08);
+    }
+
+.sds-selection-bar-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-selection-bar-btn--danger {
+      color: var(--sds-color-red-500);
+      border-color: var(--sds-color-red-500);
+    }
+
+.sds-selection-bar-btn--danger:hover {
+      background: var(--sds-color-red-025, rgba(220, 38, 38, 0.04));
+    }
+
+.sds-selection-bar-deselect {
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      text-decoration: underline;
+      transition: background-color 0.15s ease;
+    }
+
+.sds-selection-bar-deselect:hover {
+      background: rgba(1, 61, 91, 0.08);
+    }
+
+.sds-selection-bar-deselect:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-selection-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--sds-type-label);
+    }
+
+.sds-selection-table th {
+      text-align: left;
+      padding: var(--sds-space-250) var(--sds-space-400);
+      font-weight: var(--sds-weight-semibold);
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-550);
+      background: var(--sds-color-warm-gray-025);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+.sds-selection-table td {
+      padding: var(--sds-space-250) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+.sds-selection-table tr:last-child td { border-bottom: none; }
+
+.sds-selection-table tbody tr {
+      transition: background-color 0.15s ease;
+    }
+
+.sds-selection-table tbody tr:hover td {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-selection-table tr.is-selected td {
+      background: var(--sds-interactive-primary-subtle);
+    }
+
+.sds-selection-table th:first-child,
+    .sds-selection-table td:first-child {
+      width: 40px;
+      padding-right: 0;
+    }
+
+/* Table checkbox (div-based, keyboard accessible) */
+    .sds-table-checkbox {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+    }
+
+.sds-table-checkbox svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+    }
+
+.sds-table-checkbox:hover {
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-table-checkbox.is-checked {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-table-checkbox.is-checked svg {
+      opacity: 1;
+    }
+
+.sds-table-checkbox.is-indeterminate {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-table-checkbox-dash {
+      display: none;
+      width: 8px;
+      height: 2px;
+      background: var(--sds-color-white);
+      border-radius: 1px;
+    }
+
+.sds-table-checkbox.is-indeterminate svg {
+      display: none;
+    }
+
+.sds-table-checkbox.is-indeterminate .sds-table-checkbox-dash {
+      display: block;
+    }
+
+.sds-table-checkbox:focus-visible {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+      outline: none;
+    }

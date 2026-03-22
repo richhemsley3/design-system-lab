@@ -1,0 +1,318 @@
+/* data-lists — extracted from Design System Labs */
+
+/* ============================================================
+       DATA LIST — VERTICAL KEY-VALUE
+       Stacked rows with label left, value right. Uses semantic
+       dl/dt/dd markup for accessible key-value display.
+       ============================================================ */
+
+    .sds-data-list {
+      margin: 0;
+      padding: 0;
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+.sds-kv {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-kv:last-child {
+      border-bottom: none;
+    }
+
+.sds-kv__label {
+      margin: 0;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-color-warm-gray-450);
+      flex-shrink: 0;
+      min-width: 140px;
+    }
+
+.sds-kv__value {
+      margin: 0;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+      text-align: right;
+    }
+
+.sds-kv__value code {
+      font-size: var(--sds-type-caption);
+    }
+
+/* ============================================================
+       HORIZONTAL KEY-VALUE — GRID LAYOUT
+       Label above value, arranged in a responsive grid.
+       ============================================================ */
+
+    .sds-kv-grid {
+      display: grid;
+      gap: var(--sds-space-600);
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      padding: var(--sds-space-500) var(--sds-space-500);
+    }
+
+.sds-kv-grid--2col { grid-template-columns: 1fr 1fr; }
+
+.sds-kv-grid--3col { grid-template-columns: 1fr 1fr 1fr; }
+
+.sds-kv-grid__item { display: flex; flex-direction: column; gap: var(--sds-space-050); }
+
+.sds-kv-grid__label {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+    }
+
+.sds-kv-grid__value {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+    }
+
+/* ============================================================
+       WITH ICONS & TAGS
+       Values that include inline status tags, icons, or badges.
+       ============================================================ */
+
+    .sds-kv__value--with-icon {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+    }
+
+.sds-kv__value--with-icon .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+/* ============================================================
+       GROUPED DATA LIST
+       Sections with group headers and dividers, like a detail
+       panel sidebar.
+       ============================================================ */
+
+    .sds-data-list--grouped {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+.sds-data-list__group {
+      padding: 0;
+    }
+
+.sds-data-list__group + .sds-data-list__group {
+      border-top: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+.sds-data-list__group-header {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-450);
+      text-transform: uppercase;
+      letter-spacing: var(--sds-tracking-wide);
+      padding: var(--sds-space-300) var(--sds-space-400) var(--sds-space-100);
+      margin: 0;
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-data-list--grouped .sds-kv {
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    }
+
+.sds-data-list--grouped .sds-kv:last-child {
+      border-bottom: none;
+    }
+
+/* ============================================================
+       INLINE EDITABLE
+       Key-value where clicking the value reveals an input field.
+       ============================================================ */
+
+    .sds-kv--editable .sds-kv__value {
+      cursor: pointer;
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 4px;
+      border: 1px solid transparent;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+.sds-kv--editable .sds-kv__value:hover {
+      border-color: var(--sds-color-warm-gray-200);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-kv--editable .sds-kv__value::after {
+      content: '';
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      margin-left: var(--sds-space-150);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%239a938e'%3E%3Cpath d='M14.85 3.15a1.5 1.5 0 0 1 2.12 2.12l-.7.7-2.12-2.12.7-.7ZM12.73 5.27 4.5 13.5V15.62h2.12l8.23-8.23-2.12-2.12Z'/%3E%3C/svg%3E");
+      background-size: contain;
+      vertical-align: middle;
+      opacity: 0;
+      transition: opacity 0.15s ease;
+    }
+
+.sds-kv--editable .sds-kv__value:hover::after {
+      opacity: 1;
+    }
+
+.sds-kv__edit-form {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      text-align: right;
+    }
+
+.sds-kv__edit-input {
+      font-family: inherit;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-700);
+      border: 2px solid var(--sds-border-focus);
+      border-radius: 4px;
+      padding: var(--sds-space-050) calc(var(--sds-space-200) - 1px);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.1);
+      min-width: 180px;
+    }
+
+.sds-kv__edit-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: 1px solid var(--sds-color-warm-gray-200);
+      background: var(--sds-color-white);
+      cursor: pointer;
+      color: var(--sds-color-warm-gray-500);
+      transition: background 0.12s ease;
+    }
+
+.sds-kv__edit-btn:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-kv__edit-btn:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-kv__edit-btn--save {
+      border-color: var(--sds-color-blue-300);
+      color: var(--sds-color-blue-500);
+    }
+
+.sds-kv__edit-btn--save:hover {
+      background: var(--sds-color-blue-050);
+    }
+
+.sds-kv__edit-btn .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+/* ============================================================
+       CARD-STYLE DETAIL PANEL
+       A complete detail card combining header and data lists.
+       ============================================================ */
+
+    .sds-detail-panel {
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+.sds-detail-panel__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-detail-panel__title-row {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-250);
+    }
+
+.sds-detail-panel__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-500);
+    }
+
+.sds-detail-panel__icon .material-symbols-outlined {
+      font-size: 20px;
+    }
+
+.sds-detail-panel__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-color-warm-gray-700);
+      margin: 0;
+    }
+
+.sds-detail-panel__subtitle {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-450);
+      margin: 0;
+    }
+
+.sds-detail-panel__body {
+      padding: 0;
+    }
+
+.sds-detail-panel__body .sds-kv {
+      border-left: none;
+      border-right: none;
+    }
+
+.sds-detail-panel__body .sds-kv:last-child {
+      border-bottom: none;
+    }
+
+.sds-detail-panel__footer {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      padding: var(--sds-space-300) var(--sds-space-500);
+      border-top: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-detail-panel__footer-note {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+    }
+
+.sds-detail-panel__footer-note .material-symbols-outlined {
+      font-size: 14px;
+    }

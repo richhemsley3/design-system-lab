@@ -1,0 +1,180 @@
+/* split-view — extracted from Design System Labs */
+
+/* ============================================================
+       SPLIT VIEW / RESIZABLE PANES COMPONENT
+       ============================================================ */
+
+    /* Outer container */
+    .sds-split {
+      display: flex;
+      flex-direction: row;
+      overflow: hidden;
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 8px;
+      background: var(--sds-color-white);
+      height: 400px;
+    }
+
+/* Individual pane */
+    .sds-split__pane {
+      overflow: auto;
+      min-width: 200px;
+      min-height: 0;
+      position: relative;
+    }
+
+.sds-split__pane--primary {
+      flex: 0 0 40%;
+    }
+
+.sds-split__pane--secondary {
+      flex: 1 1 0%;
+    }
+
+/* Divider */
+    .sds-split__divider {
+      width: 5px;
+      flex-shrink: 0;
+      background: var(--sds-color-warm-gray-100);
+      cursor: col-resize;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease;
+      z-index: 1;
+    }
+
+.sds-split__divider:hover {
+      background: var(--sds-color-warm-gray-200);
+    }
+
+.sds-split__divider:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: -1px;
+    }
+
+.sds-split__divider--active,
+    .sds-split__divider--active:hover {
+      background: var(--sds-color-blue-450);
+    }
+
+/* Divider handle (grip dots) */
+    .sds-split__divider-handle {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      pointer-events: none;
+    }
+
+.sds-split__divider-handle span {
+      display: block;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--sds-color-warm-gray-350);
+    }
+
+.sds-split__divider--active .sds-split__divider-handle span {
+      background: var(--sds-color-white);
+    }
+
+/* Vertical variant */
+    .sds-split--vertical {
+      flex-direction: column;
+    }
+
+.sds-split--vertical .sds-split__pane {
+      min-width: 0;
+      min-height: 150px;
+    }
+
+.sds-split--vertical .sds-split__divider {
+      width: auto;
+      height: 5px;
+      cursor: row-resize;
+      flex-direction: row;
+    }
+
+.sds-split--vertical .sds-split__divider-handle {
+      flex-direction: row;
+    }
+
+/* Bordered variant */
+    .sds-split--bordered .sds-split__pane {
+      border: 1px solid var(--sds-color-warm-gray-150);
+    }
+
+.sds-split--bordered .sds-split__pane + .sds-split__divider + .sds-split__pane {
+      border-left: none;
+    }
+
+/* Pane header */
+    .sds-split__pane-header {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      border-bottom: 1px solid var(--sds-color-warm-gray-150);
+      background: var(--sds-color-warm-gray-025);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+      position: sticky;
+      top: 0;
+      z-index: 1;
+    }
+
+.sds-split__pane-header-title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+    }
+
+.sds-split__pane-header-actions {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-150);
+    }
+
+.sds-split__pane-header-actions button {
+      border: none;
+      background: transparent;
+      padding: var(--sds-space-100);
+      border-radius: 4px;
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+.sds-split__pane-header-actions button:hover {
+      background: var(--sds-color-warm-gray-100);
+      color: var(--sds-text-primary);
+    }
+
+.sds-split__pane-header-actions button:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-split__pane-header-actions .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+/* Pane content */
+    .sds-split__pane-content {
+      padding: var(--sds-space-400);
+      overflow-y: auto;
+      flex: 1;
+    }
+
+/* Pane with header uses flex column layout */
+    .sds-split__pane--has-header {
+      display: flex;
+      flex-direction: column;
+    }

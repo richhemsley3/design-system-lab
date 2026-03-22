@@ -1,0 +1,142 @@
+/* accordion — extracted from Design System Labs */
+
+/* ============================================================
+       ACCORDION
+       Expandable sections for organizing content into
+       collapsible panels. Used in settings, configuration,
+       and documentation views.
+       ============================================================ */
+
+    .sds-accordion {
+      width: 100%;
+    }
+
+.sds-accordion-item {
+      background: var(--sds-color-white);
+      border-radius: var(--sds-space-200);
+      margin-bottom: var(--sds-space-200);
+    }
+
+.sds-accordion-item:last-child {
+      margin-bottom: 0;
+    }
+
+.sds-accordion-header {
+      display: flex;
+      align-items: center;
+      width: 100%;
+      padding: var(--sds-space-400) var(--sds-space-500);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      text-align: left;
+      gap: var(--sds-space-300);
+      border-radius: var(--sds-space-200);
+      transition: background 0.15s ease;
+    }
+
+.sds-accordion-header:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-accordion-header:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-accordion-header-text {
+      flex: 1;
+    }
+
+.sds-accordion-icon {
+      font-size: var(--sds-type-heading);
+      color: var(--sds-color-warm-gray-400);
+      transition: transform 0.25s ease;
+      user-select: none;
+      line-height: 1;
+    }
+
+.sds-accordion-item[data-expanded="true"] > .sds-accordion-header .sds-accordion-icon {
+      transform: rotate(180deg);
+    }
+
+.sds-accordion-leading-icon {
+      font-size: var(--sds-type-subheading);
+      color: var(--sds-color-warm-gray-450);
+      line-height: 1;
+    }
+
+.sds-accordion-panel {
+      overflow: hidden;
+      max-height: 0;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+    }
+
+.sds-accordion-item[data-expanded="true"] > .sds-accordion-panel {
+      max-height: 600px;
+    }
+
+.sds-accordion-panel-inner {
+      padding: 0 var(--sds-space-500) var(--sds-space-500);
+      font-size: var(--sds-type-label);
+      line-height: var(--sds-leading-normal);
+      color: var(--sds-text-secondary);
+    }
+
+/* ---- Bordered variant ---- */
+    .sds-accordion--bordered .sds-accordion-item {
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 0;
+      margin-bottom: 0;
+    }
+
+.sds-accordion--bordered .sds-accordion-item:first-child {
+      border-top-left-radius: var(--sds-space-200);
+      border-top-right-radius: var(--sds-space-200);
+    }
+
+.sds-accordion--bordered .sds-accordion-item:last-child {
+      border-bottom-left-radius: var(--sds-space-200);
+      border-bottom-right-radius: var(--sds-space-200);
+    }
+
+.sds-accordion--bordered .sds-accordion-item + .sds-accordion-item {
+      border-top: none;
+    }
+
+.sds-accordion--bordered .sds-accordion-header {
+      border-radius: 0;
+    }
+
+.sds-accordion--bordered .sds-accordion-item:first-child .sds-accordion-header {
+      border-top-left-radius: var(--sds-space-200);
+      border-top-right-radius: var(--sds-space-200);
+    }
+
+.sds-accordion--bordered .sds-accordion-item:last-child .sds-accordion-header {
+      border-bottom-left-radius: var(--sds-space-200);
+      border-bottom-right-radius: var(--sds-space-200);
+    }
+
+/* ---- Nested accordion ---- */
+    .sds-accordion-panel-inner .sds-accordion {
+      margin-top: var(--sds-space-300);
+    }
+
+.sds-accordion-panel-inner .sds-accordion .sds-accordion-item {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-accordion-panel-inner .sds-accordion .sds-accordion-header {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      font-size: var(--sds-type-label);
+    }
+
+.sds-accordion-panel-inner .sds-accordion .sds-accordion-panel-inner {
+      padding: 0 var(--sds-space-400) var(--sds-space-400);
+      font-size: var(--sds-type-caption);
+    }

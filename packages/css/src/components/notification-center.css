@@ -1,0 +1,308 @@
+/* notification-center — extracted from Design System Labs */
+
+/* ============================================================
+       NOTIFICATION CENTER
+       Aggregated notification panel that collects alerts, updates,
+       and action items. Accessed from a bell icon trigger
+       in the application header.
+       ============================================================ */
+
+    /* ---- Trigger button ---- */
+    .sds-notif-trigger {
+      position: relative;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.12s ease;
+    }
+
+.sds-notif-trigger:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-notif-trigger .material-symbols-outlined {
+      font-size: 22px;
+      color: var(--sds-color-warm-gray-600);
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+    }
+
+.sds-notif-trigger__badge {
+      position: absolute;
+      top: -2px;
+      right: -2px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 9px;
+      background: var(--sds-color-red-550);
+      color: var(--sds-color-white);
+      font-size: 10px;
+      font-weight: var(--sds-weight-semibold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 5px;
+      font-family: var(--sds-font-sans);
+      line-height: 1;
+    }
+
+/* ---- Panel container ---- */
+    .sds-notif-center {
+      width: 380px;
+      max-height: 480px;
+      background: var(--sds-color-white);
+      border: 1px solid var(--sds-color-warm-gray-150);
+      border-radius: 12px;
+      /* TODO: replace with elevation/shadow token when available */
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+/* ---- Panel header ---- */
+    .sds-notif-center__header {
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+.sds-notif-center__title {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+    }
+
+.sds-notif-center__mark-read {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-blue-700);
+      cursor: pointer;
+      background: none;
+      border: none;
+      font-family: inherit;
+      font-weight: var(--sds-weight-medium);
+      padding: 0;
+    }
+
+.sds-notif-center__mark-read:hover {
+      text-decoration: underline;
+    }
+
+/* ---- Tabs ---- */
+    .sds-notif-center__tabs {
+      display: flex;
+      border-bottom: 1px solid var(--sds-color-warm-gray-100);
+      padding: 0 var(--sds-space-400);
+      flex-shrink: 0;
+    }
+
+.sds-notif-center__tab {
+      padding: var(--sds-space-250) var(--sds-space-300);
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-warm-gray-500);
+      cursor: pointer;
+      border: none;
+      background: none;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+      transition: color 0.12s ease, border-color 0.12s ease;
+    }
+
+.sds-notif-center__tab:hover {
+      color: var(--sds-color-warm-gray-700);
+    }
+
+.sds-notif-center__tab--active {
+      color: var(--sds-color-blue-700);
+      border-bottom-color: var(--sds-color-blue-700);
+    }
+
+/* ---- Scrollable list ---- */
+    .sds-notif-center__list {
+      overflow-y: auto;
+      flex: 1;
+    }
+
+/* ---- Empty state ---- */
+    .sds-notif-center__empty {
+      padding: var(--sds-space-1200);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--sds-space-300);
+    }
+
+.sds-notif-center__empty .material-symbols-outlined {
+      font-size: 48px;
+      color: var(--sds-color-warm-gray-300);
+      font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 48;
+    }
+
+.sds-notif-center__empty-text {
+      font-size: var(--sds-type-body);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-secondary);
+    }
+
+.sds-notif-center__empty-sub {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+/* ---- Notification item ---- */
+    .sds-notif-item {
+      padding: var(--sds-space-400) var(--sds-space-500);
+      border-bottom: 1px solid var(--sds-color-warm-gray-050);
+      display: flex;
+      gap: var(--sds-space-300);
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+
+.sds-notif-item:hover {
+      background: var(--sds-color-warm-gray-025);
+    }
+
+.sds-notif-item:last-child {
+      border-bottom: none;
+    }
+
+/* Unread state */
+    .sds-notif-item--unread {
+      background: var(--sds-color-blue-025);
+    }
+
+.sds-notif-item--unread:hover {
+      background: var(--sds-color-blue-050);
+    }
+
+/* ---- Icon area ---- */
+    .sds-notif-item__icon {
+      width: 32px;
+      height: 32px;
+      min-width: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+.sds-notif-item__icon .material-symbols-outlined {
+      font-size: 18px;
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+
+/* Unread dot */
+    .sds-notif-item--unread .sds-notif-item__icon::after {
+      content: '';
+      position: absolute;
+      top: -1px;
+      right: -1px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--sds-color-blue-550);
+    }
+
+/* Semantic icon colors */
+    .sds-notif-item--error .sds-notif-item__icon {
+      background: var(--sds-color-red-050);
+    }
+
+.sds-notif-item--error .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-red-550);
+    }
+
+.sds-notif-item--warning .sds-notif-item__icon {
+      background: var(--sds-color-yellow-025);
+    }
+
+.sds-notif-item--warning .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-yellow-550);
+    }
+
+.sds-notif-item--success .sds-notif-item__icon {
+      background: var(--sds-color-green-025);
+    }
+
+.sds-notif-item--success .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-green-500);
+    }
+
+.sds-notif-item--info .sds-notif-item__icon {
+      background: var(--sds-color-blue-050);
+    }
+
+.sds-notif-item--info .sds-notif-item__icon .material-symbols-outlined {
+      color: var(--sds-color-blue-700);
+    }
+
+/* ---- Content area ---- */
+    .sds-notif-item__content {
+      flex: 1;
+      min-width: 0;
+    }
+
+.sds-notif-item__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+      line-height: var(--sds-leading-snug);
+    }
+
+.sds-notif-item__message {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      margin-top: var(--sds-space-050);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-notif-item__time {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+      margin-top: var(--sds-space-100);
+    }
+
+/* ---- Action buttons ---- */
+    .sds-notif-item__actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-200);
+    }
+
+.sds-notif-item__action {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-color-blue-700);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--sds-space-050) var(--sds-space-150);
+      border-radius: 4px;
+      font-family: inherit;
+      transition: background 0.12s ease;
+    }
+
+.sds-notif-item__action:hover {
+      background: var(--sds-color-blue-050);
+    }
+
+.sds-notif-item__action--dismiss {
+      color: var(--sds-color-warm-gray-500);
+    }
+
+.sds-notif-item__action--dismiss:hover {
+      background: var(--sds-color-warm-gray-050);
+    }

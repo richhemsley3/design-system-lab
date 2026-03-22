@@ -1,0 +1,305 @@
+/* tooltips — extracted from Design System Labs */
+
+/* ============================================================
+       TOOLTIP — Dark, compact hint on hover
+       ============================================================ */
+
+    .sds-tooltip-trigger {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      cursor: default;
+    }
+
+.sds-tooltip {
+      position: absolute;
+      z-index: 1000;
+      background: var(--sds-color-warm-gray-900);
+      color: var(--sds-color-white);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-caption);
+      line-height: var(--sds-leading-normal);
+      font-weight: var(--sds-weight-regular);
+      padding: var(--sds-space-100) var(--sds-space-200);
+      border-radius: 4px;
+      max-width: 240px;
+      white-space: normal;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 150ms ease;
+      transition-delay: 150ms;
+    }
+
+/* Arrow base */
+    .sds-tooltip::after {
+      content: '';
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      background: var(--sds-color-warm-gray-900);
+      transform: rotate(45deg);
+    }
+
+/* Positions */
+    .sds-tooltip--top {
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+.sds-tooltip--top::after {
+      bottom: -3px;
+      left: 50%;
+      margin-left: -3px;
+    }
+
+.sds-tooltip--bottom {
+      top: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+.sds-tooltip--bottom::after {
+      top: -3px;
+      left: 50%;
+      margin-left: -3px;
+    }
+
+.sds-tooltip--left {
+      right: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+.sds-tooltip--left::after {
+      right: -3px;
+      top: 50%;
+      margin-top: -3px;
+    }
+
+.sds-tooltip--right {
+      left: calc(100% + 8px);
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+.sds-tooltip--right::after {
+      left: -3px;
+      top: 50%;
+      margin-top: -3px;
+    }
+
+/* Hover reveal */
+    .sds-tooltip-trigger:hover .sds-tooltip {
+      opacity: 1;
+    }
+
+/* Static (always-visible) variant for previews */
+    .sds-tooltip--static {
+      opacity: 1;
+      position: relative;
+      transition: none;
+    }
+
+/* ============================================================
+       RICH TOOLTIP
+       ============================================================ */
+
+    .sds-tooltip--rich {
+      padding: var(--sds-space-300) var(--sds-space-400);
+      max-width: 280px;
+    }
+
+.sds-tooltip__title {
+      font-weight: var(--sds-weight-semibold);
+      font-size: var(--sds-type-label);
+      margin: 0 0 var(--sds-space-050);
+    }
+
+.sds-tooltip__desc {
+      font-size: var(--sds-type-caption);
+      opacity: 0.8;
+      margin: 0;
+    }
+
+/* ============================================================
+       POPOVER — Light surface, click-triggered
+       ============================================================ */
+
+    .sds-popover-trigger {
+      position: relative;
+      display: inline-flex;
+    }
+
+.sds-popover {
+      position: absolute;
+      z-index: 1000;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+      padding: var(--sds-space-400);
+      max-width: 320px;
+      min-width: 220px;
+      font-family: var(--sds-font-sans);
+      display: none;
+    }
+
+.sds-popover.is-open {
+      display: block;
+    }
+
+.sds-popover--static {
+      display: block;
+      position: relative;
+    }
+
+/* Popover arrow */
+    .sds-popover::before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      background: var(--sds-bg-elevated);
+      border-left: 1px solid var(--sds-border-default);
+      border-top: 1px solid var(--sds-border-default);
+      transform: rotate(45deg);
+    }
+
+.sds-popover--top { bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%); }
+
+.sds-popover--top::before { bottom: -6px; left: 50%; margin-left: -5px; border-left: none; border-top: none; border-right: 1px solid var(--sds-border-default); border-bottom: 1px solid var(--sds-border-default); }
+
+.sds-popover--bottom { top: calc(100% + 8px); left: 50%; transform: translateX(-50%); }
+
+.sds-popover--bottom::before { top: -6px; left: 50%; margin-left: -5px; }
+
+.sds-popover__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: var(--sds-space-200);
+    }
+
+.sds-popover__title {
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      margin: 0;
+    }
+
+.sds-popover__close {
+      background: none;
+      border: none;
+      padding: var(--sds-space-050);
+      cursor: pointer;
+      color: var(--sds-text-tertiary);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+.sds-popover__close:hover {
+      background: var(--sds-color-warm-gray-050);
+      color: var(--sds-text-primary);
+    }
+
+.sds-popover__body {
+      font-size: var(--sds-type-caption);
+      color: var(--sds-text-secondary);
+      line-height: var(--sds-leading-normal);
+    }
+
+.sds-popover__body p {
+      font-size: var(--sds-type-caption);
+      margin: 0 0 var(--sds-space-200);
+    }
+
+.sds-popover__body p:last-child { margin-bottom: 0; }
+
+.sds-popover__actions {
+      display: flex;
+      gap: var(--sds-space-200);
+      margin-top: var(--sds-space-300);
+    }
+
+.sds-popover__link {
+      font-size: var(--sds-type-caption);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-interactive-primary);
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+.sds-popover__link:hover { text-decoration: underline; }
+
+/* ============================================================
+       INFO ICON PATTERN
+       ============================================================ */
+
+    /* Field label (canonical — matches form-inputs.html) */
+    .sds-field-label {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-medium);
+      color: var(--sds-text-primary);
+    }
+
+.sds-info-icon {
+      font-size: 16px;
+      color: var(--sds-text-tertiary);
+      cursor: help;
+    }
+
+.sds-info-icon:hover {
+      color: var(--sds-text-secondary);
+    }
+
+/* Form inputs (canonical — matches form-inputs.html) */
+    .settings-panel .sds-field {
+      margin-bottom: var(--sds-space-500);
+    }
+
+.settings-panel .sds-field:last-child { margin-bottom: 0; }
+
+.settings-panel .sds-input {
+      display: block;
+      width: 100%;
+      margin-top: var(--sds-space-150);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+    }
+
+.settings-panel .sds-input:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+.settings-panel .sds-select {
+      display: block;
+      width: 100%;
+      margin-top: var(--sds-space-150);
+      padding: var(--sds-space-200) var(--sds-space-300);
+      border: 1.5px solid var(--sds-border-default);
+      border-radius: 6px;
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-body);
+      color: var(--sds-text-primary);
+      background: var(--sds-bg-elevated);
+      appearance: none;
+    }
+
+.settings-panel .sds-select:focus {
+      border-color: var(--sds-border-focus);
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }

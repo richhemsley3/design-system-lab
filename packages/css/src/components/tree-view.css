@@ -1,0 +1,273 @@
+/* tree-view — extracted from Design System Labs */
+
+/* ============================================================
+       TREE VIEW
+       Hierarchical tree for navigating file systems, nested
+       structures, and organizational hierarchies. Key for
+       enterprise products.
+       ============================================================ */
+
+    .sds-tree {
+      width: 100%;
+      font-size: var(--sds-type-label);
+      font-family: inherit;
+      user-select: none;
+    }
+
+.sds-tree-item {
+      position: relative;
+    }
+
+.sds-tree-item__row {
+      display: flex;
+      align-items: center;
+      height: 36px;
+      padding-left: var(--sds-space-300);
+      padding-right: var(--sds-space-300);
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.12s ease;
+      gap: var(--sds-space-100);
+    }
+
+.sds-tree-item__row:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+/* Selected state */
+    .sds-tree-item--selected > .sds-tree-item__row {
+      background: var(--sds-color-blue-050);
+    }
+
+.sds-tree-item--selected > .sds-tree-item__row .sds-tree-item__label {
+      color: var(--sds-color-blue-750);
+    }
+
+.sds-tree-item--selected > .sds-tree-item__row .sds-tree-item__icon {
+      color: var(--sds-color-blue-750);
+    }
+
+/* Disabled state */
+    .sds-tree-item--disabled > .sds-tree-item__row {
+      opacity: 0.4;
+      pointer-events: none;
+      cursor: default;
+    }
+
+/* Toggle chevron */
+    .sds-tree-item__toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      border: none;
+      background: none;
+      padding: 0;
+      cursor: pointer;
+      color: var(--sds-color-warm-gray-400);
+      border-radius: 4px;
+      transition: color 0.12s ease;
+    }
+
+.sds-tree-item__toggle:hover {
+      color: var(--sds-text-primary);
+    }
+
+.sds-tree-item__toggle .material-symbols-outlined {
+      font-size: 18px;
+      transition: transform 0.2s ease;
+      line-height: 1;
+    }
+
+.sds-tree-item[data-expanded="true"] > .sds-tree-item__row .sds-tree-item__toggle .material-symbols-outlined {
+      transform: rotate(90deg);
+    }
+
+/* Invisible toggle placeholder for leaf nodes */
+    .sds-tree-item__toggle--hidden {
+      visibility: hidden;
+      width: 0;
+      overflow: hidden;
+    }
+
+/* Icon */
+    .sds-tree-item__icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--sds-color-warm-gray-450);
+      line-height: 1;
+    }
+
+.sds-tree-item__icon .material-symbols-outlined {
+      font-size: 18px;
+    }
+
+/* Label */
+    .sds-tree-item__label {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--sds-text-primary);
+      font-size: var(--sds-type-label);
+      line-height: 1;
+    }
+
+/* Meta / right-aligned info */
+    .sds-tree-item__meta {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      flex-shrink: 0;
+      margin-left: auto;
+      font-size: var(--sds-type-caption);
+      color: var(--sds-color-warm-gray-400);
+    }
+
+/* Status tag inside meta */
+    .sds-tree-item__tag {
+      display: inline-flex;
+      align-items: center;
+      padding: var(--sds-space-050) var(--sds-space-200);
+      border-radius: 10px;
+      font-size: var(--sds-type-overline);
+      font-weight: var(--sds-weight-medium);
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+.sds-tree-item__tag--pii {
+      background: var(--sds-color-red-050);
+      color: var(--sds-color-red-700);
+    }
+
+.sds-tree-item__tag--confidential {
+      background: var(--sds-color-orange-050);
+      color: var(--sds-color-orange-700);
+    }
+
+.sds-tree-item__tag--public {
+      background: var(--sds-color-green-050);
+      color: var(--sds-color-green-700);
+    }
+
+.sds-tree-item__tag--internal {
+      background: var(--sds-color-blue-050);
+      color: var(--sds-color-blue-700);
+    }
+
+/* Nested children container */
+    .sds-tree-group {
+      display: none;
+      position: relative;
+      padding-left: var(--sds-space-400);
+    }
+
+.sds-tree-item[data-expanded="true"] > .sds-tree-group {
+      display: block;
+    }
+
+/* Indentation lines */
+    .sds-tree-group::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 22px;
+      bottom: 12px;
+      width: 1px;
+      background: var(--sds-color-warm-gray-150);
+    }
+
+/* Depth indentation — each nested level adds 8px via padding-left on .sds-tree-group */
+
+    /* Focus visible */
+    .sds-tree-item__row:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--sds-border-focus), 0 0 0 5px rgba(1, 61, 91, 0.15);
+    }
+
+/* ---- Checkbox (canonical, from selection-controls) ---- */
+    .sds-tree-checkbox {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+.sds-tree-checkbox input[type="checkbox"] {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      opacity: 0;
+      cursor: pointer;
+      margin: 0;
+      z-index: 1;
+    }
+
+.sds-tree-checkbox .sds-checkbox-group-box {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      border: 1.5px solid var(--sds-border-strong);
+      border-radius: 4px;
+      background: var(--sds-color-white);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease, border-color 0.15s ease;
+      pointer-events: none;
+    }
+
+.sds-tree-checkbox .sds-checkbox-group-box svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0;
+      transition: opacity 0.1s ease;
+    }
+
+.sds-tree-checkbox input[type="checkbox"]:checked ~ .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-tree-checkbox input[type="checkbox"]:checked ~ .sds-checkbox-group-box svg {
+      opacity: 1;
+    }
+
+.sds-tree-checkbox:hover .sds-checkbox-group-box {
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-tree-checkbox input[type="checkbox"]:focus-visible ~ .sds-checkbox-group-box {
+      border: 2px solid var(--sds-border-focus);
+      box-shadow: 0 0 0 3px rgba(1, 61, 91, 0.15);
+    }
+
+/* Indeterminate state */
+    .sds-tree-checkbox .sds-checkbox-group-dash {
+      display: none;
+      width: 8px;
+      height: 2px;
+      background: var(--sds-color-white);
+      border-radius: 1px;
+    }
+
+.sds-tree-checkbox--indeterminate .sds-checkbox-group-box {
+      background: var(--sds-interactive-primary);
+      border-color: var(--sds-interactive-primary);
+    }
+
+.sds-tree-checkbox--indeterminate .sds-checkbox-group-box svg {
+      display: none;
+    }
+
+.sds-tree-checkbox--indeterminate .sds-checkbox-group-dash {
+      display: block;
+    }

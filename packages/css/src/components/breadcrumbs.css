@@ -1,0 +1,235 @@
+/* breadcrumbs — extracted from Design System Labs */
+
+/* ============================================================
+       BREADCRUMBS COMPONENT
+       ============================================================ */
+
+    .sds-breadcrumb {
+      display: flex;
+      align-items: center;
+    }
+
+.sds-breadcrumb__list {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+.sds-breadcrumb__item {
+      display: inline-flex;
+      align-items: center;
+    }
+
+.sds-breadcrumb__separator {
+      display: inline-flex;
+      align-items: center;
+      color: var(--sds-color-warm-gray-350);
+      font-size: 18px;
+      margin: 0 var(--sds-space-050);
+      user-select: none;
+    }
+
+.sds-breadcrumb__link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-secondary);
+      text-decoration: none;
+      padding: var(--sds-space-050) var(--sds-space-100);
+      border-radius: 4px;
+      transition: color 0.15s ease, background 0.15s ease;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+.sds-breadcrumb__link:hover {
+      color: var(--sds-interactive-primary);
+      background: var(--sds-color-blue-050);
+    }
+
+.sds-breadcrumb__link:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+
+.sds-breadcrumb__link .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+.sds-breadcrumb__current {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-100);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-primary);
+      padding: var(--sds-space-050) var(--sds-space-100);
+      white-space: nowrap;
+    }
+
+.sds-breadcrumb__current .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+/* ---- Ellipsis / Collapsed ---- */
+
+    .sds-breadcrumb__ellipsis {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-text-secondary);
+      background: none;
+      border: 1px solid var(--sds-color-warm-gray-200);
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: var(--sds-font-sans);
+      transition: background 0.15s ease, border-color 0.15s ease;
+      padding: 0;
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+
+.sds-breadcrumb__ellipsis:hover {
+      background: var(--sds-color-warm-gray-050);
+      border-color: var(--sds-color-warm-gray-300);
+      color: var(--sds-text-primary);
+    }
+
+.sds-breadcrumb__ellipsis:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-breadcrumb__collapsed {
+      display: none;
+    }
+
+.sds-breadcrumb__collapsed.is-expanded {
+      display: contents;
+    }
+
+.sds-breadcrumb__ellipsis-wrapper {
+      display: inline-flex;
+      align-items: center;
+    }
+
+.sds-breadcrumb__ellipsis-wrapper.is-hidden {
+      display: none;
+    }
+
+/* ---- Dropdown ---- */
+
+    .sds-breadcrumb__dropdown-wrapper {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+.sds-breadcrumb__dropdown-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--sds-space-050);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-secondary);
+      text-decoration: none;
+      padding: var(--sds-space-050) var(--sds-space-100);
+      border-radius: 4px;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: color 0.15s ease, background 0.15s ease;
+      white-space: nowrap;
+    }
+
+.sds-breadcrumb__dropdown-trigger:hover {
+      color: var(--sds-interactive-primary);
+      background: var(--sds-color-blue-050);
+    }
+
+.sds-breadcrumb__dropdown-trigger:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-breadcrumb__dropdown-trigger .material-symbols-outlined {
+      font-size: 16px;
+      transition: transform 0.15s ease;
+    }
+
+.sds-breadcrumb__dropdown-trigger.is-open .material-symbols-outlined {
+      transform: rotate(180deg);
+    }
+
+.sds-breadcrumb__dropdown-menu {
+      position: absolute;
+      top: calc(100% + var(--sds-space-100));
+      left: 0;
+      min-width: 200px;
+      background: var(--sds-bg-elevated);
+      border: 1px solid var(--sds-border-default);
+      border-radius: 8px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+      padding: var(--sds-space-100) 0;
+      z-index: 100;
+      display: none;
+    }
+
+.sds-breadcrumb__dropdown-menu.is-open {
+      display: block;
+    }
+
+.sds-breadcrumb__dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: var(--sds-space-200);
+      width: 100%;
+      padding: var(--sds-space-200) var(--sds-space-400);
+      font-family: var(--sds-font-sans);
+      font-size: var(--sds-type-label);
+      font-weight: var(--sds-weight-regular);
+      color: var(--sds-text-primary);
+      text-decoration: none;
+      border: none;
+      background: none;
+      cursor: pointer;
+      transition: background 0.1s ease;
+      text-align: left;
+    }
+
+.sds-breadcrumb__dropdown-item:focus-visible {
+      outline: 2px solid var(--sds-border-focus);
+      outline-offset: 2px;
+    }
+
+.sds-breadcrumb__dropdown-item:hover {
+      background: var(--sds-color-warm-gray-050);
+    }
+
+.sds-breadcrumb__dropdown-item.is-active {
+      font-weight: var(--sds-weight-semibold);
+      color: var(--sds-interactive-primary);
+    }
+
+.sds-breadcrumb__dropdown-item .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--sds-text-tertiary);
+    }
+
+.sds-breadcrumb__dropdown-item.is-active .material-symbols-outlined {
+      color: var(--sds-interactive-primary);
+    }
