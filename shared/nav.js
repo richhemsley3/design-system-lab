@@ -200,6 +200,7 @@
       { label: 'Timeline',         href: '/components/timeline.html',         icon: 'timeline' },
       { label: 'Toasts',           href: '/components/toasts.html',           icon: 'toast' },
       { label: 'Tooltips',         href: '/components/tooltips.html',         icon: 'tooltip' },
+      { label: 'Top Navigation',   href: '/components/top-navigation.html',   icon: 'topnav' },
       { label: 'Tree View',        href: '/components/tree-view.html',        icon: 'treeview' },
     ]},
     { group: 'Data Display', links: [
@@ -280,6 +281,7 @@
     statcard:   'analytics',
     statusindicator: 'circle',
     timeline:   'timeline',
+    topnav:     'top_app_bar',
     treeview:   'account_tree',
   };
 

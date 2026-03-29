@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Software DS — Top Navigation</title>
+<link rel="stylesheet" href="../tokens/colors.css">
+<link rel="stylesheet" href="../tokens/spacing.css">
+<link rel="stylesheet" href="../tokens/typography.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    margin: 0;
+    font-family: var(--sds-font-sans);
+    background: var(--sds-bg-page);
+    color: var(--sds-text-primary);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1 { font-size: var(--sds-type-display); font-weight: var(--sds-weight-semibold); margin: 0 0 var(--sds-space-200); color: var(--sds-text-primary); }
+  .page-subtitle { font-size: var(--sds-type-subheading); color: var(--sds-text-secondary); margin: 0 0 var(--sds-space-1200); }
+  h2 { font-size: var(--sds-type-heading); font-weight: var(--sds-weight-light); color: var(--sds-text-primary); margin: var(--sds-space-1000) 0 var(--sds-space-150); }
+  h3 { font-size: var(--sds-type-subheading); font-weight: var(--sds-weight-semibold); margin: var(--sds-space-800) 0 var(--sds-space-150); color: var(--sds-text-primary); }
+  p { color: var(--sds-text-secondary); font-size: var(--sds-type-body); line-height: var(--sds-leading-normal); margin: 0 0 var(--sds-space-600); }
+  code { font-family: var(--sds-font-mono); font-size: var(--sds-type-caption); background: var(--sds-color-warm-gray-050); padding: var(--sds-space-050) var(--sds-space-150); border-radius: 4px; }
+  .section-divider { border: none; border-top: 1px solid var(--sds-color-warm-gray-100); margin: var(--sds-space-1200) 0 var(--sds-space-800); }
+
+  /* ===== DEMO SHELLS ===== */
+  .demo-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400);
+    text-transform: uppercase;
+    letter-spacing: var(--sds-tracking-wide);
+    margin: 0 0 var(--sds-space-400);
+  }
+  .demo-block {
+    background: var(--sds-color-warm-gray-025);
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .demo-block--full {
+    background: var(--sds-color-warm-gray-025);
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 380px;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+
+  /* ===== TOP NAVIGATION COMPONENT ===== */
+  .sds-topnav {
+    display: flex;
+    align-items: center;
+    height: 56px;
+    padding: 0 var(--sds-space-500);
+    background: var(--sds-bg-page);
+    border-bottom: 1px solid var(--sds-border-subtle);
+    flex-shrink: 0;
+    gap: var(--sds-space-600);
+  }
+
+  /* Logo area */
+  .sds-topnav-logo {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-250);
+    height: 28px;
+    flex-shrink: 0;
+    margin-right: var(--sds-space-400);
+    text-decoration: none;
+  }
+  .sds-topnav-logo-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--sds-interactive-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .sds-topnav-logo-mark svg {
+    width: 16px;
+    height: 16px;
+    fill: var(--sds-color-white);
+  }
+  .sds-topnav-logo-text {
+    font-size: var(--sds-type-title);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+    letter-spacing: -0.2px;
+    white-space: nowrap;
+  }
+
+  /* Primary nav links */
+  .sds-topnav-links {
+    display: flex;
+    align-items: stretch;
+    height: 100%;
+    gap: 0;
+  }
+  .sds-topnav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sds-space-100);
+    padding: 0 var(--sds-space-400);
+    font-family: inherit;
+    font-size: var(--sds-type-body);
+    font-weight: var(--sds-weight-medium);
+    color: var(--sds-color-blue-750);
+    text-decoration: none;
+    border: none;
+    background: none;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: color 0.15s ease;
+  }
+  .sds-topnav-link::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: var(--sds-space-400);
+    right: var(--sds-space-400);
+    height: 2px;
+    background: transparent;
+    transition: background 0.15s ease;
+  }
+  .sds-topnav-link:hover {
+    color: var(--sds-color-blue-750);
+  }
+  .sds-topnav-link.is-active {
+    color: var(--sds-color-blue-750);
+  }
+  .sds-topnav-link.is-active::after {
+    background: var(--sds-color-blue-750);
+  }
+
+  /* Dropdown chevron on nav links */
+  .sds-topnav-link .sds-topnav-chevron {
+    display: flex;
+    align-items: center;
+  }
+  .sds-topnav-link .sds-topnav-chevron .material-symbols-outlined {
+    font-size: 16px;
+    color: currentColor;
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+    transition: transform 0.15s ease;
+  }
+  .sds-topnav-link[aria-expanded="true"] .sds-topnav-chevron .material-symbols-outlined {
+    transform: rotate(180deg);
+  }
+
+  /* Spacer pushes actions to the right */
+  .sds-topnav-spacer { flex: 1; }
+
+  /* Right-side actions */
+  .sds-topnav-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-200);
+    flex-shrink: 0;
+  }
+
+  /* Help button (reused from header pattern) */
+  .sds-topnav-help {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 1.5px solid var(--sds-color-warm-gray-300);
+    background: transparent;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.15s ease, background 0.15s ease;
+    color: var(--sds-text-tertiary);
+    font-size: var(--sds-type-body);
+    font-weight: var(--sds-weight-semibold);
+    font-family: var(--sds-font-sans);
+    line-height: 1;
+  }
+  .sds-topnav-help:hover {
+    border-color: var(--sds-color-warm-gray-700);
+    background: var(--sds-bg-subtle);
+    color: var(--sds-color-warm-gray-700);
+  }
+
+  /* Divider */
+  .sds-topnav-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--sds-border-default);
+    margin: 0 var(--sds-space-100);
+  }
+
+  /* User profile trigger */
+  .sds-topnav-profile {
+    display: flex;
+    align-items: center;
+    gap: var(--sds-space-200);
+    padding: var(--sds-space-100) var(--sds-space-200) var(--sds-space-100) var(--sds-space-100);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+  }
+  .sds-topnav-profile:hover {
+    background: var(--sds-bg-subtle);
+  }
+  .sds-topnav-avatar {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--sds-interactive-primary);
+    color: var(--sds-text-on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--sds-type-caption);
+    font-weight: var(--sds-weight-semibold);
+    letter-spacing: 0.3px;
+    flex-shrink: 0;
+  }
+  .sds-topnav-username {
+    font-size: var(--sds-type-label);
+    font-weight: var(--sds-weight-medium);
+    color: var(--sds-text-primary);
+    white-space: nowrap;
+  }
+  .sds-topnav-profile-chevron {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  .sds-topnav-profile-chevron .material-symbols-outlined {
+    font-size: 18px;
+    color: var(--sds-text-tertiary);
+    font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 20;
+  }
+
+  /* ===== DROPDOWN MENU ===== */
+  .sds-topnav-dropdown-anchor {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+  }
+  .sds-topnav-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: var(--sds-bg-page);
+    border: 1px solid var(--sds-border-default);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08), 0 1px 4px rgba(0,0,0,0.04);
+    padding: var(--sds-space-150) 0;
+    z-index: 100;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(4px);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .sds-topnav-dropdown.is-open,
+  .sds-topnav-dropdown-anchor:hover .sds-topnav-dropdown {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .sds-topnav-dropdown-anchor:hover .sds-topnav-link .sds-topnav-chevron .material-symbols-outlined {
+    transform: rotate(180deg);
+  }
+  .sds-topnav-dropdown-item {
+    display: flex;
+    align-items: center;
+    padding: var(--sds-space-200) var(--sds-space-400);
+    font-size: var(--sds-type-body);
+    color: var(--sds-color-warm-gray-700);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 0.12s ease, color 0.12s ease;
+  }
+  .sds-topnav-dropdown-item:hover {
+    background: var(--sds-bg-subtle);
+    color: var(--sds-text-primary);
+  }
+  .sds-topnav-dropdown-item.is-active {
+    background: var(--sds-nav-item-active-bg);
+    color: var(--sds-nav-item-active-text);
+    font-weight: var(--sds-weight-medium);
+  }
+  .sds-topnav-dropdown-divider {
+    height: 1px;
+    background: var(--sds-border-default);
+    margin: var(--sds-space-150) 0;
+  }
+  .sds-topnav-dropdown-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-400);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    padding: var(--sds-space-200) var(--sds-space-400) var(--sds-space-100);
+  }
+
+  /* ===== MOCK CONTENT ===== */
+  .mock-body {
+    flex: 1;
+    padding: var(--sds-space-800) var(--sds-space-600);
+    background: var(--sds-bg-page);
+  }
+  .mock-body .page-title {
+    font-size: 24px;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-text-primary);
+    margin-bottom: var(--sds-space-200);
+  }
+  .mock-body .page-description {
+    font-size: var(--sds-type-body);
+    color: var(--sds-text-secondary);
+  }
+
+  /* ===== SPEC TABLE ===== */
+  .spec-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--sds-type-label);
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .spec-table th {
+    text-align: left;
+    font-weight: var(--sds-weight-semibold);
+    color: var(--sds-color-warm-gray-650);
+    padding: var(--sds-space-250) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-025);
+    border-bottom: 1px solid var(--sds-color-warm-gray-150);
+  }
+  .spec-table td {
+    padding: var(--sds-space-250) var(--sds-space-400);
+    border-bottom: 1px solid var(--sds-color-warm-gray-100);
+    color: var(--sds-color-warm-gray-700);
+    vertical-align: top;
+  }
+  .spec-table td:first-child { font-weight: var(--sds-weight-medium); color: var(--sds-text-primary); }
+  .spec-table code {
+    font-family: var(--sds-font-mono);
+    font-size: var(--sds-type-caption);
+    background: var(--sds-color-warm-gray-050);
+    padding: var(--sds-space-050) var(--sds-space-150);
+    border-radius: 4px;
+    color: var(--sds-interactive-primary);
+  }
+
+  /* ===== STATE CARDS ===== */
+  .states-row {
+    display: flex;
+    gap: var(--sds-space-300);
+    flex-wrap: wrap;
+    margin: var(--sds-space-400) 0 var(--sds-space-800);
+  }
+  .state-card {
+    border: 1px solid var(--sds-color-warm-gray-150);
+    border-radius: 8px;
+    background: var(--sds-bg-page);
+    overflow: hidden;
+    min-width: 140px;
+  }
+  .state-card-label {
+    font-size: var(--sds-type-overline);
+    font-weight: var(--sds-weight-semibold);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: var(--sds-space-200) var(--sds-space-400);
+    background: var(--sds-color-warm-gray-050);
+    color: var(--sds-color-warm-gray-550);
+  }
+  .state-card-body {
+    padding: var(--sds-space-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* Isolate nav link inside state cards */
+  .state-card .sds-topnav-link {
+    height: 56px;
+    position: relative;
+  }
+</style>
+</head>
+<body>
+
+<h1>Top Navigation</h1>
+<p class="page-subtitle">Horizontal navigation bar combining logo, primary nav links, and utility actions in a single header. Use for marketing sites, documentation layouts, or applications that don't require a full sidebar.</p>
+
+<!-- =========== LIVE DEMO (Full Context) =========== -->
+
+<div class="demo-label">Live component — Full layout context with dropdown</div>
+<div class="demo-block--full">
+  <nav class="sds-topnav" aria-label="Main navigation">
+    <a class="sds-topnav-logo" href="#" onclick="event.preventDefault()">
+      <div class="sds-topnav-logo-mark">
+        <svg viewBox="0 0 16 16"><path d="M8 1L2 4.5v7L8 15l6-3.5v-7L8 1z"/></svg>
+      </div>
+      <span class="sds-topnav-logo-text">Acme</span>
+    </a>
+
+    <div class="sds-topnav-links">
+      <a class="sds-topnav-link is-active" href="#" onclick="event.preventDefault()">Dashboard</a>
+
+      <div class="sds-topnav-dropdown-anchor">
+        <button class="sds-topnav-link" id="demo-products-trigger" aria-haspopup="true">
+          Products
+          <span class="sds-topnav-chevron">
+            <span class="material-symbols-outlined">expand_more</span>
+          </span>
+        </button>
+        <div class="sds-topnav-dropdown" id="demo-products-dropdown">
+          <div class="sds-topnav-dropdown-label">Data Services</div>
+          <a class="sds-topnav-dropdown-item" href="#" onclick="event.preventDefault()">Data Catalog</a>
+          <a class="sds-topnav-dropdown-item is-active" href="#" onclick="event.preventDefault()">Data Security</a>
+          <a class="sds-topnav-dropdown-item" href="#" onclick="event.preventDefault()">Data Pipelines</a>
+          <div class="sds-topnav-dropdown-divider"></div>
+          <div class="sds-topnav-dropdown-label">Platform</div>
+          <a class="sds-topnav-dropdown-item" href="#" onclick="event.preventDefault()">Observability</a>
+          <a class="sds-topnav-dropdown-item" href="#" onclick="event.preventDefault()">Governance</a>
+        </div>
+      </div>
+
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Documentation</a>
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Pricing</a>
+    </div>
+
+    <div class="sds-topnav-spacer"></div>
+
+    <div class="sds-topnav-actions">
+      <button class="sds-topnav-help" title="Help" aria-label="Help">?</button>
+      <div class="sds-topnav-divider"></div>
+      <button class="sds-topnav-profile" aria-label="User menu">
+        <span class="sds-topnav-avatar">JS</span>
+        <span class="sds-topnav-username">Jane Smith</span>
+        <span class="sds-topnav-profile-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mock-body">
+    <div class="page-title">Dashboard</div>
+    <div class="page-description">Welcome back, Jane. Here's your workspace overview.</div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ISOLATED HEADER =========== -->
+<h2>Top Navigation — Isolated</h2>
+<p>The navigation bar shown without surrounding layout context.</p>
+
+<div class="demo-label">Default state</div>
+<div class="demo-block" style="min-height: auto;">
+  <nav class="sds-topnav" aria-label="Top navigation example">
+    <a class="sds-topnav-logo" href="#" onclick="event.preventDefault()">
+      <div class="sds-topnav-logo-mark">
+        <svg viewBox="0 0 16 16"><path d="M8 1L2 4.5v7L8 15l6-3.5v-7L8 1z"/></svg>
+      </div>
+      <span class="sds-topnav-logo-text">Acme</span>
+    </a>
+    <div class="sds-topnav-links">
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Overview</a>
+      <a class="sds-topnav-link is-active" href="#" onclick="event.preventDefault()">Projects</a>
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Settings</a>
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Activity</a>
+    </div>
+    <div class="sds-topnav-spacer"></div>
+    <div class="sds-topnav-actions">
+      <button class="sds-topnav-help" title="Help" aria-label="Help">?</button>
+      <div class="sds-topnav-divider"></div>
+      <button class="sds-topnav-profile" aria-label="User menu">
+        <span class="sds-topnav-avatar">JS</span>
+        <span class="sds-topnav-username">Jane Smith</span>
+        <span class="sds-topnav-profile-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </nav>
+</div>
+
+<div class="demo-label">Minimal — Logo + links only</div>
+<div class="demo-block" style="min-height: auto;">
+  <nav class="sds-topnav" aria-label="Minimal top navigation">
+    <a class="sds-topnav-logo" href="#" onclick="event.preventDefault()">
+      <div class="sds-topnav-logo-mark">
+        <svg viewBox="0 0 16 16"><path d="M8 1L2 4.5v7L8 15l6-3.5v-7L8 1z"/></svg>
+      </div>
+      <span class="sds-topnav-logo-text">Acme</span>
+    </a>
+    <div class="sds-topnav-links">
+      <a class="sds-topnav-link is-active" href="#" onclick="event.preventDefault()">Home</a>
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Features</a>
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Docs</a>
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()">Blog</a>
+    </div>
+    <div class="sds-topnav-spacer"></div>
+  </nav>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== COMPONENT STATES =========== -->
+<h2>Component States</h2>
+<p>Interactive states for navigation links and dropdown items.</p>
+
+<h3>Navigation Link</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()" style="cursor: default;">Projects</a>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <a class="sds-topnav-link" href="#" onclick="event.preventDefault()" style="cursor: default;">Projects</a>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Active</div>
+    <div class="state-card-body">
+      <a class="sds-topnav-link is-active" href="#" onclick="event.preventDefault()" style="cursor: default;">Projects</a>
+    </div>
+  </div>
+</div>
+
+<h3>Navigation Link with Dropdown</h3>
+<div class="states-row">
+  <div class="state-card">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body">
+      <button class="sds-topnav-link" style="cursor: default; height: 56px;">
+        Products
+        <span class="sds-topnav-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body">
+      <button class="sds-topnav-link" style="cursor: default; height: 56px;">
+        Products
+        <span class="sds-topnav-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </div>
+  <div class="state-card">
+    <div class="state-card-label">Expanded</div>
+    <div class="state-card-body">
+      <button class="sds-topnav-link" aria-expanded="true" style="cursor: default; height: 56px;">
+        Products
+        <span class="sds-topnav-chevron">
+          <span class="material-symbols-outlined">expand_more</span>
+        </span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<h3>Dropdown Menu Item</h3>
+<div class="states-row">
+  <div class="state-card" style="min-width: 200px;">
+    <div class="state-card-label">Default</div>
+    <div class="state-card-body" style="padding: var(--sds-space-150) 0; flex-direction: column; align-items: stretch;">
+      <a class="sds-topnav-dropdown-item" href="#" onclick="event.preventDefault()" style="cursor: default;">Data Catalog</a>
+    </div>
+  </div>
+  <div class="state-card" style="min-width: 200px;">
+    <div class="state-card-label">Hover</div>
+    <div class="state-card-body" style="padding: var(--sds-space-150) 0; flex-direction: column; align-items: stretch;">
+      <a class="sds-topnav-dropdown-item" href="#" onclick="event.preventDefault()" style="cursor: default; background: var(--sds-bg-subtle); color: var(--sds-text-primary);">Data Catalog</a>
+    </div>
+  </div>
+  <div class="state-card" style="min-width: 200px;">
+    <div class="state-card-label">Active</div>
+    <div class="state-card-body" style="padding: var(--sds-space-150) 0; flex-direction: column; align-items: stretch;">
+      <a class="sds-topnav-dropdown-item is-active" href="#" onclick="event.preventDefault()" style="cursor: default;">Data Security</a>
+    </div>
+  </div>
+</div>
+
+<hr class="section-divider">
+
+<!-- =========== ANATOMY & SPECS =========== -->
+<h2>Anatomy &amp; Specs</h2>
+<p>Dimensions, spacing, and token mappings for the top navigation component.</p>
+
+<h3>Navigation Bar</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Height</td><td>56px</td><td>—</td></tr>
+    <tr><td>Background</td><td>#FFFFFF</td><td><code>--sds-bg-page</code></td></tr>
+    <tr><td>Border bottom</td><td>1px solid</td><td><code>--sds-border-subtle</code></td></tr>
+    <tr><td>Horizontal padding</td><td>20px</td><td><code>--sds-space-500</code></td></tr>
+    <tr><td>Logo–links gap</td><td>16px (margin-right on logo)</td><td><code>--sds-space-400</code></td></tr>
+    <tr><td>Section gap</td><td>24px</td><td><code>--sds-space-600</code></td></tr>
+  </tbody>
+</table>
+
+<h3>Navigation Link</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Height</td><td>Full bar height (56px)</td><td>—</td></tr>
+    <tr><td>Horizontal padding</td><td>16px</td><td><code>--sds-space-400</code></td></tr>
+    <tr><td>Font size</td><td>14px</td><td><code>--sds-type-body</code></td></tr>
+    <tr><td>Font weight</td><td>500</td><td><code>--sds-weight-medium</code></td></tr>
+    <tr><td>Color</td><td>#013D5B</td><td><code>--sds-color-blue-750</code></td></tr>
+    <tr><td>Active indicator</td><td>2px bottom bar</td><td><code>--sds-color-blue-750</code></td></tr>
+    <tr><td>Transition</td><td>0.15s ease</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h3>Dropdown Menu</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Min width</td><td>200px</td><td>—</td></tr>
+    <tr><td>Background</td><td>#FFFFFF</td><td><code>--sds-bg-page</code></td></tr>
+    <tr><td>Border</td><td>1px solid</td><td><code>--sds-border-default</code></td></tr>
+    <tr><td>Border radius</td><td>8px</td><td>—</td></tr>
+    <tr><td>Shadow</td><td>0 4px 16px rgba(0,0,0,0.08)</td><td>—</td></tr>
+    <tr><td>Padding (vertical)</td><td>6px</td><td><code>--sds-space-150</code></td></tr>
+    <tr><td>Item padding</td><td>8px 16px</td><td><code>--sds-space-200</code> / <code>--sds-space-400</code></td></tr>
+    <tr><td>Item color (default)</td><td>#47443F</td><td><code>warm-gray-700</code></td></tr>
+    <tr><td>Item bg (hover)</td><td>#F4F1EB</td><td><code>--sds-bg-subtle</code></td></tr>
+    <tr><td>Item bg (active)</td><td>#D9EBED</td><td><code>--sds-nav-item-active-bg</code></td></tr>
+    <tr><td>Item color (active)</td><td>#013D5B</td><td><code>--sds-nav-item-active-text</code></td></tr>
+    <tr><td>Group label font</td><td>11px / 600 / uppercase</td><td><code>--sds-type-overline</code></td></tr>
+    <tr><td>Trigger</td><td>Hover</td><td>—</td></tr>
+    <tr><td>Open animation</td><td>0.15s ease, translateY(4px → 0)</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<h3>Chevron Icon (Dropdown Trigger)</h3>
+<table class="spec-table">
+  <thead>
+    <tr><th>Property</th><th>Value</th><th>Token</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>Size</td><td>16px</td><td>—</td></tr>
+    <tr><td>Color</td><td>Inherits from parent link</td><td>—</td></tr>
+    <tr><td>Rotation (expanded)</td><td>180deg</td><td>—</td></tr>
+    <tr><td>Transition</td><td>0.15s ease</td><td>—</td></tr>
+  </tbody>
+</table>
+
+<script>
+/* Dropdown is CSS hover-driven. No JS needed for open/close. */
+</script>
+
+<script src="../shared/nav.js"></script>
+</body>
+</html>
